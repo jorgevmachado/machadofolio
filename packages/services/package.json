@@ -1,0 +1,42 @@
+{
+  "name": "@repo/services",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "./dist/**"
+  ],
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "gen": "turbo gen service",
+    "dev": "echo 'Add dev script here'",
+    "build": "echo 'Add build script here'",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --max-warnings 0 --fix",
+    "clean": "rimraf dist && rimraf node_modules"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "src/*"
+      ]
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@repo/jest": "*",
+    "@repo/typescript": "*",
+    "@types/node": "^22.15.3",
+    "jest": "^29.7.0",
+    "rimraf": "^6.0.1",
+    "ts-jest": "^29.3.2",
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}

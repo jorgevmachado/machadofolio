@@ -4,11 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53d2b612-44cd-42a0-94f6-c66be0072f59" name="Changes" comment="Standardize single quotes in layout.tsx imports and strings&#10;&#10;Updated all import paths and string literals to use single quotes for consistency with the project's code style. No functional changes were made.">
-      <change afterPath="$PROJECT_DIR$/packages/jest/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/jest/base.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/jest/next.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/jest/package.json" afterDir="false" />
+    <list default="true" id="53d2b612-44cd-42a0-94f6-c66be0072f59" name="Changes" comment="Add Jest setup with base and Next.js configurations&#10;&#10;Introduced a Jest module to centralize testing configurations across the monorepo. Added a `base.ts` file for shared settings and a `next.ts` file for Next.js-specific adjustments. Updated dependencies and documentation to outline usage and integration steps.">
+      <change afterPath="$PROJECT_DIR$/packages/eslint-config/prettier-base.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/jest/library.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/.prettierrc.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/jest.config.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/string/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/string/string.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/string/string.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/tsconfig.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/tsconfig.lint.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/turbo/generators/config.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/turbo/generators/templates/service.hbs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/turbo/generators/templates/spec.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/eslint-config/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/eslint-config/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/jest/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/jest/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,12 +69,15 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/home/jorge.machado/PERSONAL/PROJECTS/machadofolio/packages/typescript",
+    "last_opened_file_path": "/home/jorge.machado/PERSONAL/PROJECTS/machadofolio/packages/services",
     "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "yarn",
+    "settings.editor.selected.configurable": "preferences.sourceCode.JavaScript",
     "ts.external.directory.path": "/home/jorge.machado/PERSONAL/PROJECTS/machadofolio/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   },
@@ -81,6 +98,9 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/packages/services" />
+      <recent name="$PROJECT_DIR$/packages/services/turbo" />
+      <recent name="$PROJECT_DIR$/packages/eslint-config" />
       <recent name="$PROJECT_DIR$/packages/typescript" />
       <recent name="$PROJECT_DIR$" />
     </key>
@@ -102,7 +122,7 @@
       <workItem from="1745864053357" duration="636000" />
       <workItem from="1745864757151" duration="1325000" />
       <workItem from="1745866509312" duration="65000" />
-      <workItem from="1745866575509" duration="6919000" />
+      <workItem from="1745866575509" duration="10160000" />
     </task>
     <task id="LOCAL-00001" summary="BIG BANG">
       <option name="closed" value="true" />
@@ -152,7 +172,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745871802842</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Add Jest setup with base and Next.js configurations&#10;&#10;Introduced a Jest module to centralize testing configurations across the monorepo. Added a `base.ts` file for shared settings and a `next.ts` file for Next.js-specific adjustments. Updated dependencies and documentation to outline usage and integration steps.">
+      <option name="closed" value="true" />
+      <created>1745873511057</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1745873511057</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -179,7 +207,8 @@
     <MESSAGE value="Rename `@repo/typescript-config` to `@repo/typescript`&#10;&#10;Rebranded the TypeScript configuration package for better clarity and consistency. Updated all references and added comprehensive documentation to outline configurations for various use cases. Maintained functionality while improving structure and usability." />
     <MESSAGE value="Add new ESLint configurations and update project references&#10;&#10;Introduced `library.js` configuration tailored for TypeScript libraries and updated `base.js` with stricter formatting rules. Adjusted dependencies, README content, and package exports to reflect changes. Removed outdated React JSX scope rules across configurations and aligned references to renamed modules." />
     <MESSAGE value="Standardize single quotes in layout.tsx imports and strings&#10;&#10;Updated all import paths and string literals to use single quotes for consistency with the project's code style. No functional changes were made." />
-    <option name="LAST_COMMIT_MESSAGE" value="Standardize single quotes in layout.tsx imports and strings&#10;&#10;Updated all import paths and string literals to use single quotes for consistency with the project's code style. No functional changes were made." />
+    <MESSAGE value="Add Jest setup with base and Next.js configurations&#10;&#10;Introduced a Jest module to centralize testing configurations across the monorepo. Added a `base.ts` file for shared settings and a `next.ts` file for Next.js-specific adjustments. Updated dependencies and documentation to outline usage and integration steps." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Jest setup with base and Next.js configurations&#10;&#10;Introduced a Jest module to centralize testing configurations across the monorepo. Added a `base.ts` file for shared settings and a `next.ts` file for Next.js-specific adjustments. Updated dependencies and documentation to outline usage and integration steps." />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
   </component>
 </project>
