@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53d2b612-44cd-42a0-94f6-c66be0072f59" name="Changes" comment="Rename `@repo/typescript-config` to `@repo/typescript`&#10;&#10;Rebranded the TypeScript configuration package for better clarity and consistency. Updated all references and added comprehensive documentation to outline configurations for various use cases. Maintained functionality while improving structure and usability.">
-      <change afterPath="$PROJECT_DIR$/packages/eslint-config/library.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/eslint-config/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/packages/eslint-config/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/eslint-config/base.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/eslint-config/base.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/eslint-config/next.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/eslint-config/next.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/eslint-config/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/eslint-config/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/eslint-config/react-internal.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/eslint-config/react-internal.js" afterDir="false" />
+    <list default="true" id="53d2b612-44cd-42a0-94f6-c66be0072f59" name="Changes" comment="Standardize single quotes in layout.tsx imports and strings&#10;&#10;Updated all import paths and string literals to use single quotes for consistency with the project's code style. No functional changes were made.">
+      <change afterPath="$PROJECT_DIR$/packages/jest/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/jest/base.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/jest/next.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/jest/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -22,6 +20,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -103,7 +102,7 @@
       <workItem from="1745864053357" duration="636000" />
       <workItem from="1745864757151" duration="1325000" />
       <workItem from="1745866509312" duration="65000" />
-      <workItem from="1745866575509" duration="5006000" />
+      <workItem from="1745866575509" duration="6919000" />
     </task>
     <task id="LOCAL-00001" summary="BIG BANG">
       <option name="closed" value="true" />
@@ -137,7 +136,23 @@
       <option name="project" value="LOCAL" />
       <updated>1745869615508</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Add new ESLint configurations and update project references&#10;&#10;Introduced `library.js` configuration tailored for TypeScript libraries and updated `base.js` with stricter formatting rules. Adjusted dependencies, README content, and package exports to reflect changes. Removed outdated React JSX scope rules across configurations and aligned references to renamed modules.">
+      <option name="closed" value="true" />
+      <created>1745871597426</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1745871597426</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Standardize single quotes in layout.tsx imports and strings&#10;&#10;Updated all import paths and string literals to use single quotes for consistency with the project's code style. No functional changes were made.">
+      <option name="closed" value="true" />
+      <created>1745871802842</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1745871802842</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -162,7 +177,9 @@
     <MESSAGE value="aaa" />
     <MESSAGE value="&quot;Add documentation files and update Turborepo configuration&#10;&#10;Added new documentation files for Docker usage, common commands, and libraries to enhance the project guides. Updated `turbo.json` with global environment variables and dependencies for improved build processes. Minor cleanup in `.idea/workspace.xml`.&quot;" />
     <MESSAGE value="Rename `@repo/typescript-config` to `@repo/typescript`&#10;&#10;Rebranded the TypeScript configuration package for better clarity and consistency. Updated all references and added comprehensive documentation to outline configurations for various use cases. Maintained functionality while improving structure and usability." />
-    <option name="LAST_COMMIT_MESSAGE" value="Rename `@repo/typescript-config` to `@repo/typescript`&#10;&#10;Rebranded the TypeScript configuration package for better clarity and consistency. Updated all references and added comprehensive documentation to outline configurations for various use cases. Maintained functionality while improving structure and usability." />
+    <MESSAGE value="Add new ESLint configurations and update project references&#10;&#10;Introduced `library.js` configuration tailored for TypeScript libraries and updated `base.js` with stricter formatting rules. Adjusted dependencies, README content, and package exports to reflect changes. Removed outdated React JSX scope rules across configurations and aligned references to renamed modules." />
+    <MESSAGE value="Standardize single quotes in layout.tsx imports and strings&#10;&#10;Updated all import paths and string literals to use single quotes for consistency with the project's code style. No functional changes were made." />
+    <option name="LAST_COMMIT_MESSAGE" value="Standardize single quotes in layout.tsx imports and strings&#10;&#10;Updated all import paths and string literals to use single quotes for consistency with the project's code style. No functional changes were made." />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
   </component>
 </project>
