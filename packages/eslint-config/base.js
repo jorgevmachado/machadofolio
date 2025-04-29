@@ -36,6 +36,10 @@ export const config = [
       'keyword-spacing': ['error', { 'before': true, 'after': true }],
       "turbo/no-undeclared-env-vars": "warn",
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/consistent-type-imports': ['error', {
+        prefer: 'type-imports',
+        fixStyle: 'inline-type-imports',
+      }],
     },
   },
   {

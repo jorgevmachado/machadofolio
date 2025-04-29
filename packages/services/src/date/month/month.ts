@@ -1,11 +1,11 @@
 import {
     INVALID_TYPE,
     REQUIRED_FIELD,
-    ValidatorMessage,
-    ValidatorParams
+    type ValidatorMessage,
+    type ValidatorParams
 } from "../../shared";
 
-import { EMonth } from "./enum";
+import { type EMonth } from "./enum";
 
 export type TMonth =
     | 'january'

@@ -1,4 +1,4 @@
-import {INVALID_TYPE, REQUIRED_FIELD, ValidatorMessage, ValidatorParams} from "../../shared";
+import {INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams} from "../../shared";
 
 export function dayValidator({ value }: ValidatorParams): ValidatorMessage {
     if (!value  && value !== 0) {

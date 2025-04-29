@@ -1,7 +1,7 @@
 import {
  INVALID_TYPE,
- ValidatorMessage,
- ValidatorParams
+ type ValidatorMessage,
+ type ValidatorParams
 } from "../shared";
 import {extractLastItemFromUrl} from "../string";
 

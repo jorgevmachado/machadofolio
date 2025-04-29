@@ -1,4 +1,4 @@
-import {ValidatorMessage} from "./types";
+import {type ValidatorMessage} from "./types";
 
 export const REQUIRED_FIELD: ValidatorMessage = {
     valid: false,
