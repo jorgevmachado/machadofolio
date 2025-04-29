@@ -1,8 +1,8 @@
-import {afterEach, beforeEach, describe, expect, it, jest,} from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
-import {parseDateFromString} from "../date";
+import { parseDateFromString } from '../date';
 
-import {findEntityBy, isObject, serialize, transformDateStringInDate, transformObjectDateAndNulls} from './object';
+import { findEntityBy, isObject, serialize, transformDateStringInDate, transformObjectDateAndNulls } from './object';
 
 
 describe('Object function', () => {

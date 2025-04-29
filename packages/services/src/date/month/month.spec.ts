@@ -1,6 +1,6 @@
-import {afterEach, beforeEach, describe, expect, it, jest,} from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
-import {INVALID_TYPE, REQUIRED_FIELD} from "../../shared";
+import { INVALID_TYPE, REQUIRED_FIELD } from '../../shared';
 
 import {
     getCurrentMonth,
@@ -9,8 +9,8 @@ import {
     isMonthValid,
     monthValidator,
     parseMonth
-} from "./month";
-import {EMonth} from "./enum";
+} from './month';
+import { EMonth } from './enum';
 
 
 

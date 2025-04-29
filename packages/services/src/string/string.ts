@@ -1,4 +1,4 @@
-import {serialize} from "../object";
+import { serialize } from '../object';
 
 export const linkingWords: Array<string> = ['de', 'da', 'do', 'das', 'dos'];
 

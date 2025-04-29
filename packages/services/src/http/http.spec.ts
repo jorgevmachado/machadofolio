@@ -6,7 +6,7 @@ import {
     it,
     jest,
 } from '@jest/globals';
-import {Http} from "./http";
+import { Http } from './http';
 
 class HttpMock extends Http {
     constructor(url: string, config: RequestInit) {

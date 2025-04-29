@@ -1,6 +1,6 @@
-import {afterEach, beforeEach, describe, expect, it, jest,} from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
-import {INVALID_TYPE, REQUIRED_FIELD} from "../shared";
+import { INVALID_TYPE, REQUIRED_FIELD } from '../shared';
 
 import {
     calculateMaxDate,
@@ -8,7 +8,7 @@ import {
     isUnderMinimumAge, parseDateFromString,
     parseDateFromStringWithSeparator,
     parseStartDate
-} from "./date";
+} from './date';
 
 
 describe('Date function', () => {

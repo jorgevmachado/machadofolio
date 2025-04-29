@@ -1,10 +1,10 @@
-import {INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams} from "../shared";
+import { INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams } from '../shared';
 
-import {type CreateDateFromYearMonthDayParams, type ParseDate, type ParseStartDateParams, type TDateSeparator, type YearMonthDay} from "./types";
+import { type CreateDateFromYearMonthDayParams, type ParseDate, type ParseStartDateParams, type TDateSeparator, type YearMonthDay } from './types';
 
-import {parseDay} from "./day";
-import {parseMonth} from "./month";
-import {parseYear} from "./year";
+import { parseDay } from './day';
+import { parseMonth } from './month';
+import { parseYear } from './year';
 
 export function isUnderMinimumAge(date: Date, min: number = 18): boolean {
  const ageInDays =
@@ -74,7 +74,7 @@ export function parseDateFromString(
     value: string,
     dateSeparators: Array<TDateSeparator> = ['-', '/'],
 ): Date | undefined {
- const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/
+ const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
  const currentValue = isoRegex.test(value) ? value.split('T')[0] : value;
  return dateSeparators
      .map((separator) => parseDateFromStringWithSeparator(currentValue, separator))
@@ -181,7 +181,7 @@ export function isDateString({ value }: ValidatorParams): ValidatorMessage {
   valid,
   value: valid ? value : undefined,
   message: valid ? 'Valid date string.' : 'Please enter a valid date string.',
- }
+ };
 
 
 }

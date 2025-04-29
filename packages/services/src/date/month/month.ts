@@ -3,9 +3,9 @@ import {
     REQUIRED_FIELD,
     type ValidatorMessage,
     type ValidatorParams
-} from "../../shared";
+} from '../../shared';
 
-import { type EMonth } from "./enum";
+import { type EMonth } from './enum';
 
 export type TMonth =
     | 'january'
@@ -70,7 +70,7 @@ export function monthValidator({ value }: ValidatorParams): ValidatorMessage {
         valid: !invalid,
         value: !invalid ? value : undefined,
         message: !invalid ? 'Valid month.' : 'Please enter a valid month.',
-    }
+    };
 }
 
 export function parseMonth(value?: string | number): number | undefined {

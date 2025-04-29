@@ -7,7 +7,7 @@ import {
     jest,
 } from '@jest/globals';
 
-import {INVALID_TYPE, REQUIRED_FIELD} from "../shared";
+import { INVALID_TYPE, REQUIRED_FIELD } from '../shared';
 
 import {
     confirmPasswordValidator,
@@ -16,7 +16,7 @@ import {
     leastOneSpecialCharacter,
     minLength,
     passwordValidator
-} from "./password";
+} from './password';
 
 
 describe('Password function', () => {

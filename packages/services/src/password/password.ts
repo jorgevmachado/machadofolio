@@ -1,4 +1,4 @@
-import {INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams} from "../shared";
+import { INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams } from '../shared';
 
 export function minLength({ min = 8, value }: ValidatorParams): ValidatorMessage {
  if (!value) {
@@ -49,7 +49,7 @@ export function leastOneNumber({ value }: ValidatorParams): ValidatorMessage {
  };
 }
 
-export function leastOneSpecialCharacter({value}: ValidatorParams): ValidatorMessage {
+export function leastOneSpecialCharacter({ value }: ValidatorParams): ValidatorMessage {
  if (!value) {
   return REQUIRED_FIELD;
  }

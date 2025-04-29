@@ -1,4 +1,4 @@
-import {isDateString, parseDateFromString} from "../date";
+import { isDateString, parseDateFromString } from '../date';
 
 export type FindEntityByParam<T> = {
  key: 'id' | 'name' | 'name_code';

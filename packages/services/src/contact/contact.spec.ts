@@ -7,9 +7,9 @@ import {
     jest,
 } from '@jest/globals';
 
-import {INVALID_TYPE, REQUIRED_FIELD} from "../shared";
+import { INVALID_TYPE, REQUIRED_FIELD } from '../shared';
 
-import {emailValidator, mobileFormatter, mobileValidator, phoneFormatter, phoneValidator} from "./contact";
+import { emailValidator, mobileFormatter, mobileValidator, phoneFormatter, phoneValidator } from './contact';
 
 
 describe('Contact function', () => {

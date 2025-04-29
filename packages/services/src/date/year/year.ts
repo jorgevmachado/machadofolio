@@ -1,4 +1,4 @@
-import {INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams} from "../../shared";
+import { INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams } from '../../shared';
 
 export function yearValidator({ value, min = 1, max = 9999 }: ValidatorParams): ValidatorMessage {
     if (!value) {

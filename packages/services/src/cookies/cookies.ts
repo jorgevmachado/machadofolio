@@ -1,4 +1,4 @@
-import {documentCookie} from '../window';
+import { documentCookie } from '../window';
 
 class Cookies {
  public get(key: string): string | undefined {

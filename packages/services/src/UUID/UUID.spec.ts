@@ -9,7 +9,7 @@ import {
 
 import { validate as isUuid, v4 as uuidv4 } from 'uuid';
 
-import {generateUUID, isUUID} from "./UUID";
+import { generateUUID, isUUID } from './UUID';
 
 jest.mock('uuid');
 

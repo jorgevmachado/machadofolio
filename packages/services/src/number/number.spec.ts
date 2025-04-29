@@ -12,8 +12,8 @@ import {
     isNumberEven,
     numberValidator,
     removeCurrencyFormatter
-} from "./number";
-import {INVALID_TYPE} from "../shared";
+} from './number';
+import { INVALID_TYPE } from '../shared';
 
 describe('Number function', () => {
     beforeEach(() => {

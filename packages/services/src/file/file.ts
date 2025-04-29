@@ -1,4 +1,4 @@
-import {REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams} from "../shared";
+import { REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams } from '../shared';
 
 export function imageTypeValidator({ accept }: ValidatorParams): ValidatorMessage {
  if (!accept) {

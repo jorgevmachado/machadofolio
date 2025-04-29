@@ -1,4 +1,4 @@
-import {formatUrl} from "../string";
+import { formatUrl } from '../string';
 
 export type RequestConfig<B = unknown> = {
  body?: B;
@@ -92,7 +92,7 @@ export abstract class Http {
   const isFormData = body instanceof FormData;
   const configHeaders = isFormData
       ? { ...this.config.headers, ...headers }
-      : { ...this.config.headers, ...headers, 'content-type': 'application/json; charset=UTF-8'};
+      : { ...this.config.headers, ...headers, 'content-type': 'application/json; charset=UTF-8' };
 
   const config = {
    ...this.config,

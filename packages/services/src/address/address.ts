@@ -1,4 +1,4 @@
-import { INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams } from "../shared";
+import { INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams } from '../shared';
 
 export function cepFormatter(value?: string): string {
     if (!value) {
@@ -10,7 +10,7 @@ export function cepFormatter(value?: string): string {
         .replace(/(-d{3})(\d+?)/, '$1');
 }
 
-export function cepValidator({value}: ValidatorParams): ValidatorMessage {
+export function cepValidator({ value }: ValidatorParams): ValidatorMessage {
     if (!value) {
         return REQUIRED_FIELD;
     }

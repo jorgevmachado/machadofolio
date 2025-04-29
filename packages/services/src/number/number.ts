@@ -2,8 +2,8 @@ import {
  INVALID_TYPE,
  type ValidatorMessage,
  type ValidatorParams
-} from "../shared";
-import {extractLastItemFromUrl} from "../string";
+} from '../shared';
+import { extractLastItemFromUrl } from '../string';
 
 export function isNumberEven(value: number): boolean {
  if (value % 1 !== 0) {

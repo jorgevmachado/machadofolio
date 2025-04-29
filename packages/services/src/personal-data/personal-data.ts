@@ -1,6 +1,6 @@
-import {INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams} from "../shared";
+import { INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams } from '../shared';
 
-import {EGender} from "./enum";
+import { EGender } from './enum';
 
 export function cpfFormatter(value?: string): string {
  if (!value) {
@@ -29,7 +29,7 @@ export function cpfValidator({ value }: ValidatorParams): ValidatorMessage {
  };
 }
 
-export function nameValidator({value, min = 2}: ValidatorParams): ValidatorMessage {
+export function nameValidator({ value, min = 2 }: ValidatorParams): ValidatorMessage {
  if (!value) {
   return REQUIRED_FIELD;
  }

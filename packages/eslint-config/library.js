@@ -25,6 +25,9 @@ export const config = [
     },
     {
         rules: {
+            semi: ['error', 'always'],
+            quotes: ['error', 'single'],
+            'object-curly-spacing': ['error', 'always'],
             "no-console": ["warn", { allow: ["warn", "error"] }],
             "no-debugger": "error",
             "@typescript-eslint/no-unused-vars": 'off',

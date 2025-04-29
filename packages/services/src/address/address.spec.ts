@@ -7,9 +7,9 @@ import {
     jest,
 } from '@jest/globals';
 
-import {INVALID_TYPE, REQUIRED_FIELD} from "../shared";
+import { INVALID_TYPE, REQUIRED_FIELD } from '../shared';
 
-import {cepFormatter, cepValidator} from "./address";
+import { cepFormatter, cepValidator } from './address';
 
 describe('Address function', () => {
     beforeEach(() => {

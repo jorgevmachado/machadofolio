@@ -7,9 +7,9 @@ import {
     jest,
 } from '@jest/globals';
 
-import {REQUIRED_FIELD} from "../shared";
+import { REQUIRED_FIELD } from '../shared';
 
-import {imageTypeValidator} from "./file";
+import { imageTypeValidator } from './file';
 
 
 describe('File function', () => {

@@ -7,9 +7,9 @@ import {
     jest,
 } from '@jest/globals';
 
-import {INVALID_TYPE, REQUIRED_FIELD} from "../shared";
+import { INVALID_TYPE, REQUIRED_FIELD } from '../shared';
 
-import {cpfFormatter, cpfValidator, genderValidator, nameValidator} from "./personal-data";
+import { cpfFormatter, cpfValidator, genderValidator, nameValidator } from './personal-data';
 
 
 describe('PersonalData function', () => {
