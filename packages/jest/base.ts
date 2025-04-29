@@ -14,5 +14,6 @@ export const config = {
         'main.ts',
         'enum.ts',
         'interface.ts',
+        'types.ts',
     ],
 } as const satisfies Config;

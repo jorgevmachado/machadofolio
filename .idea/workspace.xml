@@ -4,37 +4,70 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53d2b612-44cd-42a0-94f6-c66be0072f59" name="Changes" comment="Add Jest setup with base and Next.js configurations&#10;&#10;Set up centralized Jest configurations, introducing `base.ts` for shared testing settings and `next.ts` for Next.js-specific adjustments. Updated dependencies, documentation, and workspace metadata to support consistent testing across the monorepo. Various package updates and new dependencies were added in the process.">
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/eslint.config.mjs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/jest.config.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/nest-cli.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/src/app.controller.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/src/app.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/src/app.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/src/app.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/src/main.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/test/app.e2e-spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/test/jest-e2e.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/tsconfig.build.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/tsconfig.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/nest-js/yarn.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/eslint-config/nest.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/jest/nest.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/typescript/nestjs.json" afterDir="false" />
+    <list default="true" id="53d2b612-44cd-42a0-94f6-c66be0072f59" name="Changes" comment="Update dependencies in yarn.lock with newer versions&#10;&#10;Updated several dependencies to newer versions in yarn.lock, including @angular-devkit, @babel, and @inquirer packages. These updates ensure compatibility and address potential issues with outdated versions.">
+      <change afterPath="$PROJECT_DIR$/packages/services/src/UUID/UUID.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/UUID/UUID.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/UUID/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/address/address.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/address/address.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/address/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/contact/contact.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/contact/contact.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/contact/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/cookies/cookies.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/cookies/cookies.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/cookies/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/date.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/date.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/day/day.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/day/day.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/day/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/month/enum.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/month/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/month/month.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/month/month.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/year/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/year/year.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/date/year/year.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/error/error.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/error/error.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/error/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/file/file.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/file/file.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/file/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/http/http.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/http/http.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/http/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/number/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/number/number.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/number/number.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/object/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/object/object.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/object/object.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/password/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/password/password.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/password/password.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/personal-data/enum.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/personal-data/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/personal-data/personal-data.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/personal-data/personal-data.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/shared/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/shared/messages.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/shared/types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/window/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/window/window.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/services/src/window/window.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/web/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/web/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/web/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/web/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/eslint-config/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/packages/eslint-config/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/eslint-config/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/eslint-config/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/jest/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/packages/jest/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/eslint-config/library.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/eslint-config/library.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/packages/jest/base.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/jest/base.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/jest/library.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/jest/library.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/services/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/packages/services/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/packages/services/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/services/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/services/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/services/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/typescript/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/packages/typescript/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/typescript/library.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/typescript/library.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/services/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/services/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/services/src/string/string.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/services/src/string/string.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/services/src/string/string.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/services/src/string/string.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/services/turbo/generators/templates/spec.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/packages/services/turbo/generators/templates/spec.hbs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -116,6 +149,9 @@
       <recent name="$PROJECT_DIR$/packages/eslint-config" />
       <recent name="$PROJECT_DIR$/packages/typescript" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/packages/services/src/date/month" />
+    </key>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -135,7 +171,7 @@
       <workItem from="1745864757151" duration="1325000" />
       <workItem from="1745866509312" duration="65000" />
       <workItem from="1745866575509" duration="15242000" />
-      <workItem from="1745927262954" duration="9351000" />
+      <workItem from="1745927262954" duration="25157000" />
     </task>
     <task id="LOCAL-00001" summary="BIG BANG">
       <option name="closed" value="true" />
@@ -201,7 +237,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745876765611</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Update dependencies in yarn.lock with newer versions&#10;&#10;Updated several dependencies to newer versions in yarn.lock, including @angular-devkit, @babel, and @inquirer packages. These updates ensure compatibility and address potential issues with outdated versions.">
+      <option name="closed" value="true" />
+      <created>1745936826496</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1745936826496</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -230,7 +274,8 @@
     <MESSAGE value="Standardize single quotes in layout.tsx imports and strings&#10;&#10;Updated all import paths and string literals to use single quotes for consistency with the project's code style. No functional changes were made." />
     <MESSAGE value="Add Jest setup with base and Next.js configurations&#10;&#10;Introduced a Jest module to centralize testing configurations across the monorepo. Added a `base.ts` file for shared settings and a `next.ts` file for Next.js-specific adjustments. Updated dependencies and documentation to outline usage and integration steps." />
     <MESSAGE value="Add Jest setup with base and Next.js configurations&#10;&#10;Set up centralized Jest configurations, introducing `base.ts` for shared testing settings and `next.ts` for Next.js-specific adjustments. Updated dependencies, documentation, and workspace metadata to support consistent testing across the monorepo. Various package updates and new dependencies were added in the process." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Jest setup with base and Next.js configurations&#10;&#10;Set up centralized Jest configurations, introducing `base.ts` for shared testing settings and `next.ts` for Next.js-specific adjustments. Updated dependencies, documentation, and workspace metadata to support consistent testing across the monorepo. Various package updates and new dependencies were added in the process." />
+    <MESSAGE value="Update dependencies in yarn.lock with newer versions&#10;&#10;Updated several dependencies to newer versions in yarn.lock, including @angular-devkit, @babel, and @inquirer packages. These updates ensure compatibility and address potential issues with outdated versions." />
+    <option name="LAST_COMMIT_MESSAGE" value="Update dependencies in yarn.lock with newer versions&#10;&#10;Updated several dependencies to newer versions in yarn.lock, including @angular-devkit, @babel, and @inquirer packages. These updates ensure compatibility and address potential issues with outdated versions." />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
   </component>
 </project>

@@ -27,10 +27,7 @@ export const config = [
         rules: {
             "no-console": ["warn", { allow: ["warn", "error"] }],
             "no-debugger": "error",
-            "@typescript-eslint/no-unused-vars": [
-                "error",
-                { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
-            ],
+            "@typescript-eslint/no-unused-vars": 'off',
             "@typescript-eslint/explicit-module-boundary-types": "warn",
             "@typescript-eslint/no-explicit-any": "warn",
         },
