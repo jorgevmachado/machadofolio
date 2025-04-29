@@ -11,4 +11,14 @@ export const config = {
     testEnvironment: 'node',
     coverageDirectory: '../coverage',
     collectCoverageFrom: ['**/*.(t|j)s'],
+    coveragePathIgnorePatterns: [
+        ...baseConfig.coveragePathIgnorePatterns,
+        'app.data-source.ts',
+        '.module.ts',
+        '.strategy.ts',
+        '.decorator.ts',
+        '.guards.ts',
+        '.entity.ts',
+        '.dto.ts',
+    ]
 } as const satisfies Config;

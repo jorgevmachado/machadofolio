@@ -127,3 +127,25 @@ module.exports = {
     - **Ignorar Arquivos Gerados**:
         - Ignora pastas e arquivos gerados como `dist/**` (artefatos de build) e `node_modules/**` para evitar análise desnecessária.
 #### O `library.js` foi criado para ser utilizado em projetos de biblioteca TypeScript dentro do repositório. Ele centraliza configurações essenciais de ESLint específicas para o desenvolvimento de pacotes reutilizáveis de alta qualidade.
+
+### nest.js
+#### O arquivo `nest.js` é uma configuração personalizada do ESLint destinada a projetos que utilizam o ‘framework’ **NestJS**. Ele garante que as melhores práticas de desenvolvimento sejam seguidas ao trabalhar com o NestJS em TypeScript, promovendo consistência e qualidade no código em todos os projetos que utilizam essa tecnologia. Ele herda todas as regras definidas no definidas no arquivo base `base.js`, garantindo consistência com o restante do repositório.
+- **Regras de Estilo**:
+   - **Hereditariedade do `base.js`**:
+     - Todas as regras gerais configuradas no `base.js` são aplicadas automaticamente, como consistência no estilo de código (uso de ponto e vírgula, aspas, espaçamento, etc.).
+  - **Configurações para TypeScript**:
+      - Baseado nas regras recomendadas do `typescript-eslint`, garantindo melhores práticas para uso de tipagem em bibliotecas TypeScript.
+      - Adiciona validações importantes, como:
+          - **Restrições de variáveis não utilizadas**: Erro para variáveis ou argumentos não utilizados, com exceção de variáveis prefixadas com `_`.
+          - **Tipagem explícita**: Alerta para funções ou limites de módulo sem tipos declarados explicitamente.
+          - **Uso restrito de `any`**: Aviso para encorajar o uso de tipos concretos e evitar `any` desnecessário.
+
+  - **Boas Práticas para Bibliotecas**:
+      - **Proibição de `console.log`**: Permite apenas o uso de `console.warn` e `console.error` para mensagens importantes.
+      - **Proibição de `debugger`**: Garante que nenhum código de depuração seja acidentalmente enviado.
+      - **Atenção ao Escopo do Código**: Regras para modularização clara e tipada.
+  - **Configurações de Globais**:
+    - Suporte adicionado para variáveis globais comuns em ambientes NestJS e service workers, garantindo compatibilidade com diferentes contextos.
+
+      - **Ignorar Arquivos Gerados**:
+          - Ignora pastas e arquivos gerados como `dist/**` (artefatos de build) e `node_modules/**` para evitar análise desnecessária. 

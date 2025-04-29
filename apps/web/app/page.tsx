@@ -1,6 +1,7 @@
-import Image, { type ImageProps } from "next/image";
-import { Button } from "@repo/ui/button";
+import Image, {type ImageProps} from "next/image";
+import {Button} from "@repo/ui/button";
 import styles from "./page.module.css";
+import {normalize} from "@repo/services";
 
 type Props = Omit<ImageProps, "src"> & {
   srcLight: string;
@@ -19,9 +20,12 @@ const ThemeImage = (props: Props) => {
 };
 
 export default function Home() {
+  const name = 'João';
   return (
     <div className={styles.page}>
       <main className={styles.main}>
+        <h1>name: ${name}</h1>
+        <h1>normalize: ${normalize(name)}</h1>
         <ThemeImage
           className={styles.logo}
           srcLight="turborepo-dark.svg"

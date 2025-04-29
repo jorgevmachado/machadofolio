@@ -2,20 +2,23 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "./base.json",
   "compilerOptions": {
+    "outDir": "./dist",
+    "target": "ES2023",
     "module": "commonjs",
-    "moduleResolution": "Node10",
+    "baseUrl": "./",
+    "moduleResolution": "node",
     "sourceMap": true,
+    "declaration": true,
+    "incremental": true,
     "skipLibCheck": true,
     "noImplicitAny": false,
-    "importHelpers": true,
     "removeComments": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "strictBindCallApply": false,
-    "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "noFallthroughCasesInSwitch": false,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": false
+    "forceConsistentCasingInFileNames": true
   }
 }

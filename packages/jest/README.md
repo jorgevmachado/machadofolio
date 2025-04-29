@@ -80,3 +80,9 @@ export default config;
 
 - **Suporte a Arquivos JSX e TSX**:
     - Adiciona as extensões `jsx` e `tsx` ao Jest através de:
+
+### nest.ts
+#### O arquivo `nest.ts` define a **configuração de testes do Jest para projetos que utilizam NestJS**. Ele é baseado na configuração genérica presente em e adiciona ajustes específicos para garantir compatibilidade e suporte às interfaces e estruturas do `base.ts`.
+#### Ações e Funcionalidades
+- **Extensão da Configuração Base**:
+    - O `nest.ts` estende automaticamente todas as configurações definidas no `base.ts`, incluindo coleta de cobertura, ambiente `jsdom` e suporte a arquivos `js` , `ts` e `json`.

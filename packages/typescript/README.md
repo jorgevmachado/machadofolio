@@ -52,7 +52,7 @@
 
 
 ### nextjs.json
-#### O arquivo `nextjs.json` é uma configuração específica do TypeScript para projetos que utilizam o framework Next.js. Ele estende as configurações padrões definidas no `base.json`, adicionando ajustes e otimizações voltadas para o desenvolvimento de aplicações Next.js.
+#### O arquivo `nextjs.json` é uma configuração específica do TypeScript para projetos que utilizam o ‘framework’ Next.js. Ele estende as configurações padrões definidas no `base.json`, adicionando ajustes e otimizações voltadas para o desenvolvimento de aplicações Next.js.
 #### Ações e Funcionalidades
 - **Suporte a JSX**: Define a opção `jsx: preserve`, que mantém o código JSX para ser processado pelo compilador do Next.js.
 - **Módulo `ESNext`**: Configurado para suportar módulos modernos, garantindo integração perfeita com as dependências utilizadas no Next.js.
@@ -76,3 +76,18 @@
 - **Módulo (`module`)**: Configurado como `CommonJS` para garantir compatibilidade com projetos que utilizam este padrão, como o `Nest.js`.
 - **Inclusão de Arquivos**: Inclui todos os arquivos presentes na pasta `src` para compilação.
 - **Exclusão de Arquivos**: Exclui a pasta `node_modules` e arquivos relacionados a testes, como os com extensão `.test.ts` e `.spec.ts`.
+
+### nestjs.json
+#### O arquivo `nestjs.json` é uma configuração específica do TypeScript para projetos que utilizam o ‘framework’ NestJS. Ele estende o `base.json`, adicionando ajustes e otimizações voltadas para o desenvolvimento de aplicações NestJS.
+#### Ações e Funcionalidades
+- **Configuração para Módulos `CommonJS`**: Definido para compatibilidade com o padrão modular utilizado pelo NestJS.
+- **Compatibilidade com TypeScript Moderno**: Inclui `target: ES2023`, aproveitando os recursos mais avançados da linguagem no JavaScript moderno.
+- **Suporte a Decorators**: Habilita `experimentalDecorators` e `emitDecoratorMetadata`, fundamentais para o uso de decorators no framework.
+- **Resolução de Tipos e Checagem Estrita**:
+    - Habilita `strictNullChecks` para evitar erros relacionados a valores nulos ou indefinidos.
+    - Garante consistência ao ativar `forceConsistentCasingInFileNames`.
+
+- **Incremental Builds**: Utiliza `incremental: true` para um processo de compilação mais rápido e eficiente ao modificar o código.
+- **Optimização e Limpeza**:
+    - Geração de arquivos de saída limpa na pasta . `dist`
+    - Ignora verificações desnecessárias com `skipLibCheck` para acelerar compilações.

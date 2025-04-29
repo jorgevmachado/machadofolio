@@ -4,25 +4,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53d2b612-44cd-42a0-94f6-c66be0072f59" name="Changes" comment="Add Jest setup with base and Next.js configurations&#10;&#10;Introduced a Jest module to centralize testing configurations across the monorepo. Added a `base.ts` file for shared settings and a `next.ts` file for Next.js-specific adjustments. Updated dependencies and documentation to outline usage and integration steps.">
-      <change afterPath="$PROJECT_DIR$/packages/eslint-config/prettier-base.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/jest/library.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/services/.prettierrc.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/services/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/services/jest.config.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/services/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/services/src/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/services/src/string/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/services/src/string/string.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/services/src/string/string.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/services/tsconfig.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/services/tsconfig.lint.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/services/turbo/generators/config.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/services/turbo/generators/templates/service.hbs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/packages/services/turbo/generators/templates/spec.hbs" afterDir="false" />
+    <list default="true" id="53d2b612-44cd-42a0-94f6-c66be0072f59" name="Changes" comment="Add Jest setup with base and Next.js configurations&#10;&#10;Set up centralized Jest configurations, introducing `base.ts` for shared testing settings and `next.ts` for Next.js-specific adjustments. Updated dependencies, documentation, and workspace metadata to support consistent testing across the monorepo. Various package updates and new dependencies were added in the process.">
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/eslint.config.mjs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/jest.config.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/nest-cli.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/src/app.controller.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/src/app.controller.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/src/app.module.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/src/app.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/src/main.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/test/app.e2e-spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/test/jest-e2e.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/tsconfig.build.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/tsconfig.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/nest-js/yarn.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/eslint-config/nest.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/jest/nest.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/typescript/nestjs.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/web/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/web/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/eslint-config/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/packages/eslint-config/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/packages/eslint-config/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/eslint-config/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/jest/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/jest/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/jest/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/packages/jest/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/jest/base.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/jest/base.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/jest/library.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/jest/library.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/services/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/services/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/services/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/services/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/typescript/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/packages/typescript/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/typescript/library.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/typescript/library.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -48,12 +60,12 @@
     &quot;assignee&quot;: &quot;jorgevmachado&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/jorgevmachado/machadofolio.git",
-    "accountId": "42c6cf02-f539-43bf-be0d-3b8240b630ae"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/jorgevmachado/machadofolio.git&quot;,
+    &quot;accountId&quot;: &quot;42c6cf02-f539-43bf-be0d-3b8240b630ae&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -69,7 +81,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/home/jorge.machado/PERSONAL/PROJECTS/machadofolio/packages/services",
+    "last_opened_file_path": "/home/jorge.machado/PERSONAL/PROJECTS/machadofolio/apps/nest-js",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.standard": "true",
     "node.js.detected.package.tslint": "true",
@@ -98,11 +110,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/apps/nest-js" />
       <recent name="$PROJECT_DIR$/packages/services" />
       <recent name="$PROJECT_DIR$/packages/services/turbo" />
       <recent name="$PROJECT_DIR$/packages/eslint-config" />
       <recent name="$PROJECT_DIR$/packages/typescript" />
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -122,7 +134,8 @@
       <workItem from="1745864053357" duration="636000" />
       <workItem from="1745864757151" duration="1325000" />
       <workItem from="1745866509312" duration="65000" />
-      <workItem from="1745866575509" duration="10160000" />
+      <workItem from="1745866575509" duration="15242000" />
+      <workItem from="1745927262954" duration="9351000" />
     </task>
     <task id="LOCAL-00001" summary="BIG BANG">
       <option name="closed" value="true" />
@@ -180,7 +193,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745873511057</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Add Jest setup with base and Next.js configurations&#10;&#10;Set up centralized Jest configurations, introducing `base.ts` for shared testing settings and `next.ts` for Next.js-specific adjustments. Updated dependencies, documentation, and workspace metadata to support consistent testing across the monorepo. Various package updates and new dependencies were added in the process.">
+      <option name="closed" value="true" />
+      <created>1745876765611</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1745876765611</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -208,7 +229,8 @@
     <MESSAGE value="Add new ESLint configurations and update project references&#10;&#10;Introduced `library.js` configuration tailored for TypeScript libraries and updated `base.js` with stricter formatting rules. Adjusted dependencies, README content, and package exports to reflect changes. Removed outdated React JSX scope rules across configurations and aligned references to renamed modules." />
     <MESSAGE value="Standardize single quotes in layout.tsx imports and strings&#10;&#10;Updated all import paths and string literals to use single quotes for consistency with the project's code style. No functional changes were made." />
     <MESSAGE value="Add Jest setup with base and Next.js configurations&#10;&#10;Introduced a Jest module to centralize testing configurations across the monorepo. Added a `base.ts` file for shared settings and a `next.ts` file for Next.js-specific adjustments. Updated dependencies and documentation to outline usage and integration steps." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Jest setup with base and Next.js configurations&#10;&#10;Introduced a Jest module to centralize testing configurations across the monorepo. Added a `base.ts` file for shared settings and a `next.ts` file for Next.js-specific adjustments. Updated dependencies and documentation to outline usage and integration steps." />
+    <MESSAGE value="Add Jest setup with base and Next.js configurations&#10;&#10;Set up centralized Jest configurations, introducing `base.ts` for shared testing settings and `next.ts` for Next.js-specific adjustments. Updated dependencies, documentation, and workspace metadata to support consistent testing across the monorepo. Various package updates and new dependencies were added in the process." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Jest setup with base and Next.js configurations&#10;&#10;Set up centralized Jest configurations, introducing `base.ts` for shared testing settings and `next.ts` for Next.js-specific adjustments. Updated dependencies, documentation, and workspace metadata to support consistent testing across the monorepo. Various package updates and new dependencies were added in the process." />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
   </component>
 </project>
