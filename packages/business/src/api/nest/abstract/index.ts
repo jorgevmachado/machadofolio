@@ -1,0 +1,1 @@
+export { NestModuleAbstract } from './nestModuleAbstract';

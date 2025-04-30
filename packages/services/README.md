@@ -195,6 +195,8 @@ yarn lint
 - **separateCamelCase**: Separa palavras em camel case ('CamelCase') para uma versão com espaços e capitalização individual.
 - **snakeCaseToNormal**: Converte uma 'string' snake_case fornecida em uma string case normal legível por humanos.
 - **extractLastItemFromUrl**: Extrai o último segmento de uma URL.
+- **cleanFormatter**: Responsável por limpar a formatação do texto.
+- **sanitize**: Responsável por realizar a higienização do texto.
 #### Comando para teste unitários
 ```bash
   yarn run test -- --findRelatedTests src/string/string.spec.ts               

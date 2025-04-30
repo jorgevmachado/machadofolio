@@ -140,3 +140,15 @@ export function convertSubPathUrl({ pathUrl, isParam, subPathUrl, conectorPath }
  }
  return `${pathUrl}/${conectorPath}/${subPathUrl}`;
 }
+
+export function cleanFormatter(value?: string): string {
+ if(!value) {
+  return '';
+ }
+ return value.replace(/\W/g, '');
+}
+
+export function sanitize(value: string): string {
+ const regex = /[\WA-Z]/g;
+ return value.replace(regex, '');
+}
