@@ -32,21 +32,43 @@
 ## Instalação
 #### O comando para instalar o typeorm no projeto
 ```sh
-  npm install typeorm --save 
+  yarn add typeorm -D 
 ```
 ### Será necessário instalar também o `reflect-metadata`
 ```sh
-  npm install reflect-metadata --save 
+  yarn add reflect-metadata -D 
 ```
 ### Deverá escolher o banco de dados que mais lhe interessa para instalar no projeto aqui vai algumas opções:
 ```sh
-  npm install mysql --save // MySql 
+  yarn add mysql --save // MySql 
   
-  npm install pg --save // PostgreSQL
+  yarn add pg --save // PostgreSQL
   
-  npm install sqlite3 --save // SQlite
+  yarn add sqlite3 --save // SQlite
   
-  npm install mssql --save  // Microsoft SQL Server 
+  yarn add mssql --save  // Microsoft SQL Server 
   
-  npm install oracledb --save // Oracle
+  yarn add oracledb --save // Oracle
+```
+### Será necessário instalar também o `@nestjs/config` e o `@nestjs/typeorm` 
+```sh
+  yarn add @nestjs/config - D 
+  yarn add @nestjs/typeorm - D 
+```
+
+### Será necessário instalar também o `class-validator` e o `class-transformer`
+```sh
+  yarn add class-validator - D 
+  yarn add class-transformer - D 
+```
+
+### Será necessário instalar também o `multer` e o `@types/multer`
+```sh
+  yarn add multer 
+  yarn add @types/multer -D 
+```
+
+### Será necessário instalar também o `@nestjs/jwt`
+```sh
+  yarn add @nestjs/jwt 
 ```

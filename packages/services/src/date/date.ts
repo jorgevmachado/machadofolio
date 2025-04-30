@@ -83,9 +83,12 @@ export function parseDateFromString(
 }
 
 export function parseDateFromStringWithSeparator(
-    value: string,
+    value?: string,
     separator: TDateSeparator = '-',
 ): Date | undefined {
+ if(!value) {
+  return;
+ }
  const splitValue = splitDateString(value, separator);
  return !splitValue ? undefined : createDateFromParts(splitValue);
 }

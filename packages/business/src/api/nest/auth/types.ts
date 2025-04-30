@@ -6,12 +6,12 @@ import { type INestBaseEntity } from '../types';
 
 export type IUser = INestBaseEntity & {
     cpf: string;
-    role: ERole;
+    role?: ERole;
     salt?: string;
     name: string;
     email: string;
     gender: EGender;
-    status: EStatus;
+    status?: EStatus;
     picture?: string;
     whatsapp: string;
     password?: string;
