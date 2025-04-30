@@ -10,7 +10,7 @@ import { Query } from '../query';
 
 import type { BasicEntity } from '../types';
 
-import type { FindByParams, FindOneByParams, ListParams } from './types';
+import type { FindByParams, FindOneByOrder, FindOneByParams, ListParams } from './types';
 
 
 export class Queries<T extends BasicEntity> {
@@ -80,5 +80,25 @@ export class Queries<T extends BasicEntity> {
             withDeleted: params?.withDeleted,
             withRelations: params?.withRelations,
         });
+    }
+
+    async findOneByOrder<R>(params: FindOneByOrder<T, R>): Promise<T> {
+        const {
+            complete = true,
+            withThrow = true,
+        } = params
+        const result = await this.findBy({
+            searchParams: {
+                by: 'order',
+                value: params?.order,
+            },
+            withThrow,
+        }) as T;
+
+        if (!complete || !params?.completingData || !params?.response) {
+            return result;
+        }
+
+        return params.completingData(result, params.response);
     }
 }
