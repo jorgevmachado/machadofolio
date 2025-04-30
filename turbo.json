@@ -1,11 +1,12 @@
 {
   "$schema": "https://turborepo.com/schema.json",
-  "globalEnv": ["ENV", "API"],
+  "globalEnv": ["ENV", "API", "PORT"],
   "globalDependencies": [
     "**/.env.*local",
     "**/.env.*mock",
     "ENV",
-    "API"
+    "API",
+    "PORT"
   ],
   "ui": "tui",
   "tasks": {
