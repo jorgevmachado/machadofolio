@@ -18,7 +18,7 @@ jest.mock('fs/promises', () => ({
   writeFile: jest.fn(),
 }));
 
-describe('File Class', () => {
+describe('File', () => {
   let file: File;
   const mockedStream = new Readable();
   mockedStream.push('mock stream content');
@@ -38,7 +38,7 @@ describe('File Class', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    file = new (class extends File {})();
+    file = new File();
   });
 
   afterEach(() => {
@@ -70,14 +70,14 @@ describe('File Class', () => {
     });
   });
 
-  describe('uploadFile', () => {
+  describe('upload', () => {
     it('should successfully upload the file and return the path', async () => {
       jest.spyOn(fs, 'existsSync').mockReturnValue(false);
       jest.spyOn(file, 'getPath').mockReturnValue('uploads/test-image.jpeg');
 
       (writeFile as jest.MockedFunction<typeof writeFile>).mockResolvedValue();
 
-      const result = await file.uploadFile(mockFile);
+      const result = await file.upload(mockFile);
 
       expect(result).toBe('uploads/test-image.jpeg');
       expect(writeFile).toHaveBeenCalledWith(
@@ -87,7 +87,7 @@ describe('File Class', () => {
     });
 
     it('should throw BadRequestException if file is invalid', async () => {
-      await expect(file.uploadFile(null as any)).rejects.toThrow(BadRequestException);
+      await expect(file.upload(null as any)).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException if getPath throws error', async () => {
@@ -95,7 +95,7 @@ describe('File Class', () => {
         throw new BadRequestException('File not received or invalid.');
       });
 
-      await expect(file.uploadFile(mockFile)).rejects.toThrow(
+      await expect(file.upload(mockFile)).rejects.toThrow(
         BadRequestException,
       );
     });
@@ -107,7 +107,7 @@ describe('File Class', () => {
         new Error('Write failed'),
       );
 
-      await expect(file.uploadFile(mockFile)).rejects.toThrow(
+      await expect(file.upload(mockFile)).rejects.toThrow(
         BadRequestException,
       );
     });

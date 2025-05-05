@@ -10,6 +10,7 @@ import { type Repository } from 'typeorm';
 
 import { ConflictException } from '@nestjs/common';
 
+import { File } from '../file';
 import { Queries } from '../queries';
 import { Seeder } from '../seeder';
 import { Validate } from '../validate';
@@ -17,6 +18,7 @@ import { Validate } from '../validate';
 import { Service } from './service';
 
 
+jest.mock('../file');
 jest.mock('../queries');
 jest.mock('../seeder');
 jest.mock('../validate');
@@ -79,13 +81,14 @@ describe('service', () => {
     describe('constructor', () => {
         it('should be defined', () => {
             expect(service).toBeDefined();
+            expect(service.file).toBeDefined();
             expect(service.seeder).toBeDefined();
             expect(service.validate).toBeDefined();
             expect(service.queries).toBeDefined();
         });
     });
 
-    describe('seederModule', () => {
+    describe('fileModule', () => {
         it('should initialize seederModule module.', () => {
             expect(Seeder).toBeCalledTimes(1);
             expect(Seeder).toBeCalledWith(
@@ -93,6 +96,12 @@ describe('service', () => {
                 ['relation1', 'relation2'],
                 mockRepository,
             );
+        });
+    });
+
+    describe('seederModule', () => {
+        it('should initialize seederModule module.', () => {
+            expect(File).toBeCalledTimes(1);
         });
     });
 

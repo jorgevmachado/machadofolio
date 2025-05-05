@@ -3,8 +3,8 @@ import fs from 'fs';
 import { join } from 'path';
 import { writeFile } from 'fs/promises';
 
-export abstract class File {
-    async uploadFile(file: Express.Multer.File, filename?: string) {
+export class File {
+    async upload(file: Express.Multer.File, filename?: string) {
         const filePath = this.getPath(file, filename);
 
         try {

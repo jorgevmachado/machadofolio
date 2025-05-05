@@ -36,11 +36,11 @@ export class User implements UserEntity {
     })
     status!: EStatus;
 
+    @Column({ nullable: true })
+    avatar?: string;
+
     @Column({ nullable: false, unique: true, length: 11 })
     whatsapp!: string;
-
-    @Column({ nullable: true })
-    picture?: string;
 
     @Column({ nullable: false })
     password?: string;

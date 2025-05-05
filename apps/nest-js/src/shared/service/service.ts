@@ -8,11 +8,14 @@ import type { BasicEntity } from '../types';
 
 import { type FindOneByParams, type ListParams, Queries } from '../queries';
 import { Base } from '../base';
+import { File } from '../file';
 import { Seeder } from '../seeder';
 import { Validate } from '../validate';
 
 
+
 export abstract class Service<T extends BasicEntity> extends Base {
+    private readonly fileModule!: File;
     private readonly seederModule!: Seeder<T>;
     private readonly queriesModule!: Queries<T>;
     private readonly validateModule!: Validate;
@@ -23,9 +26,14 @@ export abstract class Service<T extends BasicEntity> extends Base {
         protected readonly repository: Repository<T>,
     ) {
         super();
+        this.fileModule = new File();
         this.seederModule = new Seeder<T>(alias, relations, repository);
         this.queriesModule = new Queries<T>(alias, relations, repository);
         this.validateModule = new Validate();
+    }
+
+    get file(): File {
+        return this.fileModule;
     }
 
     get seeder(): Seeder<T> {

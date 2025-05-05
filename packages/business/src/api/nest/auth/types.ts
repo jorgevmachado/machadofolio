@@ -12,7 +12,7 @@ export type IUser = INestBaseEntity & {
     email: string;
     gender: EGender;
     status?: EStatus;
-    picture?: string;
+    avatar?: string;
     whatsapp: string;
     password?: string;
     date_of_birth: Date;
