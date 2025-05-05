@@ -8,14 +8,17 @@ import {
 } from '@jest/globals';
 import { type Repository } from 'typeorm';
 
+import { ConflictException } from '@nestjs/common';
+
 import { Queries } from '../queries';
 import { Seeder } from '../seeder';
 import { Validate } from '../validate';
 
 import { Service } from './service';
 
-jest.mock('../seeder');
+
 jest.mock('../queries');
+jest.mock('../seeder');
 jest.mock('../validate');
 
 type MockEntity = {
@@ -76,6 +79,9 @@ describe('service', () => {
     describe('constructor', () => {
         it('should be defined', () => {
             expect(service).toBeDefined();
+            expect(service.seeder).toBeDefined();
+            expect(service.validate).toBeDefined();
+            expect(service.queries).toBeDefined();
         });
     });
 
@@ -117,6 +123,12 @@ describe('service', () => {
             expect(mockRepository.save).toBeCalledWith(entity);
             expect(result).toEqual(entity);
         });
+
+        it('should return conflict Exception when try to save.', async () => {
+            jest.spyOn(mockRepository, 'save').mockRejectedValueOnce(new ConflictException());
+
+            await expect(service.save(entity)).rejects.toThrow(ConflictException);
+        });
     });
 
     describe('softRemove', () => {
@@ -128,6 +140,12 @@ describe('service', () => {
             expect(mockRepository.softRemove).toBeCalledTimes(1);
             expect(mockRepository.softRemove).toBeCalledWith(entity);
             expect(result).toEqual(entity);
+        });
+
+        it('should return conflict Exception when try to execute soft remove.', async () => {
+            jest.spyOn(mockRepository, 'softRemove').mockRejectedValueOnce(new ConflictException());
+
+            await expect(service.softRemove(entity)).rejects.toThrow(ConflictException);
         });
     });
 

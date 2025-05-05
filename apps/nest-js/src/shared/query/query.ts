@@ -1,10 +1,11 @@
 import { type ObjectLiteral, type Repository, type SelectQueryBuilder } from 'typeorm';
 import { ConflictException } from '@nestjs/common';
 
+import { isObjectEmpty } from '@repo/services/object/object';
+
 import type { QueryParameters } from '@repo/business/types';
 
 import type { FilterParams, QueryParams, SearchParams, WhereParams } from './types';
-
 
 export class Query<T extends ObjectLiteral> {
     private query!: SelectQueryBuilder<T>;
@@ -117,7 +118,7 @@ export class Query<T extends ObjectLiteral> {
     }
 
     private unifiesFiltersWithParameters() {
-        if (!this.parameters) {
+        if (!this.parameters || isObjectEmpty(this.parameters)) {
             return this.filters;
         }
 

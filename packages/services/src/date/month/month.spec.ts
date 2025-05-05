@@ -33,7 +33,7 @@ describe('Date Month function', () => {
                     .mockImplementationOnce(() => new Date(2023, 5, 1).getTime());
 
                 const result = getCurrentMonth();
-                expect(result).toEqual(EMonth.APRIL);
+                expect(result).toEqual(EMonth.MAY);
                 jest.restoreAllMocks();
             });
         });

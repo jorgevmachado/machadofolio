@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/global
 
 import { parseDateFromString } from '../date';
 
-import { findEntityBy, isObject, serialize, transformDateStringInDate, transformObjectDateAndNulls } from './object';
+import { findEntityBy, isObject, isObjectEmpty, serialize, transformDateStringInDate, transformObjectDateAndNulls } from './object';
 
 
 describe('Object function', () => {
@@ -193,6 +193,16 @@ describe('Object function', () => {
         };
         it('Should transform the object dates and nulls.', () => {
             expect(transformDateStringInDate(receivedData)).toEqual(expectedData);
+        });
+    });
+
+    describe('isObjectEmpty', () => {
+        it('should return true when object is empty', () => {
+            expect(isObjectEmpty({})).toBeTruthy();
+        });
+
+        it('should return false when object is not empty', () => {
+            expect(isObjectEmpty(mockList[0])).toBeFalsy();
         });
     });
 });

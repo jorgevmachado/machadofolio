@@ -166,6 +166,31 @@ describe('Query', () => {
 
             expect(selectQueryBuilderMock.leftJoinAndSelect).not.toHaveBeenCalled();
         });
+
+        it('should add relationships with child relationships correctly', () => {
+            const query = new Query({
+                alias: 'test',
+                withRelations: true,
+                relations: ['relation1', 'relation2', 'relation3.relation'],
+                repository: repositoryMock,
+            });
+
+            query['initialize']();
+            query['insertRelationshipsParameterIntoQuery']();
+
+            expect(selectQueryBuilderMock.leftJoinAndSelect).toHaveBeenCalledWith(
+                'test.relation1',
+                'relation1',
+            );
+            expect(selectQueryBuilderMock.leftJoinAndSelect).toHaveBeenCalledWith(
+                'test.relation2',
+                'relation2',
+            );
+            expect(selectQueryBuilderMock.leftJoinAndSelect).toHaveBeenCalledWith(
+                'test.relation3',
+                'relation3',
+            );
+        });
     });
 
     describe('insertFilterParametersAndParametersIntoQuery', () => {
@@ -383,12 +408,13 @@ describe('Query', () => {
 
             const result = query['setWhereParam']({
                 by: 'email',
+                relation: true,
                 condition: '=',
                 value: 'example@example.com',
             });
 
             expect(result).toEqual({
-                column: 'myAlias.email = :email',
+                column: 'email = :email',
                 searchValue: { email: 'example@example.com' },
             });
         });

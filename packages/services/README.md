@@ -152,6 +152,7 @@ yarn lint
 - **findEntityBy**: Busca um objeto ou entidade a partir de uma lista e retorna o resultado.
 - **transformObjectDateAndNulls**: Formata um objeto ou entidade, ou um grupo de entidades transformando tudo que for null em undefined e o que for data em Date.
 - **transformDateStringInDate**: Formata um objeto ou entidade, ou um grupo de entidades transformando todos os campos do tipo data em data.
+- **isObjectEmpty**: Verifica se um objeto está vazio ou não.
 #### Comando para teste unitários
 ```bash
   yarn run test -- --findRelatedTests src/object/object.spec.ts               

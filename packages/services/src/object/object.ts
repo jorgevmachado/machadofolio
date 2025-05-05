@@ -60,3 +60,7 @@ export function transformDateStringInDate<T, U>(obj: U): T {
  }
  return obj as unknown as T;
 }
+
+export function isObjectEmpty(obj: unknown): boolean {
+ return Object.keys(obj).length === 0;
+}

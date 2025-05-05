@@ -10,7 +10,7 @@ import { Queries } from './queries';
 
 jest.mock('@repo/business/paginate/paginate');
 
-interface TestEntity {
+type TestEntity = {
     id: string;
     name: string;
     order: number;
