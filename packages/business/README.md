@@ -47,12 +47,41 @@ yarn lint
 ```
 
 ## Módulos
-### **Nest**
-#### Utilitários relacionados a manipulação ou validação de 'endereço'.
-- **cepFormatter**: Responsável por formatar um texto para cep.
-- **cepValidator**: Valida se o valor é um cep valido.
-#### Comando para teste unitários
+#### **api**: Utilitários relacionados a manipulação de serviços de varias bibliotecas como NestJs.
+##### **Nest**: Utilitários relacionados a manipulação de serviços nestJs.
+###### Comando para teste unitários deste sub-módulo
 ```bash
-  yarn run test -- --findRelatedTests src/address/address.spec.ts               
+  yarn run test -- --findRelatedTests src/api/nest/nest.spec.ts               
 ```
-
+- **auth**: Utilitários relacionados a manipulação de serviços de autenticação nestJs.
+```bash
+  yarn run test -- --findRelatedTests src/api/nest/auth/auth.spec.ts               
+```
+- **finance**: Utilitários relacionados a manipulação de serviços do módulo de finanças nestJs.
+```bash
+  yarn run test -- --findRelatedTests src/api/nest/finance/finance.spec.ts               
+```
+- - **bank**: Utilitários relacionados a manipulação de serviços do módulo de finanças bancos nestJs.
+```bash
+  yarn run test -- --findRelatedTests src/api/nest/finance/bank/bank.spec.ts               
+```
+- - **supplier**: Utilitários relacionados a manipulação de serviços do módulo de finanças fornecedores nestJs.
+```bash
+  yarn run test -- --findRelatedTests src/api/nest/finance/supplier/supplier.spec.ts               
+```
+- - - **supplier-type**: Utilitários relacionados a manipulação de serviços do módulo de finanças tipos de fornecedores nestJs.
+```bash
+  yarn run test -- --findRelatedTests src/api/nest/finance/supplier/type/type.spec.ts               
+```
+- - **bill**: Utilitários relacionados a manipulação de serviços do módulo de finanças contas a pagar nestJs.
+```bash
+  yarn run test -- --findRelatedTests src/api/nest/finance/bill/bill.spec.ts               
+```
+- - - **bill-category**: Utilitários relacionados a manipulação de serviços do módulo de finanças Categoria das contas a Pagar nestJs.
+```bash
+  yarn run test -- --findRelatedTests src/api/nest/finance/bill/category/category.spec.ts               
+```
+- - - **expense**: Utilitários relacionados a manipulação de serviços do módulo de finanças Despesas nestJs.
+```bash
+  yarn run test -- --findRelatedTests src/api/nest/finance/bill/expense/expense.spec.ts               
+```
