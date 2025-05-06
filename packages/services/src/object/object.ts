@@ -16,7 +16,7 @@ export function isObject(value: unknown): boolean {
  return value instanceof Object && !Array.isArray(value);
 }
 
-export function findEntityBy<T>({ key, value, list }: FindEntityByParam<T>): T {
+export function findEntityBy<T>({ key, value, list }: FindEntityByParam<T>): T | undefined {
  return list.find((item) => item[key] === value);
 }
 
@@ -62,5 +62,17 @@ export function transformDateStringInDate<T, U>(obj: U): T {
 }
 
 export function isObjectEmpty(obj: unknown): boolean {
- return Object.keys(obj).length === 0;
+ if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+  return Object.keys(obj).length === 0;
+ }
+ return false;
+}
+
+export function removeUndefinedFields<T>(obj: T): T {
+ for (const key in obj) {
+  if (obj[key] === undefined) {
+   delete obj[key];
+  }
+ }
+ return obj;
 }

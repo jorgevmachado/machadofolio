@@ -265,7 +265,12 @@ describe('UsersService', () => {
             ).toEqual({
                 user: {
                     ...promoteEntityUser,
+                    salt: undefined,
                     role: ERole.ADMIN,
+                    password: undefined,
+                    deleted_at: undefined,
+                    recover_token: undefined,
+                    confirmation_token: undefined,
                 },
                 valid: true,
                 message: 'User promoted successfully!',
@@ -322,18 +327,37 @@ describe('UsersService', () => {
 
             jest.spyOn(service as any, 'save').mockResolvedValue({
                 ...USER_ENTITY_MOCK,
-                picture: `http://localhost:3001/uploads/${USER_ENTITY_MOCK.email}.jpeg`,
+                avatar: `http://localhost:3001/uploads/${USER_ENTITY_MOCK.email}.jpeg`,
             });
 
             expect(await service.upload(USER_ENTITY_MOCK.id, mockFile)).toEqual({
                 ...USER_ENTITY_MOCK,
-                picture: `http://localhost:3001/uploads/${USER_ENTITY_MOCK.email}.jpeg`,
+                avatar: `http://localhost:3001/uploads/${USER_ENTITY_MOCK.email}.jpeg`,
             });
         });
     });
 
     describe('seed', () => {
-        const seedEntityUser = USER_ENTITY_MOCK as User;
+        const seedEntityUser: User = {
+            id: USER_ENTITY_MOCK.id,
+            cpf: USER_ENTITY_MOCK.cpf,
+            salt: undefined,
+            role: USER_ENTITY_MOCK.role,
+            name: USER_ENTITY_MOCK.name,
+            email: USER_ENTITY_MOCK.email,
+            status: USER_ENTITY_MOCK.status,
+            avatar: USER_ENTITY_MOCK.avatar,
+            gender: USER_ENTITY_MOCK.gender,
+            password: undefined,
+            whatsapp: USER_ENTITY_MOCK.whatsapp,
+            created_at: USER_ENTITY_MOCK.created_at,
+            updated_at: USER_ENTITY_MOCK.updated_at,
+            deleted_at: undefined,
+            recover_token: undefined,
+            date_of_birth: USER_ENTITY_MOCK.date_of_birth,
+            confirmation_token: undefined,
+        };
+
         it('should seed the database when exist in database', async () => {
             jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
                 leftJoinAndSelect: jest.fn(),
@@ -390,6 +414,34 @@ describe('UsersService', () => {
             expect(await service.seed()).toEqual({
                 ...seedEntityUser,
                 role: ERole.ADMIN,
+            });
+        });
+    });
+
+    describe('me', () => {
+        it('should be found a complete user', async () => {
+            jest
+                .spyOn(service, 'findOne')
+                .mockResolvedValueOnce(USER_ENTITY_MOCK);
+
+            expect(await service.me(USER_ENTITY_MOCK.id)).toEqual({
+                id: USER_ENTITY_MOCK.id,
+                cpf: USER_ENTITY_MOCK.cpf,
+                salt: undefined,
+                role: USER_ENTITY_MOCK.role,
+                name: USER_ENTITY_MOCK.name,
+                email: USER_ENTITY_MOCK.email,
+                status: USER_ENTITY_MOCK.status,
+                avatar: USER_ENTITY_MOCK.avatar,
+                gender: USER_ENTITY_MOCK.gender,
+                password: undefined,
+                whatsapp: USER_ENTITY_MOCK.whatsapp,
+                created_at: USER_ENTITY_MOCK.created_at,
+                updated_at: USER_ENTITY_MOCK.updated_at,
+                deleted_at: undefined,
+                recover_token: undefined,
+                date_of_birth: USER_ENTITY_MOCK.date_of_birth,
+                confirmation_token: undefined,
             });
         });
     });

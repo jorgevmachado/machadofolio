@@ -14,7 +14,7 @@ export class User implements UserEntity {
     cpf!: string;
 
     @Column({ nullable: false, type: 'enum', enum: ERole, default: ERole.USER })
-    role!: ERole;
+    role?: ERole;
 
     @Column({ nullable: false })
     salt?: string;
@@ -34,7 +34,7 @@ export class User implements UserEntity {
         enum: EStatus,
         default: EStatus.INCOMPLETE,
     })
-    status!: EStatus;
+    status?: EStatus;
 
     @Column({ nullable: true })
     avatar?: string;

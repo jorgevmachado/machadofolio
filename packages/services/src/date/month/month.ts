@@ -1,11 +1,6 @@
-import {
-    INVALID_TYPE,
-    REQUIRED_FIELD,
-    type ValidatorMessage,
-    type ValidatorParams
-} from '../../shared';
+import { INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams } from '../../shared';
 
-import { type EMonth } from './enum';
+import { EMonth } from './enum';
 
 export type TMonth =
     | 'january'
@@ -37,8 +32,14 @@ export const MONTHS: Array<TMonth> = [
 ];
 
 export function getCurrentMonth(): EMonth {
-    const month = new Date().getMonth();
-    return MONTHS[month].toUpperCase() as EMonth;
+    try {
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        return MONTHS[currentMonth]?.toUpperCase() as EMonth;
+    } catch (error) {
+        console.error('Error to get current month: ', error);
+        return EMonth.JANUARY;
+    }
 }
 
 export function getMonthIndex(month: EMonth): number {
@@ -46,7 +47,11 @@ export function getMonthIndex(month: EMonth): number {
 }
 
 export function getMonthByIndex(index: number): TMonth {
-    return MONTHS[index];
+    if (index < 0 || index > 11) {
+        console.error(`The month index provided is invalid: ${index}`);
+        return 'january';
+    }
+    return MONTHS?.[index] as TMonth;
 }
 
 export function isMonthValid(month?: string): void {

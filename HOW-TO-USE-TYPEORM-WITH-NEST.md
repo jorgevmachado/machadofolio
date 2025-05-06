@@ -72,3 +72,17 @@
 ```sh
   yarn add @nestjs/jwt 
 ```
+
+### Será necessário instalar também o `bcryptjs` e o `@types/bcryptjs`
+```sh
+  yarn add bcryptjs 
+  yarn add -D @types/bcryptjs 
+```
+
+### Será necessário instalar também o `@nestjs/passport` , `passport`, `passport-jwt` e o `@types/passport-jw` 
+```sh
+  yarn add @nestjs/passport 
+  yarn add passport
+  yarn add passport-jwt
+  yarn add -D @types/passport-jw
+```

@@ -2,7 +2,15 @@ import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/global
 
 import { parseDateFromString } from '../date';
 
-import { findEntityBy, isObject, isObjectEmpty, serialize, transformDateStringInDate, transformObjectDateAndNulls } from './object';
+import {
+    findEntityBy,
+    isObject,
+    isObjectEmpty,
+    removeUndefinedFields,
+    serialize,
+    transformDateStringInDate,
+    transformObjectDateAndNulls
+} from './object';
 
 
 describe('Object function', () => {
@@ -203,6 +211,24 @@ describe('Object function', () => {
 
         it('should return false when object is not empty', () => {
             expect(isObjectEmpty(mockList[0])).toBeFalsy();
+        });
+
+        it('should return false when value is not object.', () => {
+            expect(isObjectEmpty(0)).toBeFalsy();
+        });
+    });
+
+    describe('removeUndefinedFields', () => {
+        it('should remove undefined fields from object', () => {
+            const data = {
+                age: 20,
+                name: 'John',
+                address: undefined,
+            };
+            expect(removeUndefinedFields(data)).toEqual({
+                age: 20,
+                name: 'John',
+            });
         });
     });
 });

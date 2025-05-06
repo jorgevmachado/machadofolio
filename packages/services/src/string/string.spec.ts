@@ -107,11 +107,23 @@ describe('String function', () => {
         it('Must convert a string normalize to snake case', () => {
             expect(toSnakeCase('Snake Case')).toEqual('snake_case');
         });
+
+        it('Must return value when not match', () => {
+            expect(toSnakeCase('______')).toEqual('______');
+        });
+
+        it('Must return a string empty when value is undefined', () => {
+            expect(toSnakeCase(undefined)).toEqual('');
+        });
     });
 
     describe('toCamelCase', () => {
         it('Must convert a string to camel case', () => {
             expect(toCamelCase('camel_case')).toEqual('camelCase');
+        });
+
+        it('Must return a string empty when value is undefined', () => {
+            expect(toCamelCase(undefined)).toEqual('');
         });
     });
 
@@ -263,11 +275,17 @@ describe('String function', () => {
                 ),
             ).toEqual('65');
         });
+
         it('Must return default url when dont have /', () => {
             expect(extractLastItemFromUrl('ability')).toEqual('ability');
         });
+
         it('Must return empty string if url is undefined', () => {
             expect(extractLastItemFromUrl()).toEqual('');
+        });
+
+        it('Must return empty string if url has error and not extract last item from url', () => {
+            expect(extractLastItemFromUrl('/')).toEqual('');
         });
     });
 

@@ -15,8 +15,6 @@ export const config = {
         ...baseConfig.coveragePathIgnorePatterns,
         'app.data-source.ts',
         '.module.ts',
-        '.strategy.ts',
-        '.decorator.ts',
         '.guards.ts',
         '.entity.ts',
         '.dto.ts',

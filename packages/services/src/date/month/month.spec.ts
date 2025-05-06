@@ -28,12 +28,21 @@ describe('Date Month function', () => {
     describe('Month function', () => {
         describe('getCurrentMonth', () => {
             it('Should return the current month in string format and uppercase (EMonth).', () => {
-                jest
-                    .spyOn(global.Date, 'now')
-                    .mockImplementationOnce(() => new Date(2023, 5, 1).getTime());
+                const mockDate = new Date(2023, 6, 1);
+                jest.spyOn(global, 'Date').mockImplementation(() => mockDate as unknown as Date);
 
                 const result = getCurrentMonth();
-                expect(result).toEqual(EMonth.MAY);
+                expect(result).toEqual(EMonth.JULY);
+                jest.restoreAllMocks();
+            });
+
+            it('Should return the first month in string format and uppercase (EMonth) when error in new Date.', () => {
+                jest.spyOn(global.Date.prototype, 'getMonth').mockImplementation(() => {
+                    throw new Error('Error to get current month.');
+                });
+
+                const result = getCurrentMonth();
+                expect(result).toEqual(EMonth.JANUARY);
                 jest.restoreAllMocks();
             });
         });
@@ -52,8 +61,8 @@ describe('Date Month function', () => {
             });
 
             it('Should return undefined for indexes outside the valid range.', () => {
-                expect(getMonthByIndex(-1)).toBeUndefined();
-                expect(getMonthByIndex(12)).toBeUndefined();
+                expect(getMonthByIndex(-1)).toBe('january');
+                expect(getMonthByIndex(12)).toBe('january');
             });
         });
 

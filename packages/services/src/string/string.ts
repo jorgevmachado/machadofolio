@@ -14,8 +14,11 @@ export function capitalize(value: string): string {
  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
-export function toCamelCase(value: string): string {
- return value.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+export function toCamelCase(value?: string): string {
+ if(!value) {
+  return '';
+ }
+ return value.replace(/_([a-z])/g, (_, group) => group.toUpperCase());
 }
 
 export function separateCamelCase(value: string): string {
@@ -28,14 +31,18 @@ export function separateCamelCase(value: string): string {
      .join(' ');
 }
 
-export function toSnakeCase(value: string): string {
- return (
-     value &&
-     value
-         .match(/[A-Z]{2,}(?=[A-Z][a-z]+\d*|\b)|[A-Z]?[a-z]+\d*|[A-Z]|\d+/g)
-         .map((word) => word.toLowerCase())
-         .join('_')
- );
+export function toSnakeCase(value?: string): string {
+ if(!value) {
+  return '';
+ }
+
+ const matches = value.match(/[A-Z]{2,}(?=[A-Z][a-z]+\d*|\b)|[A-Z]?[a-z]+\d*|[A-Z]|\d+/g);
+
+ if(!matches) {
+  return value;
+ }
+
+ return matches.map((word) => word.toLowerCase()).join('_');
 }
 
 export function snakeCaseToNormal(value: string): string {
@@ -68,7 +75,7 @@ export function extractLastItemFromUrl(url?: string): string {
  const sanitizedUrl = url.endsWith('/') ? url.slice(0, -1) : url;
 
  const segments = sanitizedUrl.split('/');
- return segments[segments.length - 1];
+ return segments[segments.length - 1] || '';
 }
 
 export function truncateString(value: string, length: number = 0, isNormalize: boolean = true): string {
@@ -79,16 +86,18 @@ export function truncateString(value: string, length: number = 0, isNormalize: b
  return currentValue.slice(0, length).toUpperCase();
 }
 
-export function findRepeated<T extends { id: string; name?: string; }>(list: Array<T>, key: 'id' | 'name'): string {
+export function findRepeated<T extends { id: string; name?: string; }>(list: Array<T>, key: 'id' | 'name'): string | undefined {
  const fieldSet = new Set<string>();
 
  for (const item of list) {
-  if (fieldSet.has(item[key])) {
+  const fieldValue = item[key];
+  if (fieldValue && fieldSet.has(fieldValue)) {
    return item[key];
   }
-  fieldSet.add(item[key]);
+  if(fieldValue) {
+   fieldSet.add(fieldValue);
+  }
  }
-
  return;
 }
 

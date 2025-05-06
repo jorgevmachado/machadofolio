@@ -124,8 +124,9 @@ export class UsersService extends Service<User>{
         }
         user.role = ERole.ADMIN;
         const newUser = (await this.save(user)) as User;
+        const currentUser = new UserConstructor({...newUser, clean: true });
         return {
-            user: newUser,
+            user: currentUser,
             valid: true,
             message: 'User promoted successfully!',
         };
@@ -134,7 +135,7 @@ export class UsersService extends Service<User>{
     async upload(id: string, file: Express.Multer.File) {
         const currentUser = await this.findOne({ value: id }) as User;
         const path = await this.file.upload(file, currentUser.email);
-        currentUser.picture = `http://localhost:3001/uploads/${path.split('/').pop()}`;
+        currentUser.avatar = `http://localhost:3001/uploads/${path.split('/').pop()}`;
         return await this.save(currentUser);
     }
 
@@ -153,7 +154,7 @@ export class UsersService extends Service<User>{
 
         if (currentSeed) {
             console.info(`# => No new ${'User'.toLowerCase()} to seed`);
-            return currentSeed;
+            return new UserConstructor({...currentSeed, clean: true });
         }
         const currentUser = await this.create({
             cpf: item.cpf,
@@ -167,9 +168,17 @@ export class UsersService extends Service<User>{
         });
         const promotedUser = await this.promoteUser(currentUser as User);
         console.info(`# => Seeded 1 new user`);
-        return await this.findOne({
+        const currentUserSeed = await this.findOne({
             value: promotedUser.user.id,
             relations: [],
-        });
+        }) as User;
+        return new UserConstructor({...currentUserSeed, clean: true });
+    }
+
+    async me(id: string) {
+        const currentUser = await this.findOne({
+            value: id,
+        }) as User;
+        return new UserConstructor({...currentUser, clean: true });
     }
 }

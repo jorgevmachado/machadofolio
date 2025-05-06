@@ -93,6 +93,13 @@ yarn test
   yarn run test -- --findRelatedTests src/shared/validate/validate.spec.ts                                 
 ```
 
+### **strategies**: Conjunto de funções/métodos/classes de Estratégias de fluxo e validação.
+#### **auth-jwt**: Implementa uma estratégia de autenticação baseada em tokens JWT, usando o `passport-jwt`.
+##### Comando para testes unitários exclusivo para esté sub-módulo.
+```bash
+  yarn run test -- --findRelatedTests src/strategies/auth-jwt/auth-jwt.strategy.spec.ts                                 
+```
+
 ### **auth**: Conjunto de serviços e endpoints relacionados a autenticação.
 #### **users**: Conjunto de serviços relacionados a usuários que só podem ser acessados pelo auth.
 - **create**: Cria um novo usuário no sistema após realizar validações de duplicidade de CPF, e-mail ou WhatsApp. Aplica hash na senha utilizando o e define um token de confirmação. `bcrypt`.
@@ -101,8 +108,23 @@ yarn test
 - **promoteUser**: Promove um usuário para o papel de administrador, caso ele ainda não seja . Retorna um objeto indicando o sucesso ou falha da promoção. `ADMIN`.
 - **upload**: Realiza o upload de uma imagem de perfil (avatar) para o usuário, salva a URL do arquivo no banco de dados e retorna o usuário atualizado.
 - **seed**: Realiza o processo de seed de um usuário mockado. Cria um novo usuário, caso ele ainda não exista, e o promove para administrador como parte da população inicial de dados.
-#### Comando para testes unitários exclusivo para esté sub-módulo.
+- **me**: Busca um usuário específico pelo TOKEN. 
+##### Comando para testes unitários exclusivo para esté sub-módulo.
 ```bash
   yarn run test -- --findRelatedTests src/auth/users/users.service.spec.ts                                 
 ```
+#### **auth.service**: Conjunto de serviços relacionados a autenticação com tratamentos de acesso consumindo o módulo de users.
+- **signUp**: Registra um novo usuário com base nos dados fornecidos no e retorna uma mensagem de sucesso.
+- **signIn**: Realiza a autenticação do usuário verificando suas credenciais. Se válidas, cria e retorna um token JWT junto com uma mensagem de sucesso.
+- **me**: Retorna os dados do próprio usuário autenticado, carregando informações com limpeza de propriedades sensíveis.
+- **findOne**: Busca um usuário específico pelo ID. Permite que administradores consultem usuários deletados. Aplica regras de negócio à resposta retornada.
+- **update**: Atualiza os dados de um usuário, assegurando que o usuário autenticado tem permissões para realizar a atualização. Retorna uma mensagem de sucesso.
+- **promoteUser**: Promove o papel de um usuário específico validando as permissões do usuário autenticado.
+- **upload**: Realiza o upload de um arquivo associado ao usuário autenticado, após validar suas permissões. Retorna uma mensagem de sucesso ao concluir o upload.
+- **seed**: Popula o banco de dados com dados de usuário padrão para inicialização do sistema. Retorna o usuário gerado ou uma mensagem de sucesso, dependendo do parâmetro.
+- **me**: Busca um usuário específico pelo TOKEN e limpa os campos de segurança para não apresentar ao usuário.
+##### Comando para testes unitários exclusivo para esté sub-módulo.
+```bash
+  yarn run test -- --findRelatedTests src/auth/auth.service.spec.ts                                 
+``` 
 

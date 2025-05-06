@@ -7,6 +7,6 @@ export const dataSourceOptions: DataSourceOptions = {
     username: 'localhost',
     password: 'localhost',
     database: 'portfolio',
-    entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+    entities: [__dirname + '/../entities/*.entity{.ts,.js}'],
     synchronize: true,
 };

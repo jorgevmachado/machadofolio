@@ -6,14 +6,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { dataSourceOptions } from "./app.data-source";
 
 import { SanitizeUserInterceptor } from './interceptors/sanitize-user/sanitize-user.interceptor';
 
 @Module({
     imports: [
         ConfigModule.forRoot(),
-        TypeOrmModule.forRoot(dataSourceOptions),
+        TypeOrmModule.forRoot({
+            type: 'postgres',
+            host: 'localhost',
+            port: 5432,
+            username: 'localhost',
+            password: 'localhost',
+            database: 'portfolio',
+            entities: [__dirname + '/../entities/*.entity{.ts,.js}'],
+            synchronize: true,
+        }),
         AuthModule
     ],
     controllers: [AppController],

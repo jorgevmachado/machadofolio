@@ -1,3 +1,3 @@
 import { CredentialsUserDto } from '../users/dto/credentials-user.dto';
 
-export class CredentialsAuthDto extends CredentialsUserDto {}
+export class SignInAuthDto extends CredentialsUserDto {}
