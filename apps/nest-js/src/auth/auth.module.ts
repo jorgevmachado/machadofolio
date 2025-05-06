@@ -27,6 +27,7 @@ import { UsersModule } from './users/users.module';
       MulterModule.register({ storage: diskStorage({
         destination: './uploads',
         filename: (req, file, callback) => {
+            console.log('# => authModule => file => ', file);
           const uniqueName = `${generateUUID()}${extname(file.originalname)}`;
           callback(null, uniqueName);
         }

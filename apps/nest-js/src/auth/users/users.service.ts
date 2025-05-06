@@ -114,7 +114,7 @@ export class UsersService extends Service<User>{
         throw new UnprocessableEntityException('Invalid credentials');
     }
 
-    async promoteUser(user: User) {
+    async promote(user: User) {
         if (user.role === ERole.ADMIN) {
             return {
                 user,
@@ -166,7 +166,7 @@ export class UsersService extends Service<User>{
             date_of_birth: item.date_of_birth,
             password_confirmation: USER_PASSWORD,
         });
-        const promotedUser = await this.promoteUser(currentUser as User);
+        const promotedUser = await this.promote(currentUser as User);
         console.info(`# => Seeded 1 new user`);
         const currentUserSeed = await this.findOne({
             value: promotedUser.user.id,

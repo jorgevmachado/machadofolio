@@ -36,7 +36,7 @@ describe('AuthService', () => {
             update: jest.fn(),
             upload: jest.fn(),
             findOne: jest.fn(),
-            promoteUser: jest.fn(),
+            promote: jest.fn(),
             checkCredentials: jest.fn(),
           },
         },
@@ -247,7 +247,7 @@ describe('AuthService', () => {
           .spyOn(userService, 'findOne')
           .mockResolvedValueOnce({ ...USER_ENTITY_MOCK, role: ERole.USER });
 
-      jest.spyOn(userService, 'promoteUser').mockResolvedValueOnce({
+      jest.spyOn(userService, 'promote').mockResolvedValueOnce({
         user: { ...USER_ENTITY_MOCK, role: ERole.ADMIN },
         valid: true,
         message: 'User promoted successfully!',

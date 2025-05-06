@@ -93,6 +93,13 @@ yarn test
   yarn run test -- --findRelatedTests src/shared/validate/validate.spec.ts                                 
 ```
 
+### **guards**: Conjunto de funções/métodos/classes que fazem proteção.
+#### **auth-role**: Realiza a guarda do papel do usuário.
+##### Comando para testes unitários exclusivo para esté sub-módulo.
+```bash
+  yarn run test -- --findRelatedTests src/guards/auth-role/auth-role.guard.spec.ts                                 
+```
+
 ### **strategies**: Conjunto de funções/métodos/classes de Estratégias de fluxo e validação.
 #### **auth-jwt**: Implementa uma estratégia de autenticação baseada em tokens JWT, usando o `passport-jwt`.
 ##### Comando para testes unitários exclusivo para esté sub-módulo.
@@ -100,12 +107,34 @@ yarn test
   yarn run test -- --findRelatedTests src/strategies/auth-jwt/auth-jwt.strategy.spec.ts                                 
 ```
 
+### **decorators**: Conjunto de funções/métodos/classes para adicionar ou modificar comportamentos ou para fornecer metadados.
+#### **CPF**: Irá validar se o campo possui as características de um cpf.
+##### Comando para testes unitários exclusivo para esté sub-módulo.
+```bash
+  yarn run test -- --findRelatedTests src/decorators/cpf/cpf.decorator.spec.ts                                 
+```
+#### **Match**: Irá validar se uma um determinado campo possui o valor equivalente a outro.
+##### Comando para testes unitários exclusivo para esté sub-módulo.
+```bash
+  yarn run test -- --findRelatedTests src/decorators/match/match.decorator.spec.ts                                 
+```
+#### **UseFileUpload**: Irá validar se um determinado arquivo possui as Características válidas para upload como tipo e se já existe.
+##### Comando para testes unitários exclusivo para esté sub-módulo.
+```bash
+  yarn run test -- --findRelatedTests src/decorators/use-file-upload/use-file-upload.decorator.spec.ts                                 
+```
+#### **GetUserAuth**: Irá retornar as informações do usuário autenticado.
+##### Comando para testes unitários exclusivo para esté sub-módulo.
+```bash
+  yarn run test -- --findRelatedTests src/decorators/auth-user/auth-user.decorator.spec.ts                                 
+```
+
 ### **auth**: Conjunto de serviços e endpoints relacionados a autenticação.
 #### **users**: Conjunto de serviços relacionados a usuários que só podem ser acessados pelo auth.
 - **create**: Cria um novo usuário no sistema após realizar validações de duplicidade de CPF, e-mail ou WhatsApp. Aplica hash na senha utilizando o e define um token de confirmação. `bcrypt`.
 - **update**: Atualiza os dados de um usuário existente (como role, name, gender, status ou date of birth). Retorna o usuário atualizado no banco de dados.
 - **checkCredentials**: Verifica se as credenciais de login fornecidas (e-mail e senha) são válidas. Confere o hash da senha e avalia se o usuário está ativo.
-- **promoteUser**: Promove um usuário para o papel de administrador, caso ele ainda não seja . Retorna um objeto indicando o sucesso ou falha da promoção. `ADMIN`.
+- **promote**: Promove um usuário para o papel de administrador, caso ele ainda não seja . Retorna um objeto indicando o sucesso ou falha da promoção. `ADMIN`.
 - **upload**: Realiza o upload de uma imagem de perfil (avatar) para o usuário, salva a URL do arquivo no banco de dados e retorna o usuário atualizado.
 - **seed**: Realiza o processo de seed de um usuário mockado. Cria um novo usuário, caso ele ainda não exista, e o promove para administrador como parte da população inicial de dados.
 - **me**: Busca um usuário específico pelo TOKEN. 
@@ -122,9 +151,22 @@ yarn test
 - **promoteUser**: Promove o papel de um usuário específico validando as permissões do usuário autenticado.
 - **upload**: Realiza o upload de um arquivo associado ao usuário autenticado, após validar suas permissões. Retorna uma mensagem de sucesso ao concluir o upload.
 - **seed**: Popula o banco de dados com dados de usuário padrão para inicialização do sistema. Retorna o usuário gerado ou uma mensagem de sucesso, dependendo do parâmetro.
-- **me**: Busca um usuário específico pelo TOKEN e limpa os campos de segurança para não apresentar ao usuário.
 ##### Comando para testes unitários exclusivo para esté sub-módulo.
 ```bash
   yarn run test -- --findRelatedTests src/auth/auth.service.spec.ts                                 
+```
+
+#### **auth.controller**: Controlador dos endpoints relascionados a autenticação.
+- **signUp**: Aciona o serviço signUp do `auth.service` e retorna uma mensagem de sucesso.
+- **signIn**: Aciona o serviço signIn do `auth.service` e retorna uma mensagem de sucesso e o token gerado.
+- **me**: Aciona o serviço me do `auth.service` e retorna os dados do usuário autenticado.
+- **findOne**: Aciona o serviço findOne do `auth.service` e retorna os dados do usuário autenticado pelo id do usuário.
+- **update**: Aciona o serviço update do `auth.service` e retorna uma mensagem de sucesso.
+- **promoteUser**: Aciona o serviço promoteUser do `auth.service` e retorna uma mensagem de sucesso os dados do usuário.
+- **upload**: Aciona o serviço upload do `auth.service` e retorna uma mensagem de sucesso.
+- **seed**: Aciona o serviço seed do `auth.service` e retorna uma mensagem de sucesso.
+##### Comando para testes unitários exclusivo para esté sub-módulo.
+```bash
+  yarn run test -- --findRelatedTests src/auth/auth.controller.spec.ts                                 
 ``` 
 

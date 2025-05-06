@@ -250,7 +250,7 @@ describe('UsersService', () => {
         });
     });
 
-    describe('promoteUser', () => {
+    describe('promote', () => {
         const promoteEntityUser = USER_ENTITY_MOCK as User;
         it('should promote user', async () => {
             jest
@@ -258,7 +258,7 @@ describe('UsersService', () => {
                 .mockResolvedValueOnce({ ...promoteEntityUser, role: ERole.ADMIN });
 
             expect(
-                await service.promoteUser({
+                await service.promote({
                     ...promoteEntityUser,
                     role: ERole.USER,
                 }),
@@ -289,7 +289,7 @@ describe('UsersService', () => {
                 getOne: jest.fn().mockReturnValueOnce(adminEntityUser),
             } as any);
 
-            expect(await service.promoteUser(adminEntityUser)).toEqual({
+            expect(await service.promote(adminEntityUser)).toEqual({
                 user: adminEntityUser,
                 valid: false,
                 message: 'The User is already admin.',

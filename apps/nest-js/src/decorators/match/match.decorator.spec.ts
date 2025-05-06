@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { MatchConstraint } from './match.decorator';
 
-describe('MatchConstraint', () => {
+describe('Match Decorator', () => {
   let matchConstraint: MatchConstraint;
 
   beforeEach(() => {

@@ -75,7 +75,7 @@ export class AuthService {
     async promoteUser(id: string, authUser: User) {
         this.authBusiness.validateCurrentUser({ authUser });
         const currentUser = await this.findOne(id, authUser);
-        return this.userService.promoteUser(currentUser);
+        return this.userService.promote(currentUser);
     }
 
     async upload(file: Express.Multer.File, authUser: User) {

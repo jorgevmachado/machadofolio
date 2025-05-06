@@ -19,7 +19,7 @@ import { SanitizeUserInterceptor } from './interceptors/sanitize-user/sanitize-u
             username: 'localhost',
             password: 'localhost',
             database: 'portfolio',
-            entities: [__dirname + '/../entities/*.entity{.ts,.js}'],
+            entities: [__dirname + '/../**/*.entity{.ts,.js}'],
             synchronize: true,
         }),
         AuthModule

@@ -32,9 +32,9 @@ type ErrorParams = {
 }
 
 export class Error {
- error: string;
- message: string;
- statusCode: ERROR_STATUS_CODE;
+ error: string = ERROR_TYPE.INTERNAL_SERVER_ERROR_EXCEPTION;
+ message: string = ERROR_TYPE.INTERNAL_SERVER_ERROR_EXCEPTION;
+ statusCode: ERROR_STATUS_CODE = ERROR_STATUS_CODE.INTERNAL_SERVER_ERROR_EXCEPTION;
 
  constructor(params?: ErrorParams) {
   const { statusCode, message } = params ?? {};
