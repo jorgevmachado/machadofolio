@@ -189,6 +189,7 @@ describe('String function', () => {
     });
 
     describe('convertSubPathUrl', () => {
+        const by = 'by';
         const pathUrl = 'path_url';
         const subPathUrl = 'sub_path_url';
         const conectorPath = 'conector_path';
@@ -211,6 +212,28 @@ describe('String function', () => {
         it('should convert path with conectorPath', () => {
             expect(convertSubPathUrl({ pathUrl, subPathUrl, conectorPath })).toEqual(
                 `${pathUrl}/${conectorPath}/${subPathUrl}`,
+            );
+        });
+
+        it('should convert path with by without subPathUrl', () => {
+            expect(convertSubPathUrl({ by, pathUrl })).toEqual(`${pathUrl}/${by}`);
+        });
+
+        it('should convert path with by without subPathUrl with conectorPath and isParam true', () => {
+            expect(
+                convertSubPathUrl({ by, pathUrl, conectorPath, isParam: true }),
+            ).toEqual(`${pathUrl}/${by}/${conectorPath}`);
+        });
+
+        it('should convert path with by with subPathUrl', () => {
+            expect(convertSubPathUrl({ by, pathUrl, subPathUrl })).toEqual(
+                `${pathUrl}/${by}/${subPathUrl}`,
+            );
+        });
+
+        it('should convert path with by with conectorPath', () => {
+            expect(convertSubPathUrl({ by, pathUrl, subPathUrl, conectorPath })).toEqual(
+                `${pathUrl}/${by}/${conectorPath}/${subPathUrl}`,
             );
         });
     });

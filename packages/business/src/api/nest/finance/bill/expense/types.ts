@@ -10,7 +10,7 @@ import { type EExpenseType } from './enum';
 
 export type IExpense = IFinanceBase & {
     year?: number;
-    bill?: IBill;
+    bill: IBill;
     type: EExpenseType;
     paid?: boolean;
     value?: number;

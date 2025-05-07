@@ -19,3 +19,7 @@ export type IQueryParameters = {
     status?: EStatus;
     withDeleted?: boolean;
 }
+
+export type IBaseResponse = {
+    message: string;
+}

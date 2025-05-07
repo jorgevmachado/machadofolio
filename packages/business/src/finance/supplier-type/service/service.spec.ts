@@ -63,7 +63,7 @@ describe('SupplierType function', () => {
 
             expect(mockNest.finance.supplier.type.create).toHaveBeenCalledWith({
                 name: mockEntity.name,
-            });
+            }, undefined);
             expect(result).toEqual(mockEntity);
         });
     });
@@ -81,6 +81,7 @@ describe('SupplierType function', () => {
                 {
                     name: mockEntity.name,
                 },
+                undefined,
             );
             expect(result).toEqual(mockEntity);
         });
@@ -104,6 +105,7 @@ describe('SupplierType function', () => {
                 {
                     name: mockEntity.name,
                 },
+                undefined,
             );
             expect(mockNest.finance.supplier.type.update).toHaveBeenCalledTimes(1);
         });
@@ -117,6 +119,7 @@ describe('SupplierType function', () => {
 
             expect(mockNest.finance.supplier.type.delete).toHaveBeenCalledWith(
                 mockEntity.id,
+                undefined,
             );
             expect(result).toEqual(mockResponse);
         });
@@ -129,6 +132,7 @@ describe('SupplierType function', () => {
 
             expect(mockNest.finance.supplier.type.getOne).toHaveBeenCalledWith(
                 mockEntity.id,
+                undefined,
             );
             expect(result).toEqual(mockEntity);
         });
@@ -139,7 +143,7 @@ describe('SupplierType function', () => {
             mockNest.finance.supplier.type.getAll.mockResolvedValue(mockEntityList);
             const result = await service.getAll({});
 
-            expect(mockNest.finance.supplier.type.getAll).toHaveBeenCalledWith({});
+            expect(mockNest.finance.supplier.type.getAll).toHaveBeenCalledWith({}, undefined);
             expect(result).toEqual(mockEntityList);
         });
 
@@ -151,6 +155,7 @@ describe('SupplierType function', () => {
 
             expect(mockNest.finance.supplier.type.getAll).toHaveBeenCalledWith(
                 mockPaginateParams,
+                undefined
             );
             expect(result).toEqual(mockEntityPaginate);
         });

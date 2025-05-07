@@ -9,9 +9,12 @@ import {
 
 import { Paginate } from '../../../paginate';
 
+import { type IQueryParameters } from '../../types';
+
 import { type INestModuleConfig } from '../types';
 
 import { NestModuleAbstract } from './nestModuleAbstract';
+
 
 
 jest.mock('@repo/services/http/http');
@@ -90,6 +93,21 @@ describe('NestModuleAbstract', () => {
                 params: queryParams,
             });
             expect(result).toBeInstanceOf(Paginate);
+        });
+
+        it('should call get with correct URL for getAll with by and without parameters', async () => {
+            const mockedGet = jest
+                .spyOn(mockModule, 'get')
+                .mockResolvedValue([{ id: '1', name: 'Example' }]);
+
+            const queryParams: IQueryParameters = { all: true };
+            const result = await mockModule.getAll(queryParams, 'by');
+
+            expect(mockedGet).toHaveBeenCalledTimes(1);
+            expect(mockedGet).toHaveBeenCalledWith('mock-path/by', {
+                params: queryParams,
+            });
+            expect(result).toBeInstanceOf(Array);
         });
     });
 

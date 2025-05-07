@@ -15,7 +15,3 @@ export type INestBaseEntity = {
 }
 
 export type IPartialNestBaseEntity = Partial<INestBaseEntity>;
-
-export type INestBaseResponse = {
-    message: string;
-}

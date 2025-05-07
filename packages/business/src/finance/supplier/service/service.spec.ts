@@ -66,7 +66,7 @@ describe('Supplier Service', () => {
             expect(mockNest.finance.supplier.create).toHaveBeenCalledWith({
                 name: mockEntity.name,
                 type: mockEntity.type.name,
-            });
+            }, undefined);
             expect(result).toEqual(mockEntity);
         });
     });
@@ -86,6 +86,7 @@ describe('Supplier Service', () => {
                     name: mockEntity.name,
                     type: mockEntity.type.name,
                 },
+                undefined
             );
             expect(result).toEqual(mockEntity);
         });
@@ -99,6 +100,7 @@ describe('Supplier Service', () => {
 
             expect(mockNest.finance.supplier.delete).toHaveBeenCalledWith(
                 mockEntity.id,
+                undefined
             );
             expect(result).toEqual(mockResponse);
         });
@@ -111,6 +113,7 @@ describe('Supplier Service', () => {
 
             expect(mockNest.finance.supplier.getOne).toHaveBeenCalledWith(
                 mockEntity.id,
+                undefined
             );
             expect(result).toEqual(mockEntity);
         });
@@ -121,7 +124,7 @@ describe('Supplier Service', () => {
             mockNest.finance.supplier.getAll.mockResolvedValue(mockEntityList);
             const result = await service.getAll({});
 
-            expect(mockNest.finance.supplier.getAll).toHaveBeenCalledWith({});
+            expect(mockNest.finance.supplier.getAll).toHaveBeenCalledWith({}, undefined);
             expect(result).toEqual(mockEntityList);
         });
 
@@ -131,6 +134,7 @@ describe('Supplier Service', () => {
 
             expect(mockNest.finance.supplier.getAll).toHaveBeenCalledWith(
                 mockPaginateParams,
+                undefined
             );
             expect(result).toEqual(mockEntityPaginate);
         });

@@ -43,11 +43,11 @@ describe('Expense Service', () => {
             finance: {
                 bill: {
                     expense: {
-                        getAllByBill: jest.fn(),
-                        getOneByBill: jest.fn(),
-                        createByBill: jest.fn(),
-                        updateByBill: jest.fn(),
-                        deleteByBill: jest.fn(),
+                        getAll: jest.fn(),
+                        getOne: jest.fn(),
+                        create: jest.fn(),
+                        update: jest.fn(),
+                        delete: jest.fn(),
                     },
                 },
             },
@@ -69,7 +69,7 @@ describe('Expense Service', () => {
 
     describe('create', () => {
         it('should successfully create an supplier', async () => {
-            mockNest.finance.bill.expense.createByBill.mockResolvedValue(mockEntity);
+            mockNest.finance.bill.expense.create.mockResolvedValue(mockEntity);
 
             const mockExpenseCreateParams: ExpenseCreateParams = {
                 type: mockEntity.type,
@@ -82,13 +82,13 @@ describe('Expense Service', () => {
             };
 
             const result = await service.create(
-                mockEntity.bill.id,
                 mockExpenseCreateParams,
+                mockEntity.bill.id,
             );
 
-            expect(mockNest.finance.bill.expense.createByBill).toHaveBeenCalledWith(
-                mockEntity.bill.id,
+            expect(mockNest.finance.bill.expense.create).toHaveBeenCalledWith(
                 mockExpenseCreateParams,
+                mockEntity.bill.id,
             );
             expect(result).toEqual(mockEntity);
         });
@@ -96,21 +96,21 @@ describe('Expense Service', () => {
 
     describe('update', () => {
         it('should successfully update an expense', async () => {
-            mockNest.finance.bill.expense.updateByBill.mockResolvedValue(mockEntity);
+            mockNest.finance.bill.expense.update.mockResolvedValue(mockEntity);
             const mockExpenseUpdateParams: ExpenseUpdateParams = {
                 ...mockEntity,
             };
 
             const result = await service.update(
-                mockEntity.bill.id,
                 mockEntity.id,
                 mockExpenseUpdateParams,
+                mockEntity.bill.id,
             );
 
-            expect(mockNest.finance.bill.expense.updateByBill).toHaveBeenCalledWith(
-                mockEntity.bill.id,
+            expect(mockNest.finance.bill.expense.update).toHaveBeenCalledWith(
                 mockEntity.id,
                 mockExpenseUpdateParams,
+                mockEntity.bill.id,
             );
             expect(result).toEqual(mockEntity);
         });
@@ -119,14 +119,14 @@ describe('Expense Service', () => {
     describe('delete', () => {
         it('should successfully delete an expense', async () => {
             const mockResponse = { message: 'Successfully removed' };
-            mockNest.finance.bill.expense.deleteByBill.mockResolvedValue(
+            mockNest.finance.bill.expense.delete.mockResolvedValue(
                 mockResponse,
             );
-            const result = await service.remove(mockEntity.bill.id, mockEntity.id);
+            const result = await service.remove(mockEntity.id, mockEntity.bill.id);
 
-            expect(mockNest.finance.bill.expense.deleteByBill).toHaveBeenCalledWith(
-                mockEntity.bill.id,
+            expect(mockNest.finance.bill.expense.delete).toHaveBeenCalledWith(
                 mockEntity.id,
+                mockEntity.bill.id,
             );
             expect(result).toEqual(mockResponse);
         });
@@ -134,12 +134,12 @@ describe('Expense Service', () => {
 
     describe('get', () => {
         it('should successfully get an expense', async () => {
-            mockNest.finance.bill.expense.getOneByBill.mockResolvedValue(mockEntity);
-            const result = await service.get(mockEntity.bill.id, mockEntity.id);
+            mockNest.finance.bill.expense.getOne.mockResolvedValue(mockEntity);
+            const result = await service.get(mockEntity.id, mockEntity.bill.id);
 
-            expect(mockNest.finance.bill.expense.getOneByBill).toHaveBeenCalledWith(
-                mockEntity.bill.id,
+            expect(mockNest.finance.bill.expense.getOne).toHaveBeenCalledWith(
                 mockEntity.id,
+                mockEntity.bill.id,
             );
             expect(result).toEqual(mockEntity);
         });
@@ -147,30 +147,30 @@ describe('Expense Service', () => {
 
     describe('getAll', () => {
         it('should successfully getAll supplier list', async () => {
-            mockNest.finance.bill.expense.getAllByBill.mockResolvedValue(
+            mockNest.finance.bill.expense.getAll.mockResolvedValue(
                 mockEntityList,
             );
-            const result = await service.getAll(mockEntity.bill.id, {});
+            const result = await service.getAll({}, mockEntity.bill.id);
 
-            expect(mockNest.finance.bill.expense.getAllByBill).toHaveBeenCalledWith(
-                mockEntity.bill.id,
+            expect(mockNest.finance.bill.expense.getAll).toHaveBeenCalledWith(
                 {},
+                mockEntity.bill.id,
             );
             expect(result).toEqual(mockEntityList);
         });
 
         it('should successfully getAll supplier list paginate', async () => {
-            mockNest.finance.bill.expense.getAllByBill.mockResolvedValue(
+            mockNest.finance.bill.expense.getAll.mockResolvedValue(
                 mockEntityPaginate,
             );
             const result = await service.getAll(
-                mockEntity.bill.id,
                 mockPaginateParams,
+                mockEntity.bill.id,
             );
 
-            expect(mockNest.finance.bill.expense.getAllByBill).toHaveBeenCalledWith(
-                mockEntity.bill.id,
+            expect(mockNest.finance.bill.expense.getAll).toHaveBeenCalledWith(
                 mockPaginateParams,
+                mockEntity.bill.id,
             );
             expect(result).toEqual(mockEntityPaginate);
         });

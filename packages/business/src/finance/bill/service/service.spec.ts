@@ -65,7 +65,7 @@ describe('Bill Service', () => {
 
             const result = await service.create(params);
 
-            expect(mockNest.finance.bill.create).toHaveBeenCalledWith(params);
+            expect(mockNest.finance.bill.create).toHaveBeenCalledWith(params, undefined);
             expect(result).toEqual(mockEntity);
         });
     });
@@ -76,7 +76,7 @@ describe('Bill Service', () => {
 
             const result = await service.update(mockEntity.id, params);
 
-            expect(mockNest.finance.bill.update).toHaveBeenCalledWith(mockEntity.id, params);
+            expect(mockNest.finance.bill.update).toHaveBeenCalledWith(mockEntity.id, params, undefined);
             expect(result).toEqual(mockEntity);
         });
 
@@ -94,7 +94,7 @@ describe('Bill Service', () => {
         it('should successfully getAll bill list', async () => {
             mockNest.finance.bill.getAll.mockResolvedValue(mockEntityList);
             const result = await service.getAll({});
-            expect(mockNest.finance.bill.getAll).toHaveBeenCalledWith({});
+            expect(mockNest.finance.bill.getAll).toHaveBeenCalledWith({}, undefined);
             expect(result).toEqual(mockEntityList);
         });
 
@@ -104,6 +104,7 @@ describe('Bill Service', () => {
 
             expect(mockNest.finance.bill.getAll).toHaveBeenCalledWith(
                 mockPaginateParams,
+                undefined
             );
             expect(result).toEqual(mockEntityPaginate);
         });

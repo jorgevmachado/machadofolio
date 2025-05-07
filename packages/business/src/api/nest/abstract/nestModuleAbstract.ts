@@ -3,9 +3,9 @@ import { convertSubPathUrl } from '@repo/services/string/string';
 
 import { type Paginate } from '../../../paginate';
 
-import type { IQueryParameters } from '../../types';
+import type { IBaseResponse, IQueryParameters } from '../../types';
 
-import type { INestBaseResponse, INestModuleConfig } from '../types';
+import type { INestModuleConfig } from '../types';
 
 type NestModuleAbstractConstructorPrams = {
     pathUrl: string;
@@ -26,8 +26,9 @@ export abstract class NestModuleAbstract<T, CP, UP> extends Http {
         this.nestModuleConfig = nestModuleConfig;
     }
 
-    public async getAll(parameters: IQueryParameters): Promise<Paginate<T> | Array<T>> {
+    public async getAll(parameters: IQueryParameters, by?: string): Promise<Paginate<T> | Array<T>> {
         const path = convertSubPathUrl({
+            by,
             pathUrl: this.pathUrl,
             subPathUrl: this.subPathUrl,
             conectorPath: 'list'
@@ -35,8 +36,9 @@ export abstract class NestModuleAbstract<T, CP, UP> extends Http {
         return this.get(path, { params: parameters });
     }
 
-    public async getOne(param: string): Promise<T> {
+    public async getOne(param: string, by?: string): Promise<T> {
         const path = convertSubPathUrl({
+            by,
             pathUrl: this.pathUrl,
             isParam: true,
             subPathUrl: this.subPathUrl,
@@ -45,8 +47,9 @@ export abstract class NestModuleAbstract<T, CP, UP> extends Http {
         return this.get(`${path}`);
     }
 
-    public async delete(param: string): Promise<INestBaseResponse> {
+    public async delete(param: string, by?: string): Promise<IBaseResponse> {
         const path = convertSubPathUrl({
+            by,
             pathUrl: this.pathUrl,
             isParam: true,
             subPathUrl: this.subPathUrl,
@@ -55,16 +58,18 @@ export abstract class NestModuleAbstract<T, CP, UP> extends Http {
         return this.remove(`${path}`);
     }
 
-    public async create(params: CP): Promise<T> {
+    public async create(params: CP, by?: string): Promise<T> {
         const path = convertSubPathUrl({
+            by,
             pathUrl: this.pathUrl,
             subPathUrl: this.subPathUrl,
         });
         return this.post(path, { body: params });
     }
 
-    public async update(param: string, params: UP): Promise<T> {
+    public async update(param: string, params: UP, by?: string): Promise<T> {
         const path = convertSubPathUrl({
+            by,
             pathUrl: this.pathUrl,
             isParam: true,
             subPathUrl: this.subPathUrl,

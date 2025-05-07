@@ -8,7 +8,7 @@ export default class SupplierType implements SupplierTypeEntity {
     name_code!: SupplierTypeEntity['name_code'];
     created_at: SupplierTypeEntity['created_at'];
     updated_at: SupplierTypeEntity['updated_at'];
-    deleted_at: SupplierTypeEntity['deleted_at'];
+    deleted_at?: SupplierTypeEntity['deleted_at'];
 
     constructor(params?: SupplierTypeConstructorParams) {
         if (params) {

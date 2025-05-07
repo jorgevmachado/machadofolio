@@ -64,7 +64,7 @@ describe('BillCategory Service', () => {
 
             expect(mockNest.finance.bill.category.create).toHaveBeenCalledWith({
                 name: mockEntity.name,
-            });
+            }, undefined);
             expect(result).toEqual(mockEntity);
         });
     });
@@ -82,6 +82,7 @@ describe('BillCategory Service', () => {
                 {
                     name: mockEntity.name,
                 },
+                undefined
             );
             expect(result).toEqual(mockEntity);
         });
@@ -105,6 +106,7 @@ describe('BillCategory Service', () => {
                 {
                     name: mockEntity.name,
                 },
+                undefined
             );
             expect(mockNest.finance.bill.category.update).toHaveBeenCalledTimes(1);
         });
@@ -118,6 +120,7 @@ describe('BillCategory Service', () => {
 
             expect(mockNest.finance.bill.category.delete).toHaveBeenCalledWith(
                 mockEntity.id,
+                undefined
             );
             expect(result).toEqual(mockResponse);
         });
@@ -130,6 +133,7 @@ describe('BillCategory Service', () => {
 
             expect(mockNest.finance.bill.category.getOne).toHaveBeenCalledWith(
                 mockEntity.id,
+                undefined
             );
             expect(result).toEqual(mockEntity);
         });
@@ -140,7 +144,7 @@ describe('BillCategory Service', () => {
             mockNest.finance.bill.category.getAll.mockResolvedValue(mockEntityList);
             const result = await service.getAll({});
 
-            expect(mockNest.finance.bill.category.getAll).toHaveBeenCalledWith({});
+            expect(mockNest.finance.bill.category.getAll).toHaveBeenCalledWith({}, undefined);
             expect(result).toEqual(mockEntityList);
         });
 
@@ -152,6 +156,7 @@ describe('BillCategory Service', () => {
 
             expect(mockNest.finance.bill.category.getAll).toHaveBeenCalledWith(
                 mockPaginateParams,
+                undefined
             );
             expect(result).toEqual(mockEntityPaginate);
         });

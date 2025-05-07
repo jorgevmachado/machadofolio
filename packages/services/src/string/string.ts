@@ -133,21 +133,23 @@ export function formatUrl(url: string, path: string, params = {}): string {
 }
 
 export type ConvertSubPathUrlParams = {
+ by?: string;
  pathUrl: string;
  isParam?: boolean;
  subPathUrl?: string;
  conectorPath?: string;
 }
 
-export function convertSubPathUrl({ pathUrl, isParam, subPathUrl, conectorPath }: ConvertSubPathUrlParams): string {
+export function convertSubPathUrl({ by, pathUrl, isParam, subPathUrl, conectorPath }: ConvertSubPathUrlParams): string {
+ const currentPathUrl = !by ? pathUrl : `${pathUrl}/${by}`;
  if (!subPathUrl) {
   const currentParam = conectorPath ? `/${conectorPath}` : '';
-  return isParam ? `${pathUrl}${currentParam}` : pathUrl;
+  return isParam ? `${currentPathUrl}${currentParam}` : currentPathUrl;
  }
  if (!conectorPath) {
-  return `${pathUrl}/${subPathUrl}`;
+  return `${currentPathUrl}/${subPathUrl}`;
  }
- return `${pathUrl}/${conectorPath}/${subPathUrl}`;
+ return `${currentPathUrl}/${conectorPath}/${subPathUrl}`;
 }
 
 export function cleanFormatter(value?: string): string {

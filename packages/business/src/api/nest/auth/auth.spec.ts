@@ -28,6 +28,8 @@ describe('Auth', () => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
         auth = new Auth(mockConfig);
+        (NestModuleAbstract.prototype as unknown)['pathUrl'] = 'auth';
+
     });
     afterEach(() => {
         jest.resetModules();
@@ -49,7 +51,7 @@ describe('Auth', () => {
                 .spyOn(NestModuleAbstract.prototype, 'post')
                 .mockResolvedValue({ message: 'User registered successfully' });
 
-            (NestModuleAbstract.prototype as any).pathUrl = 'auth';
+
 
             const mockSignUpParams: ISignUpParams = {
                 cpf: '12345678909',

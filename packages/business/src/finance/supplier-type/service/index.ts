@@ -1,1 +1,1 @@
-export { SupplierTypeService} from './service';
+export { SupplierTypeService } from './service';

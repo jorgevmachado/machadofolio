@@ -113,70 +113,68 @@ describe('Expense', () => {
             expect(NestModuleAbstract).toHaveBeenCalledTimes(1);
             expect(NestModuleAbstract).toHaveBeenCalledWith({
                 pathUrl: 'finance/bill',
+                subPathUrl: 'expense',
                 nestModuleConfig: mockConfig,
             });
         });
     });
 
-    describe('getAllByBill', () => {
-        it('should call get with correct URL and parameters for getAllByBill', async () => {
-            const mockGetAllByBill = jest
-                .spyOn(NestModuleAbstract.prototype, 'get')
+    describe('getAll', () => {
+        it('should call get with correct URL and parameters for getAll', async () => {
+
+            const mockGetAll = jest
+                .spyOn(NestModuleAbstract.prototype, 'getAll')
                 .mockResolvedValue(mockEntityPaginate);
-            const result = await expense.getAllByBill(
-                mockEntity.bill.id,
+
+            const result = await expense.getAll(
                 mockPaginateParams,
+                mockEntity.bill.id,
             );
 
-            expect(mockGetAllByBill).toHaveBeenCalledTimes(1);
-            expect(mockGetAllByBill).toHaveBeenCalledWith(
-                `finance/bill/${mockEntity.bill.id}/list/expense`,
-                { params: mockPaginateParams },
-            );
+            expect(mockGetAll).toHaveBeenCalledTimes(1);
+            expect(mockGetAll).toHaveBeenCalledWith(mockPaginateParams,mockEntity.bill.id);
             expect(result).toEqual(mockEntityPaginate);
         });
     });
 
-    describe('getOneByBill', () => {
-        it('should call get with correct URL and parameters for getOneByBill', async () => {
-            const mockGetOneByBill = jest
-                .spyOn(NestModuleAbstract.prototype, 'get')
+    describe('getOne', () => {
+        it('should call get with correct URL and parameters for getOne', async () => {
+            const mockGetOne = jest
+                .spyOn(NestModuleAbstract.prototype, 'getOne')
                 .mockResolvedValue(mockEntity);
-            const result = await expense.getOneByBill(
-                mockEntity.bill.id,
+            const result = await expense.getOne(
                 mockEntity.id,
+                mockEntity.bill.id,
             );
 
-            expect(mockGetOneByBill).toHaveBeenCalledTimes(1);
-            expect(mockGetOneByBill).toHaveBeenCalledWith(
-                `finance/bill/${mockEntity.bill.id}/expense/${mockEntity.id}`,
-            );
+            expect(mockGetOne).toHaveBeenCalledTimes(1);
+            expect(mockGetOne).toHaveBeenCalledWith(mockEntity.id, mockEntity.bill.id);
             expect(result).toEqual(mockEntity);
         });
     });
 
-    describe('deleteByBill', () => {
-        it('should call delete with correct URL and parameters for deleteByBill', async () => {
-            const mockDeleteByBill = jest
-                .spyOn(NestModuleAbstract.prototype, 'remove')
+    describe('delete', () => {
+        it('should call delete with correct URL and parameters for delete', async () => {
+            const mockDelete = jest
+                .spyOn(NestModuleAbstract.prototype, 'delete')
                 .mockResolvedValue({ message: 'Successfully removed' });
-            const result = await expense.deleteByBill(
-                mockEntity.bill.id,
+
+            const result = await expense.delete(
                 mockEntity.id,
+                mockEntity.bill.id,
             );
-            expect(mockDeleteByBill).toHaveBeenCalledTimes(1);
-            expect(mockDeleteByBill).toHaveBeenCalledWith(
-                `finance/bill/${mockEntity.bill.id}/expense/${mockEntity.id}`,
-            );
+            expect(mockDelete).toHaveBeenCalledTimes(1);
+            expect(mockDelete).toHaveBeenCalledWith(mockEntity.id,mockEntity.bill.id);
             expect(result).toEqual({ message: 'Successfully removed' });
         });
     });
 
-    describe('createByBill', () => {
-        it('should call create with correct URL and parameters for createByBill', async () => {
-            const mockCreateByBill = jest
-                .spyOn(NestModuleAbstract.prototype, 'post')
+    describe('create', () => {
+        it('should call create with correct URL and parameters for create', async () => {
+            const mockCreate = jest
+                .spyOn(NestModuleAbstract.prototype, 'create')
                 .mockResolvedValue(mockEntity);
+
             const mockExpenseCreateParams: IExpenseCreateParams = {
                 type: mockEntity.type,
                 paid: mockEntity.paid,
@@ -186,33 +184,29 @@ describe('Expense', () => {
                 description: mockEntity.description,
                 instalment_number: mockEntity.instalment_number,
             };
-            const result = await expense.createByBill(mockEntity.bill.id, mockExpenseCreateParams);
-            expect(mockCreateByBill).toHaveBeenCalledTimes(1);
-            expect(mockCreateByBill).toHaveBeenCalledWith(
-                `finance/bill/${mockEntity.bill.id}/expense`,
-                { body: mockExpenseCreateParams }
-            );
+            const result = await expense.create(mockExpenseCreateParams, mockEntity.bill.id);
+            expect(mockCreate).toHaveBeenCalledTimes(1);
+            expect(mockCreate).toHaveBeenCalledWith(mockExpenseCreateParams, mockEntity.bill.id);
             expect(result).toEqual(mockEntity);
         });
     });
 
-    describe('updateByBill', () => {
-        it('should call update with correct URL and parameters for updateByBill', async () => {
-            const mockCreateByBill = jest
-                .spyOn(NestModuleAbstract.prototype, 'path')
+    describe('update', () => {
+        it('should call update with correct URL and parameters for update', async () => {
+            const mockUpdate = jest
+                .spyOn(NestModuleAbstract.prototype, 'update')
                 .mockResolvedValue(mockEntity);
+
             const mockExpenseUpdateParams: IExpenseUpdateParams = {
                 ...mockEntity,
                 bill: mockEntity.bill.id,
                 type: mockEntity.type,
                 supplier: mockEntity.supplier.id,
             };
-            const result = await expense.updateByBill(mockEntity.bill.id, mockEntity.id, mockExpenseUpdateParams);
-            expect(mockCreateByBill).toHaveBeenCalledTimes(1);
-            expect(mockCreateByBill).toHaveBeenCalledWith(
-                `finance/bill/${mockEntity.bill.id}/expense/${mockEntity.id}`,
-                { body: mockExpenseUpdateParams }
-            );
+
+            const result = await expense.update(mockEntity.id, mockExpenseUpdateParams, mockEntity.bill.id);
+            expect(mockUpdate).toHaveBeenCalledTimes(1);
+            expect(mockUpdate).toHaveBeenCalledWith(mockEntity.id, mockExpenseUpdateParams, mockEntity.bill.id);
             expect(result).toEqual(mockEntity);
         });
     });

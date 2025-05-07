@@ -9,7 +9,7 @@ export default class Expense implements ExpenseEntity {
     name: ExpenseEntity['name'];
     year?: ExpenseEntity['year'] = new Date().getFullYear();
     type: ExpenseEntity['type'];
-    paid: ExpenseEntity['paid'] = false;
+    paid?: ExpenseEntity['paid'] = false;
     total?: ExpenseEntity['total'] = 0;
     supplier: ExpenseEntity['supplier'];
     name_code: ExpenseEntity['name_code'];
@@ -40,7 +40,7 @@ export default class Expense implements ExpenseEntity {
     december_paid?: ExpenseEntity['december_paid'] = false;
     created_at: ExpenseEntity['created_at'];
     updated_at: ExpenseEntity['updated_at'];
-    deleted_at: ExpenseEntity['deleted_at'];
+    deleted_at?: ExpenseEntity['deleted_at'];
     description?: ExpenseEntity['description'];
     instalment_number?: ExpenseEntity['instalment_number'] = 1;
 

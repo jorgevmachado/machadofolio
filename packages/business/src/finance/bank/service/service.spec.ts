@@ -63,7 +63,7 @@ describe('Bank Service', () => {
 
             expect(mockNest.finance.bank.create).toHaveBeenCalledWith({
                 name: mockEntity.name,
-            });
+            }, undefined);
             expect(result).toEqual(mockEntity);
         });
     });
@@ -78,7 +78,7 @@ describe('Bank Service', () => {
 
             expect(mockNest.finance.bank.update).toHaveBeenCalledWith(mockEntity.id, {
                 name: mockEntity.name,
-            });
+            }, undefined);
             expect(result).toEqual(mockEntity);
         });
 
@@ -98,7 +98,7 @@ describe('Bank Service', () => {
 
             expect(mockNest.finance.bank.update).toHaveBeenCalledWith(mockEntity.id, {
                 name: mockEntity.name,
-            });
+            },undefined);
             expect(mockNest.finance.bank.update).toHaveBeenCalledTimes(1);
         });
     });
@@ -109,7 +109,7 @@ describe('Bank Service', () => {
             mockNest.finance.bank.delete.mockResolvedValue(mockResponse);
             const result = await service.remove(mockEntity.id);
 
-            expect(mockNest.finance.bank.delete).toHaveBeenCalledWith(mockEntity.id);
+            expect(mockNest.finance.bank.delete).toHaveBeenCalledWith(mockEntity.id,undefined);
             expect(result).toEqual(mockResponse);
         });
     });
@@ -119,7 +119,7 @@ describe('Bank Service', () => {
             mockNest.finance.bank.getOne.mockResolvedValue(mockEntity);
             const result = await service.get(mockEntity.id);
 
-            expect(mockNest.finance.bank.getOne).toHaveBeenCalledWith(mockEntity.id);
+            expect(mockNest.finance.bank.getOne).toHaveBeenCalledWith(mockEntity.id,undefined);
             expect(result).toEqual(mockEntity);
         });
     });
@@ -129,7 +129,7 @@ describe('Bank Service', () => {
             mockNest.finance.bank.getAll.mockResolvedValue(mockEntityList);
             const result = await service.getAll({});
 
-            expect(mockNest.finance.bank.getAll).toHaveBeenCalledWith({});
+            expect(mockNest.finance.bank.getAll).toHaveBeenCalledWith({},undefined);
             expect(result).toEqual(mockEntityList);
         });
 
@@ -139,6 +139,7 @@ describe('Bank Service', () => {
 
             expect(mockNest.finance.bank.getAll).toHaveBeenCalledWith(
                 mockPaginateParams,
+                undefined
             );
             expect(result).toEqual(mockEntityPaginate);
         });

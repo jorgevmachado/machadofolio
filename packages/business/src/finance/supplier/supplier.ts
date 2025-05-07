@@ -10,7 +10,7 @@ export default class Supplier implements SupplierEntity {
     name_code!: SupplierEntity['name_code'];
     created_at: SupplierEntity['created_at'];
     updated_at: SupplierEntity['updated_at'];
-    deleted_at: SupplierEntity['deleted_at'];
+    deleted_at?: SupplierEntity['deleted_at'];
     description?: SupplierEntity['description'];
 
     constructor(params?: SupplierConstructorParams) {

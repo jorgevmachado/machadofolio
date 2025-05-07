@@ -47,11 +47,21 @@ yarn lint
 ```
 
 ## Módulos
+#### **shared**: Este módulo fornece uma coleção de classes e utilitários essenciais para esté projeto.
+##### **baseService**: classe abstrata, que serve como uma camada base para serviços na aplicação, centralizando funcionalidades comuns para manipulação e gerenciamento de entidades no banco de dados, especialmente usando **TypeORM**. Ele integra operações como listagem, busca, validação e remoção de entidades, fornecendo uma base sólida para se estender em serviços específicos.
+###### Comando para teste unitários deste sub-módulo
+```bash
+  yarn run test -- --findRelatedTests src/shared/service/base-service.spec.ts               
+```
 #### **api**: Utilitários relacionados a manipulação de serviços de varias bibliotecas como NestJs.
 ##### **Nest**: Utilitários relacionados a manipulação de serviços nestJs.
 ###### Comando para teste unitários deste sub-módulo
 ```bash
   yarn run test -- --findRelatedTests src/api/nest/nest.spec.ts               
+```
+- **nestModuleAbstract**: classe abstrata, que serve como uma camada base para serviços na aplicação, centralizando funcionalidades comuns para manipulação e gerenciamento de entidades no banco de dados, especialmente usando **TypeORM**. Ele integra operações como listagem, busca, validação e remoção de entidades, fornecendo uma base sólida para se estender em serviços específicos.
+```bash
+  yarn run test -- --findRelatedTests src/api/nest/abstract/nestModuleAbstract.spec.ts               
 ```
 - **auth**: Utilitários relacionados a manipulação de serviços de autenticação nestJs.
 ```bash
@@ -85,7 +95,6 @@ yarn lint
 ```bash
   yarn run test -- --findRelatedTests src/api/nest/finance/bill/expense/expense.spec.ts               
 ```
-
 
 #### **auth**: Utilitários relacionados a manipulação de usuário e autenticação.
 ##### **business**: Utilitários relacionados a regras de negócios na manipulação de usuário e autenticação.
