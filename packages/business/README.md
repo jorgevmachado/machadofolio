@@ -169,3 +169,17 @@ yarn lint
 ```bash
   yarn run test -- --findRelatedTests src/finance/expense/business/business.spec.ts               
 ```
+
+##### **bill**: Utilitários relacionados a manipulação de Contas no contexto de finanças.
+- **bill**: Utilitários relacionados a manipulação da entidade Contas.
+```bash
+  yarn run test -- --findRelatedTests src/finance/bill/bill.spec.ts               
+```
+- **service**: Utilitários relacionados ao consumo de serviços de manipulação de Contas.
+```bash
+  yarn run test -- --findRelatedTests src/finance/bill/service/service.spec.ts               
+```
+- **business**: Utilitários relacionados as regras de negocio de Contas.
+```bash
+  yarn run test -- --findRelatedTests src/finance/bill/business/business.spec.ts               
+```

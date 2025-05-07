@@ -1,6 +1,6 @@
-import { type INestBaseResponse, type Nest } from '../../../api';
-import { type Paginate } from '../../../paginate';
-import { type QueryParameters } from '../../../types';
+import type { INestBaseResponse, Nest } from '../../../api';
+import type { Paginate } from '../../../paginate';
+import type { QueryParameters } from '../../../types';
 
 import type { ExpenseCreateParams, ExpenseUpdateParams } from '../types';
 import Expense from '../expense';
