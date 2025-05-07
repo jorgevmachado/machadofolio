@@ -1,0 +1,1 @@
+export { BillCategoryService } from './service';

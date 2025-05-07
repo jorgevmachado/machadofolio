@@ -13,6 +13,8 @@ import { BANK_MOCK } from '../mock';
 
 import { BankService } from './service';
 
+jest.mock('../../../api');
+
 describe('Bank Service', () => {
     let service: BankService;
     let mockNest: jest.Mocked<Nest>;

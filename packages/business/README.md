@@ -109,11 +109,13 @@ yarn lint
 ```
 
 #### **finance**: Utilitários relacionados a manipulação de finanças.
+
 ##### **finance**: Utilitários relacionados a manipulação da entidade finance.
 ###### Comando para teste unitários deste sub-módulo
 ```bash
   yarn run test -- --findRelatedTests src/finance/finance.spec.ts               
 ```
+
 ##### **bank**: Utilitários relacionados a manipulação de bancos no contexto de finanças.
 - **bank**: Utilitários relacionados a manipulação da entidade banco.
 ```bash
@@ -122,4 +124,14 @@ yarn lint
 - **service**: Utilitários relacionados ao consumo de serviços de manipulação de bancos.
 ```bash
   yarn run test -- --findRelatedTests src/finance/bank/service/service.spec.ts               
+```
+
+##### **bill-category**: Utilitários relacionados a manipulação de Categoria de contas no contexto de finanças.
+- **bill-category**: Utilitários relacionados a manipulação da entidade Categoria de Contas.
+```bash
+  yarn run test -- --findRelatedTests src/finance/bill-category/bill-category.spec.ts               
+```
+- **service**: Utilitários relacionados ao consumo de serviços de manipulação de Categoria de Contas.
+```bash
+  yarn run test -- --findRelatedTests src/finance/bill-category/service/service.spec.ts               
 ```
