@@ -155,3 +155,17 @@ yarn lint
 ```bash
   yarn run test -- --findRelatedTests src/finance/bill-category/service/service.spec.ts               
 ```
+
+##### **expense**: Utilitários relacionados a manipulação de despesas no contexto de finanças.
+- **expense**: Utilitários relacionados a manipulação da entidade Despesas.
+```bash
+  yarn run test -- --findRelatedTests src/finance/expense/expense.spec.ts               
+```
+- **service**: Utilitários relacionados ao consumo de serviços de manipulação de Despesas.
+```bash
+  yarn run test -- --findRelatedTests src/finance/expense/service/service.spec.ts               
+```
+- **business**: Utilitários relacionados as regras de negocio de Despesas.
+```bash
+  yarn run test -- --findRelatedTests src/finance/expense/business/business.spec.ts               
+```
