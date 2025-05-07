@@ -136,6 +136,16 @@ yarn lint
   yarn run test -- --findRelatedTests src/finance/supplier-type/service/service.spec.ts               
 ```
 
+##### **supplier**: Utilitários relacionados a manipulação de fornecedor no contexto de finanças.
+- **supplier**: Utilitários relacionados a manipulação da entidade de fornecedor.
+```bash
+  yarn run test -- --findRelatedTests src/finance/supplier/supplier.spec.ts               
+```
+- **service**: Utilitários relacionados ao consumo de serviços de manipulação de fornecedor.
+```bash
+  yarn run test -- --findRelatedTests src/finance/supplier/service/service.spec.ts               
+```
+
 ##### **bill-category**: Utilitários relacionados a manipulação de Categoria de contas no contexto de finanças.
 - **bill-category**: Utilitários relacionados a manipulação da entidade Categoria de Contas.
 ```bash

@@ -10,7 +10,6 @@ import {
 import { type Nest } from '../../../api';
 
 import { BILL_CATEGORY_MOCK } from '../mock';
-
 import { BillCategoryService } from './service';
 
 jest.mock('../../../api');

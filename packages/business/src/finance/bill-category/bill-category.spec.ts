@@ -10,7 +10,7 @@ import { BILL_CATEGORY_MOCK } from './mock';
 import BillCategory from './bill-category';
 import type { BillCategoryConstructorParams } from './types';
 
-describe('BillCategory function', () => {
+describe('BillCategory', () => {
     const billCategoryMock = BILL_CATEGORY_MOCK;
     beforeEach(() => {
         jest.clearAllMocks();
