@@ -85,3 +85,41 @@ yarn lint
 ```bash
   yarn run test -- --findRelatedTests src/api/nest/finance/bill/expense/expense.spec.ts               
 ```
+
+
+#### **auth**: Utilitários relacionados a manipulação de usuário e autenticação.
+##### **business**: Utilitários relacionados a regras de negócios na manipulação de usuário e autenticação.
+###### Comando para teste unitários deste sub-módulo
+```bash
+  yarn run test -- --findRelatedTests src/auth/business/business.spec.ts               
+```
+##### **service**: Utilitários relacionados ao consumo de serviços de autenticação.
+###### Comando para teste unitários deste sub-módulo
+```bash
+  yarn run test -- --findRelatedTests src/auth/service/service.spec.ts               
+```
+##### **user**: Utilitários relacionados a manipulação da entidade usuário.
+###### Comando para teste unitários deste sub-módulo
+```bash
+  yarn run test -- --findRelatedTests src/auth/user/user.spec.ts               
+```
+- **config**: Utilitários relacionados a manipulação de configurações internas da entidadde usuário.
+```bash
+  yarn run test -- --findRelatedTests src/auth/user/config.spec.ts               
+```
+
+#### **finance**: Utilitários relacionados a manipulação de finanças.
+##### **finance**: Utilitários relacionados a manipulação da entidade finance.
+###### Comando para teste unitários deste sub-módulo
+```bash
+  yarn run test -- --findRelatedTests src/finance/finance.spec.ts               
+```
+##### **bank**: Utilitários relacionados a manipulação de bancos no contexto de finanças.
+- **bank**: Utilitários relacionados a manipulação da entidade banco.
+```bash
+  yarn run test -- --findRelatedTests src/finance/bank/bank.spec.ts               
+```
+- **service**: Utilitários relacionados ao consumo de serviços de manipulação de bancos.
+```bash
+  yarn run test -- --findRelatedTests src/finance/bank/service/service.spec.ts               
+```
