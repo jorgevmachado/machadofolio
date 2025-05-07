@@ -1,9 +1,20 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    JoinColumn,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from "typeorm";
 
 import { EGender } from "@repo/services/personal-data/enum";
 
 import { ERole, EStatus } from "@repo/business/enum";
 import { UserEntity } from '@repo/business/auth/types';
+
+import { Finance } from '../../../finance/entities/finance.entity';
 
 @Entity({ name: 'users' })
 export class User implements UserEntity {
@@ -44,6 +55,10 @@ export class User implements UserEntity {
 
     @Column({ nullable: false })
     password?: string;
+
+    @OneToOne(() => Finance, (finance) => finance.user, { nullable: true })
+    @JoinColumn()
+    finance?: Finance;
 
     @CreateDateColumn()
     created_at!: Date;

@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-
+import { FinanceModule } from './finance/finance.module';
 import { SanitizeUserInterceptor } from './interceptors/sanitize-user/sanitize-user.interceptor';
 
 @Module({
@@ -22,7 +22,8 @@ import { SanitizeUserInterceptor } from './interceptors/sanitize-user/sanitize-u
             entities: [__dirname + '/../**/*.entity{.ts,.js}'],
             synchronize: true,
         }),
-        AuthModule
+        AuthModule,
+        FinanceModule
     ],
     controllers: [AppController],
     providers: [

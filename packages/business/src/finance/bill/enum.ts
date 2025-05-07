@@ -1,0 +1,1 @@
+export { EBillType } from '../../api';
