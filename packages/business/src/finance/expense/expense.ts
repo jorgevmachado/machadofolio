@@ -4,15 +4,15 @@ import { MONTHS } from '@repo/services/date/month/month';
 import type { ExpenseConstructorParams, ExpenseEntity } from './types';
 
 export default class Expense implements ExpenseEntity {
-    id: ExpenseEntity['id'];
-    bill: ExpenseEntity['bill'];
-    name: ExpenseEntity['name'];
+    id!: ExpenseEntity['id'];
+    bill!: ExpenseEntity['bill'];
+    name!: ExpenseEntity['name'];
     year?: ExpenseEntity['year'] = new Date().getFullYear();
-    type: ExpenseEntity['type'];
+    type!: ExpenseEntity['type'];
     paid?: ExpenseEntity['paid'] = false;
     total?: ExpenseEntity['total'] = 0;
-    supplier: ExpenseEntity['supplier'];
-    name_code: ExpenseEntity['name_code'];
+    supplier!: ExpenseEntity['supplier'];
+    name_code!: ExpenseEntity['name_code'];
     total_paid?: ExpenseEntity['total_paid'] = 0;
     january?: ExpenseEntity['january'] = 0;
     february?: ExpenseEntity['february'] = 0;
@@ -38,22 +38,22 @@ export default class Expense implements ExpenseEntity {
     october_paid?: ExpenseEntity['october_paid'] = false;
     november_paid?: ExpenseEntity['november_paid'] = false;
     december_paid?: ExpenseEntity['december_paid'] = false;
-    created_at: ExpenseEntity['created_at'];
-    updated_at: ExpenseEntity['updated_at'];
+    created_at!: ExpenseEntity['created_at'];
+    updated_at!: ExpenseEntity['updated_at'];
     deleted_at?: ExpenseEntity['deleted_at'];
     description?: ExpenseEntity['description'];
     instalment_number?: ExpenseEntity['instalment_number'] = 1;
 
-    constructor(params?: ExpenseConstructorParams) {
+    constructor(params: ExpenseConstructorParams) {
         this.id = params?.id ?? this.id;
         this.bill = params?.bill ?? this.bill;
-        this.name = params?.name;
+        this.name = params.name;
         this.year = params?.year ?? this.year;
-        this.type = params?.type;
+        this.type = params.type;
         this.paid = params?.paid ?? this.paid;
         this.total = params?.total ?? this.total;
         this.name_code = this.name ? toSnakeCase(normalize(this.name)) : this.name_code;
-        this.supplier = params?.supplier;
+        this.supplier = params.supplier;
         this.total_paid = params?.total_paid ?? this.total_paid;
 
         MONTHS.forEach(month => {

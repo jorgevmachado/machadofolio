@@ -21,6 +21,7 @@ export type ICreateBillParams = Omit<
         | 'id'
         | 'name'
         | 'bank'
+        | 'year'
         | 'finance'
         | 'category'
         | 'expenses'
@@ -29,6 +30,7 @@ export type ICreateBillParams = Omit<
         | 'updated_at'
         | 'deleted_at'
     > & {
+    year?: number;
     bank: string | IBank;
     category: string | IBillCategory;
     expenses?: Array<string | IExpense>;

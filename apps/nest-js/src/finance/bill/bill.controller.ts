@@ -1,5 +1,7 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+
+import { QueryParameters } from '@repo/business/types';
 
 import { AuthRoleGuard } from '../../guards/auth-role/auth-role.guard';
 import { AuthStatusGuard } from '../../guards/auth-status/auth-status.guard';
@@ -11,6 +13,8 @@ import { User } from '../../entities/user.entity';
 
 import { BillService } from './bill.service';
 import { CreateBillDto } from './dto/create-bill.dto';
+import { ListParams } from '../../shared';
+import { UpdateBillDto } from './dto/update-bill.dto';
 
 
 @Controller('finance/bill')
@@ -23,8 +27,38 @@ import { CreateBillDto } from './dto/create-bill.dto';
 export class BillController {
   constructor(private readonly service: BillService) {}
 
+  @Get()
+  findAll(@GetUserAuth() user: User, @Query() parameters: QueryParameters) {
+    const finance = user.finance as Finance;
+    const filters: ListParams['filters'] = [{
+      value: finance.id,
+      param: 'finance',
+      condition: '='
+    }]
+    return this.service.findAll({ parameters, filters });
+  }
+
   @Post()
   create(@GetUserAuth() user: User, @Body() createBillDto: CreateBillDto) {
     return this.service.create(user.finance as Finance, createBillDto);
+  }
+
+  @Put(':param')
+  update(
+      @GetUserAuth() user: User,
+      @Param('param') param: string,
+      @Body() updateBillDto: UpdateBillDto,
+  ) {
+    return this.service.update(user.finance as Finance, param, updateBillDto);
+  }
+
+  @Get(':param')
+  findOne(@Param('param') param: string) {
+    return this.service.findOne({ value: param });
+  }
+
+  @Delete(':param')
+  remove(@Param('param') param: string) {
+    return this.service.remove(param);
   }
 }

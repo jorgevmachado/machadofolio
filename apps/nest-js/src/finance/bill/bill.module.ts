@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import BillBusiness from '@repo/business/finance/bill/business/business';
+
 import { Bill } from '../../entities/bill.entity';
 
 import { BillController } from './bill.controller';
@@ -13,7 +15,7 @@ import { ExpenseModule } from './expense/expense.module';
 
 @Module({
   controllers: [BillController],
-  providers: [BillService],
+  providers: [BillService, BillBusiness],
   imports: [
     TypeOrmModule.forFeature([Bill]),
     PassportModule.register({ defaultStrategy: 'jwt' }),

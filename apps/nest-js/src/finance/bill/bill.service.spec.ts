@@ -3,6 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/global
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
+import BillBusiness from '@repo/business/finance/bill/business/business';
+
 import { BILL_MOCK } from '../../mocks/bill.mock';
 import { Bill } from '../../entities/bill.entity';
 import { FINANCE_MOCK } from '../../mocks/finance.mock';
@@ -15,6 +17,7 @@ import { type CreateBillDto } from './dto/create-bill.dto';
 import { ExpenseService } from './expense/expense.service';
 
 import { ConflictException } from '@nestjs/common';
+import { type UpdateBillDto } from './dto/update-bill.dto';
 
 
 describe('BillService', () => {
@@ -31,6 +34,7 @@ describe('BillService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
           BillService,
+          BillBusiness,
         { provide: getRepositoryToken(Bill), useClass: Repository },
         {
           provide: BankService,
@@ -135,6 +139,78 @@ describe('BillService', () => {
       await expect(
           service.create(financeMockEntity, createBill),
       ).rejects.toThrowError(ConflictException);
+    });
+  });
+
+  describe('update', () => {
+    it('should update a bill successfully without year', async () => {
+      const updateBill: UpdateBillDto = {
+        type: mockEntity.type,
+        bank: mockEntity.bank.name,
+        category: mockEntity.category.name,
+        expenses: mockEntity.expenses,
+      };
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getOne: jest.fn().mockReturnValueOnce(mockEntity),
+      } as any);
+
+      jest
+          .spyOn(bankService, 'treatEntityParam')
+          .mockResolvedValueOnce(mockEntity.bank);
+
+      jest
+          .spyOn(categoryService, 'treatEntityParam')
+          .mockResolvedValueOnce(mockEntity.category);
+
+      if(mockEntity.expenses) {
+        jest
+            .spyOn(expenseService, 'treatEntitiesParams')
+            .mockResolvedValueOnce(mockEntity.expenses);
+      }
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getOne: jest.fn().mockReturnValueOnce(null),
+      } as any);
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+
+      expect(
+          await service.update(financeMockEntity, mockEntity.id, updateBill),
+      ).toEqual(mockEntity);
+    });
+
+    it('should update a bill successfully with only year', async () => {
+
+      const updateBill: UpdateBillDto = {
+        year: mockEntity.year,
+      };
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getOne: jest.fn().mockReturnValueOnce(mockEntity),
+      } as any);
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getOne: jest.fn().mockReturnValueOnce(null),
+      } as any);
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+
+      expect(
+          await service.update(financeMockEntity, mockEntity.id, updateBill),
+      ).toEqual(mockEntity);
     });
   });
 });

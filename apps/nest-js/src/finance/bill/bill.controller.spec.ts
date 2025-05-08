@@ -16,6 +16,7 @@ import { type User } from '../../entities/user.entity';
 import { BillController } from './bill.controller';
 import { BillService } from './bill.service';
 import { type CreateBillDto } from './dto/create-bill.dto';
+import { type UpdateBillDto } from './dto/update-bill.dto';
 
 describe('BillController', () => {
   let controller: BillController;
@@ -36,7 +37,7 @@ describe('BillController', () => {
             update: jest.fn(),
             remove: jest.fn(),
             findOne: jest.fn(),
-            findAllBills: jest.fn(),
+            findAll: jest.fn(),
             addExpense: jest.fn(),
             updateExpense: jest.fn(),
             removeExpense: jest.fn(),
@@ -60,6 +61,14 @@ describe('BillController', () => {
     expect(service).toBeDefined();
   });
 
+  describe('findAll', () => {
+    it('Should return an list of bills', async () => {
+      jest.spyOn(service, 'findAll').mockResolvedValue([mockEntity]);
+
+      expect(await controller.findAll(userMockEntity, {})).toEqual([mockEntity]);
+    });
+  });
+
   describe('create', () => {
     it('should create a new bill and save it', async () => {
       const createBill: CreateBillDto = {
@@ -73,6 +82,42 @@ describe('BillController', () => {
       expect(await controller.create(userMockEntity, createBill)).toEqual(
           mockEntity,
       );
+    });
+  });
+
+  describe('update', () => {
+    it('should update a bill and save it', async () => {
+      const updateBill: UpdateBillDto = {
+        type: mockEntity.type,
+        bank: mockEntity.bank.name,
+        category: mockEntity.category.name,
+        expenses: mockEntity.expenses,
+      };
+      jest.spyOn(service, 'update').mockResolvedValue(mockEntity);
+
+      expect(
+          await controller.update(userMockEntity, mockEntity.id, updateBill),
+      ).toEqual(mockEntity);
+    });
+  });
+
+  describe('findOne', () => {
+    it('Should return one bill', async () => {
+      jest.spyOn(service, 'findOne').mockResolvedValue(mockEntity);
+
+      expect(await controller.findOne(mockEntity.name)).toEqual(mockEntity);
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove a bill successfully', async () => {
+      jest
+          .spyOn(service, 'remove')
+          .mockResolvedValueOnce({ message: 'Successfully removed' });
+
+      expect(await controller.remove(mockEntity.id)).toEqual({
+        message: 'Successfully removed',
+      });
     });
   });
 });
