@@ -11,7 +11,7 @@ import { EMonth } from '@repo/services/date/month/enum';
 
 import { type Nest } from '../../../api';
 
-import type { ExpenseCreateParams, ExpenseUpdateParams } from '../types';
+import type { CreateExpenseParams, UpdateExpenseParams } from '../types';
 import { EXPENSE_MOCK } from '../mock';
 
 import { ExpenseService } from './service';
@@ -71,7 +71,7 @@ describe('Expense Service', () => {
         it('should successfully create an supplier', async () => {
             mockNest.finance.bill.expense.create.mockResolvedValue(mockEntity);
 
-            const mockExpenseCreateParams: ExpenseCreateParams = {
+            const mockExpenseCreateParams: CreateExpenseParams = {
                 type: mockEntity.type,
                 paid: mockEntity.paid,
                 value: 100,
@@ -97,7 +97,7 @@ describe('Expense Service', () => {
     describe('update', () => {
         it('should successfully update an expense', async () => {
             mockNest.finance.bill.expense.update.mockResolvedValue(mockEntity);
-            const mockExpenseUpdateParams: ExpenseUpdateParams = {
+            const mockExpenseUpdateParams: UpdateExpenseParams = {
                 ...mockEntity,
             };
 

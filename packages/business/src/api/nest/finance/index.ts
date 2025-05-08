@@ -18,8 +18,8 @@ export {
     type ICreateBillCategoryParams,
     type IUpdateBillCategoryParams,
     type IExpense,
-    type IExpenseCreateParams,
-    type IExpenseUpdateParams,
+    type ICreateExpenseParams,
+    type IUpdateExpenseParams,
     EExpenseType,
     EBillType,
 } from './bill';

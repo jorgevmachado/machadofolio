@@ -46,7 +46,7 @@ export type IExpense = IFinanceBase & {
     instalment_number?: number;
 }
 
-export type IExpenseCreateParams = {
+export type ICreateExpenseParams = {
     type: EExpenseType;
     paid?: boolean;
     value?: number;
@@ -56,7 +56,7 @@ export type IExpenseCreateParams = {
     instalment_number?: number;
 }
 
-export type IExpenseUpdateParams = Omit<
+export type IUpdateExpenseParams = Omit<
         IExpense,
         | 'id'
         | 'bill'

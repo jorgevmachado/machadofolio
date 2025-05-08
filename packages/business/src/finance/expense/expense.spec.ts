@@ -43,7 +43,12 @@ describe('Expense', () => {
         });
 
         it('should initialize fields with default values when no parameters are provided', () => {
-            const expense = new Expense();
+            const expense = new Expense({
+                bill: undefined,
+                type: undefined,
+                name: 'expense',
+                supplier: undefined,
+            });
 
             expect(expense.year).toBe(new Date().getFullYear());
             expect(expense.paid).toBe(false);

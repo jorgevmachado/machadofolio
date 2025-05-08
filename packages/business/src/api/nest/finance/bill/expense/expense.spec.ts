@@ -13,7 +13,7 @@ import type { QueryParameters } from '../../../../../types';
 
 import { NestModuleAbstract } from '../../../abstract';
 
-import type { IExpenseCreateParams, IExpenseUpdateParams } from './types';
+import type { ICreateExpenseParams, IUpdateExpenseParams } from './types';
 import { EExpenseType } from './enum';
 import { Expense } from './expense';
 
@@ -175,7 +175,7 @@ describe('Expense', () => {
                 .spyOn(NestModuleAbstract.prototype, 'create')
                 .mockResolvedValue(mockEntity);
 
-            const mockExpenseCreateParams: IExpenseCreateParams = {
+            const mockExpenseCreateParams: ICreateExpenseParams = {
                 type: mockEntity.type,
                 paid: mockEntity.paid,
                 value: 100,
@@ -197,7 +197,7 @@ describe('Expense', () => {
                 .spyOn(NestModuleAbstract.prototype, 'update')
                 .mockResolvedValue(mockEntity);
 
-            const mockExpenseUpdateParams: IExpenseUpdateParams = {
+            const mockExpenseUpdateParams: IUpdateExpenseParams = {
                 ...mockEntity,
                 bill: mockEntity.bill.id,
                 type: mockEntity.type,
