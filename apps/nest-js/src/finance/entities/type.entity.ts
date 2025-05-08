@@ -11,7 +11,7 @@ import {
 
 import type { SupplierTypeEntity } from '@repo/business/finance/supplier-type/types';
 
-import { Supplier } from '../../entities/supplier.entity';
+import { Supplier } from './supplier.entity';
 
 @Entity({ name: 'supplier_types' })
 export class SupplierType implements SupplierTypeEntity {

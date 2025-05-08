@@ -11,7 +11,7 @@ import {
 
 import type { BillCategoryEntity } from '@repo/business/finance/bill-category/types';
 
-import { Bill } from '../../entities/bill.entity';
+import { Bill } from './bill.entity';
 
 @Entity({ name: 'bill_categories' })
 export class BillCategory implements BillCategoryEntity {

@@ -11,7 +11,7 @@ import {
 
 import type { BankEntity } from '@repo/business/finance/bank/types';
 
-import { Bill } from '../../bill/entities/bill.entity';
+import { Bill } from './bill.entity';
 
 @Entity({ name: 'banks' })
 export class Bank implements BankEntity {

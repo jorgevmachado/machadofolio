@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/global
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { SupplierType } from './entities/type.entity';
+import { SupplierType } from '../../entities/type.entity';
 import { SupplierTypeService } from './type.service';
 
 describe('TypeService', () => {

@@ -12,11 +12,11 @@ import {
 import { EExpenseType } from '@repo/business/finance/expense/enum';
 import type { ExpenseEntity } from '@repo/business/finance/expense/types';
 
-import { DecimalTransformer } from '../../../../transforms/decimal';
+import { DecimalTransformer } from '../../transforms/decimal';
 
-import { Supplier } from '../../../supplier/entities/supplier.entity';
+import { Supplier } from './supplier.entity';
 
-import { Bill } from '../../entities/bill.entity';
+import { Bill } from './bill.entity';
 
 
 @Entity({ name: 'expenses' })

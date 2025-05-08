@@ -13,13 +13,13 @@ import {
 import type { BillEntity } from '@repo/business/finance/bill/types';
 import { EBillType } from '@repo/business/finance/bill/enum';
 
-import { DecimalTransformer } from '../../../transforms/decimal';
+import { DecimalTransformer } from '../../transforms/decimal';
 
-import { Bank } from '../../bank/entities/bank.entity';
-import { Finance } from '../../entities/finance.entity';
+import { Bank } from './bank.entity';
+import { Finance } from './finance.entity';
 
-import { BillCategory } from '../category/entities/category.entity';
-import { Expense } from '../expense/entities/expense.entity';
+import { BillCategory } from './category.entity';
+import { Expense } from './expense.entity';
 
 @Entity({ name: 'bills' })
 export class Bill implements BillEntity {

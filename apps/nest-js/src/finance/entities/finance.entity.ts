@@ -5,7 +5,7 @@ import { FinanceEntity } from '@repo/business/finance/types';
 
 import { User } from '../../auth/users/entities/user.entity';
 
-import { Bill } from '../bill/entities/bill.entity';
+import { Bill } from './bill.entity';
 
 @Entity({ name: 'finances' })
 export class Finance implements FinanceEntity {

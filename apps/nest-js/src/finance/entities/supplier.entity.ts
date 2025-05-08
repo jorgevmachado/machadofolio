@@ -12,9 +12,9 @@ import {
 
 import { SupplierEntity } from '@repo/business/finance/supplier/types';
 
-import { Expense } from '../../bill/expense/entities/expense.entity';
+import { Expense } from './expense.entity';
 
-import { SupplierType } from '../type/entities/type.entity';
+import { SupplierType } from './type.entity';
 
 @Entity({ name: 'suppliers' })
 export class Supplier implements SupplierEntity {

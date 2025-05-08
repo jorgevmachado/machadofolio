@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Service } from '../../shared';
 
-import { Supplier } from './entities/supplier.entity';
+import { Supplier } from '../entities/supplier.entity';
 import { SupplierTypeService } from './type/type.service';
 
 @Injectable()

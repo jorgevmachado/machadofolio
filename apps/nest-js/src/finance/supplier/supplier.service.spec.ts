@@ -10,7 +10,7 @@ import {
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { Supplier } from './entities/supplier.entity';
+import { Supplier } from '../entities/supplier.entity';
 import { SupplierService } from './supplier.service';
 import { SupplierTypeService } from './type/type.service';
 
