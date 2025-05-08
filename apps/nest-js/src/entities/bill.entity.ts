@@ -31,7 +31,7 @@ export class Bill implements BillEntity {
     name!: string;
     
     @Column({ nullable: false })
-    year?: number;
+    year!: number;
     @Column({
         nullable: false,
         type: 'enum',

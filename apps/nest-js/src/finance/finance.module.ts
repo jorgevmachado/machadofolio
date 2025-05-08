@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BillModule } from './bill/bill.module';
 import { FinanceController } from './finance.controller';
 import { FinanceService } from './finance.service';
-import { SupplierModule } from './supplier/supplier.module';
 
 import { Finance } from '../entities/finance.entity';
 
@@ -15,7 +14,6 @@ import { Finance } from '../entities/finance.entity';
     imports: [
         TypeOrmModule.forFeature([Finance]),
         PassportModule.register({ defaultStrategy: 'jwt' }),
-        SupplierModule,
         BillModule,
     ],
     exports: [FinanceService]

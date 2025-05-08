@@ -8,12 +8,21 @@ import {
   jest,
 } from '@jest/globals';
 
+import { BILL_MOCK } from '../../mocks/bill.mock';
+import { type Bill } from '../../entities/bill.entity';
+import { USER_MOCK } from '../../mocks/user.mock';
+import { type User } from '../../entities/user.entity';
+
 import { BillController } from './bill.controller';
 import { BillService } from './bill.service';
+import { type CreateBillDto } from './dto/create-bill.dto';
 
 describe('BillController', () => {
   let controller: BillController;
   let service: BillService;
+
+  const mockEntity: Bill = BILL_MOCK;
+  const userMockEntity: User = USER_MOCK;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -49,5 +58,21 @@ describe('BillController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
     expect(service).toBeDefined();
+  });
+
+  describe('create', () => {
+    it('should create a new bill and save it', async () => {
+      const createBill: CreateBillDto = {
+        type: mockEntity.type,
+        year: mockEntity.year,
+        bank: mockEntity.bank.name,
+        category: mockEntity.category.name,
+      };
+      jest.spyOn(service, 'create').mockResolvedValue(mockEntity);
+
+      expect(await controller.create(userMockEntity, createBill)).toEqual(
+          mockEntity,
+      );
+    });
   });
 });

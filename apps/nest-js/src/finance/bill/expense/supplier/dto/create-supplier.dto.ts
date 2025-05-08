@@ -1,6 +1,6 @@
 import { IsNotEmpty, MaxLength } from 'class-validator';
 
-import { SupplierType } from '../../../entities/type.entity';
+import { SupplierType } from '../../../../../entities/type.entity';
 
 export class CreateSupplierDto {
     @IsNotEmpty()

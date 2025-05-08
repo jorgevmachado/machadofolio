@@ -47,6 +47,7 @@ describe('Bill', () => {
 
             const bill = new Bill(params);
 
+            expect(bill.year).toBe(new Date().getFullYear());
             expect(bill.bank).toBe(params.bank);
             expect(bill.name).toBe(params.name);
             expect(bill.type).toBe(params.type);
@@ -60,6 +61,7 @@ describe('Bill', () => {
             const bill = new Bill();
 
             expect(bill.id).toBeUndefined();
+            expect(bill.year).toBe(new Date().getFullYear());
             expect(bill.name).toBeUndefined();
             expect(bill.created_at).toBeUndefined();
             expect(bill.updated_at).toBeUndefined();

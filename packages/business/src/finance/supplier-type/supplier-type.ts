@@ -3,11 +3,11 @@ import { normalize, toSnakeCase } from '@repo/services/string/string';
 import type { SupplierTypeConstructorParams, SupplierTypeEntity } from './types';
 
 export default class SupplierType implements SupplierTypeEntity {
-    id: SupplierTypeEntity['id'];
+    id!: SupplierTypeEntity['id'];
     name!: SupplierTypeEntity['name'];
     name_code!: SupplierTypeEntity['name_code'];
-    created_at: SupplierTypeEntity['created_at'];
-    updated_at: SupplierTypeEntity['updated_at'];
+    created_at!: SupplierTypeEntity['created_at'];
+    updated_at!: SupplierTypeEntity['updated_at'];
     deleted_at?: SupplierTypeEntity['deleted_at'];
 
     constructor(params?: SupplierTypeConstructorParams) {

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { SupplierType } from '../../../entities/type.entity';
+import { SupplierType } from '../../../../../entities/type.entity';
 import { SupplierTypeService } from './type.service';
 import { TypeController } from './type.controller';
 

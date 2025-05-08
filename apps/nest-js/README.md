@@ -99,6 +99,17 @@ yarn test
 ```bash
   yarn run test -- --findRelatedTests src/guards/auth-role/auth-role.guard.spec.ts                                 
 ```
+#### **auth-status**: Realiza a guarda do status do usuário.
+##### Comando para testes unitários exclusivo para esté sub-módulo.
+```bash
+  yarn run test -- --findRelatedTests src/guards/auth-status/auth-status.guard.spec.ts                                 
+```
+
+#### **finance-initialize**: Realiza a guarda se o usuário possui finanças atribuida a ele.
+##### Comando para testes unitários exclusivo para esté sub-módulo.
+```bash
+  yarn run test -- --findRelatedTests src/guards/finance-initialize/finance-initialize.guard.spec.ts                                 
+```
 
 ### **strategies**: Conjunto de funções/métodos/classes de Estratégias de fluxo e validação.
 #### **auth-jwt**: Implementa uma estratégia de autenticação baseada em tokens JWT, usando o `passport-jwt`.
@@ -173,7 +184,15 @@ yarn test
 
 ### **finance**: Conjunto de serviços e endpoints relacionados a finanças.
 #### **service**: Regras de négocio para o tratamento de finanças.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/finance.service.spec.ts                                 
+```
 #### **controller**: Endpoints relacionados a finanças.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/finance.controller.spec.ts                                 
+```
 
 #### **bank**: Conjunto de serviços relacionados a instituições bancárias.
 - **service**: Regras de négocio para o tratamento das instituições bancárias.

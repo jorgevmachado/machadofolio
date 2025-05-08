@@ -5,7 +5,7 @@ import { type IBillCategory } from './category';
 import { type IExpense } from './expense';
 
 export type IBill = IFinanceBase & {
-    year?: number;
+    year: number;
     type: EBillType;
     bank: IBank;
     total?: number;

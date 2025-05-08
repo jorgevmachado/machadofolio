@@ -6,7 +6,7 @@ import { CreateTypeDto } from './dto/create-type.dto';
 import { SupplierTypeService } from './type.service';
 import { UpdateTypeDto } from './dto/update-type.dto';
 
-@Controller('type')
+@Controller('finance/supplier')
 export class TypeController {
   constructor(private readonly service: SupplierTypeService) {}
 

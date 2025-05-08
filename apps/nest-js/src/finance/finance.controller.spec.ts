@@ -8,12 +8,18 @@ import {
   jest,
 } from '@jest/globals';
 
+import { FINANCE_MOCK } from '../mocks/finance.mock';
+import { type Finance } from '../entities/finance.entity';
+
 import { FinanceController } from './finance.controller';
 import { FinanceService } from './finance.service';
+
 
 describe('FinanceController', () => {
   let service: FinanceService;
   let controller: FinanceController;
+
+  const mockEntity: Finance = FINANCE_MOCK;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -25,7 +31,7 @@ describe('FinanceController', () => {
             seed: jest.fn(),
             seeds: jest.fn(),
             basicSeeds: jest.fn(),
-            initializeFinance: jest.fn(),
+            initialize: jest.fn(),
           },
         },
       ],
@@ -42,5 +48,14 @@ describe('FinanceController', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(controller).toBeDefined();
+  });
+
+  describe('initialize', () => {
+    it('should initialize the database ', async () => {
+      jest
+          .spyOn(service, 'initialize')
+          .mockResolvedValueOnce(mockEntity);
+      expect(await controller.initialize(mockEntity.user)).toEqual(mockEntity);
+    });
   });
 });

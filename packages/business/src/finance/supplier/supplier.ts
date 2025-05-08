@@ -8,8 +8,8 @@ export default class Supplier implements SupplierEntity {
     name!: SupplierEntity['name'];
     type!: SupplierEntity['type'];
     name_code!: SupplierEntity['name_code'];
-    created_at: SupplierEntity['created_at'];
-    updated_at: SupplierEntity['updated_at'];
+    created_at!: SupplierEntity['created_at'];
+    updated_at!: SupplierEntity['updated_at'];
     deleted_at?: SupplierEntity['deleted_at'];
     description?: SupplierEntity['description'];
 

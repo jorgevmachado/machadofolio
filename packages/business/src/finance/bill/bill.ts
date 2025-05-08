@@ -5,7 +5,7 @@ import type { BillConstructorParams, BillEntity } from './types';
 export default class Bill implements BillEntity {
     id!: BillEntity['id'];
     type!: BillEntity['type'];
-    year?: BillEntity['year'];
+    year: BillEntity['year'] = new Date().getFullYear();
     bank!: BillEntity['bank'];
     name!: BillEntity['name'];
     total?: BillEntity['total'] = 0;
