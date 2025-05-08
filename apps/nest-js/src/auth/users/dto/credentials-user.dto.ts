@@ -1,6 +1,8 @@
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 
-export class CredentialsUserDto {
+import { SignInParams } from '@repo/business/auth/types';
+
+export class CredentialsUserDto implements SignInParams {
   @IsNotEmpty()
   @IsEmail()
   email!: string;

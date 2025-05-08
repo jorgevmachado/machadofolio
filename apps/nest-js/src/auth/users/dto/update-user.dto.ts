@@ -4,8 +4,9 @@ import { Transform } from 'class-transformer';
 import { EGender } from '@repo/services/personal-data/enum';
 
 import { ERole, EStatus } from '@repo/business/enum';
+import { UpdateParams } from '@repo/business/auth/types';
 
-export class UpdateUserDto  {
+export class UpdateUserDto implements UpdateParams {
     @IsEmpty()
     id?: string;
 

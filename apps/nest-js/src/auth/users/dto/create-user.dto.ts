@@ -11,10 +11,12 @@ import { Transform } from 'class-transformer';
 
 import { EGender } from '@repo/services/personal-data/enum';
 
+import { SignUpParams } from '@repo/business/auth/types';
+
 import { CPF } from '../../../decorators/cpf/cpf.decorator';
 import { Match } from '../../../decorators/match/match.decorator';
 
-export class CreateUserDto {
+export class CreateUserDto implements SignUpParams{
     @IsNotEmpty()
     @CPF()
     cpf!: string;
