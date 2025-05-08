@@ -4,8 +4,8 @@ import { ConflictException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { BANK_MOCK } from '../../mocks/bank.mock';
-import { Bank } from '../../entities/bank.entity';
+import { BANK_MOCK } from '../../../mocks/bank.mock';
+import { Bank } from '../../../entities/bank.entity';
 
 import { BankService } from './bank.service';
 import { type CreateBankDto } from './dto/create-bank.dto';

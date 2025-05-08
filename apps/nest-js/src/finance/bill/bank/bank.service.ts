@@ -4,9 +4,9 @@ import { Repository } from 'typeorm';
 
 import BankConstructor from '@repo/business/finance/bank/bank';
 
-import { Service } from '../../shared';
+import { Service } from '../../../shared';
 
-import { Bank } from '../../entities/bank.entity';
+import { Bank } from '../../../entities/bank.entity';
 import { CreateBankDto } from './dto/create-bank.dto';
 import { UpdateBankDto } from './dto/update-bank.dto';
 
