@@ -213,4 +213,39 @@ describe('BillService', () => {
       ).toEqual(mockEntity);
     });
   });
+
+  describe('remove', () => {
+    it('should remove bill when there are no associated expenses', async () => {
+      const expected: Bill = {
+        ...mockEntity,
+        expenses: [],
+      };
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getOne: jest.fn().mockReturnValueOnce(expected),
+      } as any);
+      jest.spyOn(repository, 'softRemove').mockResolvedValueOnce({
+        ...expected,
+        deleted_at: mockEntity.created_at,
+      });
+      expect(await service.remove(mockEntity.id)).toEqual({
+        message: 'Successfully removed',
+      });
+    });
+
+    it('should throw a ConflictException when bill is in use', async () => {
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getOne: jest.fn().mockReturnValueOnce(mockEntity),
+      } as any);
+
+      await expect(
+          service.remove(mockEntity.id),
+      ).rejects.toThrowError(ConflictException);
+    });
+  });
 });

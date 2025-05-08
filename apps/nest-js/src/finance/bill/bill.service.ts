@@ -133,4 +133,20 @@ export class BillService extends Service<Bill> {
 
     return await this.save(bill);
   }
+
+  async remove(param: string) {
+    const result = await this.findOne({
+      value: param,
+      relations: this.relations,
+    }) as Bill;
+    if (result?.expenses?.length) {
+      throw this.error(
+          new ConflictException(
+              'You cannot delete this bill because it is already in use.',
+          ),
+      );
+    }
+    await this.repository.softRemove(result);
+    return { message: 'Successfully removed' };
+  }
 }
