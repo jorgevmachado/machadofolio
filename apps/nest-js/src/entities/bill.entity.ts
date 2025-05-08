@@ -53,7 +53,7 @@ export class Bill implements BillEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    total?: number;
+    total!: number;
     
     @ManyToOne(() => Finance, (finance) => finance.bills, {
         nullable: false,
@@ -72,7 +72,7 @@ export class Bill implements BillEntity {
     expenses?: Array<Expense>;
 
     @Column({ nullable: false, default: false })
-    all_paid?: boolean;
+    all_paid!: boolean;
 
     @Column({ nullable: false, length: 200 })
     name_code!: string;
@@ -94,5 +94,5 @@ export class Bill implements BillEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    total_paid?: number;
+    total_paid!: number;
 }

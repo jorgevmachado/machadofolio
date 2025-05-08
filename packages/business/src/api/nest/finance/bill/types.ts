@@ -8,12 +8,12 @@ export type IBill = IFinanceBase & {
     year: number;
     type: EBillType;
     bank: IBank;
-    total?: number;
+    total: number;
     finance: IFinance;
     category: IBillCategory;
     expenses?: Array<IExpense>;
-    all_paid?: boolean;
-    total_paid?: number;
+    all_paid: boolean;
+    total_paid: number;
 }
 
 export type ICreateBillParams = Omit<

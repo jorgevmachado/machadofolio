@@ -28,10 +28,10 @@ export class Expense implements ExpenseEntity {
     name!: string;
 
     @Column({ nullable: false })
-    year?: number;
+    year!: number;
 
     @ManyToOne(() => Bill, (bill) => bill.expenses, {
-        nullable: true,
+        nullable: false,
     })
     @JoinTable()
     bill!: Bill;
@@ -44,7 +44,7 @@ export class Expense implements ExpenseEntity {
     type!: EExpenseType;
 
     @Column({ nullable: false })
-    paid?: boolean;
+    paid!: boolean;
 
     @Column({
         nullable: false,
@@ -54,7 +54,7 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    total?: number;
+    total!: number;
 
     @ManyToOne(() => Supplier, (supplier) => supplier.expenses, {
         nullable: false,
@@ -73,7 +73,7 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    total_paid?: number;
+    total_paid!: number;
 
     @Column({
         nullable: false,
@@ -83,10 +83,10 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    january?: number;
+    january!: number;
 
     @Column({ nullable: false })
-    january_paid?: boolean;
+    january_paid!: boolean;
 
     @Column({
         nullable: false,
@@ -96,10 +96,10 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    february?: number;
+    february!: number;
 
     @Column({ nullable: false })
-    february_paid?: boolean;
+    february_paid!: boolean;
 
     @Column({
         nullable: false,
@@ -109,10 +109,10 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    march?: number;
+    march!: number;
 
     @Column({ nullable: false })
-    march_paid?: boolean;
+    march_paid!: boolean;
 
     @Column({
         nullable: false,
@@ -122,10 +122,10 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    april?: number;
+    april!: number;
 
     @Column({ nullable: false })
-    april_paid?: boolean;
+    april_paid!: boolean;
 
     @Column({
         nullable: false,
@@ -135,10 +135,10 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    may?: number;
+    may!: number;
 
     @Column({ nullable: false })
-    may_paid?: boolean;
+    may_paid!: boolean;
 
     @Column({
         nullable: false,
@@ -148,10 +148,10 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    june?: number;
+    june!: number;
 
     @Column({ nullable: false })
-    june_paid?: boolean;
+    june_paid!: boolean;
 
     @Column({
         nullable: false,
@@ -161,10 +161,10 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    july?: number;
+    july!: number;
 
     @Column({ nullable: false })
-    july_paid?: boolean;
+    july_paid!: boolean;
 
     @Column({
         nullable: false,
@@ -174,10 +174,10 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    august?: number;
+    august!: number;
 
     @Column({ nullable: false })
-    august_paid?: boolean;
+    august_paid!: boolean;
 
     @Column({
         nullable: false,
@@ -187,10 +187,10 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    september?: number;
+    september!: number;
 
     @Column({ nullable: false })
-    september_paid?: boolean;
+    september_paid!: boolean;
 
     @Column({
         nullable: false,
@@ -200,10 +200,10 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    october?: number;
+    october!: number;
 
     @Column({ nullable: false })
-    october_paid?: boolean;
+    october_paid!: boolean;
 
     @Column({
         nullable: false,
@@ -213,10 +213,10 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    november?: number;
+    november!: number;
 
     @Column({ nullable: false })
-    november_paid?: boolean;
+    november_paid!: boolean;
 
     @Column({
         nullable: false,
@@ -226,16 +226,16 @@ export class Expense implements ExpenseEntity {
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    december?: number;
+    december!: number;
 
     @Column({ nullable: false })
-    december_paid?: boolean;
+    december_paid!: boolean;
 
     @Column({ nullable: true })
     description?: string;
 
     @Column({ nullable: false })
-    instalment_number?: number;
+    instalment_number!: number;
 
     @CreateDateColumn()
     created_at!: Date;

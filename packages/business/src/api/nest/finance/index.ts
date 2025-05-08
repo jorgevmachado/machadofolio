@@ -18,6 +18,8 @@ export {
     type ICreateBillCategoryParams,
     type IUpdateBillCategoryParams,
     type IExpense,
+    type IExpenseBase,
+    type IExpenseMonthsWithPaid,
     type ICreateExpenseParams,
     type IUpdateExpenseParams,
     EExpenseType,

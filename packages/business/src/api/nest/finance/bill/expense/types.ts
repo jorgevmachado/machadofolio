@@ -8,43 +8,48 @@ import type { IBill } from '../types';
 
 import { type EExpenseType } from './enum';
 
-export type IExpense = IFinanceBase & {
-    year?: number;
+export type IExpenseMonthsWithPaid = {
+    january: number;
+    january_paid: boolean;
+    february: number;
+    february_paid: boolean;
+    march: number;
+    march_paid: boolean;
+    april: number;
+    april_paid: boolean;
+    may: number;
+    may_paid: boolean;
+    june: number;
+    june_paid: boolean;
+    july: number;
+    july_paid: boolean;
+    august: number;
+    august_paid: boolean;
+    september: number;
+    september_paid: boolean;
+    october: number;
+    october_paid: boolean;
+    november: number;
+    november_paid: boolean;
+    december: number;
+    december_paid: boolean;
+}
+
+export type IExpenseBase = IFinanceBase & {
+    year: number;
     bill: IBill;
     type: EExpenseType;
-    paid?: boolean;
+    paid: boolean;
     value?: number;
-    total?: number;
+    total: number;
     month?: EMonth;
     supplier: ISupplier;
-    total_paid?: number;
-    january?: number;
-    january_paid?: boolean;
-    february?: number;
-    february_paid?: boolean;
-    march?: number;
-    march_paid?: boolean;
-    april?: number;
-    april_paid?: boolean;
-    may?: number;
-    may_paid?: boolean;
-    june?: number;
-    june_paid?: boolean;
-    july?: number;
-    july_paid?: boolean;
-    august?: number;
-    august_paid?: boolean;
-    september?: number;
-    september_paid?: boolean;
-    october?: number;
-    october_paid?: boolean;
-    november?: number;
-    november_paid?: boolean;
-    december?: number;
-    december_paid?: boolean;
+    total_paid: number;
     description?: string;
-    instalment_number?: number;
-}
+    instalment_number: number;
+};
+
+export type IExpense = IFinanceBase & IExpenseMonthsWithPaid & IExpenseBase;
 
 export type ICreateExpenseParams = {
     type: EExpenseType;
@@ -56,21 +61,10 @@ export type ICreateExpenseParams = {
     instalment_number?: number;
 }
 
-export type IUpdateExpenseParams = Omit<
-        IExpense,
-        | 'id'
-        | 'bill'
-        | 'type'
-        | 'name'
-        | 'value'
-        | 'supplier'
-        | 'name_code'
-        | 'created_at'
-        | 'updated_at'
-        | 'deleted_at'
-        | 'instalment_number'
-    > & {
+export type IUpdateExpenseParams = Partial<IExpenseMonthsWithPaid> & {
+    paid?: boolean;
     bill?: string | IExpense['bill'];
     type?: IExpense['type'];
     supplier?: string | IExpense['supplier'];
+    description?: string;
 }
