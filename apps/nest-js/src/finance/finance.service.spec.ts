@@ -64,6 +64,7 @@ describe('FinanceService', () => {
   });
 
   it('should be defined', () => {
+    expect(repository).toBeDefined();
     expect(supplierService).toBeDefined();
     expect(bankService).toBeDefined();
     expect(billService).toBeDefined();

@@ -155,7 +155,6 @@ yarn test
 ```bash
   yarn run test -- --findRelatedTests src/auth/auth.service.spec.ts                                 
 ```
-
 #### **auth.controller**: Controlador dos endpoints relascionados a autenticação.
 - **signUp**: Aciona o serviço signUp do `auth.service` e retorna uma mensagem de sucesso.
 - **signIn**: Aciona o serviço signIn do `auth.service` e retorna uma mensagem de sucesso e o token gerado.
@@ -170,3 +169,71 @@ yarn test
   yarn run test -- --findRelatedTests src/auth/auth.controller.spec.ts                                 
 ``` 
 
+
+
+### **finance**: Conjunto de serviços e endpoints relacionados a finanças.
+#### **service**: Regras de négocio para o tratamento de finanças.
+#### **controller**: Endpoints relacionados a finanças.
+
+#### **bank**: Conjunto de serviços relacionados a instituições bancárias.
+- **service**: Regras de négocio para o tratamento das instituições bancárias.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/bank/bank.service.spec.ts                                 
+```
+- **controller**: Endpoints relacionados a instituições bancárias.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/bank/bank.controller.spec.ts                                 
+```
+  
+#### **bill**: Conjunto de serviços relacionados a contas a pagar.
+- **service**: Regras de négocio para o tratamento das contas a pagar.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/bill/bill.service.spec.ts                                 
+```
+- **controller**: Endpoints relacionados a contas a pagar.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/bill/bill.controller.spec.ts                                 
+```
+- **billCategory**: Conjunto de serviços relacionados a categoria da conta a pagar.
+- - **service**: Regras de négocio para o tratamento da categoria da conta a pagar.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/bill/category/category.service.spec.ts                                 
+``` 
+- - **controller**: Endpoints relacionados a categoria da conta a pagar.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/bill/category/category.controller.spec.ts                                 
+```
+- **expense**: Conjunto de serviços relacionados a despesa da conta a pagar.
+- - **service**: Regras de négocio para o tratamento de despesas da conta a pagar.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/bill/expense/expense.service.spec.ts                                 
+```
+#### **supplier**: Conjunto de serviços relacionados a fornecedores.
+- **service**: Regras de négocio para o tratamento de fornecedores.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/supplier/supplier.service.spec.ts                                 
+```
+- **controller**: Endpoints relacionados a fornecedores.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/supplier/supplier.controller.spec.ts                                 
+```
+- **supplierType**: conjunto de serviços relacionados a tipos de fornecedor.
+- - **service**: Regras de négocio para o tratamento de tipos de fornecedor.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/supplier/type/type.service.spec.ts                                 
+```
+- - **controller**: Endpoints relacionados a tipos de fornecedor.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/supplier/type/type.controller.spec.ts                                 
+```

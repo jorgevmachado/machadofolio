@@ -2,7 +2,7 @@ import type { IBank, ICreateBankParams, IPartialNestBaseEntity, IUpdateBankParam
 
 export type BankEntity = IBank
 
-export type BankConstructorParams = Omit< BankEntity, 'id' | 'created_at' | 'updated_at' | 'deleted_at'> & IPartialNestBaseEntity;
+export type BankConstructorParams = Omit< BankEntity, 'id' | 'name_code' | 'created_at' | 'updated_at' | 'deleted_at'> & IPartialNestBaseEntity;
 
 export type CreateBankParams = ICreateBankParams;
 
