@@ -16,6 +16,7 @@ export default class User implements UserEntity {
     gender!: UserEntity['gender'];
     status?: UserEntity['status'] = EStatus.ACTIVE;
     avatar?: UserEntity['avatar'];
+    finance?: UserEntity['finance'];
     whatsapp!: UserEntity['whatsapp'];
     password?: UserEntity['password'];
     created_at!: UserEntity['created_at'];
@@ -36,6 +37,7 @@ export default class User implements UserEntity {
             this.gender = params.gender;
             this.status = params.status;
             this.avatar = params.avatar;
+            this.finance = params?.finance ?? this.finance;
             this.date_of_birth = params.date_of_birth;
             this.created_at = params.created_at ?? this.created_at;
             this.updated_at = params.updated_at ?? this.updated_at;

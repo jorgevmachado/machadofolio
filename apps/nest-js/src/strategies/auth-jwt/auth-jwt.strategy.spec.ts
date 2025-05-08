@@ -6,7 +6,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { USER_ENTITY_MOCK } from '@repo/business/auth/mock/mock';
 
-import { User } from '../../auth/users/entities/user.entity';
+import { User } from '../../entities/user.entity';
 
 import { AuthJwtStrategy } from './auth-jwt.strategy';
 
@@ -20,6 +20,7 @@ describe('AuthJwtStrategy', () => {
     beforeEach(async () => {
         queryBuilderMock = {
             where: jest.fn().mockReturnThis(),
+            leftJoinAndSelect: jest.fn().mockReturnThis(),
             getOne: jest.fn(),
         };
 

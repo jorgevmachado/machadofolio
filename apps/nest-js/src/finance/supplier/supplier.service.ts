@@ -6,8 +6,8 @@ import SupplierConstructor from '@repo/business/finance/supplier/supplier';
 
 import { Service } from '../../shared';
 
-import { Supplier } from '../entities/supplier.entity';
-import { SupplierType } from '../entities/type.entity';
+import { Supplier } from '../../entities/supplier.entity';
+import { SupplierType } from '../../entities/type.entity';
 
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { SupplierTypeService } from './type/type.service';

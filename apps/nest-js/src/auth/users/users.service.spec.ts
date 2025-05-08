@@ -11,10 +11,11 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { EGender } from '@repo/services/personal-data/enum';
 
 import { ERole, EStatus } from '@repo/business/enum';
-import { USER_ENTITY_MOCK, USER_MOCK, USER_PASSWORD } from '@repo/business/auth/mock/mock';
+
+import { USER_MOCK, USER_PASSWORD } from '../../mocks/user.mock';
+import { User } from '../../entities/user.entity';
 
 import { type UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 
 
@@ -67,17 +68,17 @@ describe('UsersService', () => {
                 getOne: jest.fn().mockReturnValueOnce(null),
             } as any);
 
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(USER_MOCK as User);
+            jest.spyOn(repository, 'save').mockResolvedValueOnce(USER_MOCK);
 
             expect(
                 await service.create({
-                    cpf: USER_ENTITY_MOCK.cpf,
-                    name: USER_ENTITY_MOCK.name,
-                    email: USER_ENTITY_MOCK.email,
-                    gender: USER_ENTITY_MOCK.gender,
-                    whatsapp: USER_ENTITY_MOCK.whatsapp,
+                    cpf: USER_MOCK.cpf,
+                    name: USER_MOCK.name,
+                    email: USER_MOCK.email,
+                    gender: USER_MOCK.gender,
+                    whatsapp: USER_MOCK.whatsapp,
                     password: USER_PASSWORD,
-                    date_of_birth: USER_ENTITY_MOCK.date_of_birth,
+                    date_of_birth: USER_MOCK.date_of_birth,
                     password_confirmation: USER_PASSWORD,
                 }),
             ).toEqual(USER_MOCK);
@@ -107,13 +108,13 @@ describe('UsersService', () => {
 
             await expect(
                 service.create({
-                    cpf: USER_ENTITY_MOCK.cpf,
-                    name: USER_ENTITY_MOCK.name,
-                    email: USER_ENTITY_MOCK.email,
-                    gender: USER_ENTITY_MOCK.gender,
-                    whatsapp: USER_ENTITY_MOCK.whatsapp,
+                    cpf: USER_MOCK.cpf,
+                    name: USER_MOCK.name,
+                    email: USER_MOCK.email,
+                    gender: USER_MOCK.gender,
+                    whatsapp: USER_MOCK.whatsapp,
                     password: USER_PASSWORD,
-                    date_of_birth: USER_ENTITY_MOCK.date_of_birth,
+                    date_of_birth: USER_MOCK.date_of_birth,
                     password_confirmation: USER_PASSWORD,
                 }),
             ).rejects.toThrow(BadRequestException);
@@ -142,7 +143,7 @@ describe('UsersService', () => {
                 ...updateAuthDto,
             };
 
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(expected as User);
+            jest.spyOn(repository, 'save').mockResolvedValueOnce(expected);
 
             expect(await service.update(USER_MOCK.id, updateAuthDto)).toEqual(
                 expected,
@@ -170,7 +171,7 @@ describe('UsersService', () => {
                 ...updateAuthDto,
             };
 
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(expected as User);
+            jest.spyOn(repository, 'save').mockResolvedValueOnce(expected);
 
             expect(await service.update(USER_MOCK.id, updateAuthDto)).toEqual(
                 expected,
@@ -203,7 +204,7 @@ describe('UsersService', () => {
                 leftJoinAndSelect: jest.fn().mockReturnThis(),
                 andWhere: jest.fn().mockReturnThis(),
                 withDeleted: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(USER_ENTITY_MOCK),
+                getOne: jest.fn().mockReturnValueOnce(USER_MOCK),
             } as any);
 
             expect(
@@ -211,7 +212,7 @@ describe('UsersService', () => {
                     email: USER_MOCK.email,
                     password: USER_PASSWORD,
                 }),
-            ).toEqual(USER_ENTITY_MOCK);
+            ).toEqual(USER_MOCK);
         });
 
         it('should return false because the user is inactive', async () => {
@@ -220,7 +221,7 @@ describe('UsersService', () => {
                 andWhere: jest.fn().mockReturnThis(),
                 withDeleted: jest.fn(),
                 getOne: jest.fn().mockReturnValueOnce({
-                    ...USER_ENTITY_MOCK,
+                    ...USER_MOCK,
                     status: EStatus.INACTIVE,
                 }),
             } as any);
@@ -238,7 +239,7 @@ describe('UsersService', () => {
                 leftJoinAndSelect: jest.fn().mockReturnThis(),
                 andWhere: jest.fn().mockReturnThis(),
                 withDeleted: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(USER_ENTITY_MOCK),
+                getOne: jest.fn().mockReturnValueOnce(USER_MOCK),
             } as any);
 
             await expect(
@@ -251,7 +252,7 @@ describe('UsersService', () => {
     });
 
     describe('promote', () => {
-        const promoteEntityUser = USER_ENTITY_MOCK as User;
+        const promoteEntityUser = USER_MOCK;
         it('should promote user', async () => {
             jest
                 .spyOn(repository, 'save')
@@ -267,6 +268,7 @@ describe('UsersService', () => {
                     ...promoteEntityUser,
                     salt: undefined,
                     role: ERole.ADMIN,
+                    avatar: undefined,
                     password: undefined,
                     deleted_at: undefined,
                     recover_token: undefined,
@@ -318,7 +320,7 @@ describe('UsersService', () => {
                 andWhere: jest.fn(),
                 withDeleted: jest.fn(),
                 leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(USER_ENTITY_MOCK),
+                getOne: jest.fn().mockReturnValueOnce(USER_MOCK),
             } as any);
 
             jest.spyOn(fs, 'existsSync').mockReturnValue(false);
@@ -326,35 +328,35 @@ describe('UsersService', () => {
             (writeFile as jest.MockedFunction<typeof writeFile>).mockResolvedValue();
 
             jest.spyOn(service as any, 'save').mockResolvedValue({
-                ...USER_ENTITY_MOCK,
-                avatar: `http://localhost:3001/uploads/${USER_ENTITY_MOCK.email}.jpeg`,
+                ...USER_MOCK,
+                avatar: `http://localhost:3001/uploads/${USER_MOCK.email}.jpeg`,
             });
 
-            expect(await service.upload(USER_ENTITY_MOCK.id, mockFile)).toEqual({
-                ...USER_ENTITY_MOCK,
-                avatar: `http://localhost:3001/uploads/${USER_ENTITY_MOCK.email}.jpeg`,
+            expect(await service.upload(USER_MOCK.id, mockFile)).toEqual({
+                ...USER_MOCK,
+                avatar: `http://localhost:3001/uploads/${USER_MOCK.email}.jpeg`,
             });
         });
     });
 
     describe('seed', () => {
         const seedEntityUser: User = {
-            id: USER_ENTITY_MOCK.id,
-            cpf: USER_ENTITY_MOCK.cpf,
+            id: USER_MOCK.id,
+            cpf: USER_MOCK.cpf,
             salt: undefined,
-            role: USER_ENTITY_MOCK.role,
-            name: USER_ENTITY_MOCK.name,
-            email: USER_ENTITY_MOCK.email,
-            status: USER_ENTITY_MOCK.status,
-            avatar: USER_ENTITY_MOCK.avatar,
-            gender: USER_ENTITY_MOCK.gender,
+            role: USER_MOCK.role,
+            name: USER_MOCK.name,
+            email: USER_MOCK.email,
+            status: USER_MOCK.status,
+            avatar: USER_MOCK.avatar,
+            gender: USER_MOCK.gender,
             password: undefined,
-            whatsapp: USER_ENTITY_MOCK.whatsapp,
-            created_at: USER_ENTITY_MOCK.created_at,
-            updated_at: USER_ENTITY_MOCK.updated_at,
+            whatsapp: USER_MOCK.whatsapp,
+            created_at: USER_MOCK.created_at,
+            updated_at: USER_MOCK.updated_at,
             deleted_at: undefined,
             recover_token: undefined,
-            date_of_birth: USER_ENTITY_MOCK.date_of_birth,
+            date_of_birth: USER_MOCK.date_of_birth,
             confirmation_token: undefined,
         };
 
@@ -422,25 +424,26 @@ describe('UsersService', () => {
         it('should be found a complete user', async () => {
             jest
                 .spyOn(service, 'findOne')
-                .mockResolvedValueOnce(USER_ENTITY_MOCK);
+                .mockResolvedValueOnce(USER_MOCK);
 
-            expect(await service.me(USER_ENTITY_MOCK.id)).toEqual({
-                id: USER_ENTITY_MOCK.id,
-                cpf: USER_ENTITY_MOCK.cpf,
+            expect(await service.me(USER_MOCK.id)).toEqual({
+                id: USER_MOCK.id,
+                cpf: USER_MOCK.cpf,
                 salt: undefined,
-                role: USER_ENTITY_MOCK.role,
-                name: USER_ENTITY_MOCK.name,
-                email: USER_ENTITY_MOCK.email,
-                status: USER_ENTITY_MOCK.status,
-                avatar: USER_ENTITY_MOCK.avatar,
-                gender: USER_ENTITY_MOCK.gender,
+                role: USER_MOCK.role,
+                name: USER_MOCK.name,
+                email: USER_MOCK.email,
+                status: USER_MOCK.status,
+                avatar: USER_MOCK.avatar,
+                gender: USER_MOCK.gender,
+                finance: USER_MOCK.finance,
                 password: undefined,
-                whatsapp: USER_ENTITY_MOCK.whatsapp,
-                created_at: USER_ENTITY_MOCK.created_at,
-                updated_at: USER_ENTITY_MOCK.updated_at,
+                whatsapp: USER_MOCK.whatsapp,
+                created_at: USER_MOCK.created_at,
+                updated_at: USER_MOCK.updated_at,
                 deleted_at: undefined,
                 recover_token: undefined,
-                date_of_birth: USER_ENTITY_MOCK.date_of_birth,
+                date_of_birth: USER_MOCK.date_of_birth,
                 confirmation_token: undefined,
             });
         });

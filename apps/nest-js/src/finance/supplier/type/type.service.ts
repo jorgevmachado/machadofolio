@@ -6,7 +6,7 @@ import SupplierTypeConstructor from '@repo/business/finance/supplier-type/suppli
 
 import { Service } from '../../../shared';
 
-import { SupplierType } from '../../entities/type.entity';
+import { SupplierType } from '../../../entities/type.entity';
 
 import { CreateTypeDto } from './dto/create-type.dto';
 import { UpdateTypeDto } from './dto/update-type.dto';

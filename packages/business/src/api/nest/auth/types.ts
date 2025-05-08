@@ -2,6 +2,7 @@ import { type EGender } from '@repo/services/personal-data/enum';
 
 import { type ERole, type EStatus } from '../../enum';
 
+import { type IFinance } from '../finance';
 import { type INestBaseEntity } from '../types';
 
 export type IUser = INestBaseEntity & {
@@ -13,6 +14,7 @@ export type IUser = INestBaseEntity & {
     gender: EGender;
     status?: EStatus;
     avatar?: string;
+    finance?: IFinance;
     whatsapp: string;
     password?: string;
     date_of_birth: Date;

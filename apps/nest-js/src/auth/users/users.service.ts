@@ -14,7 +14,7 @@ import { Service, type TBy } from '../../shared';
 import { CreateUserDto } from './dto/create-user.dto';
 import { CredentialsUserDto } from './dto/credentials-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { User } from '../../entities/user.entity';
 
 
 
@@ -25,7 +25,7 @@ export class UsersService extends Service<User>{
         @InjectRepository(User)
         protected repository: Repository<User>,
     ) {
-        super('users', [], repository);
+        super('users', ['finance'], repository);
     }
   async create({
                  cpf,

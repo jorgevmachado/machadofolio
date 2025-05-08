@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Service } from '../../shared';
 
-import { Bill } from '../entities/bill.entity';
+import { Bill } from '../../entities/bill.entity';
 
 @Injectable()
 export class BillService extends Service<Bill> {

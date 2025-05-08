@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PassportStrategy } from '@nestjs/passport';
 import { Repository } from 'typeorm';
 
-import { User } from '../../auth/users/entities/user.entity';
+import { User } from '../../entities/user.entity';
 
 @Injectable()
 export class AuthJwtStrategy extends PassportStrategy(Strategy){
@@ -17,15 +17,10 @@ export class AuthJwtStrategy extends PassportStrategy(Strategy){
 
     async validate(payload: { id: string; }) {
         const alias = 'users';
-        // const user = await this.repository
-        //     .createQueryBuilder(alias)
-        //     .leftJoinAndSelect(`${alias}.finance`, 'finance')
-        //     .leftJoinAndSelect('finance.bills', 'bills')
-        //     .where(`${alias}.id = :id` , { id: payload.id })
-        //     .getOne();
-
         const user = await this.repository
             .createQueryBuilder(alias)
+            .leftJoinAndSelect(`${alias}.finance`, 'finance')
+            .leftJoinAndSelect('finance.bills', 'bills')
             .where(`${alias}.id = :id` , { id: payload.id })
             .getOne();
 

@@ -10,7 +10,7 @@ import {
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { Finance } from './entities/finance.entity';
+import { Finance } from '../entities/finance.entity';
 
 import { BankService } from './bank/bank.service';
 import { BillService } from './bill/bill.service';

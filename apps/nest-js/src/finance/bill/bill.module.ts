@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { Bill } from '../entities/bill.entity';
+import { Bill } from '../../entities/bill.entity';
 import { BillController } from './bill.controller';
 import { BillService } from './bill.service';
 import { CategoryModule } from './category/category.module';

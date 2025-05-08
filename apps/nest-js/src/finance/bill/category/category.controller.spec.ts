@@ -1,7 +1,7 @@
 import { Test, type TestingModule } from '@nestjs/testing';
 
-import { BILL_CATEGORY_MOCK } from '../../mocks/bill-category.mock';
-import { type BillCategory } from '../../entities/category.entity';
+import { BILL_CATEGORY_MOCK } from '../../../mocks/bill-category.mock';
+import { type BillCategory } from '../../../entities/category.entity';
 
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';

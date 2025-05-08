@@ -10,7 +10,7 @@ import { SignInAuthDto } from './dto/sign-in-auth.dto';
 import { SignUpAuthDto } from './dto/sign-up-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 
-import { User } from './users/entities/user.entity';
+import { User } from '../entities/user.entity';
 import { UsersService } from './users/users.service';
 
 

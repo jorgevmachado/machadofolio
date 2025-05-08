@@ -6,7 +6,7 @@ import BillCategoryConstructor from '@repo/business/finance/bill-category/bill-c
 
 import { Service } from '../../../shared';
 
-import { BillCategory } from '../../entities/category.entity';
+import { BillCategory } from '../../../entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 

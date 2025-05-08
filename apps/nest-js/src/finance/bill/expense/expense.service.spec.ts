@@ -10,7 +10,7 @@ import {
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { Expense } from '../../entities/expense.entity';
+import { Expense } from '../../../entities/expense.entity';
 import { ExpenseService } from './expense.service';
 
 describe('ExpenseService', () => {

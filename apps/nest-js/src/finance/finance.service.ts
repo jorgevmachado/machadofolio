@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Service } from '../shared';
 
-import { Finance } from './entities/finance.entity';
+import { Finance } from '../entities/finance.entity';
 
 import { BankService } from './bank/bank.service';
 import { BillService } from './bill/bill.service';

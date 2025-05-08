@@ -115,6 +115,7 @@ describe('AuthService', () => {
         date_of_birth: USER_ENTITY_MOCK.date_of_birth,
         created_at: USER_ENTITY_MOCK.created_at,
         updated_at: USER_ENTITY_MOCK.updated_at,
+        finance: undefined,
       });
     });
   });

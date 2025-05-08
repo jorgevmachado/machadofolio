@@ -3,7 +3,7 @@ import { Observable, map } from 'rxjs';
 
 import UserConstructor from '@repo/business/auth/user/user';
 
-import { User } from '../../auth/users/entities/user.entity'
+import { User } from '../../entities/user.entity'
 
 @Injectable()
 export class SanitizeUserInterceptor implements NestInterceptor {

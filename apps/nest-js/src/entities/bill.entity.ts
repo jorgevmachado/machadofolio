@@ -13,7 +13,7 @@ import {
 import type { BillEntity } from '@repo/business/finance/bill/types';
 import { EBillType } from '@repo/business/finance/bill/enum';
 
-import { DecimalTransformer } from '../../transforms/decimal';
+import { DecimalTransformer } from '../transforms/decimal';
 
 import { Bank } from './bank.entity';
 import { Finance } from './finance.entity';
