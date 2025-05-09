@@ -10,6 +10,7 @@ export function serialize(value: Record<string, unknown>): string | undefined {
  if(Object.keys(value).some((key) => key)) {
   return new URLSearchParams(value as Record<string, string>).toString();
  }
+ return;
 }
 
 export function isObject(value: unknown): boolean {

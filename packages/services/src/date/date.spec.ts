@@ -143,6 +143,10 @@ describe('Date function', () => {
         it('It must return undefined because the values do not match the date.', () => {
             expect(parseDateFromString('yyyy-mm-dd')).toBe(undefined);
         });
+
+        it('It must return undefined because the values is undefined.', () => {
+            expect(parseDateFromString(undefined)).toBe(undefined);
+        });
     });
 
     describe('parseStartDate', () => {
