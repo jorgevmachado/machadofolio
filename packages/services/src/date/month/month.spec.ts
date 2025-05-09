@@ -52,6 +52,10 @@ describe('Date Month function', () => {
                 expect(getMonthIndex(EMonth.JANUARY)).toBe(0);
                 expect(getMonthIndex(EMonth.DECEMBER)).toBe(11);
             });
+
+            it('Should return the 0 index for a invalid month.', () => {
+                expect(getMonthIndex()).toBe(0);
+            });
         });
 
         describe('getMonthByIndex', () => {

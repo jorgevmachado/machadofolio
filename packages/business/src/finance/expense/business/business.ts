@@ -1,4 +1,4 @@
-import { MONTHS, getCurrentMonth , getMonthIndex, isMonthValid } from '@repo/services/date/month/month';
+import { MONTHS, getCurrentMonth , getMonthByIndex, getMonthIndex, isMonthValid } from '@repo/services/date/month/month';
 
 import { EExpenseType } from '../../../api';
 
@@ -41,7 +41,7 @@ export default class ExpenseBusiness {
     private handleVariableExpense(expense: Expense, value: number, month?: ExpenseEntity['month']): InitializedExpense {
         const startMonth = month ?? getCurrentMonth();
         isMonthValid(startMonth);
-        const startMonthIndex = getMonthIndex(startMonth.toUpperCase() as ExpenseEntity['month']);
+        const startMonthIndex = getMonthIndex(startMonth?.toUpperCase() as ExpenseEntity['month']);
         const { monthsForCurrentYear, monthsForNextYear } = this.splitMonthsByYear(expense.year, expense.instalment_number, startMonthIndex);
         const expenseForCurrentYear = this.updateMonthsOfExpense(expense, monthsForCurrentYear, value, expense.paid);
 
@@ -84,9 +84,9 @@ export default class ExpenseBusiness {
             const year = currentYear + Math.floor((startMonthIndex + i) / 12);
 
             if (year === currentYear) {
-                monthsForCurrentYear.push(MONTHS[monthIndex]);
+                monthsForCurrentYear.push(getMonthByIndex(monthIndex));
             } else {
-                monthsForNextYear.push(MONTHS[monthIndex]);
+                monthsForNextYear.push(getMonthByIndex(monthIndex));
             }
         }
 
@@ -94,14 +94,10 @@ export default class ExpenseBusiness {
     }
 
     private handleExpenseForNextYear(expense: Expense, year: number, value: number, months: Array<string>): Expense {
-        const builtExpense = {
+        const builtExpense: Expense = {
             ...expense,
-            id: undefined,
+            id: '',
             year,
-            bill: undefined,
-            created_at: undefined,
-            updated_at: undefined,
-            deleted_at: undefined,
             instalment_number: months.length,
         };
 

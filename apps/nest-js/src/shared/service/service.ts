@@ -49,7 +49,11 @@ export abstract class Service<T extends BasicEntity> extends Base {
     }
 
     async save(data: T): Promise<void | T> {
-        return this.repository.save(data)
+        const currentData = {
+            ...data,
+            id: data.id === '' ? undefined : data.id,
+        }
+        return this.repository.save(currentData)
             .then()
             .catch((error) => {
                 throw this.error(error)}

@@ -19,16 +19,19 @@ export type IBill = IFinanceBase & {
 export type ICreateBillParams = Omit<
         IBill,
         | 'id'
+        | 'year'
         | 'name'
         | 'bank'
-        | 'year'
+        | 'total'
         | 'finance'
         | 'category'
+        | 'all_paid'
         | 'expenses'
         | 'name_code'
         | 'created_at'
         | 'updated_at'
         | 'deleted_at'
+        | 'total_paid'
     > & {
     year?: number;
     bank: string | IBank;

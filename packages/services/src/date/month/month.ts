@@ -42,7 +42,10 @@ export function getCurrentMonth(): EMonth {
     }
 }
 
-export function getMonthIndex(month: EMonth): number {
+export function getMonthIndex(month?: EMonth): number {
+    if(!month) {
+        return 0;
+    }
     return MONTHS.indexOf(month.toLowerCase() as TMonth);
 }
 

@@ -254,10 +254,9 @@ describe('Expense Business', () => {
             expect(result.expenseForCurrentYear.deleted_at).toBeUndefined();
             expect(result.expenseForCurrentYear.instalment_number).toEqual(10);
 
-            expect(result.expenseForNextYear?.id).toBeUndefined();
+            expect(result.expenseForNextYear?.id).toEqual('');
             expect(result.expenseForNextYear?.name).toEqual(expenseVariableWithNextYear.name);
             expect(result.expenseForNextYear?.year).toEqual(2026);
-            expect(result.expenseForNextYear?.bill).toBeUndefined();
             expect(result.expenseForNextYear?.type).toEqual(EExpenseType.VARIABLE);
             expect(result.expenseForNextYear?.paid).toBeFalsy();
             expect(result.expenseForNextYear?.total).toEqual(0);
