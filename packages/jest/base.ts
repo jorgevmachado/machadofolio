@@ -16,4 +16,17 @@ export const config = {
         'interface.ts',
         'types.ts',
     ],
+    collectCoverageFrom: [
+        '**/*.(t|j)s',
+        '!**/node_modules/**',
+        '!**/dist/**',
+        '!**/.next/**',
+        '!index.ts',
+        '!**/*.{enum,types,interface}.ts',
+        '!**/path/to/excluded/files/**'
+    ],
+    resetMocks: true,
+    restoreMocks: true,
+    clearMocks: true,
+    setupFilesAfterEnv: [require.resolve('./jest.setup.ts')],
 } as const satisfies Config;

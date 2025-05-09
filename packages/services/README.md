@@ -97,6 +97,7 @@ yarn lint
 #### Comando para testes unitários exclusivo para esté módulo.
 ```bash
   yarn run test -- --findRelatedTests src/date/date.spec.ts               
+  yarn run test -- --findRelatedTests src/date/day/day.spec.ts               
   yarn run test -- --findRelatedTests src/date/month/month.spec.ts               
 ```
 

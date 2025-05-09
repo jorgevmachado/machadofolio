@@ -10,5 +10,4 @@ export const config = {
     },
     testEnvironment: 'node',
     coverageDirectory: '../coverage',
-    collectCoverageFrom: ['**/*.(t|j)s'],
 } as const satisfies Config;
