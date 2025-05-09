@@ -46,15 +46,16 @@ export default class Expense implements ExpenseEntity {
 
     constructor(params: ExpenseConstructorParams) {
         this.id = params?.id ?? this.id;
-        this.bill = params?.bill ?? this.bill;
-        this.name = params.name;
+        this.bill = params.bill;
         this.year = params?.year ?? this.year;
         this.type = params.type;
         this.paid = params?.paid ?? this.paid;
         this.total = params?.total ?? this.total;
-        this.name_code = this.name ? toSnakeCase(normalize(this.name)) : this.name_code;
         this.supplier = params.supplier;
         this.total_paid = params?.total_paid ?? this.total_paid;
+
+        this.name = `${params.bill.name} ${params.supplier.name}`;
+        this.name_code = toSnakeCase(normalize(this.name));
 
         MONTHS.forEach(month => {
             this[month] = params?.[month] ?? this[month];

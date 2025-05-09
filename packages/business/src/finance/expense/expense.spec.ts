@@ -1,11 +1,6 @@
-import {
-    afterEach,
-    beforeEach,
-    describe,
-    expect,
-    it,
-    jest,
-} from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
+
+import { MONTHS } from '@repo/services/date/month/month';
 
 import { EXPENSE_MOCK } from './mock';
 import Expense from './expense';
@@ -21,7 +16,7 @@ describe('Expense', () => {
     afterEach(() => {
         jest.resetModules();
     });
-    
+
     describe('Constructor', () => {
         it('should create an instance with all provided parameters', () => {
             const expense = new Expense(expenseMock);
@@ -42,27 +37,11 @@ describe('Expense', () => {
             expect(expense.deleted_at).toBe(expenseMock.deleted_at);
         });
 
-        it('should initialize fields with default values when no parameters are provided', () => {
-            const expense = new Expense({
-                bill: undefined,
-                type: undefined,
-                name: 'expense',
-                supplier: undefined,
-            });
-
-            expect(expense.year).toBe(new Date().getFullYear());
-            expect(expense.paid).toBe(false);
-            expect(expense.total).toBe(0);
-            expect(expense.total_paid).toBe(0);
-            expect(expense.instalment_number).toBe(1);
-        });
-
         it('should keep optional fields undefined when they are not provided', () => {
             const params = {
                 bill: expenseMock.bill,
                 type: expenseMock.type,
                 supplier: expenseMock.supplier,
-                name: expenseMock.name,
             };
 
             const expense = new Expense(params);
@@ -74,14 +53,50 @@ describe('Expense', () => {
         });
 
         it('should override default values when provided in parameters', () => {
-            const params = {
+            const expenseToUpdate: Expense = {
                 ...expenseMock,
-                active: false,
-                paid: true,
+                year: 2030,
+                paid: undefined,
+                bill: {
+                    ...expenseMock.bill,
+                    name: 'New Bill'
+                },
+                name: 'New Bill New Supplier',
+                total: 12,
+                supplier: {
+                    ...expenseMock.supplier,
+                    name: 'New Supplier'
+                },
+                name_code: 'new_bill_new_supplier',
+                total_paid: 12,
+                description: 'New Description',
+                instalment_number: 12,
             };
 
-            const expense = new Expense(params);
-            expect(expense.paid).toBe(true);
+            MONTHS.forEach((month) => {
+                expenseToUpdate[month] = 1;
+                expenseToUpdate[`${month}_paid`] = true;
+            });
+
+            const expense = new Expense({
+                ...expenseMock,
+                ...expenseToUpdate,
+            });
+            expect(expense.year).toBe(expenseToUpdate.year);
+            expect(expense.paid).toBeFalsy();
+            expect(expense.bill.name).toBe(expenseToUpdate.bill.name);
+            expect(expense.name).toBe(expenseToUpdate.name);
+            expect(expense.total).toBe(expenseToUpdate.total);
+            expect(expense.supplier.name).toBe(expenseToUpdate.supplier.name);
+            expect(expense.name_code).toBe(expenseToUpdate.name_code);
+            expect(expense.total_paid).toBe(expenseToUpdate.total_paid);
+            expect(expense.description).toBe(expenseToUpdate.description);
+            expect(expense.instalment_number).toBe(expenseToUpdate.instalment_number);
+            MONTHS.forEach((month) => {
+                expect(expense[month]).toBe(1);
+                expect(expense[`${month}_paid`]).toBeTruthy();
+            });
+
         });
     });
 });

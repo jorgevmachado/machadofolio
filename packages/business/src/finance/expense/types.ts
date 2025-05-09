@@ -10,10 +10,11 @@ import type {
 export type ExpenseEntity = IExpense;
 
 export type ExpenseConstructorParams
-    = Omit<IExpenseBase, 'id' | 'year' | 'total' | 'total_paid' | 'instalment_number' | 'name_code' | 'created_at' | 'updated_at' | 'deleted_at'>
+    = Omit<IExpenseBase, 'id' | 'year' | 'paid' | 'name' | 'total' | 'total_paid' | 'instalment_number' | 'name_code' | 'created_at' | 'updated_at' | 'deleted_at'>
     & IPartialNestBaseEntity
     & Partial<IExpenseMonthsWithPaid>
     & {
+    paid?: boolean;
     year?: number;
     total?: number;
     total_paid?: number;
