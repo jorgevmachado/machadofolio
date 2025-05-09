@@ -16,6 +16,7 @@ import { BillService } from './bill.service';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
+import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
 
 @Controller('finance/bill')
@@ -82,5 +83,14 @@ export class BillController {
   @Delete(':param/expense/:expenseId')
   removeExpense(@Param('param') param: string, @Param('expenseId') expenseId: string) {
     return this.service.removeExpense(param, expenseId);
+  }
+
+  @Put(':param/expense/:expenseId')
+  updateExpense(
+      @Param('param') param: string,
+      @Param('expenseId') expenseId: string,
+      @Body() updateExpenseDto: UpdateExpenseDto,
+  ) {
+    return this.service.updateExpense(param, expenseId, updateExpenseDto);
   }
 }

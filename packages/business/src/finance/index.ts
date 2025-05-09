@@ -1,6 +1,5 @@
 export {  default } from './finance';
 export {  FinanceService } from './service';
-export {  FinanceBusiness } from './business';
 export * from './types';
 export * from './bank';
 export * from './bill';

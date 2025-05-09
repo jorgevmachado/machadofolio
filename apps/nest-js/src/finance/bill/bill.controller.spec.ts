@@ -15,6 +15,7 @@ import { BillService } from './bill.service';
 import { type CreateBillDto } from './dto/create-bill.dto';
 import { type CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { type UpdateBillDto } from './dto/update-bill.dto';
+import { type UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
 describe('BillController', () => {
     let controller: BillController;
@@ -164,17 +165,17 @@ describe('BillController', () => {
         });
     });
 
-    // describe('updateExpense', () => {
-    //   it('should update expense and save it', async () => {
-    //     const updateExpense: UpdateExpenseDto = {
-    //       type: expenseMockEntity.type,
-    //       supplier: expenseMockEntity.supplier.name,
-    //     };
-    //     jest.spyOn(service, 'updateExpense').mockResolvedValue(expenseMockEntity);
-    //
-    //     expect(
-    //         await controller.updateExpense(mockEntity.id, expenseMockEntity.id, updateExpense),
-    //     ).toEqual(expenseMockEntity);
-    //   });
-    // });
+    describe('updateExpense', () => {
+      it('should update expense and save it', async () => {
+        const updateExpense: UpdateExpenseDto = {
+          type: expenseMockEntity.type,
+          supplier: expenseMockEntity.supplier.name,
+        };
+        jest.spyOn(service, 'updateExpense').mockResolvedValue(expenseMockEntity);
+
+        expect(
+            await controller.updateExpense(mockEntity.id, expenseMockEntity.id, updateExpense),
+        ).toEqual(expenseMockEntity);
+      });
+    });
 });

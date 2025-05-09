@@ -14,6 +14,7 @@ import { Supplier } from '../../../entities/supplier.entity';
 
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { SupplierService } from './supplier/supplier.service';
+import { UpdateExpenseDto } from './dto/update-expense.dto';
 
 export type InitializeParams = {
     value?: number;
@@ -39,12 +40,10 @@ export class ExpenseService extends Service<Expense> {
             createExpenseDto.supplier,
             'Supplier',
         ) as Supplier;
-        const name = `${bill.name} ${supplier.name}`;
         return new ExpenseConstructor({
             supplier,
             bill,
             year: bill.year,
-            name,
             type: createExpenseDto.type,
             paid: Boolean(createExpenseDto.paid),
             value: createExpenseDto.value,
@@ -78,8 +77,23 @@ export class ExpenseService extends Service<Expense> {
         return await this.customSave({...currentExpenseForNextYear, bill });
     }
 
-    private async customSave(expense: Expense) {
+    async customSave(expense: Expense) {
         const calculatedExpense = this.expenseBusiness.calculate(expense);
         return await this.save(calculatedExpense);
+    }
+
+    async buildForUpdate(expense: Expense, updateExpenseDto: UpdateExpenseDto) {
+        const supplier = !updateExpenseDto?.supplier
+            ? expense.supplier
+            : await this.supplierService.treatEntityParam<Supplier>(
+                updateExpenseDto.supplier,
+                'Supplier',
+            ) as Supplier;
+
+        return new ExpenseConstructor({
+            ...expense,
+            ...updateExpenseDto,
+            supplier
+        });
     }
 }

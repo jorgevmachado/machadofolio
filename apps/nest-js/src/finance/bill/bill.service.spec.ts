@@ -23,6 +23,7 @@ import { ExpenseService } from './expense/expense.service';
 
 import { ConflictException } from '@nestjs/common';
 import { type UpdateBillDto } from './dto/update-bill.dto';
+import { type UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
 
 describe('BillService', () => {
@@ -56,6 +57,7 @@ describe('BillService', () => {
                         customSave: jest.fn(),
                         findOne: jest.fn(),
                         buildForCreation: jest.fn(),
+                        buildForUpdate: jest.fn(),
                         addExpenseForNextYear: jest.fn(),
                         treatEntitiesParams: jest.fn(),
                         findAll: jest.fn(),
@@ -442,6 +444,69 @@ describe('BillService', () => {
             expect(await service.removeExpense(mockEntity.id, expenseMockEntity.id)).toEqual({
                 message: 'Successfully removed',
             });
+        });
+    });
+
+    describe('updateExpense', () => {
+        it('should update a expense successfully', async () => {
+            const updateExpenseParams: UpdateExpenseDto = {
+                january: 100
+            };
+            const expectedExpense: Expense = {...expenseMockEntity, january: 100 };
+
+            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+                andWhere: jest.fn(),
+                withDeleted: jest.fn(),
+                leftJoinAndSelect: jest.fn(),
+                getOne: jest.fn().mockReturnValueOnce(mockEntity),
+            } as any);
+
+            jest.spyOn(expenseService, 'findOne').mockResolvedValueOnce(expenseMockEntity);
+            jest.spyOn(expenseService, 'buildForUpdate').mockResolvedValueOnce(expectedExpense);
+            jest.spyOn(expenseService, 'customSave').mockResolvedValueOnce(expectedExpense);
+
+            const result = await service.updateExpense(mockEntity.id, expenseMockEntity.id, updateExpenseParams) as Expense;
+            expect(result.january).toEqual(expectedExpense.january);
+        });
+
+        it('should return an error when trying to update an expense with an existing name', async () => {
+            const newSupplier: Supplier = {
+                ...expenseMockEntity.supplier,
+                name: 'New Supplier',
+                name_code: 'new_supplier'
+            }
+            const updateExpenseParams: UpdateExpenseDto = {
+                supplier: 'New Supplier',
+            };
+
+            const expectedExpense: Expense = {
+                ...expenseMockEntity,
+                supplier: newSupplier,
+                name: `${mockEntity.name} ${newSupplier.name}`,
+                name_code: `${mockEntity.name_code}_${newSupplier.name_code}`,
+            };
+
+            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+                andWhere: jest.fn(),
+                withDeleted: jest.fn(),
+                leftJoinAndSelect: jest.fn(),
+                getOne: jest.fn().mockReturnValueOnce(mockEntity),
+            } as any);
+
+            jest.spyOn(expenseService, 'findOne').mockResolvedValueOnce(expenseMockEntity);
+            jest.spyOn(expenseService, 'buildForUpdate').mockResolvedValueOnce(expectedExpense);
+
+            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+                andWhere: jest.fn(),
+                withDeleted: jest.fn(),
+                leftJoinAndSelect: jest.fn(),
+                getMany: jest.fn().mockReturnValueOnce([{
+                    ...mockEntity,
+                    expenses: [expectedExpense]
+                }]),
+            } as any);
+
+            await expect(service.updateExpense(mockEntity.id, expenseMockEntity.id, updateExpenseParams)).rejects.toThrowError(ConflictException);
         });
     });
 });

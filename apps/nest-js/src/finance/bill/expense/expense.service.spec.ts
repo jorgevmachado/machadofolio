@@ -17,11 +17,12 @@ import { EXPENSE_MOCK } from '../../../mocks/expense.mock';
 import { Expense } from '../../../entities/expense.entity';
 
 import { type CreateExpenseDto } from './dto/create-expense.dto';
-import { ExpenseService } from './expense.service';
-import { SupplierService } from './supplier/supplier.service';
-import { MONTHS } from '@repo/services/date/month/month';
 import { EMonth } from '@repo/services/date/month/enum';
-
+import { ExpenseService } from './expense.service';
+import { MONTHS } from '@repo/services/date/month/month';
+import { type Supplier } from '../../../entities/supplier.entity';
+import { SupplierService } from './supplier/supplier.service';
+import { type UpdateExpenseDto } from './dto/update-expense.dto';
 
 describe('ExpenseService', () => {
   let service: ExpenseService;
@@ -62,7 +63,7 @@ describe('ExpenseService', () => {
     expect(repository).toBeDefined();
   });
 
-  describe('buildCreation', () => {
+  describe('buildForCreation', () => {
     it('should build a creation expense.', async () => {
       const createDto: CreateExpenseDto = {
         type: EExpenseType.FIXED,
@@ -162,5 +163,52 @@ describe('ExpenseService', () => {
       const result = await service.addExpenseForNextYear(mockEntity.bill, ['january'], mockEntity)
       expect(result).toEqual(mockEntity)
     });
+  });
+
+  describe('buildForUpdate', () => {
+    it('should build for update expense.', async () => {
+      const newSupplier: Supplier = {
+        ...mockEntity.supplier,
+        name: 'New Supplier',
+      }
+      const updateDto: UpdateExpenseDto = {
+        type: EExpenseType.FIXED,
+        paid: true,
+        supplier: newSupplier,
+        description: 'New description',
+      }
+
+      MONTHS.forEach((month) => {
+        updateDto[month] = 1;
+        updateDto[`${month}_paid`] = true;
+      });
+
+      jest
+          .spyOn(supplierService, 'treatEntityParam')
+          .mockResolvedValueOnce(newSupplier);
+
+      const result = await service.buildForUpdate(mockEntity, updateDto);
+      expect(result.type).toEqual(updateDto.type);
+      expect(result.paid).toEqual(updateDto.paid);
+      expect(result.supplier.name).toEqual(newSupplier.name);
+      expect(result.description).toEqual(updateDto.description);
+      MONTHS.forEach((month) => {
+        expect(result[month]).toBe(1);
+        expect(result[`${month}_paid`]).toBeTruthy();
+      });
+    })
+
+    it('should build for update expense without update supplier.', async () => {
+      const result = await service.buildForUpdate(mockEntity, {});
+      expect(result.supplier.name).toEqual(mockEntity.supplier.name);
+    })
+  });
+
+  describe('customSave', () => {
+    it('should save a expense successfully', async () => {
+      jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+      const result = await service.customSave(mockEntity);
+      expect(result).toEqual(mockEntity);
+    })
   });
 });

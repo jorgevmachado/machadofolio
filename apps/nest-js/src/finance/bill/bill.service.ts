@@ -21,6 +21,7 @@ import { CreateBillDto } from './dto/create-bill.dto';
 import { CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { ExpenseService } from './expense/expense.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
+import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
 type ExistExpenseInBill = {
     year?: number;
@@ -277,5 +278,23 @@ export class BillService extends Service<Bill> {
         const expense = await this.findOneExpense(param, expenseId) as Expense;
         await this.expenseService.softRemove(expense);
         return { message: 'Successfully removed' };
+    }
+
+    async updateExpense(param: string, expenseId: string, updateExpenseDto: UpdateExpenseDto) {
+        const expense = await this.findOneExpense(param, expenseId) as Expense;
+        const updatedExpense = await this.expenseService.buildForUpdate(
+            expense,
+            updateExpenseDto,
+        );
+
+        if(expense.name_code !== updatedExpense.name_code) {
+            await this.existExpenseInBill({
+                year: updatedExpense.year,
+                nameCode: updatedExpense.name_code,
+                fallBackMessage: `You cannot update this expense with this (supplier) ${updatedExpense.supplier.name} because there is already an expense linked to this supplier.`,
+            });
+        }
+
+        return await this.expenseService.customSave(updatedExpense);
     }
 }
