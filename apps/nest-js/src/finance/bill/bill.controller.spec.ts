@@ -8,14 +8,19 @@ import {
   jest,
 } from '@jest/globals';
 
+import { EMonth } from '@repo/services/date/month/enum';
+
 import { BILL_MOCK } from '../../mocks/bill.mock';
 import { type Bill } from '../../entities/bill.entity';
+import { EXPENSE_MOCK } from '../../mocks/expense.mock';
+import { type Expense } from '../../entities/expense.entity';
 import { USER_MOCK } from '../../mocks/user.mock';
 import { type User } from '../../entities/user.entity';
 
 import { BillController } from './bill.controller';
 import { BillService } from './bill.service';
 import { type CreateBillDto } from './dto/create-bill.dto';
+import { type CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { type UpdateBillDto } from './dto/update-bill.dto';
 
 describe('BillController', () => {
@@ -24,6 +29,7 @@ describe('BillController', () => {
 
   const mockEntity: Bill = BILL_MOCK;
   const userMockEntity: User = USER_MOCK;
+  const expenseMockEntity: Expense = EXPENSE_MOCK;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -118,6 +124,23 @@ describe('BillController', () => {
       expect(await controller.remove(mockEntity.id)).toEqual({
         message: 'Successfully removed',
       });
+    });
+  });
+
+  describe('createExpense', () => {
+    it('should create a new expense and save it', async () => {
+      const createExpense: CreateExpenseDto = {
+        type: expenseMockEntity.type,
+        value: 100.0,
+        month: EMonth.MARCH,
+        supplier: expenseMockEntity.supplier.name,
+        instalment_number: 1,
+      };
+      jest.spyOn(service, 'addExpense').mockResolvedValue(expenseMockEntity);
+
+      expect(await controller.addExpense(mockEntity.id, createExpense)).toEqual(
+          expenseMockEntity,
+      );
     });
   });
 });
