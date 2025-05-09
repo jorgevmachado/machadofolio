@@ -9,11 +9,12 @@ import { FinanceInitializeGuard } from '../../guards/finance-initialize/finance-
 import { GetUserAuth } from '../../decorators/auth-user/auth-user.decorator';
 
 import { Finance } from '../../entities/finance.entity';
+import { ListParams } from '../../shared';
 import { User } from '../../entities/user.entity';
 
 import { BillService } from './bill.service';
 import { CreateBillDto } from './dto/create-bill.dto';
-import { ListParams } from '../../shared';
+import { CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 
 
@@ -60,5 +61,10 @@ export class BillController {
   @Delete(':param')
   remove(@Param('param') param: string) {
     return this.service.remove(param);
+  }
+
+  @Post(':param/expense')
+  addExpense(@Param('param') param: string, @Body() createExpenseDto: CreateExpenseDto) {
+    return this.service.addExpense(param, createExpenseDto);
   }
 }
