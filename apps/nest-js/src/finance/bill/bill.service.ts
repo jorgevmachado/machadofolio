@@ -7,7 +7,7 @@ import { snakeCaseToNormal } from '@repo/services/string/string';
 import BillBusiness from '@repo/business/finance/bill/business/business';
 import BillConstructor from '@repo/business/finance/bill/bill';
 
-import { FilterParams, Service } from '../../shared';
+import { FilterParams, ListParams, Service } from '../../shared';
 
 import { Bank } from '../../entities/bank.entity';
 import { Bill } from '../../entities/bill.entity';
@@ -23,10 +23,10 @@ import { ExpenseService } from './expense/expense.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
 
 type ExistExpenseInBill = {
-  year?: number;
-  nameCode: string;
-  withThrow?: boolean;
-  fallBackMessage?: string;
+    year?: number;
+    nameCode: string;
+    withThrow?: boolean;
+    fallBackMessage?: string;
 }
 
 @Injectable()
@@ -168,21 +168,21 @@ export class BillService extends Service<Bill> {
         });
 
 
-      const { type, value, month, instalment_number } = createExpenseDto;
+        const { type, value, month, instalment_number } = createExpenseDto;
 
-      const {
-        nextYear,
-        requiresNewBill,
-        monthsForNextYear,
-        expenseForNextYear,
-        expenseForCurrentYear,
-      } = await this.expenseService.initialize({
-        type,
-        value,
-        month,
-        expense: !existExpense ? createdExpense : existExpense,
-        instalment_number,
-      });
+        const {
+            nextYear,
+            requiresNewBill,
+            monthsForNextYear,
+            expenseForNextYear,
+            expenseForCurrentYear,
+        } = await this.expenseService.initialize({
+            type,
+            value,
+            month,
+            expense: !existExpense ? createdExpense : existExpense,
+            instalment_number,
+        });
 
 
         if (requiresNewBill && expenseForNextYear) {
@@ -203,37 +203,37 @@ export class BillService extends Service<Bill> {
         return expenseForCurrentYear;
     }
 
-  private async existExpenseInBill({
-      year,
-      nameCode,
-      withThrow = true,
-      fallBackMessage = 'You cannot add this expense because it is already in use.',
-  }: ExistExpenseInBill) {
-    const filters: Array<FilterParams> = [
-      {
-        value: nameCode,
-        param: 'expenses.name_code',
-        relation: true,
-        condition: 'LIKE',
-      },
-    ];
-    if (year) {
-      filters.push({
-        value: year,
-        param: 'expenses.year',
-        relation: true,
-        condition: '=',
-      });
+    private async existExpenseInBill({
+                                         year,
+                                         nameCode,
+                                         withThrow = true,
+                                         fallBackMessage = 'You cannot add this expense because it is already in use.',
+                                     }: ExistExpenseInBill) {
+        const filters: Array<FilterParams> = [
+            {
+                value: nameCode,
+                param: 'expenses.name_code',
+                relation: true,
+                condition: 'LIKE',
+            },
+        ];
+        if (year) {
+            filters.push({
+                value: year,
+                param: 'expenses.year',
+                relation: true,
+                condition: '=',
+            });
+        }
+
+        const result = (await this.findAll({ filters })) as Array<Bill>;
+
+        if (withThrow && result.length) {
+            throw this.error(new ConflictException(fallBackMessage));
+        }
+
+        return result[0]?.expenses?.[0];
     }
-
-    const result = (await this.findAll({ filters })) as Array<Bill>;
-
-    if (withThrow && result.length) {
-      throw this.error(new ConflictException(fallBackMessage));
-    }
-
-    return result[0]?.expenses?.[0];
-  }
 
     private async createNewBillForNextYear(year: number, bill: Bill) {
         const currentBill = new BillConstructor({
@@ -243,5 +243,39 @@ export class BillService extends Service<Bill> {
             expenses: [],
         });
         return await this.customSave(currentBill, false);
+    }
+
+    async findOneExpense(param: string, expenseId: string) {
+        const bill = await this.findOne({ value: param }) as Bill;
+        return await this.expenseService.findOne({
+            value: expenseId,
+            filters: [
+                {
+                    value: bill.id,
+                    param: 'bill',
+                    condition: '=',
+                },
+            ],
+        });
+    }
+
+    async findAllExpense(param: string, params: ListParams) {
+        const bill = await this.findOne({ value: param }) as Bill;
+        return await this.expenseService.findAll({
+            ...params,
+            filters: [
+                {
+                    value: bill.id,
+                    param: 'bill',
+                    condition: '=',
+                },
+            ],
+        });
+    }
+
+    async removeExpense(param: string, expenseId: string) {
+        const expense = await this.findOneExpense(param, expenseId) as Expense;
+        await this.expenseService.softRemove(expense);
+        return { message: 'Successfully removed' };
     }
 }

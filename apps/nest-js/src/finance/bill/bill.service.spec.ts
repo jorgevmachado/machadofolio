@@ -54,9 +54,12 @@ describe('BillService', () => {
                     useValue: {
                         initialize: jest.fn(),
                         customSave: jest.fn(),
+                        findOne: jest.fn(),
                         buildForCreation: jest.fn(),
                         addExpenseForNextYear: jest.fn(),
                         treatEntitiesParams: jest.fn(),
+                        findAll: jest.fn(),
+                        softRemove: jest.fn(),
                     },
                 },
                 {
@@ -391,6 +394,54 @@ describe('BillService', () => {
 
             const result = await service.addExpense(mockEntity.id, expenseParams);
             expect(result).toEqual(expenseForCurrentYear);
+        });
+    });
+
+    describe('findOneExpense', () => {
+        it('should return an expense successfully', async () => {
+            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+                andWhere: jest.fn(),
+                withDeleted: jest.fn(),
+                leftJoinAndSelect: jest.fn(),
+                getOne: jest.fn().mockReturnValueOnce(mockEntity),
+            } as any);
+
+            jest.spyOn(expenseService, 'findOne').mockResolvedValueOnce(expenseMockEntity);
+
+            expect(await service.findOneExpense(mockEntity.id, expenseMockEntity.id)).toEqual(expenseMockEntity);
+        });
+    });
+
+    describe('findAllExpense', () => {
+        it('should return an expense successfully', async () => {
+            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+                andWhere: jest.fn(),
+                withDeleted: jest.fn(),
+                leftJoinAndSelect: jest.fn(),
+                getOne: jest.fn().mockReturnValueOnce(mockEntity),
+            } as any);
+
+            jest.spyOn(expenseService, 'findAll').mockResolvedValueOnce([expenseMockEntity]);
+
+            expect(await service.findAllExpense(mockEntity.id, {})).toEqual([expenseMockEntity]);
+        });
+    });
+
+    describe('removeExpense', () => {
+        it('should remove an expense successfully', async () => {
+            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+                andWhere: jest.fn(),
+                withDeleted: jest.fn(),
+                leftJoinAndSelect: jest.fn(),
+                getOne: jest.fn().mockReturnValueOnce(mockEntity),
+            } as any);
+
+            jest.spyOn(expenseService, 'findOne').mockResolvedValueOnce(expenseMockEntity);
+            jest.spyOn(expenseService, 'softRemove').mockResolvedValueOnce(expenseMockEntity);
+
+            expect(await service.removeExpense(mockEntity.id, expenseMockEntity.id)).toEqual({
+                message: 'Successfully removed',
+            });
         });
     });
 });

@@ -26,7 +26,8 @@ import { UpdateBillDto } from './dto/update-bill.dto';
     FinanceInitializeGuard,
 )
 export class BillController {
-  constructor(private readonly service: BillService) {}
+  constructor(private readonly service: BillService) {
+  }
 
   @Get()
   findAll(@GetUserAuth() user: User, @Query() parameters: QueryParameters) {
@@ -66,5 +67,20 @@ export class BillController {
   @Post(':param/expense')
   addExpense(@Param('param') param: string, @Body() createExpenseDto: CreateExpenseDto) {
     return this.service.addExpense(param, createExpenseDto);
+  }
+
+  @Get(':param/expense/:expenseId')
+  findOneExpense(@Param('param') param: string, @Param('expenseId') expenseId: string) {
+    return this.service.findOneExpense(param, expenseId);
+  }
+
+  @Get(':param/list/expense')
+  findAllExpense(@Param('param') param: string, @Query() parameters: QueryParameters) {
+    return this.service.findAllExpense(param, { parameters });
+  }
+
+  @Delete(':param/expense/:expenseId')
+  removeExpense(@Param('param') param: string, @Param('expenseId') expenseId: string) {
+    return this.service.removeExpense(param, expenseId);
   }
 }
