@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { FinanceModule } from './finance/finance.module';
 import { SanitizeUserInterceptor } from './interceptors/sanitize-user/sanitize-user.interceptor';
+import { PokemonModule } from './pokemon/pokemon.module';
 
 @Module({
     imports: [
@@ -23,7 +24,8 @@ import { SanitizeUserInterceptor } from './interceptors/sanitize-user/sanitize-u
             synchronize: true,
         }),
         AuthModule,
-        FinanceModule
+        FinanceModule,
+        PokemonModule
     ],
     controllers: [AppController],
     providers: [

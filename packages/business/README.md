@@ -139,7 +139,7 @@ Utilitários relacionados a manipulação de serviços de pokemon nestJs.
 ```bash
   yarn run test -- --findRelatedTests src/auth/user/config.spec.ts               
 ```
-
+---
 ### **finance**: Utilitários relacionados a manipulação de finanças.
 - **finance**: Utilitários relacionados a manipulação da entidade finance.
 ```bash
@@ -221,5 +221,32 @@ Utilitários relacionados a manipulação de serviços de pokemon nestJs.
 ```bash
   yarn run test -- --findRelatedTests src/finance/bill/business/business.spec.ts               
 ```
-
-### **pokemon**: 
+---
+### **pokemon**: Utilitários relacionados a manipulação de pokemons.
+- **pokemon**: Utilitários relacionados a manipulação da entidade pokemon.
+```bash
+  yarn run test -- --findRelatedTests src/pokemon/pokemon.spec.ts               
+```
+- **service**: Utilitários relacionados ao consumo de serviços de manipulação de pokemons.
+```bash
+  yarn run test -- --findRelatedTests src/pokemon/service/service.spec.ts               
+```
+- **business**: Utilitários relacionados as regras de negocio de pokemons.
+```bash
+  yarn run test -- --findRelatedTests src/pokemon/business/business.spec.ts               
+```
+##### **ability**: Utilitários relacionados a manipulação de habilidades de pokemon.
+- **ability**: Utilitários relacionados a manipulação da entidade de habilidades de pokemon.
+```bash
+  yarn run test -- --findRelatedTests src/pokemon/ability/ability.spec.ts               
+```
+##### **move**: Utilitários relacionados a manipulação de movimentos de pokemon.
+- **move**: Utilitários relacionados a manipulação da entidade de movimentos de pokemon.
+```bash
+  yarn run test -- --findRelatedTests src/pokemon/move/move.spec.ts               
+```
+##### **type**: Utilitários relacionados a manipulação de tipos de pokemon.
+- **type**: Utilitários relacionados a manipulação da entidade de tipos de pokemon.
+```bash
+  yarn run test -- --findRelatedTests src/pokemon/type/type.spec.ts               
+```

@@ -15,7 +15,7 @@ export type IPokemonBase = INestBaseEntity & {
 export type IPokemon = IPokemonBase & {
     hp?: number;
     image?: string;
-    speed?: string;
+    speed?: number;
     moves?: Array<IMove>;
     types?: Array<IType>;
     status: EStatus;
