@@ -14,7 +14,8 @@
     "gen:module:nest": "turbo gen business-module-nest",
     "dev": "echo 'Add dev script here'",
     "build": "rimraf dist && tsc -b -v",
-    "test": "jest  --clearCache --coverage",
+    "test": "jest",
+    "test:ci": "jest  --clearCache --coverage",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --max-warnings 0 --fix"

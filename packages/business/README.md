@@ -47,58 +47,81 @@ yarn lint
 ```
 
 ## Módulos
-#### **shared**: Este módulo fornece uma coleção de classes e utilitários essenciais para esté projeto.
-##### **baseService**: classe abstrata, que serve como uma camada base para serviços na aplicação, centralizando funcionalidades comuns para manipulação e gerenciamento de entidades no banco de dados, especialmente usando **TypeORM**. Ele integra operações como listagem, busca, validação e remoção de entidades, fornecendo uma base sólida para se estender em serviços específicos.
-###### Comando para teste unitários deste sub-módulo
+### **shared**: Este módulo fornece uma coleção de classes e utilitários essenciais para esté projeto.
+#### **baseService**: classe abstrata, que serve como uma camada base para serviços na aplicação, centralizando funcionalidades comuns para manipulação e gerenciamento de entidades no banco de dados, especialmente usando **TypeORM**. Ele integra operações como listagem, busca, validação e remoção de entidades, fornecendo uma base sólida para se estender em serviços específicos.
+##### Comando para teste unitários deste sub-módulo
 ```bash
   yarn run test -- --findRelatedTests src/shared/service/base-service.spec.ts               
 ```
-#### **api**: Utilitários relacionados a manipulação de serviços de varias bibliotecas como NestJs.
-##### **Nest**: Utilitários relacionados a manipulação de serviços nestJs.
-###### Comando para teste unitários deste sub-módulo
+
+### **api**: Utilitários relacionados a manipulação de serviços de varias bibliotecas como NestJs.
+#### **Nest**: Utilitários relacionados a manipulação de serviços privados do módulo nestJs.
+##### Comando para teste unitários deste sub-módulo
 ```bash
   yarn run test -- --findRelatedTests src/api/nest/nest.spec.ts               
 ```
-- **nestModuleAbstract**: classe abstrata, que serve como uma camada base para serviços na aplicação, centralizando funcionalidades comuns para manipulação e gerenciamento de entidades no banco de dados, especialmente usando **TypeORM**. Ele integra operações como listagem, busca, validação e remoção de entidades, fornecendo uma base sólida para se estender em serviços específicos.
+##### - **nestModuleAbstract**: 
+##### Classe abstrata, que serve como uma camada base para serviços na aplicação, centralizando funcionalidades comuns para manipulação e gerenciamento de entidades no banco de dados, especialmente usando **TypeORM**. Ele integra operações como listagem, busca, validação e remoção de entidades, fornecendo uma base sólida para se estender em serviços específicos.
 ```bash
   yarn run test -- --findRelatedTests src/api/nest/abstract/nestModuleAbstract.spec.ts               
 ```
-- **auth**: Utilitários relacionados a manipulação de serviços de autenticação nestJs.
+##### - **auth**: 
+##### Utilitários relacionados a manipulação de serviços de autenticação nestJs.
 ```bash
   yarn run test -- --findRelatedTests src/api/nest/auth/auth.spec.ts               
 ```
-- **finance**: Utilitários relacionados a manipulação de serviços do módulo de finanças nestJs.
+##### - **finance**: 
+Utilitários relacionados a manipulação de serviços do módulo de finanças nestJs.
 ```bash
   yarn run test -- --findRelatedTests src/api/nest/finance/finance.spec.ts               
 ```
-- - **bank**: Utilitários relacionados a manipulação de serviços do módulo de finanças bancos nestJs.
+- **bank**: Utilitários relacionados a manipulação de serviços do módulo de finanças bancos nestJs.
 ```bash
   yarn run test -- --findRelatedTests src/api/nest/finance/bank/bank.spec.ts               
 ```
-- - **supplier**: Utilitários relacionados a manipulação de serviços do módulo de finanças fornecedores nestJs.
+- **supplier**: Utilitários relacionados a manipulação de serviços do módulo de finanças fornecedores nestJs.
 ```bash
   yarn run test -- --findRelatedTests src/api/nest/finance/supplier/supplier.spec.ts               
 ```
-- - - **supplier-type**: Utilitários relacionados a manipulação de serviços do módulo de finanças tipos de fornecedores nestJs.
+- - **supplier-type**: Utilitários relacionados a manipulação de serviços do módulo de finanças tipos de fornecedores nestJs.
 ```bash
   yarn run test -- --findRelatedTests src/api/nest/finance/supplier/type/type.spec.ts               
 ```
-- - **bill**: Utilitários relacionados a manipulação de serviços do módulo de finanças contas a pagar nestJs.
+- **bill**: Utilitários relacionados a manipulação de serviços do módulo de finanças contas a pagar nestJs.
 ```bash
   yarn run test -- --findRelatedTests src/api/nest/finance/bill/bill.spec.ts               
 ```
-- - - **bill-category**: Utilitários relacionados a manipulação de serviços do módulo de finanças Categoria das contas a Pagar nestJs.
+- - **bill-category**: Utilitários relacionados a manipulação de serviços do módulo de finanças Categoria das contas a Pagar nestJs.
 ```bash
   yarn run test -- --findRelatedTests src/api/nest/finance/bill/category/category.spec.ts               
 ```
-- - - **expense**: Utilitários relacionados a manipulação de serviços do módulo de finanças Despesas nestJs.
+- - **expense**: Utilitários relacionados a manipulação de serviços do módulo de finanças Despesas nestJs.
 ```bash
   yarn run test -- --findRelatedTests src/api/nest/finance/bill/expense/expense.spec.ts               
 ```
 
-#### **auth**: Utilitários relacionados a manipulação de usuário e autenticação.
-##### **business**: Utilitários relacionados a regras de negócios na manipulação de usuário e autenticação.
-###### Comando para teste unitários deste sub-módulo
+##### - **pokemon**:
+Utilitários relacionados a manipulação de serviços de pokemon nestJs.
+```bash
+  yarn run test -- --findRelatedTests src/api/nest/pokemon/pokemon.spec.ts               
+```
+- **ability**: Utilitários relacionados a manipulação de serviços do módulo de habilidades de pokemon nestJs.
+```bash
+  yarn run test -- --findRelatedTests src/api/nest/pokemon/ability/ability.spec.ts               
+```
+- **move**: Utilitários relacionados a manipulação de serviços do módulo de movimentos de pokemon nestJs.
+```bash
+  yarn run test -- --findRelatedTests src/api/nest/pokemon/move/move.spec.ts               
+```
+- **type**: Utilitários relacionados a manipulação de serviços do módulo de tipos de pokemon nestJs.
+```bash
+  yarn run test -- --findRelatedTests src/api/nest/pokemon/type/type.spec.ts               
+```
+---
+
+### **auth**: Utilitários relacionados a manipulação de usuário e autenticação.
+#### **business**: Utilitários relacionados a regras de negócios na manipulação de usuário e autenticação.
+##### Comando para teste unitários deste sub-módulo
 ```bash
   yarn run test -- --findRelatedTests src/auth/business/business.spec.ts               
 ```
@@ -117,7 +140,7 @@ yarn lint
   yarn run test -- --findRelatedTests src/auth/user/config.spec.ts               
 ```
 
-#### **finance**: Utilitários relacionados a manipulação de finanças.
+### **finance**: Utilitários relacionados a manipulação de finanças.
 - **finance**: Utilitários relacionados a manipulação da entidade finance.
 ```bash
   yarn run test -- --findRelatedTests src/finance/finance.spec.ts               
@@ -129,11 +152,6 @@ yarn lint
 - **business**: Utilitários relacionados as regras de negocio de finanças.
 ```bash
   yarn run test -- --findRelatedTests src/finance/business/business.spec.ts               
-```
-##### 
-###### Comando para teste unitários deste sub-módulo
-```bash
-  yarn run test -- --findRelatedTests src/finance/finance.spec.ts               
 ```
 
 ##### **bank**: Utilitários relacionados a manipulação de bancos no contexto de finanças.
@@ -203,3 +221,5 @@ yarn lint
 ```bash
   yarn run test -- --findRelatedTests src/finance/bill/business/business.spec.ts               
 ```
+
+### **pokemon**: 
