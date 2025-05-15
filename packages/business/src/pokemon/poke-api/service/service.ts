@@ -6,13 +6,22 @@ import { PokeApiBusiness } from '../business';
 
 import type { getAllParams } from './types';
 
+import { PokeApiMoveService } from '../move';
+
 export class PokeApiService {
     public limit: number = 1302;
 
-    private pokeApi: PokeApi;
+    private readonly pokeApi: PokeApi;
+
+    private readonly moveService: PokeApiMoveService;
 
     constructor() {
         this.pokeApi = new PokeApi();
+        this.moveService = new PokeApiMoveService(this.pokeApi);
+    }
+
+    get move(): PokeApiMoveService {
+        return this.moveService;
     }
 
     public async getAll({ offset = 0, limit = this.limit }: getAllParams): Promise<Array<Pokemon>> {

@@ -282,3 +282,9 @@ Utilitários relacionados a manipulação de serviços de pokemon nestJs.
 ```bash
   yarn run test -- --findRelatedTests src/pokemon/poke-api/business/business.spec.ts               
 ```
+
+- **move**: Utilitários relacionados aos movimentos dos pokemons.
+- - **service**: Utilitários relacionados a manipulação de serviços de movimentos dos pokemons poke-api.
+```bash
+  yarn run test -- --findRelatedTests src/pokemon/poke-api/move/service/service.spec.ts               
+```

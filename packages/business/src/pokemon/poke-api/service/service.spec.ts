@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { type PokeApi } from '../../../api';
 
@@ -13,10 +13,13 @@ import {
 } from '../mock';
 import type { PokemonByNameResponse, PokemonPaginateResponse, PokemonResponse, PokemonSpecieResponse } from '../types';
 
+import { PokeApiMoveService } from '../move';
+
 import { PokeApiService } from './service';
 import Pokemon from '../../pokemon';
 
 jest.mock('../../../api');
+jest.mock('../move');
 
 describe('Poke Api Service', () => {
     let service: PokeApiService;
@@ -50,6 +53,18 @@ describe('Poke Api Service', () => {
 
     afterEach(() => {
         jest.resetModules();
+    });
+
+    describe('MoveService', () => {
+        it('should initialize Move Service', () => {
+            expect(PokeApiMoveService).toHaveBeenCalledTimes(1);
+        });
+
+        it('should return the instance of MoveService via move getter', () => {
+            const moveService = service.move;
+            expect(moveService).toBeInstanceOf(PokeApiMoveService);
+            expect(PokeApiMoveService).toHaveBeenCalledTimes(1);
+        });
     });
 
     describe('getAll', () => {
