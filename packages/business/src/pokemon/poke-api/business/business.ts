@@ -3,7 +3,7 @@ import PokemonAbility from '../../ability';
 import PokemonMove from '../../move';
 import { PokemonTypeBusiness } from '../../type';
 
-import type { PokemonByNameResponse, PokemonSpecieResponse } from '../types';
+import type { EvolutionResponse, PokemonByNameResponse, PokemonSpecieResponse } from '../types';
 
 import { type EnsureImageParams, type EnsureSpecieAttributesResult } from './types';
 
@@ -99,7 +99,6 @@ export default class PokeApiBusiness {
         };
     }
 
-
     ensureSpecieAttributes(params: PokemonSpecieResponse): EnsureSpecieAttributesResult {
         return {
             habitat: params?.habitat?.name,
@@ -116,5 +115,19 @@ export default class PokeApiBusiness {
             evolves_from_species: params?.evolves_from_species?.name,
             has_gender_differences: params?.has_gender_differences,
         };
+    }
+
+    ensureEvolutions(params: EvolutionResponse['chain']): Array<string> {
+        return [
+            params?.species?.name,
+            ...this.ensureNextEvolution(params?.evolves_to)
+        ];
+    }
+
+    private ensureNextEvolution(params?: EvolutionResponse['chain']['evolves_to']): Array<string> {
+        return params?.map(
+            (item) =>
+                [item.species.name].concat(...this.ensureNextEvolution(item.evolves_to))
+        ).reduce((arr, curr) => [...arr, ...curr], []);
     }
 }

@@ -1,3 +1,5 @@
+import { extractLastNumberFromUrl } from '@repo/services/number/number';
+
 import { PokeApi } from '../../../api';
 
 import Pokemon from '../../pokemon';
@@ -40,5 +42,14 @@ export class PokeApiService {
         ]).then(([pokemonByName, specieByPokemonName]) => {
             return business.convertResponseToPokemon(entity, pokemonByName, specieByPokemonName);
         });
+    }
+
+    public async getEvolutions(url: string): Promise<Array<string>> {
+        const business = new PokeApiBusiness();
+        const order = extractLastNumberFromUrl(url);
+        return this.pokeApi
+            .evolution
+            .getByOrder(order)
+            .then((response) => business.ensureEvolutions(response.chain));
     }
 }

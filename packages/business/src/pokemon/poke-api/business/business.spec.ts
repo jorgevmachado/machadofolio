@@ -1,12 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
 import {
+    EVOLUTION_RESPONSE_MOCK,
+    FIRST_EVOLUTION_POKEMON_MOCK,
+    ORIGINAL_EVOLUTION_POKEMON_MOCK,
     POKEMON_BY_NAME_RESPONSE_MOCK,
     POKEMON_ENTITY_INITIAL_BY_NAME_MOCK,
-    POKEMON_ENTITY_INITIAL_MOCK,
+    POKEMON_ENTITY_INITIAL_MOCK, SECOND_EVOLUTION_POKEMON_MOCK,
     SPECIE_POKEMON_BY_NAME_RESPONSE_MOCK
 } from '../mock';
-import type { PokemonByNameResponse, PokemonSpecieResponse } from '../types';
+import type { EvolutionResponse, PokemonByNameResponse, PokemonSpecieResponse } from '../types';
 
 import type { EnsureImageParams } from './types';
 import PokeApiBusiness from './business';
@@ -191,6 +194,25 @@ describe('Poke-api Business', () => {
             expect(entity.evolution_chain_url).toEqual(pokemonEntityInitialByNameMock.evolution_chain_url);
             expect(entity.evolves_from_species).toEqual(pokemonEntityInitialByNameMock.evolves_from_species);
             expect(entity.has_gender_differences).toEqual(pokemonEntityInitialByNameMock.has_gender_differences);
+        });
+    });
+
+    describe('ensureEvolutions', () => {
+        const evolutionResponseMock: EvolutionResponse =  EVOLUTION_RESPONSE_MOCK;
+        const originalEvolutionPokemonMock: EvolutionResponse['chain']['species'] = ORIGINAL_EVOLUTION_POKEMON_MOCK;
+        const firstEvolutionPokemonMock: EvolutionResponse['chain']['species'] = FIRST_EVOLUTION_POKEMON_MOCK;
+        const secondEvolutionPokemonMock: EvolutionResponse['chain']['species'] = SECOND_EVOLUTION_POKEMON_MOCK;
+        it('Should return in list just name of original pokemon', () => {
+            const result = business.ensureEvolutions({
+                species: originalEvolutionPokemonMock,
+                evolves_to: []
+            });
+            expect(result).toEqual([ originalEvolutionPokemonMock.name ]);
+        });
+
+        it('Should return list with all evolutions', () => {
+            const result = business.ensureEvolutions(evolutionResponseMock.chain);
+            expect(result).toEqual([ originalEvolutionPokemonMock.name, firstEvolutionPokemonMock.name, secondEvolutionPokemonMock.name ]);
         });
     });
 });

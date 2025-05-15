@@ -5,13 +5,20 @@ import { type PokeApi } from '../../../api';
 import type { PokemonEntity } from '../../types';
 
 import {
+    EVOLUTION_RESPONSE_MOCK, FIRST_EVOLUTION_POKEMON_MOCK, ORIGINAL_EVOLUTION_POKEMON_MOCK,
     POKEMON_BY_NAME_RESPONSE_MOCK,
     POKEMON_ENTITY_INITIAL_BY_NAME_MOCK,
     POKEMON_ENTITY_INITIAL_MOCK,
-    POKEMON_RESPONSE_MOCK,
+    POKEMON_RESPONSE_MOCK, SECOND_EVOLUTION_POKEMON_MOCK,
     SPECIE_POKEMON_BY_NAME_RESPONSE_MOCK
 } from '../mock';
-import type { PokemonByNameResponse, PokemonPaginateResponse, PokemonResponse, PokemonSpecieResponse } from '../types';
+import {
+    type EvolutionResponse,
+    type PokemonByNameResponse,
+    type PokemonPaginateResponse,
+    type PokemonResponse,
+    type PokemonSpecieResponse
+} from '../types';
 
 import { PokeApiMoveService } from '../move';
 
@@ -35,6 +42,7 @@ describe('Poke Api Service', () => {
     const pokemonEntityInitialByNameMock: PokemonEntity = POKEMON_ENTITY_INITIAL_BY_NAME_MOCK;
     const pokemonByNameResponseMock: PokemonByNameResponse = POKEMON_BY_NAME_RESPONSE_MOCK;
     const speciePokemonByNameResponseMock: PokemonSpecieResponse = SPECIE_POKEMON_BY_NAME_RESPONSE_MOCK;
+    const evolutionResponseMock: EvolutionResponse = EVOLUTION_RESPONSE_MOCK;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -44,6 +52,9 @@ describe('Poke Api Service', () => {
             getByName: jest.fn(),
             specie: {
                 getByPokemonName: jest.fn()
+            },
+            evolution: {
+                getByOrder: jest.fn(),
             }
         } as unknown as jest.Mocked<PokeApi>;
 
@@ -136,6 +147,17 @@ describe('Poke Api Service', () => {
             expect(response.evolution_chain_url).toEqual(pokemonEntityInitialByNameMock.evolution_chain_url);
             expect(response.evolves_from_species).toEqual(pokemonEntityInitialByNameMock.evolves_from_species);
             expect(response.has_gender_differences).toEqual(pokemonEntityInitialByNameMock.has_gender_differences);
+        });
+    });
+
+    describe('getEvolutions', () => {
+        const originalEvolutionPokemonMock: EvolutionResponse['chain']['species'] = ORIGINAL_EVOLUTION_POKEMON_MOCK;
+        const firstEvolutionPokemonMock: EvolutionResponse['chain']['species'] = FIRST_EVOLUTION_POKEMON_MOCK;
+        const secondEvolutionPokemonMock: EvolutionResponse['chain']['species'] = SECOND_EVOLUTION_POKEMON_MOCK;
+        it('Should return a list of names evolutions to this pokemon', async () => {
+            mockPokeApi.evolution.getByOrder.mockResolvedValue(evolutionResponseMock);
+            const result = await service.getEvolutions(pokemonEntityInitialByNameMock.evolution_chain_url);
+            expect(result).toEqual([ originalEvolutionPokemonMock.name, firstEvolutionPokemonMock.name, secondEvolutionPokemonMock.name ]);
         });
     });
 });

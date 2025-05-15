@@ -15,10 +15,10 @@ export class PokeApiMoveService {
                 type: response?.type?.name,
                 power: response?.power,
                 target: response?.target?.name,
-                effect: effect_entries?.effect,
+                effect: effect_entries?.effect ?? '',
                 priority: response?.priority,
                 accuracy: response?.accuracy,
-                short_effect: effect_entries?.short_effect,
+                short_effect: effect_entries?.short_effect ?? '',
                 damage_class: response?.damage_class?.name,
                 effect_chance: response?.effect_chance,
             });
