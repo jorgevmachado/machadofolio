@@ -133,6 +133,7 @@ yarn lint
 - **numberValidator**: Valida se é um número valido.
 - **currencyFormatter**: Responsável por formatar um valor para valor monetário.
 - **removeCurrencyFormatter**: Responsável por remover a formatação de um valor monetário.
+- **ensureOrderNumber**: Responsável por receber um pedido e uma url, caso não tenha o pedido remove o valor do último valor da url. 
 #### Comando para testes unitários exclusivo para esté módulo.
 ```bash
   yarn run test -- --findRelatedTests src/number/number.spec.ts               

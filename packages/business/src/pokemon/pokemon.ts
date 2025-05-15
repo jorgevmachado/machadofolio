@@ -1,22 +1,24 @@
+import { ensureOrderNumber } from '@repo/services/number/number';
+
 import { EStatus } from '../api';
 
 import type { PokemonConstructorParams, PokemonEntity } from './types';
 
 export default class Pokemon implements PokemonEntity {
     id!: PokemonEntity['id'];
-    hp?: PokemonEntity['hp'];
+    hp?: PokemonEntity['hp'] = 0;
     url!: PokemonEntity['url'];
     name!: PokemonEntity['name'];
     order!: PokemonEntity['order'];
     image?: PokemonEntity['image'];
-    speed?: PokemonEntity['speed'];
+    speed?: PokemonEntity['speed'] = 0;
     moves?: PokemonEntity['moves'];
     types?: PokemonEntity['types'];
     status: PokemonEntity['status'] = EStatus.INCOMPLETE;
-    attack?: PokemonEntity['attack'];
-    defense?: PokemonEntity['defense'];
+    attack?: PokemonEntity['attack'] = 0;
+    defense?: PokemonEntity['defense'] = 0;
     habitat?: PokemonEntity['habitat'];
-    is_baby?: PokemonEntity['is_baby'];
+    is_baby?: PokemonEntity['is_baby'] = false;
     shape_url?: PokemonEntity['shape_url'];
     abilities?: PokemonEntity['abilities'];
     created_at!: PokemonEntity['created_at'];
@@ -24,24 +26,24 @@ export default class Pokemon implements PokemonEntity {
     deleted_at?: PokemonEntity['deleted_at'];
     evolutions?: PokemonEntity['evolutions'];
     shape_name?: PokemonEntity['shape_name'];
-    is_mythical?: PokemonEntity['is_mythical'];
-    gender_rate?: PokemonEntity['gender_rate'];
-    is_legendary?: PokemonEntity['is_legendary'];
-    capture_rate?: PokemonEntity['capture_rate'];
-    hatch_counter?: PokemonEntity['hatch_counter'];
-    base_happiness?: PokemonEntity['base_happiness'];
-    special_attack?: PokemonEntity['special_attack'];
-    special_defense?: PokemonEntity['special_defense'];
+    is_mythical?: PokemonEntity['is_mythical'] = false;
+    gender_rate?: PokemonEntity['gender_rate'] = 0;
+    is_legendary?: PokemonEntity['is_legendary'] = false;
+    capture_rate?: PokemonEntity['capture_rate'] = 0;
+    hatch_counter?: PokemonEntity['hatch_counter'] = 0;
+    base_happiness?: PokemonEntity['base_happiness'] = 0;
+    special_attack?: PokemonEntity['special_attack'] = 0;
+    special_defense?: PokemonEntity['special_defense'] = 0;
     evolution_chain_url?: PokemonEntity['evolution_chain_url'];
     evolves_from_species?: PokemonEntity['evolves_from_species'];
-    has_gender_differences?: PokemonEntity['has_gender_differences'];
+    has_gender_differences?: PokemonEntity['has_gender_differences'] = false;
 
     constructor(params?: PokemonConstructorParams) {
         this.id = params?.id ?? this.id;
         this.hp = params?.hp ?? this.hp;
         this.url = params?.url ?? this.url;
         this.name = params?.name ?? this.name;
-        this.order = params?.order ?? this.order;
+        this.order = ensureOrderNumber(params?.order ?? this.order, this.url);
         this.image = params?.image ?? this.image;
         this.speed = params?.speed ?? this.speed;
         this.moves = params?.moves ?? this.moves;

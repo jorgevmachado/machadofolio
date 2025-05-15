@@ -1,3 +1,5 @@
+import type { IBaseEntity, IPartialBaseEntity } from '../types';
+
 export type INestConfig = {
     token?: string;
     baseUrl: string;
@@ -7,11 +9,6 @@ export type INestModuleConfig = Pick<INestConfig, 'baseUrl'> & {
     headers: Record<string, string>;
 }
 
-export type INestBaseEntity = {
-    id: string;
-    created_at: Date;
-    updated_at: Date;
-    deleted_at?: Date;
-}
+export type INestBaseEntity = IBaseEntity;
 
-export type IPartialNestBaseEntity = Partial<INestBaseEntity>;
+export type IPartialNestBaseEntity = IPartialBaseEntity

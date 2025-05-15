@@ -1,6 +1,6 @@
-import type { MoveEntity } from '../types';
+import type { PokemonMoveEntity } from '../types';
 
-export const POKEMON_MOVE_MOCK: MoveEntity = {
+export const POKEMON_MOVE_MOCK: PokemonMoveEntity = {
     id: 'bf22639d-0c2c-400a-bd2c-61fa3c398493',
     pp: 0,
     url: 'https://pokemon-mock/move/1/',

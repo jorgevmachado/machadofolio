@@ -34,5 +34,5 @@ export const POKEMON_MOCK: PokemonEntity = {
     special_defense: 65,
     evolution_chain_url: 'http://pokemon-mock/evolution-chain/1/',
     evolves_from_species: undefined,
-    has_gender_differences: undefined
+    has_gender_differences: false
 };

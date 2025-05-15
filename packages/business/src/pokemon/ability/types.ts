@@ -1,5 +1,7 @@
-import type { IAbility, IPartialNestBaseEntity } from '../../api';
+import type { IAbility, IPartialBaseEntity } from '../../api';
 
-export type AbilityEntity = IAbility;
+export type PokemonAbilityEntity = IAbility;
 
-export type AbilityConstructorParams = Omit<AbilityEntity, 'id' | 'created_at' | 'updated_at' | 'deleted_at'> & IPartialNestBaseEntity;
+export type AbilityConstructorParams = Omit<PokemonAbilityEntity, 'id' | 'order' | 'created_at' | 'updated_at' | 'deleted_at'> & IPartialBaseEntity & {
+    order?: number;
+};

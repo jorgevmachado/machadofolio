@@ -1,5 +1,9 @@
-import type { IMove, IPartialNestBaseEntity } from '../../api';
+import type { IMove, IPartialBaseEntity } from '../../api';
 
-export type MoveEntity = IMove;
+export type PokemonMoveEntity = IMove;
 
-export type MoveConstructorParams = Omit<MoveEntity, 'id' | 'created_at' | 'updated_at' | 'deleted_at'> & IPartialNestBaseEntity;
+export type MoveConstructorParams = Omit<PokemonMoveEntity, 'id' | 'pp' | 'order' | 'priority' | 'created_at' | 'updated_at' | 'deleted_at'> & IPartialBaseEntity & {
+    pp?: number;
+    order?: number;
+    priority?: number;
+};

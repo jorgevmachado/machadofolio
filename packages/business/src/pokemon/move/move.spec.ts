@@ -7,13 +7,12 @@ import {
     jest,
 } from '@jest/globals';
 
-import Move from './move';
-import type { MoveEntity } from './types';
 import { POKEMON_MOVE_MOCK } from './mock';
-
+import PokemonMove from './move';
+import type { PokemonMoveEntity } from './types';
 
 describe('Pokemon Move', () => {
-    const entityMock: MoveEntity = POKEMON_MOVE_MOCK;
+    const entityMock: PokemonMoveEntity = POKEMON_MOVE_MOCK;
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
@@ -25,7 +24,7 @@ describe('Pokemon Move', () => {
 
     describe('constructor', () => {
         it('should create an instance pokemon move with all provided parameters', () => {
-            const entity = new Move(entityMock);
+            const entity = new PokemonMove(entityMock);
             expect(entity.id).toEqual(entityMock.id);
             expect(entity.pp).toEqual(entityMock.pp);
             expect(entity.url).toEqual(entityMock.url);
@@ -46,21 +45,21 @@ describe('Pokemon Move', () => {
         });
 
         it('should create an instance with some provided parameters', () => {
-            const entity = new Move();
+            const entity = new PokemonMove();
             expect(entity.id).toBeUndefined();
-            expect(entity.pp).toBeUndefined();
+            expect(entity.pp).toEqual(0);
             expect(entity.url).toBeUndefined();
             expect(entity.type).toBeUndefined();
             expect(entity.name).toBeUndefined();
-            expect(entity.order).toBeUndefined();
-            expect(entity.power).toBeUndefined();
+            expect(entity.order).toEqual(0);
+            expect(entity.power).toEqual(0);
             expect(entity.target).toBeUndefined();
             expect(entity.effect).toBeUndefined();
-            expect(entity.priority).toBeUndefined();
-            expect(entity.accuracy).toBeUndefined();
+            expect(entity.priority).toEqual(0);
+            expect(entity.accuracy).toEqual(0);
             expect(entity.short_effect).toBeUndefined();
             expect(entity.damage_class).toBeUndefined();
-            expect(entity.effect_chance).toBeUndefined();
+            expect(entity.effect_chance).toEqual(0);
             expect(entity.created_at).toBeUndefined();
             expect(entity.updated_at).toBeUndefined();
             expect(entity.deleted_at).toBeUndefined();

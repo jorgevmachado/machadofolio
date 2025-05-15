@@ -8,6 +8,7 @@ import {
 } from '@jest/globals';
 import {
     currencyFormatter,
+    ensureOrderNumber,
     extractLastNumberFromUrl,
     isNumberEven,
     numberValidator,
@@ -110,6 +111,28 @@ describe('Number function', () => {
 
         it('should return invalid when received invalid param', () => {
             expect(numberValidator({ value: new Date() })).toEqual(INVALID_TYPE);
+        });
+    });
+
+    describe('ensureOrderNumber', () => {
+        it('should return the value of order if provided', () => {
+            const result = ensureOrderNumber(42, 'any-url');
+            expect(result).toBe(42);
+        });
+
+        it('should return 0 if no order or URL is given', () => {
+            const result = ensureOrderNumber(undefined, undefined);
+            expect(result).toBe(0);
+        });
+
+        it('should return the number extracted from the URL if order is not provided\n', () => {
+            (extractLastNumberFromUrl as jest.Mock).mockReturnValue(99);
+
+            const result = ensureOrderNumber(undefined, 'https://example.com/99');
+            expect(result).toBe(99);
+            expect(extractLastNumberFromUrl).toHaveBeenCalledWith(
+                'https://example.com/99',
+            );
         });
     });
 });

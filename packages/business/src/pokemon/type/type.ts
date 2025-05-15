@@ -1,22 +1,24 @@
-import type { TypeConstructorParams, TypeEntity } from './types';
+import { ensureOrderNumber } from '@repo/services/number/number';
+
+import type { PokemonTypeEntity, TypeConstructorParams } from './types';
 
 
-export default class Type implements TypeEntity {
-    id!: TypeEntity['id'];
-    url!: TypeEntity['url'];
-    name!: TypeEntity['name'];
-    order!: TypeEntity['order'];
-    text_color!: TypeEntity['text_color'];
-    created_at!: TypeEntity['created_at'];
-    updated_at!: TypeEntity['updated_at'];
-    deleted_at?: TypeEntity['deleted_at'];
-    background_color!: TypeEntity['background_color'];
+export default class PokemonType implements PokemonTypeEntity {
+    id!: PokemonTypeEntity['id'];
+    url!: PokemonTypeEntity['url'];
+    name!: PokemonTypeEntity['name'];
+    order: PokemonTypeEntity['order'] = 0;
+    text_color: PokemonTypeEntity['text_color'] = '#FFF';
+    created_at!: PokemonTypeEntity['created_at'];
+    updated_at!: PokemonTypeEntity['updated_at'];
+    deleted_at?: PokemonTypeEntity['deleted_at'];
+    background_color: PokemonTypeEntity['background_color'] = '#000';
 
     constructor(params?: TypeConstructorParams) {
         this.id =  params?.id ?? this.id;
         this.url =  params?.url ?? this.url;
         this.name =  params?.name ?? this.name;
-        this.order =  params?.order ?? this.order;
+        this.order = ensureOrderNumber(params?.order ?? this.order, this.url);
         this.text_color = params?.text_color ?? this.text_color;
         this.created_at =  params?.created_at ?? this.created_at;
         this.updated_at =  params?.updated_at ?? this.updated_at;

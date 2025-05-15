@@ -119,6 +119,29 @@ Utilitários relacionados a manipulação de serviços de pokemon nestJs.
 ```
 ---
 
+#### **poke-api**: Utilitários relacionados a manipulação de serviços privados do módulo poke-api.
+##### Comando para teste unitários deste sub-módulo
+```bash
+  yarn run test -- --findRelatedTests src/api/poke-api/poke-api.spec.ts               
+```
+##### - **specie**:
+##### Utilitários relacionados a manipulação de serviços de manipulação de espécies de pokemon poke-api.
+```bash
+  yarn run test -- --findRelatedTests src/api/poke-api/specie/specie.spec.ts               
+```
+
+##### - **evolution**:
+##### Utilitários relacionados a manipulação de serviços de manipulação de evoluções de pokemon poke-api.
+```bash
+  yarn run test -- --findRelatedTests src/api/poke-api/evolution/evolution.spec.ts               
+```
+
+##### - **move**:
+##### Utilitários relacionados a manipulação de serviços de manipulação de movimentações de pokemon poke-api.
+```bash
+  yarn run test -- --findRelatedTests src/api/poke-api/move/move.spec.ts               
+```
+
 ### **auth**: Utilitários relacionados a manipulação de usuário e autenticação.
 #### **business**: Utilitários relacionados a regras de negócios na manipulação de usuário e autenticação.
 ##### Comando para teste unitários deste sub-módulo
@@ -249,4 +272,13 @@ Utilitários relacionados a manipulação de serviços de pokemon nestJs.
 - **type**: Utilitários relacionados a manipulação da entidade de tipos de pokemon.
 ```bash
   yarn run test -- --findRelatedTests src/pokemon/type/type.spec.ts               
+```
+##### **poke-api**: Utilitários relacionados a manipulação de requisições a poke-api.
+- **service**: Utilitários relacionados a manipulação de serviços da poke-api.
+```bash
+  yarn run test -- --findRelatedTests src/pokemon/poke-api/service/service.spec.ts               
+```
+- **business**: Utilitários relacionados as regras de negocio de poke-api.
+```bash
+  yarn run test -- --findRelatedTests src/pokemon/poke-api/business/business.spec.ts               
 ```

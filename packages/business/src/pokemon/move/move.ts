@@ -1,23 +1,25 @@
-import { type MoveConstructorParams, type MoveEntity } from './types';
+import { ensureOrderNumber } from '@repo/services/number/number';
 
-export default class Move implements MoveEntity {
-    id!: MoveEntity['id'];
-    pp!: MoveEntity['pp'];
-    url!: MoveEntity['url'];
-    type!: MoveEntity['type'];
-    name!: MoveEntity['name'];
-    order!: MoveEntity['order'];
-    power?: MoveEntity['power'];
-    target!: MoveEntity['target'];
-    effect!: MoveEntity['effect'];
-    priority!: MoveEntity['priority'];
-    accuracy?: MoveEntity['accuracy'];
-    short_effect!: MoveEntity['short_effect'];
-    damage_class!: MoveEntity['damage_class'];
-    effect_chance!: MoveEntity['effect_chance'];
-    created_at!: MoveEntity['created_at'];
-    updated_at!: MoveEntity['updated_at'];
-    deleted_at?: MoveEntity['deleted_at'];
+import { type MoveConstructorParams, type PokemonMoveEntity } from './types';
+
+export default class PokemonMove implements PokemonMoveEntity {
+    id!: PokemonMoveEntity['id'];
+    pp: PokemonMoveEntity['pp'] = 0;
+    url!: PokemonMoveEntity['url'];
+    type!: PokemonMoveEntity['type'];
+    name!: PokemonMoveEntity['name'];
+    order!: PokemonMoveEntity['order'];
+    power?: PokemonMoveEntity['power'] = 0;
+    target!: PokemonMoveEntity['target'];
+    effect!: PokemonMoveEntity['effect'];
+    priority: PokemonMoveEntity['priority'] = 0;
+    accuracy?: PokemonMoveEntity['accuracy'] = 0;
+    short_effect!: PokemonMoveEntity['short_effect'];
+    damage_class!: PokemonMoveEntity['damage_class'];
+    effect_chance?: PokemonMoveEntity['effect_chance'] = 0;
+    created_at!: PokemonMoveEntity['created_at'];
+    updated_at!: PokemonMoveEntity['updated_at'];
+    deleted_at?: PokemonMoveEntity['deleted_at'];
 
 
     constructor(params?: MoveConstructorParams) {
@@ -26,7 +28,7 @@ export default class Move implements MoveEntity {
         this.url =  params?.url ?? this.url;
         this.type = params?.type ?? this.type;
         this.name =  params?.name ?? this.name;
-        this.order =  params?.order ?? this.order;
+        this.order = ensureOrderNumber(params?.order ?? this.order, this.url);
         this.power = params?.power ?? this.power;
         this.target = params?.target ?? this.target;
         this.effect = params?.effect ?? this.effect;

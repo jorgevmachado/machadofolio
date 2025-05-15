@@ -1,3 +1,4 @@
 export { default } from './type';
-export type { TypeEntity } from './types';
+export type { PokemonTypeEntity } from './types';
+export {  PokemonTypeBusiness } from './business';
 export * from './mock';

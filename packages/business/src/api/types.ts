@@ -23,3 +23,12 @@ export type IQueryParameters = {
 export type IBaseResponse = {
     message: string;
 }
+
+export type IBaseEntity = {
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    deleted_at?: Date;
+}
+
+export type IPartialBaseEntity = Partial<IBaseEntity>;

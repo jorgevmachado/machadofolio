@@ -1,12 +1,11 @@
 import { type EStatus } from '../../enum';
-
-import { type INestBaseEntity } from '../types';
+import type { IBaseEntity } from '../../types';
 
 import { type IAbility } from './ability';
 import { type IMove } from './move';
 import { type IType } from './type';
 
-export type IPokemonBase = INestBaseEntity & {
+export type IPokemonBase = IBaseEntity & {
     url: string;
     name: string;
     order: number;

@@ -8,11 +8,11 @@ import {
 } from '@jest/globals';
 
 import { POKEMON_TYPE } from './mock';
-import Type from './type';
-import type { TypeEntity } from './types';
+import PokemonType from './type';
+import type { PokemonTypeEntity } from './types';
 
 describe('Pokemon Type', () => {
-    const entityMock: TypeEntity = POKEMON_TYPE;
+    const entityMock: PokemonTypeEntity = POKEMON_TYPE;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -25,8 +25,8 @@ describe('Pokemon Type', () => {
 
     describe('constructor', () => {
         it('should create an instance pokemon type with all provided parameters', () => {
-            const entity = new Type(entityMock);
-            expect(entity).toBeInstanceOf(Type);
+            const entity = new PokemonType(entityMock);
+            expect(entity).toBeInstanceOf(PokemonType);
             expect(entity.id).toEqual(entityMock.id);
             expect(entity.url).toEqual(entityMock.url);
             expect(entity.name).toEqual(entityMock.name);
@@ -39,16 +39,16 @@ describe('Pokemon Type', () => {
         });
 
         it('should create an instance with some provided parameters', () => {
-            const entity = new Type();
+            const entity = new PokemonType();
             expect(entity.id).toBeUndefined();
             expect(entity.url).toBeUndefined();
             expect(entity.name).toBeUndefined();
-            expect(entity.order).toBeUndefined();
-            expect(entity.text_color).toBeUndefined();
+            expect(entity.order).toEqual(0);
+            expect(entity.text_color).toEqual('#FFF');
             expect(entity.created_at).toBeUndefined();
             expect(entity.updated_at).toBeUndefined();
             expect(entity.deleted_at).toBeUndefined();
-            expect(entity.background_color).toBeUndefined();
+            expect(entity.background_color).toEqual('#000');
         });
     });
 

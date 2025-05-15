@@ -21,6 +21,18 @@ export function extractLastNumberFromUrl(url?: string): number {
  return lastNumber;
 }
 
+export function ensureOrderNumber(order?: number, url?: string): number {
+ if (order) {
+  return order;
+ }
+
+ if(!url) {
+  return 0;
+ }
+
+ return extractLastNumberFromUrl(url);
+}
+
 export type TCountry = 'br';
 
 export function currencyFormatter(
