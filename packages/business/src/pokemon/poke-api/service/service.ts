@@ -1,4 +1,4 @@
-import { type PokeApi } from '../../../api';
+import { PokeApi } from '../../../api';
 
 import Pokemon from '../../pokemon';
 
@@ -9,7 +9,11 @@ import type { getAllParams } from './types';
 export class PokeApiService {
     public limit: number = 1302;
 
-    constructor(private pokeApi: PokeApi) {}
+    private pokeApi: PokeApi;
+
+    constructor() {
+        this.pokeApi = new PokeApi();
+    }
 
     public async getAll({ offset = 0, limit = this.limit }: getAllParams): Promise<Array<Pokemon>> {
         return this.pokeApi

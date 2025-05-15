@@ -44,7 +44,8 @@ describe('Poke Api Service', () => {
             }
         } as unknown as jest.Mocked<PokeApi>;
 
-        service = new PokeApiService(mockPokeApi);
+        service = new PokeApiService();
+        (service as any).pokeApi = mockPokeApi;
     });
 
     afterEach(() => {
