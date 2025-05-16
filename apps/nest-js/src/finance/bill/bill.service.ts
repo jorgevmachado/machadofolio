@@ -125,7 +125,8 @@ export class BillService extends Service<Bill> {
                 value: bill.year,
                 param: 'year',
                 condition: '='
-            }]
+            }],
+            withThrow: false,
         });
         if (existBill) {
             if (withThrow) {

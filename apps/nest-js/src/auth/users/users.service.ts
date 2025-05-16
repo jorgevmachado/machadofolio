@@ -62,6 +62,7 @@ export class UsersService extends Service<User>{
                 by,
                 value,
             },
+            withThrow: false,
             withDeleted: true,
         });
 
@@ -149,6 +150,7 @@ export class UsersService extends Service<User>{
                 value: item.cpf,
                 condition: '=',
             },
+            withThrow: false,
             relations: this.relations,
         });
 

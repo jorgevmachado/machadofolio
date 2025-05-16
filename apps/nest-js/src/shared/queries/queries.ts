@@ -46,20 +46,27 @@ export class Queries<T extends BasicEntity> {
         return new Paginate(Number(page), Number(limit), Number(total), results);
     }
 
-    async findBy(params: FindByParams) {
+    async findBy({
+                     filters = [],
+                     relations = this.relations,
+                     withThrow = true,
+                     withDeleted,
+                     searchParams,
+                     withRelations,
+                 }: FindByParams) {
         const query = new Query<T>({
-            filters: params.filters ?? [],
+            filters: filters,
             alias: this.alias,
-            relations: params?.relations ?? this.relations,
+            relations: relations,
             repository: this.repository,
-            withDeleted: params?.withDeleted,
-            searchParams: params?.searchParams,
-            withRelations: params?.withRelations,
+            withDeleted: withDeleted,
+            searchParams: searchParams,
+            withRelations: withRelations,
         }).initialize();
 
         const result = await query.getOne();
 
-        if (!result && params?.withThrow) {
+        if (!result && withThrow) {
             throw new NotFoundException(`${this.alias} not found`);
         }
 

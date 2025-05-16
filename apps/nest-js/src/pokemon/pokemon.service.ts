@@ -70,9 +70,7 @@ export class PokemonService extends Service<Pokemon> {
 
     async validateEntity(value: string, complete: boolean = true){
         const result = await this.queries.findOne({ value, withRelations: true });
-        if(!result) {
-            return result;
-        }
+
         if(result?.status === EStatus.COMPLETE) {
             return result;
         }
@@ -81,7 +79,7 @@ export class PokemonService extends Service<Pokemon> {
             return result;
         }
 
-        return this.completingPokemonData(result);
+        return this.completingPokemonData(result as Pokemon);
     }
 
     private async completingPokemonData(result: Pokemon){
