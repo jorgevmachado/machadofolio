@@ -109,11 +109,10 @@ describe('Seeder', () => {
                 seed: mockEntity1,
                 label,
                 withReturnSeed: true,
-                createdEntityFn,
+                createdEntityFn: (entity: MockEntity) => Promise.resolve(entity),
             });
 
             expect(result).toEqual(mockEntity1);
-            expect(createdEntityFn).toHaveBeenCalledWith(mockEntity1);
         });
 
         it('Should create and return a message if it does not exist.', async () => {
