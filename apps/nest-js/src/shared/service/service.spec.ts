@@ -216,8 +216,12 @@ describe('service', () => {
             const result = await service.treatEntitiesParams([]);
             expect(result).toEqual([]);
         });
+        
         it('should return an list of entities by request', async () => {
             jest.spyOn(Queries.prototype, 'list').mockResolvedValueOnce(entities);
+            entities.forEach((entity) => {
+                jest.spyOn(Queries.prototype, 'findOne').mockResolvedValueOnce(entity);
+            })
             const result = await service.treatEntitiesParams(entities, 'Entity');
             expect(result).toEqual(entities);
         });
