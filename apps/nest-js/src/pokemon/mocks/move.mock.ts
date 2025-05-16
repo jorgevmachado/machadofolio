@@ -1,6 +1,6 @@
 import type { PokemonMove } from '../entities/move.entity';
 
-export const MOVE_MOCK: PokemonMove = {
+export const POKEMON_MOVE_MOCK: PokemonMove = {
     id: 'bf22639d-0c2c-400a-bd2c-61fa3c398493',
     pp: 0,
     url: 'https://pokemon-mock/move/1/',

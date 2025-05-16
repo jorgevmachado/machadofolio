@@ -5,16 +5,17 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { PokeApiService } from '@repo/business/pokemon/poke-api/service/service';
 
+import { POKEMON_MOVE_MOCK } from '../mocks/move.mock';
 import { PokemonMove } from '../entities/move.entity';
 
 import { PokemonMoveService } from './move.service';
-import { MOVE_MOCK } from '../mocks/move.mock';
+
 
 describe('MoveService', () => {
     let service: PokemonMoveService;
     let repository: Repository<PokemonMove>;
     let pokeApiService: PokeApiService;
-    const mockEntity: PokemonMove = MOVE_MOCK;
+    const mockEntity: PokemonMove = POKEMON_MOVE_MOCK;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({

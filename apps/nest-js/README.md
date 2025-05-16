@@ -277,3 +277,26 @@ yarn test
   // Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/pokemon/move/move.controller.spec.ts                                 
 ```
+#### **type**: Conjunto de serviços relacionados a tipos de pokemon.
+- **service**: Regras de négocio para o tratamento dos tipos de pokemon.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/pokemon/type/type.service.spec.ts                                 
+```
+- **controller**: Endpoints relacionados a tipos de pokemon.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/pokemon/type/type.controller.spec.ts                                 
+```
+
+#### **ability**: Conjunto de serviços relacionados a Habilidades de pokemon.
+- **service**: Regras de négocio para o tratamento de Habilidades de pokemon.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/pokemon/ability/ability.service.spec.ts                                 
+```
+- **controller**: Endpoints relacionados a Habilidades de pokemon.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/pokemon/ability/ability.controller.spec.ts                                 
+```
