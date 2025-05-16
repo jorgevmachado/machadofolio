@@ -29,6 +29,7 @@ export class PokemonService extends Service<Pokemon> {
 
     async findAll(listParams: ListParams): Promise<Array<Pokemon> | PaginateParameters<Pokemon>> {
         await this.validateDatabase();
+
         return await this.queries.list(listParams);
     }
 
@@ -48,6 +49,7 @@ export class PokemonService extends Service<Pokemon> {
                 .catch((error) => {
                     throw this.error(error);
                 });
+
             if (total === 0) {
                 return this.createList(externalPokemonList);
             }
@@ -67,7 +69,7 @@ export class PokemonService extends Service<Pokemon> {
     }
 
     async validateEntity(value: string, complete: boolean = true){
-        const result = await this.queries.findOne({ value });
+        const result = await this.queries.findOne({ value, withRelations: true });
         if(!result) {
             return result;
         }
