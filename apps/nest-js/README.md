@@ -261,8 +261,19 @@ yarn test
   // Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/pokemon/pokemon.service.spec.ts                                 
 ```
-#### **controller**: Endpoints relacionados a finanças.
+#### **controller**: Endpoints relacionados a pokemon.
 ```bash
   // Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/finance.controller.spec.ts                                 
+```
+#### **move**: Conjunto de serviços relacionados a movimentos de pokemon.
+- **service**: Regras de négocio para o tratamento dos movimentos de pokemon.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/pokemon/move/move.service.spec.ts                                 
+```
+- **controller**: Endpoints relacionados a movimentações de pokemon.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/pokemon/move/move.controller.spec.ts                                 
 ```
