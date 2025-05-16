@@ -1,6 +1,6 @@
 import { type PokemonTypeEntity } from '../types';
 
-export const POKEMON_TYPE: PokemonTypeEntity = {
+export const POKEMON_TYPE_MOCK: PokemonTypeEntity = {
     id: 'f73f900d-1e0e-4a39-be7a-509746164ae9',
     url: 'https://pokemon-mock/type/1/',
     name: 'type',

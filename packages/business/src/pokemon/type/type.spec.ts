@@ -7,12 +7,12 @@ import {
     jest,
 } from '@jest/globals';
 
-import { POKEMON_TYPE } from './mock';
+import { POKEMON_TYPE_MOCK } from './mock';
 import PokemonType from './type';
 import type { PokemonTypeEntity } from './types';
 
 describe('Pokemon Type', () => {
-    const entityMock: PokemonTypeEntity = POKEMON_TYPE;
+    const entityMock: PokemonTypeEntity = POKEMON_TYPE_MOCK;
 
     beforeEach(() => {
         jest.clearAllMocks();

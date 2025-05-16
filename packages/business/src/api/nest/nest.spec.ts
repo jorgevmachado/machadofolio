@@ -10,10 +10,11 @@ import {
 import { Auth } from './auth';
 import { Finance } from './finance';
 import { Nest } from './nest';
-
+import { Pokemon } from './pokemon';
 
 jest.mock('./auth');
 jest.mock('./finance');
+jest.mock('./pokemon');
 
 describe('Nest', () => {
     const mockBaseUrl = 'http://test-url.com';
@@ -67,6 +68,25 @@ describe('Nest', () => {
 
             expect(financeInstance).toBeInstanceOf(Finance);
             expect(Finance).toHaveBeenCalledTimes(1);
+        });
+    });
+    describe('PokemonModule', () => {
+        it('should create the Pokemon module with correct config', () => {
+            new Nest({ baseUrl: mockBaseUrl, token: mockToken });
+
+            expect(Pokemon).toHaveBeenCalledTimes(1);
+            expect(Pokemon).toHaveBeenCalledWith({
+                baseUrl: mockBaseUrl,
+                headers: mockHeaders,
+            });
+        });
+
+        it('should expose the pokemon property', () => {
+            const instance = new Nest({ baseUrl: mockBaseUrl, token: mockToken });
+            const pokemonInstance = instance.pokemon;
+
+            expect(pokemonInstance).toBeInstanceOf(Pokemon);
+            expect(Pokemon).toHaveBeenCalledTimes(1);
         });
     });
 });
