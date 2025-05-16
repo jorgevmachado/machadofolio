@@ -1,12 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 import { QueryParameters } from '@repo/business/types';
+
+import { AuthRoleGuard } from '../../../guards/auth-role/auth-role.guard';
+import { AuthStatusGuard } from '../../../guards/auth-status/auth-status.guard';
 
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Controller('finance/bill')
+@UseGuards(AuthGuard(), AuthRoleGuard, AuthStatusGuard)
 export class CategoryController {
   constructor(private readonly service: CategoryService) {}
 
