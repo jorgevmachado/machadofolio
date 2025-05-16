@@ -9,11 +9,11 @@ import BillConstructor from '@repo/business/finance/bill/bill';
 
 import { FilterParams, ListParams, Service } from '../../shared';
 
-import { Bank } from '../../entities/bank.entity';
-import { Bill } from '../../entities/bill.entity';
-import { BillCategory } from '../../entities/category.entity';
-import { Expense } from '../../entities/expense.entity';
-import { Finance } from '../../entities/finance.entity';
+import { Bank } from '../entities/bank.entity';
+import { Bill } from '../entities/bill.entity';
+import { BillCategory } from '../entities/category.entity';
+import { Expense } from '../entities/expense.entity';
+import { Finance } from '../entities/finance.entity';
 
 import { BankService } from './bank/bank.service';
 import { CategoryService } from './category/category.service';

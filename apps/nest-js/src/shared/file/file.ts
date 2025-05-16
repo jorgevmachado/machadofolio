@@ -10,6 +10,7 @@ export class File {
         try {
             await writeFile(filePath, file.buffer);
         } catch (error) {
+            console.error('# => FileService => upload => error => ', error);
             throw new BadRequestException('Failed to save file.');
         }
 

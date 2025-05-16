@@ -8,9 +8,9 @@ import type { ExpenseEntity } from '@repo/business/finance/expense/types';
 
 import { Service } from '../../../shared';
 
-import { Bill } from '../../../entities/bill.entity';
-import { Expense } from '../../../entities/expense.entity';
-import { Supplier } from '../../../entities/supplier.entity';
+import { Bill } from '../../entities/bill.entity';
+import { Expense } from '../../entities/expense.entity';
+import { Supplier } from '../../entities/supplier.entity';
 
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { SupplierService } from './supplier/supplier.service';

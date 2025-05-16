@@ -1,7 +1,7 @@
 import { IsEmpty } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
-import { Expense } from '../../../entities/expense.entity';
+import { Expense } from '../../entities/expense.entity';
 
 import { CreateBillDto } from './create-bill.dto';
 

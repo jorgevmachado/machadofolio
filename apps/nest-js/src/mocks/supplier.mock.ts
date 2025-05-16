@@ -1,4 +1,4 @@
-import { type Supplier } from '../entities/supplier.entity';
+import { type Supplier } from '../finance/entities/supplier.entity';
 
 import { SUPPLIER_TYPE_MOCK } from './supplier-type.mock';
 

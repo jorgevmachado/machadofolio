@@ -14,13 +14,13 @@ import { EExpenseType } from '@repo/business/finance/expense/enum';
 import ExpenseBusiness from '@repo/business/finance/expense/business/business';
 
 import { EXPENSE_MOCK } from '../../../mocks/expense.mock';
-import { Expense } from '../../../entities/expense.entity';
+import { Expense } from '../../entities/expense.entity';
 
 import { type CreateExpenseDto } from './dto/create-expense.dto';
 import { EMonth } from '@repo/services/date/month/enum';
 import { ExpenseService } from './expense.service';
 import { MONTHS } from '@repo/services/date/month/month';
-import { type Supplier } from '../../../entities/supplier.entity';
+import { type Supplier } from '../../entities/supplier.entity';
 import { SupplierService } from './supplier/supplier.service';
 import { type UpdateExpenseDto } from './dto/update-expense.dto';
 

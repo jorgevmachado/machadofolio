@@ -6,7 +6,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { BILL_CATEGORY_MOCK } from '../../../mocks/bill-category.mock';
 import { BILL_MOCK } from '../../../mocks/bill.mock';
-import { BillCategory } from '../../../entities/category.entity';
+import { BillCategory } from '../../entities/category.entity';
 
 import { CategoryService } from './category.service';
 import { type CreateCategoryDto } from './dto/create-category.dto';

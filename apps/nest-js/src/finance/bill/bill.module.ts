@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import BillBusiness from '@repo/business/finance/bill/business/business';
 
-import { Bill } from '../../entities/bill.entity';
+import { Bill } from '../entities/bill.entity';
 
 import { BillController } from './bill.controller';
 import { BillService } from './bill.service';

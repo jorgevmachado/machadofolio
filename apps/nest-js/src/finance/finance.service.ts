@@ -6,8 +6,8 @@ import FinanceConstructor from '@repo/business/finance/finance';
 
 import { Service } from '../shared';
 
-import { Finance } from '../entities/finance.entity';
-import { User } from '../entities/user.entity';
+import { Finance } from './entities/finance.entity';
+import { User } from '../auth/entities/user.entity';
 
 import { BillService } from './bill/bill.service';
 

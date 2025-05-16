@@ -6,7 +6,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { SUPPLIER_MOCK } from '../../../../../mocks/supplier.mock';
 import { SUPPLIER_TYPE_MOCK } from '../../../../../mocks/supplier-type.mock';
-import { SupplierType } from '../../../../../entities/type.entity';
+import { SupplierType } from '../../../../entities/type.entity';
 
 import { type CreateTypeDto } from './dto/create-type.dto';
 import { SupplierTypeService } from './type.service';

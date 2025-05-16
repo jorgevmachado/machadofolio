@@ -6,7 +6,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { USER_ENTITY_MOCK } from '@repo/business/auth/mock/mock';
 
-import { User } from '../../entities/user.entity';
+import { User } from '../../auth/entities/user.entity';
 
 import { AuthJwtStrategy } from './auth-jwt.strategy';
 

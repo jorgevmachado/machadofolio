@@ -1,4 +1,4 @@
-import { type Finance } from '../entities/finance.entity';
+import { type Finance } from '../finance/entities/finance.entity';
 
 import { EGender } from '@repo/services/personal-data/enum';
 

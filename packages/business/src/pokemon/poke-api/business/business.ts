@@ -117,7 +117,10 @@ export default class PokeApiBusiness {
         };
     }
 
-    ensureEvolutions(params: EvolutionResponse['chain']): Array<string> {
+    ensureEvolutions(params?: EvolutionResponse['chain']): Array<string> {
+        if(!params) {
+            return [];
+        }
         return [
             params?.species?.name,
             ...this.ensureNextEvolution(params?.evolves_to)
@@ -125,6 +128,9 @@ export default class PokeApiBusiness {
     }
 
     private ensureNextEvolution(params?: EvolutionResponse['chain']['evolves_to']): Array<string> {
+        if(!params) {
+            return [];
+        }
         return params?.map(
             (item) =>
                 [item.species.name].concat(...this.ensureNextEvolution(item.evolves_to))

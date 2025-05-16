@@ -2,7 +2,7 @@ import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { SUPPLIER_TYPE_MOCK } from '../../../../../mocks/supplier-type.mock';
-import { type SupplierType } from '../../../../../entities/type.entity';
+import { type SupplierType } from '../../../../entities/type.entity';
 
 import { type CreateTypeDto } from './dto/create-type.dto';
 import { SupplierTypeService } from './type.service';

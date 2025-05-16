@@ -4,11 +4,11 @@ import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/global
 import { EMonth } from '@repo/services/date/month/enum';
 
 import { BILL_MOCK } from '../../mocks/bill.mock';
-import { type Bill } from '../../entities/bill.entity';
+import { type Bill } from '../entities/bill.entity';
 import { EXPENSE_MOCK } from '../../mocks/expense.mock';
-import { type Expense } from '../../entities/expense.entity';
+import { type Expense } from '../entities/expense.entity';
 import { USER_MOCK } from '../../mocks/user.mock';
-import { type User } from '../../entities/user.entity';
+import { type User } from '../../auth/entities/user.entity';
 
 import { BillController } from './bill.controller';
 import { BillService } from './bill.service';

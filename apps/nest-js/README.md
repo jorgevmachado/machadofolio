@@ -180,8 +180,6 @@ yarn test
   yarn run test -- --findRelatedTests src/auth/auth.controller.spec.ts                                 
 ``` 
 
-
-
 ### **finance**: Conjunto de serviços e endpoints relacionados a finanças.
 #### **service**: Regras de négocio para o tratamento de finanças.
 ```bash
@@ -255,4 +253,16 @@ yarn test
 ```bash
   // Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/supplier/type/type.controller.spec.ts                                 
+```
+
+### **pokemon**: Conjunto de serviços e endpoints relacionados a pokemon.
+#### **service**: Regras de négocio para o tratamento de pokemons.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/pokemon/pokemon.service.spec.ts                                 
+```
+#### **controller**: Endpoints relacionados a finanças.
+```bash
+  // Comando para testes unitários exclusivo para esté sub-módulo.
+  yarn run test -- --findRelatedTests src/finance/finance.controller.spec.ts                                 
 ```

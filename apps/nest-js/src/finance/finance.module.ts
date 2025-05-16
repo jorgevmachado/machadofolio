@@ -6,7 +6,7 @@ import { BillModule } from './bill/bill.module';
 import { FinanceController } from './finance.controller';
 import { FinanceService } from './finance.service';
 
-import { Finance } from '../entities/finance.entity';
+import { Finance } from './entities/finance.entity';
 
 @Module({
     controllers: [FinanceController],

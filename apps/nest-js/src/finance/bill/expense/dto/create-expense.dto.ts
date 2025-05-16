@@ -5,7 +5,7 @@ import { EMonth } from '@repo/services/date/month/enum';
 import type { CreateExpenseParams } from '@repo/business/finance/expense/types';
 import { EExpenseType } from '@repo/business/finance/expense/enum';
 
-import { Supplier } from '../../../../entities/supplier.entity';
+import { Supplier } from '../../../entities/supplier.entity';
 
 export class CreateExpenseDto implements CreateExpenseParams {
     @IsNotEmpty()

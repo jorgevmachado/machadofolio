@@ -1,6 +1,6 @@
 import { EBillType } from '@repo/business/finance/bill/enum';
 
-import { type Bill } from '../entities/bill.entity';
+import { type Bill } from '../finance/entities/bill.entity';
 
 import { BANK_MOCK } from './bank.mock';
 import { BILL_CATEGORY_MOCK } from './bill-category.mock';

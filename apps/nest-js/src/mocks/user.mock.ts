@@ -2,7 +2,7 @@ import { EGender } from '@repo/services/personal-data/enum';
 
 import { ERole, EStatus } from '@repo/business/enum';
 
-import { type User } from '../entities/user.entity';
+import { type User } from '../auth/entities/user.entity';
 
 import { FINANCE_MOCK } from './finance.mock';
 

@@ -8,9 +8,9 @@ import { AuthStatusGuard } from '../../guards/auth-status/auth-status.guard';
 import { FinanceInitializeGuard } from '../../guards/finance-initialize/finance-initialize.guard';
 import { GetUserAuth } from '../../decorators/auth-user/auth-user.decorator';
 
-import { Finance } from '../../entities/finance.entity';
+import { Finance } from '../entities/finance.entity';
 import { ListParams } from '../../shared';
-import { User } from '../../entities/user.entity';
+import { User } from '../../auth/entities/user.entity';
 
 import { BillService } from './bill.service';
 import { CreateBillDto } from './dto/create-bill.dto';

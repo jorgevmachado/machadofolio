@@ -1,4 +1,4 @@
-import { type Expense } from '../entities/expense.entity';
+import { type Expense } from '../finance/entities/expense.entity';
 
 import { EExpenseType } from '@repo/business/finance/expense/enum';
 

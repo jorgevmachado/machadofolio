@@ -11,13 +11,12 @@ import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { FINANCE_MOCK } from '../mocks/finance.mock';
-import { Finance } from '../entities/finance.entity';
+import { USER_MOCK } from '../mocks/user.mock';
+import { type User } from '../auth/entities/user.entity';
 
 import { BillService } from './bill/bill.service';
+import { Finance } from './entities/finance.entity';
 import { FinanceService } from './finance.service';
-import { type User } from '../entities/user.entity';
-import { USER_MOCK } from '../mocks/user.mock';
-
 
 describe('FinanceService', () => {
   let repository: Repository<Finance>;

@@ -3,7 +3,7 @@ import { IsBoolean, IsEmpty, IsEnum, IsNumber, IsPositive, MaxLength } from 'cla
 import { type UpdateExpenseParams } from '@repo/business/finance/expense/types';
 
 import { EExpenseType } from '@repo/business/finance/expense/enum';
-import { Supplier } from '../../../../entities/supplier.entity';
+import { Supplier } from '../../../entities/supplier.entity';
 
 export class UpdateExpenseDto implements UpdateExpenseParams{
     @IsEmpty()

@@ -7,7 +7,7 @@ import { UseFileUpload } from '../decorators/use-file-upload/use-file-upload.dec
 
 import { AuthRoleGuard } from '../guards/auth-role/auth-role.guard';
 
-import { User } from '../entities/user.entity';
+import { User } from './entities/user.entity';
 
 import { SignInAuthDto } from './dto/sign-in-auth.dto';
 import { SignUpAuthDto } from './dto/sign-up-auth.dto';

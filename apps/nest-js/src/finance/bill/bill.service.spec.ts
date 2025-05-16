@@ -7,13 +7,13 @@ import BillBusiness from '@repo/business/finance/bill/business/business';
 import { EExpenseType } from '@repo/business/finance/expense/enum';
 
 import { BILL_MOCK } from '../../mocks/bill.mock';
-import { Bill } from '../../entities/bill.entity';
+import { Bill } from '../entities/bill.entity';
 import { EXPENSE_MOCK } from '../../mocks/expense.mock';
-import { type Expense } from '../../entities/expense.entity';
+import { type Expense } from '../entities/expense.entity';
 import { FINANCE_MOCK } from '../../mocks/finance.mock';
-import { type Finance } from '../../entities/finance.entity';
+import { type Finance } from '../entities/finance.entity';
 import { SUPPLIER_MOCK } from '../../mocks/supplier.mock';
-import { type Supplier } from '../../entities/supplier.entity';
+import { type Supplier } from '../entities/supplier.entity';
 
 import { BankService } from './bank/bank.service';
 import { BillService } from './bill.service';

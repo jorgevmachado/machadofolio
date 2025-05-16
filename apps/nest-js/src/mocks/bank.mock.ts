@@ -1,4 +1,4 @@
-import { type Bank } from '../entities/bank.entity';
+import { type Bank } from '../finance/entities/bank.entity';
 
 export const BANK_MOCK: Bank = {
     id: '493de6c1-ec4b-48a7-9169-c8ba750798ce',

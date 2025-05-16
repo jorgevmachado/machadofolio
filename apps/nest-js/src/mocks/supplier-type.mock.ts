@@ -1,4 +1,4 @@
-import { type SupplierType } from '../entities/type.entity';
+import { type SupplierType } from '../finance/entities/type.entity';
 
 export const SUPPLIER_TYPE_MOCK: SupplierType = {
     id: '8df2ee99-cfce-435a-9df0-efd533d825b7',

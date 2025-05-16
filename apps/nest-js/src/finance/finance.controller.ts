@@ -2,7 +2,7 @@ import { Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { GetUserAuth } from '../decorators/auth-user/auth-user.decorator';
-import { User } from '../entities/user.entity';
+import { User } from '../auth/entities/user.entity';
 
 import { AuthRoleGuard } from '../guards/auth-role/auth-role.guard';
 import { AuthStatusGuard } from '../guards/auth-status/auth-status.guard';

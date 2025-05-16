@@ -2,7 +2,7 @@ import { Test, type TestingModule } from '@nestjs/testing';
 import {afterEach, beforeEach, describe, expect, it, jest} from '@jest/globals';
 
 import { SUPPLIER_MOCK } from '../../../../mocks/supplier.mock';
-import { type Supplier } from '../../../../entities/supplier.entity';
+import { type Supplier } from '../../../entities/supplier.entity';
 
 import { type CreateSupplierDto } from './dto/create-supplier.dto';
 import { SupplierController } from './supplier.controller';

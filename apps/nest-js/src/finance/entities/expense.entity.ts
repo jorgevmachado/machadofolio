@@ -12,7 +12,7 @@ import {
 import { EExpenseType } from '@repo/business/finance/expense/enum';
 import type { ExpenseEntity } from '@repo/business/finance/expense/types';
 
-import { DecimalTransformer } from '../transforms/decimal';
+import { DecimalTransformer } from '../../transforms/decimal';
 
 import { Supplier } from './supplier.entity';
 

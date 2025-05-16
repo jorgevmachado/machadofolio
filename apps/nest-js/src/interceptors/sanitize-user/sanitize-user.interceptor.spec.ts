@@ -15,7 +15,7 @@ import { USER_ENTITY_MOCK } from '@repo/business/auth/mock/mock';
 import UserBusiness from '@repo/business/auth/user/user';
 
 import { SanitizeUserInterceptor } from './sanitize-user.interceptor';
-import { type User } from '../../entities/user.entity';
+import { type User } from '../../auth/entities/user.entity';
 
 describe('SanitizeUserInterceptor', () => {
   let interceptor: SanitizeUserInterceptor;

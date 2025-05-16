@@ -1,4 +1,4 @@
-import { type BillCategory } from '../entities/category.entity';
+import { type BillCategory } from '../finance/entities/category.entity';
 
 export const BILL_CATEGORY_MOCK: BillCategory = {
     id: '66c25cf9-ddba-4591-810f-3b60911f47c1',

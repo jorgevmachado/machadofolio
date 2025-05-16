@@ -3,7 +3,7 @@ import { CreateDateColumn,
 
 import { FinanceEntity } from '@repo/business/finance/types';
 
-import { User } from './user.entity';
+import { User } from '../../auth/entities/user.entity';
 
 import { Bill } from './bill.entity';
 

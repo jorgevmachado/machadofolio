@@ -214,5 +214,10 @@ describe('Poke-api Business', () => {
             const result = business.ensureEvolutions(evolutionResponseMock.chain);
             expect(result).toEqual([ originalEvolutionPokemonMock.name, firstEvolutionPokemonMock.name, secondEvolutionPokemonMock.name ]);
         });
+
+        it('Should return a empty list when dont have param', () => {
+            const result = business.ensureEvolutions(undefined);
+            expect(result).toEqual([]);
+        });
     });
 });

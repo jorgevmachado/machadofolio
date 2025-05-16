@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import ExpenseBusiness from '@repo/business/finance/expense/business/business';
 
-import { Expense } from '../../../entities/expense.entity';
+import { Expense } from '../../entities/expense.entity';
 import { ExpenseService } from './expense.service';
 import { SupplierModule } from './supplier/supplier.module';
 

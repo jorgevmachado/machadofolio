@@ -9,7 +9,7 @@ import {
 } from '@jest/globals';
 
 import { FINANCE_MOCK } from '../mocks/finance.mock';
-import { type Finance } from '../entities/finance.entity';
+import { type Finance } from './entities/finance.entity';
 
 import { FinanceController } from './finance.controller';
 import { FinanceService } from './finance.service';

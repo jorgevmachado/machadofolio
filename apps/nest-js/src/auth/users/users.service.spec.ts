@@ -13,7 +13,7 @@ import { EGender } from '@repo/services/personal-data/enum';
 import { ERole, EStatus } from '@repo/business/enum';
 
 import { USER_MOCK, USER_PASSWORD } from '../../mocks/user.mock';
-import { User } from '../../entities/user.entity';
+import { User } from '../entities/user.entity';
 
 import { type UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
