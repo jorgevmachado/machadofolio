@@ -23,8 +23,8 @@ describe('Queries', () => {
     const mockEntity: TestEntity = { id: '1', name: 'Test', order: 1 };
 
     const mockQueryBuilder: any = {
-        skip: jest.fn().mockReturnThis(),
-        take: jest.fn().mockReturnThis(),
+        skip: jest.fn(),
+        take: jest.fn(),
         getMany: jest.fn(),
         getOne: jest.fn(),
         getManyAndCount: jest.fn(),
@@ -51,6 +51,8 @@ describe('Queries', () => {
                 filters: [],
             };
             mockQueryBuilder.getManyAndCount.mockResolvedValueOnce([[mockEntity], 1]);
+            mockQueryBuilder.skip.mockReturnThis(0);
+            mockQueryBuilder.take.mockReturnThis(2);
 
             const result = await queries.list(params);
 
