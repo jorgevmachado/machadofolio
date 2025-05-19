@@ -151,6 +151,7 @@ describe('CategoryService', () => {
 
     it('Should return a seed empty when received a empty list', async () => {
       jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
+      expect(await service.seeds([])).toEqual([]);
     });
   });
 });
