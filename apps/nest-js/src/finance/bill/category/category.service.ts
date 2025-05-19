@@ -2,6 +2,8 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { transformObjectDateAndNulls } from '@repo/services/object/object';
+
 import BillCategoryConstructor from '@repo/business/finance/bill-category/bill-category';
 
 import { Service } from '../../../shared';
@@ -46,5 +48,19 @@ export class CategoryService extends Service<BillCategory> {
         }
         await this.repository.softRemove(result);
         return { message: 'Successfully removed' };
+    }
+
+    async seeds(listJson: Array<unknown>, withReturnSeed: boolean = true) {
+        const categoriesSeeds = listJson.map((category) =>
+                transformObjectDateAndNulls<BillCategory, unknown>(category)
+        )
+        return this.seeder.entities({
+            by: 'name',
+            key: 'all',
+            label: 'Bill Category',
+            seeds: categoriesSeeds,
+            withReturnSeed,
+            createdEntityFn: async (item) => item,
+        });
     }
 }
