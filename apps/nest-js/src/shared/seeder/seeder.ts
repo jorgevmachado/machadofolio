@@ -1,10 +1,12 @@
+import { ConflictException } from '@nestjs/common';
 import { type Repository } from 'typeorm';
 
 import type { BasicEntity } from '../types';
 import { Queries } from '../queries';
 import { Validate } from '../validate';
 
-import type { ExecuteSeedParams, SeedEntitiesParams, SeedEntityParams } from './types';
+import type { ExecuteSeedParams, GetRelationParams, SeedEntitiesParams, SeedEntityParams } from './types';
+
 
 export class Seeder<T extends BasicEntity> {
     private validate: Validate;
@@ -91,5 +93,20 @@ export class Seeder<T extends BasicEntity> {
 
     filterValidItems<T>(items: Array<T | void>): Array<T> {
         return items.filter((item): item is T => item !== undefined);
+    }
+
+    getRelation<T extends { id: string; name?: string }>({
+                                                             key,
+                                                             list,
+                                                             param,
+                                                             relation,
+                                                         }: GetRelationParams<T>) {
+        const item = list?.find((item) => item[key] === param);
+        if (!item) {
+            throw new ConflictException(
+                `The selected ${relation} does not exist, try another one or create one.`,
+            );
+        }
+        return item;
     }
 }

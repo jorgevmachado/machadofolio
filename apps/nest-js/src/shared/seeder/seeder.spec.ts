@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { ConflictException } from '@nestjs/common';
 
 import { type Repository } from 'typeorm';
 
@@ -235,6 +236,28 @@ describe('Seeder', () => {
 
             expect(result).toEqual(mockEntities);
         });
+    });
+
+    describe('getRelation', () => {
+        it('Should return the relation of entity.', () => {
+            const result = seeder.getRelation({
+                key: 'id',
+                list: mockEntities,
+                param: mockEntity1.id,
+                relation: 'Relation'
+            });
+            expect(result).toEqual(mockEntity1);
+        });
+        it('Should Return Error when not exist relation of entity.', () => {
+
+            expect(() => seeder.getRelation({
+                key: 'name',
+                list: mockEntities,
+                param: 'not exist',
+                relation: 'Relation'
+            })).toThrow(ConflictException);
+        });
+
     });
 
 
