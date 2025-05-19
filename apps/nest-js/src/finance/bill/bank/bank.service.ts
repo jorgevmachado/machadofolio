@@ -2,6 +2,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
+import { transformObjectDateAndNulls } from '@repo/services/object/object';
+
 import BankConstructor from '@repo/business/finance/bank/bank';
 
 import { Service } from '../../../shared';
@@ -11,7 +13,7 @@ import { CreateBankDto } from './dto/create-bank.dto';
 import { UpdateBankDto } from './dto/update-bank.dto';
 
 @Injectable()
-export class BankService  extends Service<Bank> {
+export class BankService extends Service<Bank> {
   constructor(
       @InjectRepository(Bank)
       protected repository: Repository<Bank>,
@@ -30,4 +32,15 @@ export class BankService  extends Service<Bank> {
     return this.save(bank);
   }
 
+  async seeds(listJson: Array<unknown>, withReturnSeed: boolean = true) {
+    const seeds = listJson.map((item) => transformObjectDateAndNulls<Bank, unknown>(item));
+    return this.seeder.entities({
+      by: 'name',
+      key: 'all',
+      label: 'Bank',
+      seeds,
+      withReturnSeed,
+      createdEntityFn: async (item) => item
+    })
+  }
 }

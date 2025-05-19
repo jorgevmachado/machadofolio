@@ -51,14 +51,14 @@ export class CategoryService extends Service<BillCategory> {
     }
 
     async seeds(listJson: Array<unknown>, withReturnSeed: boolean = true) {
-        const categoriesSeeds = listJson.map((category) =>
-                transformObjectDateAndNulls<BillCategory, unknown>(category)
+        const seeds = listJson.map((item) =>
+                transformObjectDateAndNulls<BillCategory, unknown>(item)
         )
         return this.seeder.entities({
             by: 'name',
             key: 'all',
             label: 'Bill Category',
-            seeds: categoriesSeeds,
+            seeds,
             withReturnSeed,
             createdEntityFn: async (item) => item,
         });
