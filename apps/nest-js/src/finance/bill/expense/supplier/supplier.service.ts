@@ -2,6 +2,8 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { transformObjectDateAndNulls } from '@repo/services/object/object';
+
 import SupplierConstructor from '@repo/business/finance/supplier/supplier';
 
 import { Service } from '../../../../shared';
@@ -67,5 +69,33 @@ export class SupplierService extends Service<Supplier> {
         }
         await this.repository.softRemove(result);
         return { message: 'Successfully removed' };
+    }
+
+    async seeds(listJson: Array<unknown>, listTypeJson: Array<unknown>, withReturnSeed: boolean = true) {
+      const listType = (
+          (await this.supplierTypeService.seeds(listTypeJson, withReturnSeed)) as Array<SupplierType>
+      ).filter((type): type is SupplierType => !!type);
+
+        const seeds = listJson.map((item) => transformObjectDateAndNulls<Supplier, unknown>(item));
+
+        return this.seeder.entities({
+          by: 'name',
+          key: 'all',
+          label: 'Supplier',
+          seeds,
+          withReturnSeed,
+          createdEntityFn: async (item) => {
+              const type = this.seeder.getRelation<SupplierType>({
+                  key: 'name',
+                  list: listType,
+                  param: item?.type?.name,
+                  relation: 'SupplierType',
+              });
+              return new SupplierConstructor({
+                  name: item.name,
+                  type
+              })
+          },
+      })
     }
 }

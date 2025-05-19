@@ -18,3 +18,10 @@ export type ExecuteSeedParams<T> = {
     label: string;
     seedMethod: () => Promise<Array<T | void>>;
 };
+
+export interface GetRelationParams<T> {
+    key: TByParam;
+    list: Array<T>;
+    param: string;
+    relation: string;
+}

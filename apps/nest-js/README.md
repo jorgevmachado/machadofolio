@@ -236,23 +236,23 @@ yarn test
 - **service**: Regras de négocio para o tratamento de fornecedores.
 ```bash
   // Comando para testes unitários exclusivo para esté sub-módulo.
-  yarn run test -- --findRelatedTests src/finance/supplier/supplier.service.spec.ts                                 
+  yarn run test -- --findRelatedTests src/finance/bill/expense/supplier/supplier.service.spec.ts                                 
 ```
 - **controller**: Endpoints relacionados a fornecedores.
 ```bash
   // Comando para testes unitários exclusivo para esté sub-módulo.
-  yarn run test -- --findRelatedTests src/finance/supplier/supplier.controller.spec.ts                                 
+  yarn run test -- --findRelatedTests src/finance/bill/expense/supplier/supplier.controller.spec.ts                                   
 ```
 - **supplierType**: conjunto de serviços relacionados a tipos de fornecedor.
 - - **service**: Regras de négocio para o tratamento de tipos de fornecedor.
 ```bash
   // Comando para testes unitários exclusivo para esté sub-módulo.
-  yarn run test -- --findRelatedTests src/finance/supplier/type/type.service.spec.ts                                 
+  yarn run test -- --findRelatedTests src/finance/bill/expense/supplier/type/type.service.spec.ts                    
 ```
 - - **controller**: Endpoints relacionados a tipos de fornecedor.
 ```bash
   // Comando para testes unitários exclusivo para esté sub-módulo.
-  yarn run test -- --findRelatedTests src/finance/supplier/type/type.controller.spec.ts                                 
+  yarn run test -- --findRelatedTests src/finance/bill/expense/supplier/type/type.controller.spec.ts                      
 ```
 
 ### **pokemon**: Conjunto de serviços e endpoints relacionados a pokemon.
