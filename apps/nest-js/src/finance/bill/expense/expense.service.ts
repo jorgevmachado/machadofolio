@@ -28,7 +28,7 @@ export type InitializeParams = {
     instalment_number?: number;
 }
 
-type ExpenseSeederParams = FinanceSeederParams &  {
+export type ExpenseSeederParams = FinanceSeederParams &  {
     billList: Array<Bill>
 }
 

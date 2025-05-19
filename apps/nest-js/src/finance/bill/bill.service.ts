@@ -23,7 +23,7 @@ import { BankService } from './bank/bank.service';
 import { CategoryService } from './category/category.service';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { CreateExpenseDto } from './expense/dto/create-expense.dto';
-import { ExpenseService } from './expense/expense.service';
+import { ExpenseSeederParams, ExpenseService } from './expense/expense.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
@@ -307,34 +307,8 @@ export class BillService extends Service<Bill> {
         return await this.expenseService.customSave(updatedExpense);
     }
 
-    async basicSeeds({
-                         bankListJson,
-                         withReturnSeed = true,
-                         categoryListJson,
-                     }: FinanceSeederParams
-    ) {
-        const categoryList = await this.seeder.executeSeed<BillCategory>({
-            label: 'Bill Categories',
-            seedMethod: async () => {
-                const result = await this.categoryService.seeds({ bankListJson });
-                return Array.isArray(result) ? result : [];
-            },
-        });
-
-        const bankList = await this.seeder.executeSeed<Bank>({
-            label: 'Banks',
-            seedMethod: async () => {
-                const result = await this.bankService.seeds({ categoryListJson });
-                return Array.isArray(result) ? result : [];
-            }
-        });
-
-        if (withReturnSeed) {
-            return { bankList, categoryList };
-        }
-        return {
-            message: 'Seeding banks and Bill Categories  Completed Successfully!',
-        };
+    async expenseSeeds(expenseSeederParams: ExpenseSeederParams) {
+        return this.expenseService.seeds(expenseSeederParams);
     }
 
     async seeds({
@@ -344,7 +318,22 @@ export class BillService extends Service<Bill> {
                     billListJson: listJson,
                     withReturnSeed = true,
                 }: BillSeederParams) {
-        const { bankList, categoryList } = await this.basicSeeds({ bankListJson, categoryListJson });
+
+        const categoryList = await this.seeder.executeSeed<BillCategory>({
+            label: 'Bill Categories',
+            seedMethod: async () => {
+                const result = await this.categoryService.seeds({ categoryListJson });
+                return Array.isArray(result) ? result : [];
+            },
+        });
+
+        const bankList = await this.seeder.executeSeed<Bank>({
+            label: 'Banks',
+            seedMethod: async () => {
+                const result = await this.bankService.seeds({ bankListJson });
+                return Array.isArray(result) ? result : [];
+            }
+        });
         if (!listJson) {
             return [];
         }
