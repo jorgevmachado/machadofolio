@@ -138,7 +138,7 @@ describe('CategoryService', () => {
           .spyOn(repository, 'find')
           .mockResolvedValueOnce([mockEntity]);
 
-      expect(await service.seeds([mockEntity])).toEqual([mockEntity]);
+      expect(await service.seeds({ categoryListJson: [mockEntity]})).toEqual([mockEntity]);
     });
 
     it('should seed the database when not exist in database', async () => {
@@ -146,12 +146,12 @@ describe('CategoryService', () => {
 
       jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
 
-      expect(await service.seeds([mockEntity])).toEqual([mockEntity]);
+      expect(await service.seeds({ categoryListJson: [mockEntity]})).toEqual([mockEntity]);
     });
 
     it('Should return a seed empty when received a empty list', async () => {
       jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
-      expect(await service.seeds([])).toEqual([]);
+      expect(await service.seeds({})).toEqual([]);
     });
   });
 });

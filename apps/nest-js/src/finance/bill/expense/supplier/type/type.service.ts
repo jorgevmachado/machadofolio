@@ -8,10 +8,13 @@ import SupplierTypeConstructor from '@repo/business/finance/supplier-type/suppli
 
 import { Service } from '../../../../../shared';
 
+import type { FinanceSeederParams } from '../../../../types';
+
 import { SupplierType } from '../../../../entities/type.entity';
 
 import { CreateTypeDto } from './dto/create-type.dto';
 import { UpdateTypeDto } from './dto/update-type.dto';
+
 
 @Injectable()
 export class SupplierTypeService extends Service<SupplierType> {
@@ -56,7 +59,13 @@ export class SupplierTypeService extends Service<SupplierType> {
         return { message: 'Successfully removed' };
     }
 
-    async seeds(listJson: Array<unknown>, withReturnSeed: boolean = true) {
+    async seeds({
+                    withReturnSeed = true,
+                    supplierTypeListJson: listJson,
+                }: FinanceSeederParams) {
+        if (!listJson) {
+            return [];
+        }
         const seeds = listJson.map((item) => transformObjectDateAndNulls<SupplierType, unknown>(item));
         return this.seeder.entities({
             by: 'name',

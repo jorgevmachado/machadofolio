@@ -212,8 +212,12 @@ describe('SupplierService', () => {
 
       jest.spyOn(repository, 'find').mockResolvedValueOnce([mockEntity]);
 
-      expect(await service.seeds([mockEntity], [mockEntity.type])).toEqual([mockEntity]);
+      expect(await service.seeds({
+        supplierListJson: [mockEntity],
+        supplierTypeListJson: [mockEntity.type],
+      })).toEqual([mockEntity]);
     });
+
     it('should seed the database when not exist in database', async () => {
       jest.spyOn(supplierTypeService, 'seeds').mockResolvedValueOnce([mockEntity.type]);
 
@@ -221,8 +225,12 @@ describe('SupplierService', () => {
 
       jest.spyOn(supplierTypeService, 'treatEntityParam').mockResolvedValueOnce(mockEntity.type);
       jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
-      expect(await service.seeds([mockEntity], [mockEntity.type])).toEqual([mockEntity]);
+      expect(await service.seeds({
+        supplierListJson: [mockEntity],
+        supplierTypeListJson: [mockEntity.type],
+      })).toEqual([mockEntity]);
     });
+
     it('should return conflict Exception because dont exist one SupplierType in dataBase', async () => {
       jest
           .spyOn(supplierTypeService, 'seeds')
@@ -235,7 +243,10 @@ describe('SupplierService', () => {
 
       jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
 
-      await expect(service.seeds([mockEntity], [mockEntity.type])).rejects.toThrowError(ConflictException);
+      await expect(service.seeds({
+        supplierListJson: [mockEntity],
+        supplierTypeListJson: [mockEntity.type],
+      })).rejects.toThrowError(ConflictException);
     });
   });
 });

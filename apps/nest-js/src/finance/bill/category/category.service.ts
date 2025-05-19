@@ -8,18 +8,21 @@ import BillCategoryConstructor from '@repo/business/finance/bill-category/bill-c
 
 import { Service } from '../../../shared';
 
+import type { FinanceSeederParams } from '../../types';
+
 import { BillCategory } from '../../entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
+
 @Injectable()
 export class CategoryService extends Service<BillCategory> {
-  constructor(
-      @InjectRepository(BillCategory)
-      protected repository: Repository<BillCategory>,
-  ) {
-    super('bill_categories', [], repository);
-  }
+    constructor(
+        @InjectRepository(BillCategory)
+        protected repository: Repository<BillCategory>,
+    ) {
+        super('bill_categories', [], repository);
+    }
 
     async create({ name }: CreateCategoryDto) {
         const billCategory = new BillCategoryConstructor({ name });
@@ -50,9 +53,15 @@ export class CategoryService extends Service<BillCategory> {
         return { message: 'Successfully removed' };
     }
 
-    async seeds(listJson: Array<unknown>, withReturnSeed: boolean = true) {
+    async seeds({
+                    withReturnSeed = true,
+                    categoryListJson: listJson,
+                }: FinanceSeederParams) {
+        if (!listJson) {
+            return [];
+        }
         const seeds = listJson.map((item) =>
-                transformObjectDateAndNulls<BillCategory, unknown>(item)
+            transformObjectDateAndNulls<BillCategory, unknown>(item)
         )
         return this.seeder.entities({
             by: 'name',

@@ -8,9 +8,13 @@ import BankConstructor from '@repo/business/finance/bank/bank';
 
 import { Service } from '../../../shared';
 
+import type { FinanceSeederParams } from '../../types';
+
 import { Bank } from '../../entities/bank.entity';
+
 import { CreateBankDto } from './dto/create-bank.dto';
 import { UpdateBankDto } from './dto/update-bank.dto';
+
 
 @Injectable()
 export class BankService extends Service<Bank> {
@@ -32,7 +36,13 @@ export class BankService extends Service<Bank> {
     return this.save(bank);
   }
 
-  async seeds(listJson: Array<unknown>, withReturnSeed: boolean = true) {
+  async seeds({
+                bankListJson: listJson,
+                withReturnSeed = true
+              }: FinanceSeederParams) {
+    if (!listJson) {
+      return [];
+    }
     const seeds = listJson.map((item) => transformObjectDateAndNulls<Bank, unknown>(item));
     return this.seeder.entities({
       by: 'name',

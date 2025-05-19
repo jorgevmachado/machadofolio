@@ -2,11 +2,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
+import { transformObjectDateAndNulls } from '@repo/services/object/object';
+
 import ExpenseBusiness from '@repo/business/finance/expense/business/business';
 import ExpenseConstructor from '@repo/business/finance/expense/expense';
 import type { ExpenseEntity } from '@repo/business/finance/expense/types';
 
 import { Service } from '../../../shared';
+
+import type { FinanceSeederParams } from '../../types';
 
 import { Bill } from '../../entities/bill.entity';
 import { Expense } from '../../entities/expense.entity';
@@ -22,6 +26,10 @@ export type InitializeParams = {
     month?: ExpenseEntity['month'];
     expense: Expense;
     instalment_number?: number;
+}
+
+type ExpenseSeederParams = FinanceSeederParams &  {
+    billList: Array<Bill>
 }
 
 @Injectable()
@@ -95,5 +103,49 @@ export class ExpenseService extends Service<Expense> {
             ...updateExpenseDto,
             supplier
         });
+    }
+
+    async seeds({
+        billList,
+        withReturnSeed = true,
+        expenseListJson: listJson,
+        supplierListJson,
+        supplierTypeListJson,
+    }: ExpenseSeederParams) {
+
+        const supplierList = (
+            (await this.supplierService.seeds({ supplierListJson, supplierTypeListJson }) as Array<Supplier>)
+        ).filter((item): item is Supplier => !!item);
+
+        if(!listJson) {
+            return [];
+        }
+
+        const seeds = listJson.map((item) => transformObjectDateAndNulls<Expense, unknown>(item))
+
+        return this.seeder.entities({
+            by: 'id',
+            key: 'id',
+            label: 'Expense',
+            seeds,
+            withReturnSeed,
+            createdEntityFn: async (item) => {
+                const supplier = this.seeder.getRelation<Supplier>({
+                    key: 'name',
+                    list: supplierList,
+                    relation: 'Supplier',
+                    param: item?.supplier?.name,
+                });
+
+                const bill = billList.find((bill) => bill.id === item.bill?.id) as Bill;
+
+                return {
+                    ...item,
+                    bill,
+                    supplier,
+                }
+            }
+        })
+
     }
 }

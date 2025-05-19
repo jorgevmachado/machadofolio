@@ -8,12 +8,15 @@ import SupplierConstructor from '@repo/business/finance/supplier/supplier';
 
 import { Service } from '../../../../shared';
 
+import type { FinanceSeederParams } from '../../../types';
+
 import { Supplier } from '../../../entities/supplier.entity';
 import { SupplierType } from '../../../entities/type.entity';
 
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { SupplierTypeService } from './type/type.service';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
+
 
 @Injectable()
 export class SupplierService extends Service<Supplier> {
@@ -71,31 +74,38 @@ export class SupplierService extends Service<Supplier> {
         return { message: 'Successfully removed' };
     }
 
-    async seeds(listJson: Array<unknown>, listTypeJson: Array<unknown>, withReturnSeed: boolean = true) {
+    async seeds({
+                    withReturnSeed = true,
+                    supplierListJson: listJson,
+                    supplierTypeListJson,
+                }: FinanceSeederParams) {
       const listType = (
-          (await this.supplierTypeService.seeds(listTypeJson, withReturnSeed)) as Array<SupplierType>
+          (await this.supplierTypeService.seeds({ supplierTypeListJson, withReturnSeed})) as Array<SupplierType>
       ).filter((type): type is SupplierType => !!type);
 
+        if(!listJson) {
+            return [];
+        }
         const seeds = listJson.map((item) => transformObjectDateAndNulls<Supplier, unknown>(item));
 
         return this.seeder.entities({
-          by: 'name',
-          key: 'all',
-          label: 'Supplier',
-          seeds,
-          withReturnSeed,
-          createdEntityFn: async (item) => {
-              const type = this.seeder.getRelation<SupplierType>({
-                  key: 'name',
-                  list: listType,
-                  param: item?.type?.name,
-                  relation: 'SupplierType',
-              });
-              return new SupplierConstructor({
-                  name: item.name,
-                  type
-              })
-          },
-      })
+            by: 'name',
+            key: 'all',
+            label: 'Supplier',
+            seeds,
+            withReturnSeed,
+            createdEntityFn: async (item) => {
+                const type = this.seeder.getRelation<SupplierType>({
+                    key: 'name',
+                    list: listType,
+                    param: item?.type?.name,
+                    relation: 'SupplierType',
+                });
+                return new SupplierConstructor({
+                    name: item.name,
+                    type
+                })
+            },
+        })
     }
 }

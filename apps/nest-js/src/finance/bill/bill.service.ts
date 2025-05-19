@@ -2,12 +2,16 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { transformObjectDateAndNulls } from '@repo/services/object/object';
+
 import { snakeCaseToNormal } from '@repo/services/string/string';
 
 import BillBusiness from '@repo/business/finance/bill/business/business';
 import BillConstructor from '@repo/business/finance/bill/bill';
 
 import { FilterParams, ListParams, Service } from '../../shared';
+
+import type { FinanceSeederParams } from '../types';
 
 import { Bank } from '../entities/bank.entity';
 import { Bill } from '../entities/bill.entity';
@@ -28,6 +32,10 @@ type ExistExpenseInBill = {
     nameCode: string;
     withThrow?: boolean;
     fallBackMessage?: string;
+}
+
+type BillSeederParams = FinanceSeederParams & {
+    finance: Finance;
 }
 
 @Injectable()
@@ -288,7 +296,7 @@ export class BillService extends Service<Bill> {
             updateExpenseDto,
         );
 
-        if(expense.name_code !== updatedExpense.name_code) {
+        if (expense.name_code !== updatedExpense.name_code) {
             await this.existExpenseInBill({
                 year: updatedExpense.year,
                 nameCode: updatedExpense.name_code,
@@ -297,5 +305,81 @@ export class BillService extends Service<Bill> {
         }
 
         return await this.expenseService.customSave(updatedExpense);
+    }
+
+    async basicSeeds({
+                         bankListJson,
+                         withReturnSeed = true,
+                         categoryListJson,
+                     }: FinanceSeederParams
+    ) {
+        const categoryList = await this.seeder.executeSeed<BillCategory>({
+            label: 'Bill Categories',
+            seedMethod: async () => {
+                const result = await this.categoryService.seeds({ bankListJson });
+                return Array.isArray(result) ? result : [];
+            },
+        });
+
+        const bankList = await this.seeder.executeSeed<Bank>({
+            label: 'Banks',
+            seedMethod: async () => {
+                const result = await this.bankService.seeds({ categoryListJson });
+                return Array.isArray(result) ? result : [];
+            }
+        });
+
+        if (withReturnSeed) {
+            return { bankList, categoryList };
+        }
+        return {
+            message: 'Seeding banks and Bill Categories  Completed Successfully!',
+        };
+    }
+
+    async seeds({
+                    finance,
+                    bankListJson,
+                    categoryListJson,
+                    billListJson: listJson,
+                    withReturnSeed = true,
+                }: BillSeederParams) {
+        const { bankList, categoryList } = await this.basicSeeds({ bankListJson, categoryListJson });
+        if (!listJson) {
+            return [];
+        }
+        const seeds = listJson.map((item) => transformObjectDateAndNulls<Bill, unknown>(item));
+        return this.seeder.entities({
+            by: 'id',
+            key: 'id',
+            label: 'Bill',
+            seeds,
+            withReturnSeed,
+            createdEntityFn: async (item) => {
+                const bank = this.seeder.getRelation<Bank>({
+                    key: 'name',
+                    list: bankList as Array<Bank>,
+                    param: item?.bank?.name,
+                    relation: 'Bank'
+                });
+
+                const category = this.seeder.getRelation<BillCategory>({
+                    key: 'name',
+                    list: categoryList as Array<BillCategory>,
+                    param: item?.category?.name,
+                    relation: 'Bill Category'
+                });
+
+                return new BillConstructor({
+                    ...item,
+                    finance,
+                    bank,
+                    category,
+                    expenses: undefined,
+                })
+            }
+        });
+
+
     }
 }
