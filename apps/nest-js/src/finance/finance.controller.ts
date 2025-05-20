@@ -1,5 +1,6 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Response } from 'express';
 
 import { AuthRoleGuard } from '../guards/auth-role/auth-role.guard';
 import { AuthStatusGuard } from '../guards/auth-status/auth-status.guard';
@@ -24,18 +25,18 @@ export class FinanceController {
         return this.service.seeds({ user });
     }
 
-    // @Get('/generate-document')
-    // async generateDocument(@Res() res: Response, @GetUserAuth() user: User): Promise<void> {
-    //     const buffer = this.service.generateDocument(user);
-    //
-    //     res.set({
-    //         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    //         'Content-Disposition': 'attachment; filename=controle_financeiro.xlsx',
-    //         'Content-Length': buffer.length
-    //     });
-    //
-    //     res.send(buffer);
-    // }
+    @Get('/generate-document')
+    async generateDocument(@Res() res: Response, @GetUserAuth() user: User): Promise<void> {
+        const buffer = await this.service.generateDocument(user);
+
+        res.set({
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': 'attachment; filename=controle_financeiro.xlsx',
+            'Content-Length': buffer.length
+        });
+
+        res.send(buffer);
+    }
 
 
     // @Post('/upload')

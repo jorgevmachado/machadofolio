@@ -7,6 +7,7 @@ import {
   it,
   jest,
 } from '@jest/globals';
+import { ConflictException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
@@ -22,7 +23,7 @@ import { Finance } from './entities/finance.entity';
 
 import { BillService } from './bill/bill.service';
 import { FinanceService } from './finance.service';
-import { ConflictException } from '@nestjs/common';
+
 
 
 
@@ -47,7 +48,9 @@ describe('FinanceService', () => {
           provide: BillService,
           useValue: {
             seeds: jest.fn(),
-            expenseSeeds: jest.fn(),
+            expense: {
+              seeds: jest.fn(),
+            },
           },
         },
       ],
@@ -98,7 +101,9 @@ describe('FinanceService', () => {
 
       jest.spyOn(billService, 'seeds').mockResolvedValueOnce([billMockEntity]);
 
-      jest.spyOn(billService, 'expenseSeeds').mockResolvedValueOnce([expenseMockEntity]);
+
+      jest.spyOn(billService.expense, 'seeds').mockResolvedValueOnce([expenseMockEntity]);
+
 
       const result = await service.seeds({ user: mockUser });
       expect(result).toEqual({
@@ -130,7 +135,7 @@ describe('FinanceService', () => {
 
       jest.spyOn(billService, 'seeds').mockResolvedValueOnce({ message: 'error'});
 
-      jest.spyOn(billService, 'expenseSeeds').mockResolvedValueOnce({ message: 'error'});
+      jest.spyOn(billService.expense, 'seeds').mockResolvedValueOnce({ message: 'error'});
 
       const result = await service.seeds({ user: mockUser });
       expect(result).toEqual({

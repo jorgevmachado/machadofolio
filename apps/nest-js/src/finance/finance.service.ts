@@ -1,3 +1,5 @@
+import * as XLSX from 'xlsx';
+
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,8 +9,8 @@ import { transformObjectDateAndNulls } from '@repo/services/object/object';
 import FinanceConstructor from '@repo/business/finance/finance';
 
 import BANK_LIST_FIXTURE_JSON from '@repo/mock-json/finance/bank/banks.json';
-import BILL_LIST_FIXTURE_JSON from '@repo/mock-json/finance/bill/bills.json';
 import BILL_CATEGORY_LIST_FIXTURE_JSON from '@repo/mock-json/finance/bill-category/bill-categories.json';
+import BILL_LIST_FIXTURE_JSON from '@repo/mock-json/finance/bill/bills.json';
 import EXPENSE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/expense/expenses.json';
 import FINANCE_FIXTURE_JSON from '@repo/mock-json/finance/finance.json';
 import SUPPLIER_LIST_FIXTURE_JSON from '@repo/mock-json/finance/supplier/suppliers.json';
@@ -17,13 +19,14 @@ import SUPPLIER_TYPE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/supplier-ty
 
 import { Service } from '../shared';
 
-import { Finance } from './entities/finance.entity';
 import { User } from '../auth/entities/user.entity';
 
-import { BillService } from './bill/bill.service';
 import { Bill } from './entities/bill.entity';
+import { BillService } from './bill/bill.service';
 import { Expense } from './entities/expense.entity';
+import { Finance } from './entities/finance.entity';
 import { FinanceSeederParams } from './types';
+import { BillCategory } from './entities/category.entity';
 
 type FinanceSeedsParams = FinanceSeederParams & {
     user: User;
@@ -137,77 +140,58 @@ export class FinanceService extends Service<Finance> {
     //     }
     // }
     //
-    // generateDocument(user: User) {
-    //     console.log('# => user => ', user)
-    //     const finance = user.finance;
-    //     if(finance) {
-    //         finance.bills?.forEach((bill) => {
-    //             console.log('# => bill => ', bill);
-    //         })
-    //     }
-    //
-    //     // Criando o workbook
-    //     const workbook = XLSX.utils.book_new();
-    //
-    //     // Define os headers das planilhas
-    //     const headers = ['DATA', 'DESCRIÇÃO', 'VALOR', 'CATEGORIA', 'OBSERVAÇÃO'];
-    //
-    //
-    //     const creditoData = [
-    //         headers,
-    //         ['2024-01-01', 'Exemplo Cartão de Crédito', '-100.00', 'Compras', 'Parcela 1/12']
-    //     ];
-    //
-    //     const ingridData = [
-    //         headers,
-    //         ['2024-01-01', 'Exemplo Residencial Ingrid', '1000.00', 'Aluguel', 'Inquilino João']
-    //     ];
-    //
-    //     const monteCarloData = [
-    //         headers,
-    //         ['2024-01-01', 'Exemplo Monte Carlo', '1200.00', 'Aluguel', 'Inquilino Maria']
-    //     ];
-    //
-    //     const maeData = [
-    //         headers,
-    //         ['2024-01-01', 'Exemplo Mãe', '-50.00', 'Mercado', 'Compras do mês']
-    //     ];
-    //
-    //     // Função para criar worksheet com formatação adequada
-    //     const createWorksheet = (data: any[]) => {
-    //         const ws = XLSX.utils.aoa_to_sheet(data);
-    //
-    //         // Configurar largura das colunas
-    //         ws['!cols'] = [
-    //             { wch: 12 }, // DATA
-    //             { wch: 40 }, // DESCRIÇÃO
-    //             { wch: 15 }, // VALOR
-    //             { wch: 20 }, // CATEGORIA
-    //             { wch: 30 }  // OBSERVAÇÃO
-    //         ];
-    //
-    //         return ws;
-    //     };
-    //
-    //
-    //
-    //     // Adicionar as planilhas ao workbook
-    //     XLSX.utils.book_append_sheet(workbook, createWorksheet(creditoData), 'Credito');
-    //     XLSX.utils.book_append_sheet(workbook, createWorksheet(ingridData), 'Residencial Ingrid');
-    //     XLSX.utils.book_append_sheet(workbook, createWorksheet(monteCarloData), 'Residencial Monte Carlo');
-    //     XLSX.utils.book_append_sheet(workbook, createWorksheet(maeData), 'Mãe');
-    //
-    //
-    //     // Gerar o arquivo
-    //     const excelBuffer = XLSX.write(workbook, {
-    //         type: 'buffer',
-    //         bookType: 'xlsx',
-    //         compression: true
-    //     });
-    //
-    //     return excelBuffer;
-    //
-    // }
+    async generateDocument(user: User) {
+        const billCategories = await this.billService.category.findAll({}) as Array<BillCategory>;
+
+        console.log('# => user => ', user)
+        const finance = user.finance;
+        if(finance) {
+            finance.bills?.forEach((bill) => {
+                console.log('# => bill => ', bill);
+            })
+        }
+
+        // Criando o workbook
+        const workbook = XLSX.utils.book_new();
+
+        // Define os headers das planilhas
+        const headers = ['name', 'name_code', 'created_at'];
+
+        // Função para criar worksheet com formatação adequada
+        const createWorksheet = (data: any[]) => {
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            // Configurar largura das colunas
+            ws['!cols'] = [
+                { wch: 12 }, // DATA
+                { wch: 40 }, // DESCRIÇÃO
+                { wch: 15 }, // VALOR
+                { wch: 20 }, // CATEGORIA
+                { wch: 30 }  // OBSERVAÇÃO
+            ];
+
+            return ws;
+        };
+
+        billCategories.forEach((category) => {
+            const data = [
+                headers,
+                [category.name, category.name_code, category.created_at]
+            ];
+            // Adicionar as planilhas ao workbook
+            XLSX.utils.book_append_sheet(workbook, createWorksheet(data), category.name);
+        });
+
+        // Gerar o arquivo
+        const excelBuffer = XLSX.write(workbook, {
+            type: 'buffer',
+            bookType: 'xlsx',
+            compression: true
+        });
+
+        return excelBuffer;
+
+    }
 
     async seeds({
                     user,
@@ -236,7 +220,7 @@ export class FinanceService extends Service<Finance> {
             await this.seeder.executeSeed<Expense>({
                 label: 'Expenses',
                 seedMethod: async () => {
-                    const result = await this.billService.expenseSeeds({
+                    const result = await this.billService.expense.seeds({
                         billList,
                         expenseListJson,
                         supplierListJson,

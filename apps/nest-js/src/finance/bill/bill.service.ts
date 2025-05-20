@@ -23,7 +23,7 @@ import { BankService } from './bank/bank.service';
 import { CategoryService } from './category/category.service';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { CreateExpenseDto } from './expense/dto/create-expense.dto';
-import { ExpenseSeederParams, ExpenseService } from './expense/expense.service';
+import { ExpenseService } from './expense/expense.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
@@ -53,6 +53,18 @@ export class BillService extends Service<Bill> {
             ['bank', 'category', 'finance', 'expenses', 'expenses.supplier'],
             repository,
         );
+    }
+
+    get bank(): BankService {
+        return this.bankService;
+    }
+
+    get category(): CategoryService {
+        return this.categoryService;
+    }
+
+    get expense(): ExpenseService {
+        return this.expenseService;
     }
 
     async create(finance: Finance, createBillDto: CreateBillDto) {
@@ -305,10 +317,6 @@ export class BillService extends Service<Bill> {
         }
 
         return await this.expenseService.customSave(updatedExpense);
-    }
-
-    async expenseSeeds(expenseSeederParams: ExpenseSeederParams) {
-        return this.expenseService.seeds(expenseSeederParams);
     }
 
     async seeds({

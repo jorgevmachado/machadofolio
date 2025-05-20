@@ -551,16 +551,30 @@ describe('BillService', () => {
         });
     });
 
-    describe('expenseSeeds', () => {
-        it('Should execute seeds expense successfully.', async () => {
-            jest.spyOn(expenseService, 'seeds').mockResolvedValueOnce([expenseMockEntity])
-            const result = await service.expenseSeeds({
-                billList: [mockEntity],
-                supplierListJson: [supplierMockEntity],
-                supplierTypeListJson: [supplierMockEntity.type]
-            })
+    describe('billCategoryService', () => {
+        it('Should return the category service instance', () => {
+            const result = service.category;
 
-            expect(result).toEqual([expenseMockEntity]);
+            expect(result).toBeDefined();
+            expect(result).toBe(categoryService);
+        });
+    });
+
+    describe('billBankService', () => {
+        it('Should return the bank service instance', () => {
+            const result = service.bank;
+
+            expect(result).toBeDefined();
+            expect(result).toBe(bankService);
+        });
+    });
+
+    describe('billExpenseService', () => {
+        it('Should return the expense service instance', () => {
+            const result = service.expense;
+
+            expect(result).toBeDefined();
+            expect(result).toBe(expenseService);
         });
     });
 });
