@@ -7,13 +7,13 @@ import {
     jest,
 } from '@jest/globals';
 
-import type { QueryParameters } from '../../../../../types';
+import type { QueryParameters } from '../../../../types';
 
-import { NestModuleAbstract } from '../../../abstract';
+import { NestModuleAbstract } from '../../abstract';
 
-import { BillCategory } from './category';
+import { BillCategory } from './bill-category';
 
-jest.mock('../../../abstract');
+jest.mock('../../abstract');
 
 describe('BillCategory', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
@@ -35,8 +35,8 @@ describe('BillCategory', () => {
         it('should initialize with the correct path and config', () => {
             expect(NestModuleAbstract).toHaveBeenCalledTimes(1);
             expect(NestModuleAbstract).toHaveBeenCalledWith({
-                pathUrl: 'finance/bill',
-                subPathUrl: 'category',
+                pathUrl: 'finance',
+                subPathUrl: 'bill-category',
                 nestModuleConfig: mockConfig,
             });
         });

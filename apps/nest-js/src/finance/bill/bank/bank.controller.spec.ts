@@ -1,6 +1,8 @@
 import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
+import { ERole } from '@repo/business/enum';
+
 import { BANK_MOCK } from '../../../mocks/bank.mock';
 import { type Bank } from '../../entities/bank.entity';
 
@@ -9,6 +11,7 @@ import { type UpdateBankDto } from './dto/update-bank.dto';
 
 import { BankController } from './bank.controller';
 import { BankService } from './bank.service';
+
 
 describe('BankController', () => {
   let service: BankService;
@@ -78,6 +81,9 @@ describe('BankController', () => {
 
   describe('update', () => {
     it('should update a supplierType and save it', async () => {
+      const roles = Reflect.getMetadata('role', controller.update);
+      expect(roles).toContain(ERole.ADMIN);
+
       const updateDto: UpdateBankDto = {
         name: `${mockEntity.name}2`,
       };

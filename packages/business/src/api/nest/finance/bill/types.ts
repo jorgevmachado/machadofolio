@@ -1,7 +1,7 @@
 import type { IFinance, IFinanceBase } from '../types';
 import { type EBillType } from './enum';
 import { type IBank } from '../bank';
-import { type IBillCategory } from './category';
+import { type IBillCategory } from '../bill-category';
 import { type IExpense } from './expense';
 
 export type IBill = IFinanceBase & {

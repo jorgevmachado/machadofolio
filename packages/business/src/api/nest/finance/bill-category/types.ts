@@ -1,4 +1,4 @@
-import type { IFinanceBase } from '../../types';
+import type { IFinanceBase } from '../types';
 
 export type IBillCategory = IFinanceBase;
 

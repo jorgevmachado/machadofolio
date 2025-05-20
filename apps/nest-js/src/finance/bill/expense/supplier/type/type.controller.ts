@@ -1,10 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 
+import { ERole } from '@repo/business/enum';
 import { QueryParameters } from '@repo/business/types';
 
 import { CreateTypeDto } from './dto/create-type.dto';
 import { SupplierTypeService } from './type.service';
 import { UpdateTypeDto } from './dto/update-type.dto';
+import { AuthRoles } from '../../../../../decorators/auth-role/auth-roles.decorator';
 
 @Controller('finance/supplier')
 export class TypeController {
@@ -26,6 +28,7 @@ export class TypeController {
   }
 
   @Put(':param/type')
+  @AuthRoles(ERole.ADMIN)
   update(
       @Param('param') param: string,
       @Body() updateSupplierTypeDto: UpdateTypeDto,
@@ -34,6 +37,7 @@ export class TypeController {
   }
 
   @Delete(':param/type')
+  @AuthRoles(ERole.ADMIN)
   remove(@Param('param') param: string) {
     return this.service.remove(param);
   }

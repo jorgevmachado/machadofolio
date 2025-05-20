@@ -1,4 +1,9 @@
 export {  default } from './bill-category';
 export {  BillCategoryService } from './service';
-export * from './types';
-export * from './mock';
+export type {
+    BillCategoryEntity,
+    BillCategoryConstructorParams,
+    CreateBillCategoryParams,
+    UpdateBillCategoryParams
+} from './types';
+export { BILL_CATEGORY_MOCK } from './mock';

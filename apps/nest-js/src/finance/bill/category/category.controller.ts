@@ -1,9 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
+import { ERole } from '@repo/business/enum';
 import { QueryParameters } from '@repo/business/types';
 
 import { AuthRoleGuard } from '../../../guards/auth-role/auth-role.guard';
+import { AuthRoles } from '../../../decorators/auth-role/auth-roles.decorator';
 import { AuthStatusGuard } from '../../../guards/auth-status/auth-status.guard';
 
 import { CategoryService } from './category.service';
@@ -31,6 +33,7 @@ export class CategoryController {
   }
 
   @Put(':param/category')
+  @AuthRoles(ERole.ADMIN)
   update(
       @Param('param') param: string,
       @Body() updateBillCategoryDto: UpdateCategoryDto,
@@ -39,6 +42,7 @@ export class CategoryController {
   }
 
   @Delete(':param/category')
+  @AuthRoles(ERole.ADMIN)
   remove(@Param('param') param: string) {
     return this.service.remove(param);
   }

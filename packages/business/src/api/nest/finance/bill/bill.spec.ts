@@ -10,11 +10,9 @@ import {
 import { NestModuleAbstract } from '../../abstract';
 
 import { Bill } from './bill';
-import { BillCategory } from './category';
 import { Expense } from './expense';
 
 jest.mock('../../abstract');
-jest.mock('./category');
 jest.mock('./expense');
 
 describe('Bill', () => {
@@ -41,18 +39,6 @@ describe('Bill', () => {
                 pathUrl: 'finance/bill',
                 nestModuleConfig: mockConfig,
             });
-        });
-    });
-
-    describe('billCategoryModule', () => {
-        it('should initialize billCategory module', () => {
-            expect(BillCategory).toHaveBeenCalledTimes(1);
-            expect(BillCategory).toHaveBeenCalledWith(mockConfig);
-        });
-        it('should return the instance of billCategory via type getter', () => {
-            const categoryModule = bill.category;
-            expect(categoryModule).toBeInstanceOf(BillCategory);
-            expect(BillCategory).toHaveBeenCalledTimes(1);
         });
     });
 

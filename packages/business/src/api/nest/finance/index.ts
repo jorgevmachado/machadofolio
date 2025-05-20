@@ -10,13 +10,16 @@ export type {
     IUpdateSupplierParams
 } from './supplier';
 
+export type {
+    IBillCategory,
+    ICreateBillCategoryParams,
+    IUpdateBillCategoryParams,
+} from './bill-category';
+
 export {
     type IBill,
     type ICreateBillParams,
     type IUpdateBillParams,
-    type IBillCategory,
-    type ICreateBillCategoryParams,
-    type IUpdateBillCategoryParams,
     type IExpense,
     type IExpenseBase,
     type IExpenseMonthsWithPaid,

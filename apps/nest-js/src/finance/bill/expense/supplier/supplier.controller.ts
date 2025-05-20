@@ -1,6 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 
+import { ERole } from '@repo/business/enum';
 import { QueryParameters } from '@repo/business/types';
+
+import { AuthRoles } from '../../../../decorators/auth-role/auth-roles.decorator';
 
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { SupplierService } from './supplier.service';
@@ -26,6 +29,7 @@ export class SupplierController {
   }
 
   @Put(':param')
+  @AuthRoles(ERole.ADMIN)
   update(
       @Param('param') param: string,
       @Body() updateSupplierDto: UpdateSupplierDto,
@@ -34,6 +38,7 @@ export class SupplierController {
   }
 
   @Delete(':param')
+  @AuthRoles(ERole.ADMIN)
   remove(@Param('param') param: string) {
     return this.service.remove(param);
   }
