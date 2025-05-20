@@ -6,11 +6,11 @@ import { transformObjectDateAndNulls } from '@repo/services/object/object';
 
 import BillCategoryConstructor from '@repo/business/finance/bill-category/bill-category';
 
-import { Service } from '../../../shared';
+import { Service } from '../../shared';
 
-import type { FinanceSeederParams } from '../../types';
+import type { FinanceSeederParams } from '../types';
 
-import { BillCategory } from '../../entities/category.entity';
+import { BillCategory } from '../entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 

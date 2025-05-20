@@ -6,11 +6,11 @@ import { transformObjectDateAndNulls } from '@repo/services/object/object';
 
 import SupplierTypeConstructor from '@repo/business/finance/supplier-type/supplier-type';
 
-import { Service } from '../../../../../shared';
+import { Service } from '../../../shared';
 
-import type { FinanceSeederParams } from '../../../../types';
+import type { FinanceSeederParams } from '../../types';
 
-import { SupplierType } from '../../../../entities/type.entity';
+import { SupplierType } from '../../entities/type.entity';
 
 import { CreateTypeDto } from './dto/create-type.dto';
 import { UpdateTypeDto } from './dto/update-type.dto';

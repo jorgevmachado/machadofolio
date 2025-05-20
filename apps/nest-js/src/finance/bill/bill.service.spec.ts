@@ -15,9 +15,9 @@ import { type Finance } from '../entities/finance.entity';
 import { SUPPLIER_MOCK } from '../../mocks/supplier.mock';
 import { type Supplier } from '../entities/supplier.entity';
 
-import { BankService } from './bank/bank.service';
+import { BankService } from '../bank/bank.service';
 import { BillService } from './bill.service';
-import { CategoryService } from './category/category.service';
+import { CategoryService } from '../category/category.service';
 import { type CreateBillDto } from './dto/create-bill.dto';
 import { ExpenseService } from './expense/expense.service';
 

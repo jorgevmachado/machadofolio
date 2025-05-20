@@ -6,11 +6,11 @@ import { transformObjectDateAndNulls } from '@repo/services/object/object';
 
 import BankConstructor from '@repo/business/finance/bank/bank';
 
-import { Service } from '../../../shared';
+import { Service } from '../../shared';
 
-import type { FinanceSeederParams } from '../../types';
+import type { FinanceSeederParams } from '../types';
 
-import { Bank } from '../../entities/bank.entity';
+import { Bank } from '../entities/bank.entity';
 
 import { CreateBankDto } from './dto/create-bank.dto';
 import { UpdateBankDto } from './dto/update-bank.dto';

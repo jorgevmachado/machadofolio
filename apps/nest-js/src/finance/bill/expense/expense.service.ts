@@ -17,7 +17,7 @@ import { Expense } from '../../entities/expense.entity';
 import { Supplier } from '../../entities/supplier.entity';
 
 import { CreateExpenseDto } from './dto/create-expense.dto';
-import { SupplierService } from './supplier/supplier.service';
+import { SupplierService } from '../../supplier/supplier.service';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
 
 export type InitializeParams = {

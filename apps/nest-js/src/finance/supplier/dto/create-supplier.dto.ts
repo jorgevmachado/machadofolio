@@ -2,7 +2,7 @@ import { IsNotEmpty, MaxLength } from 'class-validator';
 
 import { CreateSupplierParams } from '@repo/business/finance/supplier/types';
 
-import { SupplierType } from '../../../../entities/type.entity';
+import { SupplierType } from '../../entities/type.entity';
 
 
 export class CreateSupplierDto implements  CreateSupplierParams{

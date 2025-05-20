@@ -21,7 +21,7 @@ import { EMonth } from '@repo/services/date/month/enum';
 import { ExpenseService } from './expense.service';
 import { MONTHS } from '@repo/services/date/month/month';
 import { type Supplier } from '../../entities/supplier.entity';
-import { SupplierService } from './supplier/supplier.service';
+import { SupplierService } from '../../supplier/supplier.service';
 import { type UpdateExpenseDto } from './dto/update-expense.dto';
 
 describe('ExpenseService', () => {

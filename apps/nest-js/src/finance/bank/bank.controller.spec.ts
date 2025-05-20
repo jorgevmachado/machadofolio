@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 import { ERole } from '@repo/business/enum';
 
-import { BANK_MOCK } from '../../../mocks/bank.mock';
-import { type Bank } from '../../entities/bank.entity';
+import { BANK_MOCK } from '../../mocks/bank.mock';
+import { type Bank } from '../entities/bank.entity';
 
 import { type CreateBankDto } from './dto/create-bank.dto';
 import { type UpdateBankDto } from './dto/update-bank.dto';

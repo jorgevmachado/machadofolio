@@ -4,13 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import BillBusiness from '@repo/business/finance/bill/business/business';
 
+import { BankModule } from '../bank/bank.module';
 import { Bill } from '../entities/bill.entity';
 
 import { BillController } from './bill.controller';
 import { BillService } from './bill.service';
 
-import { BankModule } from './bank/bank.module';
-import { CategoryModule } from './category/category.module';
+import { CategoryModule } from '../category/category.module';
 import { ExpenseModule } from './expense/expense.module';
 
 @Module({

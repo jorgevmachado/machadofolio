@@ -19,8 +19,8 @@ import { BillCategory } from '../entities/category.entity';
 import { Expense } from '../entities/expense.entity';
 import { Finance } from '../entities/finance.entity';
 
-import { BankService } from './bank/bank.service';
-import { CategoryService } from './category/category.service';
+import { BankService } from '../bank/bank.service';
+import { CategoryService } from '../category/category.service';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { ExpenseService } from './expense/expense.service';

@@ -11,9 +11,9 @@ import { ConflictException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { EXPENSE_MOCK } from '../../../../mocks/expense.mock';
-import { SUPPLIER_MOCK } from '../../../../mocks/supplier.mock';
-import { Supplier } from '../../../entities/supplier.entity';
+import { EXPENSE_MOCK } from '../../mocks/expense.mock';
+import { SUPPLIER_MOCK } from '../../mocks/supplier.mock';
+import { Supplier } from '../entities/supplier.entity';
 
 import { type CreateSupplierDto } from './dto/create-supplier.dto';
 import { SupplierService } from './supplier.service';

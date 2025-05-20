@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/
 import { ERole } from '@repo/business/enum';
 import { QueryParameters } from '@repo/business/types';
 
-import { AuthRoles } from '../../../../decorators/auth-role/auth-roles.decorator';
+import { AuthRoles } from '../../decorators/auth-role/auth-roles.decorator';
 
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { SupplierService } from './supplier.service';

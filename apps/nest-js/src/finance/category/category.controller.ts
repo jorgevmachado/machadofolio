@@ -4,35 +4,35 @@ import { AuthGuard } from '@nestjs/passport';
 import { ERole } from '@repo/business/enum';
 import { QueryParameters } from '@repo/business/types';
 
-import { AuthRoleGuard } from '../../../guards/auth-role/auth-role.guard';
-import { AuthRoles } from '../../../decorators/auth-role/auth-roles.decorator';
-import { AuthStatusGuard } from '../../../guards/auth-status/auth-status.guard';
+import { AuthRoleGuard } from '../../guards/auth-role/auth-role.guard';
+import { AuthRoles } from '../../decorators/auth-role/auth-roles.decorator';
+import { AuthStatusGuard } from '../../guards/auth-status/auth-status.guard';
 
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
-@Controller('finance/bill')
+@Controller('finance/category')
 @UseGuards(AuthGuard(), AuthRoleGuard, AuthStatusGuard)
 export class CategoryController {
   constructor(private readonly service: CategoryService) {}
 
-  @Get('/list/category')
+  @Get()
   findAll(@Query() parameters: QueryParameters) {
     return this.service.findAll({ parameters });
   }
 
-  @Post('/category')
+  @Post()
   create(@Body() createBillCategoryDto: CreateCategoryDto) {
     return this.service.create(createBillCategoryDto);
   }
 
-  @Get(':param/category')
+  @Get(':param')
   findOne(@Param('param') param: string) {
     return this.service.findOne({ value: param });
   }
 
-  @Put(':param/category')
+  @Put(':param')
   @AuthRoles(ERole.ADMIN)
   update(
       @Param('param') param: string,
@@ -41,7 +41,7 @@ export class CategoryController {
     return this.service.update(param, updateBillCategoryDto);
   }
 
-  @Delete(':param/category')
+  @Delete(':param')
   @AuthRoles(ERole.ADMIN)
   remove(@Param('param') param: string) {
     return this.service.remove(param);

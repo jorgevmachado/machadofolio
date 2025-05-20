@@ -1,39 +1,44 @@
 import { Test, type TestingModule } from '@nestjs/testing';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import { BILL_CATEGORY_MOCK } from '../../../mocks/bill-category.mock';
-import { type BillCategory } from '../../entities/category.entity';
+import { SUPPLIER_TYPE_MOCK } from '../../../mocks/supplier-type.mock';
+import { type SupplierType } from '../../entities/type.entity';
 
-import { CategoryController } from './category.controller';
-import { CategoryService } from './category.service';
-import { type CreateCategoryDto } from './dto/create-category.dto';
-import { type UpdateCategoryDto } from './dto/update-category.dto';
+import { type CreateTypeDto } from './dto/create-type.dto';
+import { SupplierTypeService } from './type.service';
+import { TypeController } from './type.controller';
+import { type UpdateTypeDto } from './dto/update-type.dto';
 
-describe('CategoryController', () => {
-  let controller: CategoryController;
-  let service: CategoryService;
+describe('TypeController', () => {
+  let controller: TypeController;
+  let service: SupplierTypeService;
 
-  const mockEntity: BillCategory =  BILL_CATEGORY_MOCK;
+  const mockEntity: SupplierType = SUPPLIER_TYPE_MOCK;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [CategoryController],
+      controllers: [TypeController],
       providers: [
         {
-          provide: CategoryService,
+          provide: SupplierTypeService,
           useValue: {
-            seed: jest.fn(),
             findAll: jest.fn(),
-            findOne: jest.fn(),
             create: jest.fn(),
             update: jest.fn(),
             remove: jest.fn(),
+            findOne: jest.fn(),
+            seed: jest.fn(),
           },
         },
       ],
     }).compile();
 
-    controller = module.get<CategoryController>(CategoryController);
-    service = module.get<CategoryService>(CategoryService);
+    controller = module.get<TypeController>(TypeController);
+    service = module.get<SupplierTypeService>(SupplierTypeService);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -42,7 +47,7 @@ describe('CategoryController', () => {
   });
 
   describe('findAll', () => {
-    it('Should return an list of bill categories', async () => {
+    it('Should return an list of suppliers type', async () => {
       jest
           .spyOn(service, 'findAll')
           .mockResolvedValue([mockEntity]);
@@ -53,7 +58,7 @@ describe('CategoryController', () => {
 
   describe('create', () => {
     it('should create a new supplierType and save it', async () => {
-      const createDto: CreateCategoryDto = {
+      const createDto: CreateTypeDto = {
         name: mockEntity.name,
       };
 
@@ -68,7 +73,7 @@ describe('CategoryController', () => {
   });
 
   describe('findOne', () => {
-    it('Should return a bill category', async () => {
+    it('Should return  suppliers type', async () => {
       jest
           .spyOn(service, 'findOne')
           .mockResolvedValue(mockEntity);
@@ -80,12 +85,12 @@ describe('CategoryController', () => {
   });
 
   describe('update', () => {
-    it('should update a bill category and save it', async () => {
-      const updateDto: UpdateCategoryDto = {
+    it('should update a supplierType and save it', async () => {
+      const updateDto: UpdateTypeDto = {
         name: `${mockEntity.name}2`,
       };
 
-      const expected: BillCategory = {
+      const expected: SupplierType = {
         ...mockEntity,
         ...updateDto,
       };
@@ -93,23 +98,20 @@ describe('CategoryController', () => {
       jest.spyOn(service, 'update').mockResolvedValueOnce(expected);
 
       expect(
-          await controller.update(
-              mockEntity.id,
-              updateDto,
-          ),
+          await controller.update(mockEntity.id, updateDto),
       ).toEqual(expected);
     });
   });
 
   describe('remove', () => {
-    it('should remove a bill category when there are no associated bills', async () => {
+    it('should remove SupplierType when there are no associated suppliers', async () => {
       jest
           .spyOn(service, 'remove')
           .mockResolvedValueOnce({ message: 'Successfully removed' });
 
-      expect(
-          await controller.remove(mockEntity.id),
-      ).toEqual({ message: 'Successfully removed' });
+      expect(await controller.remove(mockEntity.id)).toEqual(
+          { message: 'Successfully removed' },
+      );
     });
   });
 });

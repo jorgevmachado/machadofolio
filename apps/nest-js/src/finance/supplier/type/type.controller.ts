@@ -3,10 +3,11 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/
 import { ERole } from '@repo/business/enum';
 import { QueryParameters } from '@repo/business/types';
 
+import { AuthRoles } from '../../../decorators/auth-role/auth-roles.decorator';
+
 import { CreateTypeDto } from './dto/create-type.dto';
 import { SupplierTypeService } from './type.service';
 import { UpdateTypeDto } from './dto/update-type.dto';
-import { AuthRoles } from '../../../../../decorators/auth-role/auth-roles.decorator';
 
 @Controller('finance/supplier')
 export class TypeController {
