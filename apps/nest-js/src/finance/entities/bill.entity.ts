@@ -16,10 +16,9 @@ import { EBillType } from '@repo/business/finance/bill/enum';
 import { DecimalTransformer } from '../../transforms/decimal';
 
 import { Bank } from './bank.entity';
-import { Finance } from './finance.entity';
-
-import { BillCategory } from './category.entity';
 import { Expense } from './expense.entity';
+import { Finance } from './finance.entity';
+import { Group } from './group.entity';
 
 @Entity({ name: 'bills' })
 export class Bill implements BillEntity {
@@ -61,11 +60,11 @@ export class Bill implements BillEntity {
     @JoinTable()
     finance!: Finance;
 
-    @ManyToOne(() => BillCategory, (billCategory) => billCategory.bills, {
+    @ManyToOne(() => Group, (group) => group.bills, {
         nullable: false,
     })
     @JoinTable()
-    category!: BillCategory;
+    group!: Group;
 
     @OneToMany(() => Expense, (expense) => expense.bill, { nullable: true })
     @JoinTable()

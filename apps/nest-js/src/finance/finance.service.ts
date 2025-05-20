@@ -26,7 +26,7 @@ import { BillService } from './bill/bill.service';
 import { Expense } from './entities/expense.entity';
 import { Finance } from './entities/finance.entity';
 import { FinanceSeederParams } from './types';
-import { BillCategory } from './entities/category.entity';
+import { Group } from './entities/group.entity';
 
 type FinanceSeedsParams = FinanceSeederParams & {
     user: User;
@@ -141,7 +141,7 @@ export class FinanceService extends Service<Finance> {
     // }
     //
     async generateDocument(user: User) {
-        const billCategories = await this.billService.category.findAll({}) as Array<BillCategory>;
+        const groups = await this.billService.group.findAll({}) as Array<Group>;
 
         console.log('# => user => ', user)
         const finance = user.finance;
@@ -173,13 +173,13 @@ export class FinanceService extends Service<Finance> {
             return ws;
         };
 
-        billCategories.forEach((category) => {
+        groups.forEach((group) => {
             const data = [
                 headers,
-                [category.name, category.name_code, category.created_at]
+                [group.name, group.name_code, group.created_at]
             ];
             // Adicionar as planilhas ao workbook
-            XLSX.utils.book_append_sheet(workbook, createWorksheet(data), category.name);
+            XLSX.utils.book_append_sheet(workbook, createWorksheet(data), group.name);
         });
 
         // Gerar o arquivo
@@ -198,7 +198,7 @@ export class FinanceService extends Service<Finance> {
                     bankListJson = BANK_LIST_FIXTURE_JSON,
                     billListJson = BILL_LIST_FIXTURE_JSON,
                     expenseListJson = EXPENSE_LIST_FIXTURE_JSON,
-                    categoryListJson = BILL_CATEGORY_LIST_FIXTURE_JSON,
+                    groupListJson = BILL_CATEGORY_LIST_FIXTURE_JSON,
                     supplierListJson = SUPPLIER_LIST_FIXTURE_JSON,
                     supplierTypeListJson = SUPPLIER_TYPE_LIST_FIXTURE_JSON
                 }: FinanceSeedsParams) {
@@ -210,7 +210,7 @@ export class FinanceService extends Service<Finance> {
                     const result = await this.billService.seeds({
                         finance,
                         bankListJson,
-                        categoryListJson,
+                        groupListJson,
                         billListJson,
                     });
                     return Array.isArray(result) ? result : [];

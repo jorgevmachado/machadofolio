@@ -15,15 +15,15 @@ import type { FinanceSeederParams } from '../types';
 
 import { Bank } from '../entities/bank.entity';
 import { Bill } from '../entities/bill.entity';
-import { BillCategory } from '../entities/category.entity';
 import { Expense } from '../entities/expense.entity';
 import { Finance } from '../entities/finance.entity';
+import { Group } from '../entities/group.entity';
 
 import { BankService } from '../bank/bank.service';
-import { CategoryService } from '../category/category.service';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { ExpenseService } from './expense/expense.service';
+import { GroupService } from '../group/group.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
@@ -45,12 +45,12 @@ export class BillService extends Service<Bill> {
         protected repository: Repository<Bill>,
         protected billBusiness: BillBusiness,
         protected readonly bankService: BankService,
-        protected readonly categoryService: CategoryService,
+        protected readonly groupService: GroupService,
         protected readonly expenseService: ExpenseService,
     ) {
         super(
             'bills',
-            ['bank', 'category', 'finance', 'expenses', 'expenses.supplier'],
+            ['bank', 'group', 'finance', 'expenses', 'expenses.supplier'],
             repository,
         );
     }
@@ -59,8 +59,8 @@ export class BillService extends Service<Bill> {
         return this.bankService;
     }
 
-    get category(): CategoryService {
-        return this.categoryService;
+    get group(): GroupService {
+        return this.groupService;
     }
 
     get expense(): ExpenseService {
@@ -73,12 +73,12 @@ export class BillService extends Service<Bill> {
             'Bank'
         ) as Bank;
 
-        const category = await this.categoryService.treatEntityParam<BillCategory>(
-            createBillDto.category,
-            'Bill Category'
-        ) as BillCategory;
+        const group = await this.groupService.treatEntityParam<Group>(
+            createBillDto.group,
+            'Group'
+        ) as Group;
 
-        const name = `${category.name} ${snakeCaseToNormal(createBillDto.type)}`;
+        const name = `${group.name} ${snakeCaseToNormal(createBillDto.type)}`;
 
         const bill = new BillConstructor({
             name,
@@ -86,7 +86,7 @@ export class BillService extends Service<Bill> {
             type: createBillDto.type,
             finance,
             bank,
-            category,
+            group,
         })
 
         return await this.customSave(bill);
@@ -102,12 +102,12 @@ export class BillService extends Service<Bill> {
                 'Bank',
             ) as Bank;
 
-        const category = !updateBillDto.category
-            ? result.category
-            : await this.categoryService.treatEntityParam<BillCategory>(
-                updateBillDto.category,
+        const group = !updateBillDto.group
+            ? result.group
+            : await this.groupService.treatEntityParam<Group>(
+                updateBillDto.group,
                 'Bill Category',
-            ) as BillCategory;
+            ) as Group;
 
         const expenses = !updateBillDto.expenses
             ? result.expenses
@@ -121,9 +121,9 @@ export class BillService extends Service<Bill> {
         const year = !updateBillDto.year ? result.year : updateBillDto.year;
         const type = !updateBillDto.type ? result.type : updateBillDto.type;
         const name =
-            !updateBillDto.category && !updateBillDto.type
+            !updateBillDto.group && !updateBillDto.type
                 ? result.name
-                : `${category.name} ${snakeCaseToNormal(type)}`;
+                : `${group.name} ${snakeCaseToNormal(type)}`;
 
         const updatedBill = new BillConstructor({
             ...result,
@@ -132,7 +132,7 @@ export class BillService extends Service<Bill> {
             type,
             finance,
             bank,
-            category,
+            group,
             expenses
         });
         return await this.customSave(updatedBill);
@@ -322,15 +322,15 @@ export class BillService extends Service<Bill> {
     async seeds({
                     finance,
                     bankListJson,
-                    categoryListJson,
+                    groupListJson,
                     billListJson: listJson,
                     withReturnSeed = true,
                 }: BillSeederParams) {
 
-        const categoryList = await this.seeder.executeSeed<BillCategory>({
+        const groupList = await this.seeder.executeSeed<Group>({
             label: 'Bill Categories',
             seedMethod: async () => {
-                const result = await this.categoryService.seeds({ categoryListJson });
+                const result = await this.groupService.seeds({ groupListJson });
                 return Array.isArray(result) ? result : [];
             },
         });
@@ -360,10 +360,10 @@ export class BillService extends Service<Bill> {
                     relation: 'Bank'
                 });
 
-                const category = this.seeder.getRelation<BillCategory>({
+                const group = this.seeder.getRelation<Group>({
                     key: 'name',
-                    list: categoryList as Array<BillCategory>,
-                    param: item?.category?.name,
+                    list: groupList as Array<Group>,
+                    param: item?.group?.name,
                     relation: 'Bill Category'
                 });
 
@@ -371,7 +371,7 @@ export class BillService extends Service<Bill> {
                     ...item,
                     finance,
                     bank,
-                    category,
+                    group,
                     expenses: undefined,
                 })
             }

@@ -8,14 +8,14 @@ import { AuthRoleGuard } from '../../guards/auth-role/auth-role.guard';
 import { AuthRoles } from '../../decorators/auth-role/auth-roles.decorator';
 import { AuthStatusGuard } from '../../guards/auth-status/auth-status.guard';
 
-import { CategoryService } from './category.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CreateGroupDto } from './dto/create-group.dto';
+import { GroupService } from './group.service';
+import { UpdateGroupDto } from './dto/update-group.dto';
 
-@Controller('finance/category')
+@Controller('finance/group')
 @UseGuards(AuthGuard(), AuthRoleGuard, AuthStatusGuard)
-export class CategoryController {
-  constructor(private readonly service: CategoryService) {}
+export class GroupController {
+  constructor(private readonly service: GroupService) {}
 
   @Get()
   findAll(@Query() parameters: QueryParameters) {
@@ -23,7 +23,7 @@ export class CategoryController {
   }
 
   @Post()
-  create(@Body() createBillCategoryDto: CreateCategoryDto) {
+  create(@Body() createBillCategoryDto: CreateGroupDto) {
     return this.service.create(createBillCategoryDto);
   }
 
@@ -36,7 +36,7 @@ export class CategoryController {
   @AuthRoles(ERole.ADMIN)
   update(
       @Param('param') param: string,
-      @Body() updateBillCategoryDto: UpdateCategoryDto,
+      @Body() updateBillCategoryDto: UpdateGroupDto,
   ) {
     return this.service.update(param, updateBillCategoryDto);
   }

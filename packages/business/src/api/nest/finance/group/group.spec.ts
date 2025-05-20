@@ -11,21 +11,21 @@ import type { QueryParameters } from '../../../../types';
 
 import { NestModuleAbstract } from '../../abstract';
 
-import { BillCategory } from './bill-category';
+import { Group } from './group';
 
 jest.mock('../../abstract');
 
-describe('BillCategory', () => {
+describe('Group', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
     const mockHeaders = { Authorization: 'Bearer test-token' };
     const mockConfig = { baseUrl: mockBaseUrl, headers: mockHeaders };
 
-    let billCategory: BillCategory;
+    let group: Group;
 
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
-        billCategory = new BillCategory(mockConfig);
+        group = new Group(mockConfig);
     });
 
     afterEach(() => {
@@ -36,18 +36,18 @@ describe('BillCategory', () => {
             expect(NestModuleAbstract).toHaveBeenCalledTimes(1);
             expect(NestModuleAbstract).toHaveBeenCalledWith({
                 pathUrl: 'finance',
-                subPathUrl: 'bill-category',
+                subPathUrl: 'group',
                 nestModuleConfig: mockConfig,
             });
         });
 
-        it('should call inherited methods from NestModuleAbstract about billCategory', async () => {
+        it('should call inherited methods from NestModuleAbstract about group', async () => {
             const mockGetAll = jest
                 .spyOn(NestModuleAbstract.prototype, 'getAll')
                 .mockResolvedValue([]);
 
             const queryParams: QueryParameters = { name: 'test' };
-            const result = await billCategory.getAll(queryParams);
+            const result = await group.getAll(queryParams);
 
             expect(mockGetAll).toHaveBeenCalledTimes(1);
             expect(mockGetAll).toHaveBeenCalledWith(queryParams);

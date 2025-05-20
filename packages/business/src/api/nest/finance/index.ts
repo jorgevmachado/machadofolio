@@ -11,10 +11,10 @@ export type {
 } from './supplier';
 
 export type {
-    IBillCategory,
-    ICreateBillCategoryParams,
-    IUpdateBillCategoryParams,
-} from './bill-category';
+    IGroup,
+    ICreateGroupParams,
+    IUpdateGroupParams,
+} from './group';
 
 export {
     type IBill,

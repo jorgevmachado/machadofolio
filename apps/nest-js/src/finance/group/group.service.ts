@@ -4,35 +4,35 @@ import { Repository } from 'typeorm';
 
 import { transformObjectDateAndNulls } from '@repo/services/object/object';
 
-import BillCategoryConstructor from '@repo/business/finance/bill-category/bill-category';
+import GroupConstructor from '@repo/business/finance/group/group';
 
 import { Service } from '../../shared';
 
 import type { FinanceSeederParams } from '../types';
 
-import { BillCategory } from '../entities/category.entity';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CreateGroupDto } from './dto/create-group.dto';
+import { Group } from '../entities/group.entity';
+import { UpdateGroupDto } from './dto/update-group.dto';
 
 
 @Injectable()
-export class CategoryService extends Service<BillCategory> {
+export class GroupService extends Service<Group> {
     constructor(
-        @InjectRepository(BillCategory)
-        protected repository: Repository<BillCategory>,
+        @InjectRepository(Group)
+        protected repository: Repository<Group>,
     ) {
-        super('bill_categories', [], repository);
+        super('groups', [], repository);
     }
 
-    async create({ name }: CreateCategoryDto) {
-        const billCategory = new BillCategoryConstructor({ name });
-        return await this.save(billCategory);
+    async create({ name }: CreateGroupDto) {
+        const billGroup = new GroupConstructor({ name });
+        return await this.save(billGroup);
     }
 
-    async update(param: string, { name }: UpdateCategoryDto) {
+    async update(param: string, { name }: UpdateGroupDto) {
         const result = await this.findOne({ value: param, withDeleted: true });
-        const billCategory = new BillCategoryConstructor({ ...result, name });
-        return await this.save(billCategory);
+        const billGroup = new GroupConstructor({ ...result, name });
+        return await this.save(billGroup);
     }
 
     async remove(param: string) {
@@ -40,12 +40,12 @@ export class CategoryService extends Service<BillCategory> {
             value: param,
             relations: ['bills'],
             withDeleted: true,
-        }) as BillCategory;
+        }) as Group;
 
         if (result?.bills?.length) {
             throw this.error(
                 new ConflictException(
-                    'You cannot delete the bill category because it is already in use.',
+                    'You cannot delete the group because it is already in use.',
                 ),
             );
         }
@@ -55,18 +55,18 @@ export class CategoryService extends Service<BillCategory> {
 
     async seeds({
                     withReturnSeed = true,
-                    categoryListJson: listJson,
+                    groupListJson: listJson,
                 }: FinanceSeederParams) {
         if (!listJson) {
             return [];
         }
         const seeds = listJson.map((item) =>
-            transformObjectDateAndNulls<BillCategory, unknown>(item)
+            transformObjectDateAndNulls<Group, unknown>(item)
         )
         return this.seeder.entities({
             by: 'name',
             key: 'all',
-            label: 'Bill Category',
+            label: 'Group',
             seeds,
             withReturnSeed,
             createdEntityFn: async (item) => item,

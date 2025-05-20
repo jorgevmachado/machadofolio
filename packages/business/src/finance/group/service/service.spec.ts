@@ -9,15 +9,15 @@ import {
 
 import { type Nest } from '../../../api';
 
-import { BILL_CATEGORY_MOCK } from '../mock';
-import { BillCategoryService } from './service';
+import { GROUP_MOCK } from '../mock';
+import { GroupService } from './service';
 
 jest.mock('../../../api');
 
-describe('BillCategory Service', () => {
-    let service: BillCategoryService;
+describe('Group Service', () => {
+    let service: GroupService;
     let mockNest: jest.Mocked<Nest>;
-    const mockEntity = BILL_CATEGORY_MOCK;
+    const mockEntity = GROUP_MOCK;
     const mockPaginateParams = { page: 1, limit: 10 };
     const mockEntityList = [mockEntity, mockEntity];
     const mockEntityPaginate = {
@@ -36,7 +36,7 @@ describe('BillCategory Service', () => {
         jest.restoreAllMocks();
         mockNest = {
             finance: {
-                billCategory: {
+                group: {
                     getAll: jest.fn(),
                     getOne: jest.fn(),
                     create: jest.fn(),
@@ -46,7 +46,7 @@ describe('BillCategory Service', () => {
             },
         } as unknown as jest.Mocked<Nest>;
 
-        service = new BillCategoryService(mockNest);
+        service = new GroupService(mockNest);
     });
 
     afterEach(() => {
@@ -55,12 +55,12 @@ describe('BillCategory Service', () => {
 
 
     describe('create', () => {
-        it('should successfully create an bill category', async () => {
-            mockNest.finance.billCategory.create.mockResolvedValue(mockEntity);
+        it('should successfully create an group', async () => {
+            mockNest.finance.group.create.mockResolvedValue(mockEntity);
 
             const result = await service.create({ name: mockEntity.name });
 
-            expect(mockNest.finance.billCategory.create).toHaveBeenCalledWith({
+            expect(mockNest.finance.group.create).toHaveBeenCalledWith({
                 name: mockEntity.name,
             }, undefined);
             expect(result).toEqual(mockEntity);
@@ -68,14 +68,14 @@ describe('BillCategory Service', () => {
     });
 
     describe('update', () => {
-        it('should successfully update an bill category', async () => {
-            mockNest.finance.billCategory.update.mockResolvedValue(mockEntity);
+        it('should successfully update an group', async () => {
+            mockNest.finance.group.update.mockResolvedValue(mockEntity);
 
             const result = await service.update(mockEntity.id, {
                 name: mockEntity.name,
             });
 
-            expect(mockNest.finance.billCategory.update).toHaveBeenCalledWith(
+            expect(mockNest.finance.group.update).toHaveBeenCalledWith(
                 mockEntity.id,
                 {
                     name: mockEntity.name,
@@ -86,37 +86,37 @@ describe('BillCategory Service', () => {
         });
 
         it('should throw an error if the update fails', async () => {
-            const mockError = new Error('Failed to update bill category');
-            mockNest.finance.billCategory.update.mockRejectedValue(mockError);
+            const mockError = new Error('Failed to update group');
+            mockNest.finance.group.update.mockRejectedValue(mockError);
 
             await expect(
                 service.update(mockEntity.id, { name: mockEntity.name }),
-            ).rejects.toThrow('Failed to update bill category');
+            ).rejects.toThrow('Failed to update group');
         });
 
         it('should call the update method with correct arguments', async () => {
-            mockNest.finance.billCategory.update.mockResolvedValue(mockEntity);
+            mockNest.finance.group.update.mockResolvedValue(mockEntity);
 
             await service.update(mockEntity.id, { name: mockEntity.name });
 
-            expect(mockNest.finance.billCategory.update).toHaveBeenCalledWith(
+            expect(mockNest.finance.group.update).toHaveBeenCalledWith(
                 mockEntity.id,
                 {
                     name: mockEntity.name,
                 },
                 undefined
             );
-            expect(mockNest.finance.billCategory.update).toHaveBeenCalledTimes(1);
+            expect(mockNest.finance.group.update).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('delete', () => {
-        it('should successfully delete an bill category', async () => {
+        it('should successfully delete an group', async () => {
             const mockResponse = { message: 'Successfully removed' };
-            mockNest.finance.billCategory.delete.mockResolvedValue(mockResponse);
+            mockNest.finance.group.delete.mockResolvedValue(mockResponse);
             const result = await service.remove(mockEntity.id);
 
-            expect(mockNest.finance.billCategory.delete).toHaveBeenCalledWith(
+            expect(mockNest.finance.group.delete).toHaveBeenCalledWith(
                 mockEntity.id,
                 undefined
             );
@@ -125,11 +125,11 @@ describe('BillCategory Service', () => {
     });
 
     describe('get', () => {
-        it('should successfully get an bill category', async () => {
-            mockNest.finance.billCategory.getOne.mockResolvedValue(mockEntity);
+        it('should successfully get an group', async () => {
+            mockNest.finance.group.getOne.mockResolvedValue(mockEntity);
             const result = await service.get(mockEntity.id);
 
-            expect(mockNest.finance.billCategory.getOne).toHaveBeenCalledWith(
+            expect(mockNest.finance.group.getOne).toHaveBeenCalledWith(
                 mockEntity.id,
                 undefined
             );
@@ -138,21 +138,21 @@ describe('BillCategory Service', () => {
     });
 
     describe('getAll', () => {
-        it('should successfully getAll bill category list', async () => {
-            mockNest.finance.billCategory.getAll.mockResolvedValue(mockEntityList);
+        it('should successfully getAll group list', async () => {
+            mockNest.finance.group.getAll.mockResolvedValue(mockEntityList);
             const result = await service.getAll({});
 
-            expect(mockNest.finance.billCategory.getAll).toHaveBeenCalledWith({}, undefined);
+            expect(mockNest.finance.group.getAll).toHaveBeenCalledWith({}, undefined);
             expect(result).toEqual(mockEntityList);
         });
 
-        it('should successfully getAll bill category list paginate', async () => {
-            mockNest.finance.billCategory.getAll.mockResolvedValue(
+        it('should successfully getAll group list paginate', async () => {
+            mockNest.finance.group.getAll.mockResolvedValue(
                 mockEntityPaginate,
             );
             const result = await service.getAll(mockPaginateParams);
 
-            expect(mockNest.finance.billCategory.getAll).toHaveBeenCalledWith(
+            expect(mockNest.finance.group.getAll).toHaveBeenCalledWith(
                 mockPaginateParams,
                 undefined
             );

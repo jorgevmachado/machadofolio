@@ -9,19 +9,19 @@ import {
     UpdateDateColumn
 } from 'typeorm';
 
-import type { BillCategoryEntity } from '@repo/business/finance/bill-category/types';
+import type { GroupEntity } from '@repo/business/finance/group/types';
 
 import { Bill } from './bill.entity';
 
-@Entity({ name: 'bill_categories' })
-export class BillCategory implements BillCategoryEntity {
+@Entity({ name: 'groups' })
+export class Group implements GroupEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
     @Column({ nullable: false, unique: true, length: 200 })
     name!: string;
 
-    @OneToMany(() => Bill, (bill) => bill.category)
+    @OneToMany(() => Bill, (bill) => bill.group)
     @JoinTable()
     bills?: Array<Bill>;
 

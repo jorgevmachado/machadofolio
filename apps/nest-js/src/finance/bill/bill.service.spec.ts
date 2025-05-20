@@ -17,9 +17,9 @@ import { type Supplier } from '../entities/supplier.entity';
 
 import { BankService } from '../bank/bank.service';
 import { BillService } from './bill.service';
-import { CategoryService } from '../category/category.service';
 import { type CreateBillDto } from './dto/create-bill.dto';
 import { ExpenseService } from './expense/expense.service';
+import { GroupService } from '../group/group.service';
 
 import { ConflictException } from '@nestjs/common';
 import { type UpdateBillDto } from './dto/update-bill.dto';
@@ -29,7 +29,7 @@ import { type UpdateExpenseDto } from './expense/dto/update-expense.dto';
 describe('BillService', () => {
     let service: BillService;
     let bankService: BankService;
-    let categoryService: CategoryService;
+    let groupService: GroupService;
     let expenseService: ExpenseService;
     let repository: Repository<Bill>;
 
@@ -68,7 +68,7 @@ describe('BillService', () => {
                     },
                 },
                 {
-                    provide: CategoryService,
+                    provide: GroupService,
                     useValue: {
                         seeds: jest.fn(),
                         treatEntityParam: jest.fn(),
@@ -79,7 +79,7 @@ describe('BillService', () => {
 
         service = module.get<BillService>(BillService);
         bankService = module.get<BankService>(BankService);
-        categoryService = module.get<CategoryService>(CategoryService);
+        groupService = module.get<GroupService>(GroupService);
         expenseService = module.get<ExpenseService>(ExpenseService);
         repository = module.get<Repository<Bill>>(getRepositoryToken(Bill));
     });
@@ -91,7 +91,7 @@ describe('BillService', () => {
     it('should be defined', () => {
         expect(service).toBeDefined();
         expect(bankService).toBeDefined();
-        expect(categoryService).toBeDefined();
+        expect(groupService).toBeDefined();
         expect(expenseService).toBeDefined();
         expect(repository).toBeDefined();
     });
@@ -102,15 +102,15 @@ describe('BillService', () => {
                 type: mockEntity.type,
                 year: mockEntity.year,
                 bank: mockEntity.bank.name,
-                category: mockEntity.category.name,
+                group: mockEntity.group.name,
             };
             jest
                 .spyOn(bankService, 'treatEntityParam')
                 .mockResolvedValueOnce(mockEntity.bank);
 
             jest
-                .spyOn(categoryService, 'treatEntityParam')
-                .mockResolvedValueOnce(mockEntity.category);
+                .spyOn(groupService, 'treatEntityParam')
+                .mockResolvedValueOnce(mockEntity.group);
 
             jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
                 andWhere: jest.fn(),
@@ -129,15 +129,15 @@ describe('BillService', () => {
                 type: mockEntity.type,
                 year: mockEntity.year,
                 bank: mockEntity.bank.name,
-                category: mockEntity.category.name,
+                group: mockEntity.group.name,
             };
             jest
                 .spyOn(bankService, 'treatEntityParam')
                 .mockResolvedValueOnce(mockEntity.bank);
 
             jest
-                .spyOn(categoryService, 'treatEntityParam')
-                .mockResolvedValueOnce(mockEntity.category);
+                .spyOn(groupService, 'treatEntityParam')
+                .mockResolvedValueOnce(mockEntity.group);
 
             jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
                 andWhere: jest.fn(),
@@ -159,7 +159,7 @@ describe('BillService', () => {
             const updateBill: UpdateBillDto = {
                 type: mockEntity.type,
                 bank: mockEntity.bank.name,
-                category: mockEntity.category.name,
+                group: mockEntity.group.name,
                 expenses: mockEntity.expenses,
             };
 
@@ -175,8 +175,8 @@ describe('BillService', () => {
                 .mockResolvedValueOnce(mockEntity.bank);
 
             jest
-                .spyOn(categoryService, 'treatEntityParam')
-                .mockResolvedValueOnce(mockEntity.category);
+                .spyOn(groupService, 'treatEntityParam')
+                .mockResolvedValueOnce(mockEntity.group);
 
             if (mockEntity.expenses) {
                 jest
@@ -517,7 +517,7 @@ describe('BillService', () => {
         it('should seed the database when exist in database', async () => {
             jest.spyOn(bankService, 'seeds').mockResolvedValueOnce([mockEntity.bank]);
 
-            jest.spyOn(categoryService, 'seeds').mockResolvedValueOnce([mockEntity.category]);
+            jest.spyOn(groupService, 'seeds').mockResolvedValueOnce([mockEntity.group]);
 
             jest.spyOn(repository, 'find').mockResolvedValueOnce([mockEntity]);
 
@@ -525,14 +525,14 @@ describe('BillService', () => {
                 finance: financeMockEntity,
                 bankListJson: [mockEntity.bank],
                 billListJson: [mockEntity],
-                categoryListJson: [mockEntity.category],
+                groupListJson: [mockEntity.group],
             })).toEqual([mockEntity]);
         });
 
         it('should seed the database when not exist in database', async () => {
             jest.spyOn(bankService, 'seeds').mockResolvedValueOnce([mockEntity.bank]);
 
-            jest.spyOn(categoryService, 'seeds').mockResolvedValueOnce([mockEntity.category]);
+            jest.spyOn(groupService, 'seeds').mockResolvedValueOnce([mockEntity.group]);
 
             jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
 
@@ -541,7 +541,7 @@ describe('BillService', () => {
                 finance: financeMockEntity,
                 bankListJson: [mockEntity.bank],
                 billListJson: [mockEntity],
-                categoryListJson: [mockEntity.category],
+                groupListJson: [mockEntity.group],
             })).toEqual([mockEntity]);
         });
 
@@ -551,12 +551,12 @@ describe('BillService', () => {
         });
     });
 
-    describe('billCategoryService', () => {
-        it('Should return the category service instance', () => {
-            const result = service.category;
+    describe('groupService', () => {
+        it('Should return the group service instance', () => {
+            const result = service.group;
 
             expect(result).toBeDefined();
-            expect(result).toBe(categoryService);
+            expect(result).toBe(groupService);
         });
     });
 

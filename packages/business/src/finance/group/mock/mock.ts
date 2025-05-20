@@ -1,6 +1,6 @@
-import type  { BillCategoryEntity } from '../types';
+import type  { GroupEntity } from '../types';
 
-export const BILL_CATEGORY_MOCK: BillCategoryEntity = {
+export const GROUP_MOCK: GroupEntity = {
     id: '41437bff-2d77-4985-8a14-fa7643f9249b',
     name: 'Personal',
     name_code: 'personal',

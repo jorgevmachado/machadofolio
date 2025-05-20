@@ -4,31 +4,31 @@ import { ConflictException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { BILL_CATEGORY_MOCK } from '../../mocks/bill-category.mock';
 import { BILL_MOCK } from '../../mocks/bill.mock';
-import { BillCategory } from '../entities/category.entity';
+import { GROUP_MOCK } from '../../mocks/group.mock';
+import { Group } from '../entities/group.entity';
 
-import { CategoryService } from './category.service';
-import { type CreateCategoryDto } from './dto/create-category.dto';
-import { type UpdateCategoryDto } from './dto/update-category.dto';
+import { type CreateGroupDto } from './dto/create-group.dto';
+import { GroupService } from './group.service';
+import { type UpdateGroupDto } from './dto/update-group.dto';
 
 describe('CategoryService', () => {
-  let repository: Repository<BillCategory>;
-  let service: CategoryService;
+  let repository: Repository<Group>;
+  let service: GroupService;
   
-  const mockEntity: BillCategory =  BILL_CATEGORY_MOCK;
+  const mockEntity: Group =  GROUP_MOCK;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-          CategoryService,
-        { provide: getRepositoryToken(BillCategory), useClass: Repository },
+          GroupService,
+        { provide: getRepositoryToken(Group), useClass: Repository },
       ],
     }).compile();
 
-    service = module.get<CategoryService>(CategoryService);
-    repository = module.get<Repository<BillCategory>>(
-        getRepositoryToken(BillCategory),
+    service = module.get<GroupService>(GroupService);
+    repository = module.get<Repository<Group>>(
+        getRepositoryToken(Group),
     );
   });
 
@@ -43,7 +43,7 @@ describe('CategoryService', () => {
 
   describe('create', () => {
     it('should create a new billCategory and save it', async () => {
-      const createDto: CreateCategoryDto = {
+      const createDto: CreateGroupDto = {
         name: mockEntity.name,
       };
 
@@ -59,11 +59,11 @@ describe('CategoryService', () => {
 
   describe('update', () => {
     it('should update a billCategory and save it', async () => {
-      const updateDto: UpdateCategoryDto = {
+      const updateDto: UpdateGroupDto = {
         name: `${mockEntity.name}2`,
       };
 
-      const expected: BillCategory = {
+      const expected: Group = {
         ...mockEntity,
         ...updateDto,
       };
@@ -89,7 +89,7 @@ describe('CategoryService', () => {
 
   describe('remove', () => {
     it('should remove billCategory when there are no associated bills', async () => {
-      const expected: BillCategory = {
+      const expected: Group = {
         ...mockEntity,
         bills: [],
       };
@@ -114,7 +114,7 @@ describe('CategoryService', () => {
     });
 
     it('should throw a ConflictException when billCategory is in use', async () => {
-      const expected: BillCategory = {
+      const expected: Group = {
         ...mockEntity,
         bills: [BILL_MOCK],
       };

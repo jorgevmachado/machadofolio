@@ -4,9 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { BankModule } from './bank/bank.module';
 import { BillModule } from './bill/bill.module';
-import { CategoryModule } from './category/category.module';
 import { FinanceController } from './finance.controller';
 import { FinanceService } from './finance.service';
+import { GroupModule } from './group/group.module';
 import { SupplierModule } from './supplier/supplier.module';
 
 import { Finance } from './entities/finance.entity';
@@ -19,7 +19,7 @@ import { Finance } from './entities/finance.entity';
         PassportModule.register({ defaultStrategy: 'jwt' }),
         BankModule,
         BillModule,
-        CategoryModule,
+        GroupModule,
         SupplierModule
     ],
     exports: [FinanceService]

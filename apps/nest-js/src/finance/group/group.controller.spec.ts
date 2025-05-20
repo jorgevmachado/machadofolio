@@ -1,25 +1,25 @@
 import { Test, type TestingModule } from '@nestjs/testing';
 
-import { BILL_CATEGORY_MOCK } from '../../mocks/bill-category.mock';
-import { type BillCategory } from '../entities/category.entity';
+import { GROUP_MOCK } from '../../mocks/group.mock';
+import { type Group } from '../entities/group.entity';
 
-import { CategoryController } from './category.controller';
-import { CategoryService } from './category.service';
-import { type CreateCategoryDto } from './dto/create-category.dto';
-import { type UpdateCategoryDto } from './dto/update-category.dto';
+import { type CreateGroupDto } from './dto/create-group.dto';
+import { GroupController } from './group.controller';
+import { GroupService } from './group.service';
+import { type UpdateGroupDto } from './dto/update-group.dto';
 
 describe('CategoryController', () => {
-  let controller: CategoryController;
-  let service: CategoryService;
+  let controller: GroupController;
+  let service: GroupService;
 
-  const mockEntity: BillCategory =  BILL_CATEGORY_MOCK;
+  const mockEntity: Group =  GROUP_MOCK;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [CategoryController],
+      controllers: [GroupController],
       providers: [
         {
-          provide: CategoryService,
+          provide: GroupService,
           useValue: {
             seed: jest.fn(),
             findAll: jest.fn(),
@@ -32,8 +32,8 @@ describe('CategoryController', () => {
       ],
     }).compile();
 
-    controller = module.get<CategoryController>(CategoryController);
-    service = module.get<CategoryService>(CategoryService);
+    controller = module.get<GroupController>(GroupController);
+    service = module.get<GroupService>(GroupService);
   });
 
   it('should be defined', () => {
@@ -53,7 +53,7 @@ describe('CategoryController', () => {
 
   describe('create', () => {
     it('should create a new supplierType and save it', async () => {
-      const createDto: CreateCategoryDto = {
+      const createDto: CreateGroupDto = {
         name: mockEntity.name,
       };
 
@@ -81,11 +81,11 @@ describe('CategoryController', () => {
 
   describe('update', () => {
     it('should update a bill category and save it', async () => {
-      const updateDto: UpdateCategoryDto = {
+      const updateDto: UpdateGroupDto = {
         name: `${mockEntity.name}2`,
       };
 
-      const expected: BillCategory = {
+      const expected: Group = {
         ...mockEntity,
         ...updateDto,
       };

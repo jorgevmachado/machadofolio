@@ -11,17 +11,16 @@ import { NestModuleAbstract } from '../abstract';
 
 import { Bank } from './bank';
 import { Bill } from './bill';
-import { BillCategory } from './bill-category';
 import { Finance } from './finance';
+import { Group } from './group';
 import { Supplier } from './supplier';
 
 
 jest.mock('../abstract');
 jest.mock('./bank');
 jest.mock('./bill');
-jest.mock('./bill-category');
+jest.mock('./group');
 jest.mock('./supplier');
-
 
 describe('Finance', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
@@ -66,16 +65,16 @@ describe('Finance', () => {
         });
     });
 
-    describe('bill category Module', () => {
-        it('should initialize Bill Category module', () => {
-            expect(BillCategory).toHaveBeenCalledTimes(1);
-            expect(BillCategory).toHaveBeenCalledWith(mockConfig);
+    describe('group Module', () => {
+        it('should initialize Group module', () => {
+            expect(Group).toHaveBeenCalledTimes(1);
+            expect(Group).toHaveBeenCalledWith(mockConfig);
         });
 
-        it('should return the instance of Bill Category via bank getter', () => {
-            const billCategoryModule = finance.billCategory;
-            expect(billCategoryModule).toBeInstanceOf(BillCategory);
-            expect(BillCategory).toHaveBeenCalledTimes(1);
+        it('should return the instance of Group via bank getter', () => {
+            const billCategoryModule = finance.group;
+            expect(billCategoryModule).toBeInstanceOf(Group);
+            expect(Group).toHaveBeenCalledTimes(1);
         });
     });
 

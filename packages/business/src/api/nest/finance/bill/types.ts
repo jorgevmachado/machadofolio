@@ -1,16 +1,16 @@
 import type { IFinance, IFinanceBase } from '../types';
 import { type EBillType } from './enum';
 import { type IBank } from '../bank';
-import { type IBillCategory } from '../bill-category';
 import { type IExpense } from './expense';
+import { type IGroup } from '../group';
 
 export type IBill = IFinanceBase & {
     year: number;
     type: EBillType;
     bank: IBank;
+    group: IGroup;
     total: number;
     finance: IFinance;
-    category: IBillCategory;
     expenses?: Array<IExpense>;
     all_paid: boolean;
     total_paid: number;
@@ -22,9 +22,9 @@ export type ICreateBillParams = Omit<
         | 'year'
         | 'name'
         | 'bank'
+        | 'group'
         | 'total'
         | 'finance'
-        | 'category'
         | 'all_paid'
         | 'expenses'
         | 'name_code'
@@ -35,7 +35,7 @@ export type ICreateBillParams = Omit<
     > & {
     year?: number;
     bank: string | IBank;
-    category: string | IBillCategory;
+    group: string | IGroup;
     expenses?: Array<string | IExpense>;
 }
 
