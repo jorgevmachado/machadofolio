@@ -1,42 +1,39 @@
 import * as XLSX from 'xlsx';
 
-import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
 import { transformObjectDateAndNulls } from '@repo/services/object/object';
 
 import FinanceConstructor from '@repo/business/finance/finance';
 
-import BANK_LIST_FIXTURE_JSON from '@repo/mock-json/finance/bank/banks.json';
-import BILL_CATEGORY_LIST_FIXTURE_JSON from '@repo/mock-json/finance/bill-category/bill-categories.json';
-import BILL_LIST_FIXTURE_JSON from '@repo/mock-json/finance/bill/bills.json';
-import EXPENSE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/expense/expenses.json';
-import FINANCE_FIXTURE_JSON from '@repo/mock-json/finance/finance.json';
-import SUPPLIER_LIST_FIXTURE_JSON from '@repo/mock-json/finance/supplier/suppliers.json';
-import SUPPLIER_TYPE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/supplier-type/supplier-types.json';
-
-
 import { Service } from '../shared';
 
 import { User } from '../auth/entities/user.entity';
 
+import { Bank } from './entities/bank.entity';
+import { BankService } from './bank/bank.service';
 import { Bill } from './entities/bill.entity';
 import { BillService } from './bill/bill.service';
+import { CreateFinanceSeedsDto } from './dto/create-finance-seeds.dto';
 import { Expense } from './entities/expense.entity';
 import { Finance } from './entities/finance.entity';
-import { FinanceSeederParams } from './types';
+import { FinanceSeedsParams } from './types';
 import { Group } from './entities/group.entity';
-
-type FinanceSeedsParams = FinanceSeederParams & {
-    user: User;
-}
+import { GroupService } from './group/group.service';
+import { Supplier } from './entities/supplier.entity';
+import { SupplierService } from './supplier/supplier.service';
+import { SupplierType } from './entities/type.entity';
 
 @Injectable()
 export class FinanceService extends Service<Finance> {
     constructor(
         @InjectRepository(Finance)
         protected repository: Repository<Finance>,
+        protected readonly bankService: BankService,
+        protected readonly groupService: GroupService,
+        protected readonly supplierService: SupplierService,
         protected readonly billService: BillService,
     ) {
         super('finances', [], repository);
@@ -145,7 +142,7 @@ export class FinanceService extends Service<Finance> {
 
         console.log('# => user => ', user)
         const finance = user.finance;
-        if(finance) {
+        if (finance) {
             finance.bills?.forEach((bill) => {
                 console.log('# => bill => ', bill);
             })
@@ -193,66 +190,201 @@ export class FinanceService extends Service<Finance> {
 
     }
 
-    async seeds({
-                    user,
-                    bankListJson = BANK_LIST_FIXTURE_JSON,
-                    billListJson = BILL_LIST_FIXTURE_JSON,
-                    expenseListJson = EXPENSE_LIST_FIXTURE_JSON,
-                    groupListJson = BILL_CATEGORY_LIST_FIXTURE_JSON,
-                    supplierListJson = SUPPLIER_LIST_FIXTURE_JSON,
-                    supplierTypeListJson = SUPPLIER_TYPE_LIST_FIXTURE_JSON
-                }: FinanceSeedsParams) {
-        try {
-            const finance = (await this.seed(user)) as Finance;
+
+    async seeds(financeSeedsParams: FinanceSeedsParams) {
+        const finances = await this.seed(financeSeedsParams.financeListJson, financeSeedsParams.users) as Array<Finance>;
+        const banks: Array<Bank> = await this.seeder.executeSeed<Bank>({
+            label: 'Banks',
+            seedMethod: async () => {
+                const result = await this.bankService.seeds({ bankListJson: financeSeedsParams.bankListJson });
+                return Array.isArray(result) ? result : [];
+            }
+        })
+        const {
+            supplierList,
+            supplierTypeList
+        } = await this.supplierService.seeds({
+            supplierListJson: financeSeedsParams.supplierListJson,
+            supplierTypeListJson: financeSeedsParams.supplierTypeListJson
+        })
+        const suppliers: Array<Supplier> = supplierList;
+        const supplierTypes: Array<SupplierType> = supplierTypeList;
+
+        const groups: Array<Group> = await this.seeder.executeSeed<Group>({
+            label: 'Group',
+            seedMethod: async () => {
+                const result = await this.groupService.seeds({ groupListJson: financeSeedsParams.groupListJson });
+                return Array.isArray(result) ? result : [];
+            }
+        });
+
+        const expenses: Array<Expense> = [];
+
+        const bills: Array<Bill> = [];
+
+
+        for (const finance of finances) {
             const billList = await this.seeder.executeSeed<Bill>({
                 label: 'Bills',
                 seedMethod: async () => {
                     const result = await this.billService.seeds({
                         finance,
-                        bankListJson,
-                        groupListJson,
-                        billListJson,
+                        banks,
+                        groups,
+                        billListJson: financeSeedsParams.billListJson,
                     });
                     return Array.isArray(result) ? result : [];
                 },
             });
-
-            await this.seeder.executeSeed<Expense>({
+            bills.push(...billList);
+            const expenseList = await this.seeder.executeSeed<Expense>({
                 label: 'Expenses',
                 seedMethod: async () => {
                     const result = await this.billService.expense.seeds({
-                        billList,
-                        expenseListJson,
-                        supplierListJson,
-                        supplierTypeListJson,
+                        bills: billList,
+                        suppliers,
+                        expenseListJson: financeSeedsParams.expenseListJson,
                     });
                     return Array.isArray(result) ? result : [];
                 },
-            })
+            });
+            expenses.push(...expenseList);
+        }
 
-            return {
-                message: 'Seeds finances executed successfully',
-            };
-        } catch (error) {
-            console.error('# => Error during seeds execution:', error);
-            throw this.error(new ConflictException('Seed Execution Failed'));
+
+        return {
+            bills: bills,
+            groups: groups,
+            banks: banks,
+            expenses: expenses,
+            finances: finances,
+            suppliers: suppliers,
+            supplierTypes: supplierTypes,
         }
     }
 
-    private async seed(user: User, withReturnSeed: boolean = true) {
-        return await this.seeder.entity({
-            by: 'id',
-            seed: transformObjectDateAndNulls<Finance, unknown>(FINANCE_FIXTURE_JSON) as Finance,
-            label: 'Finance',
-            withReturnSeed,
-            createdEntityFn: (item) => this.save({
-                id: item.id,
-                user: user,
-                created_at: item.created_at,
-                updated_at: item.updated_at,
-                deleted_at: item.deleted_at
-            }) as Promise<Finance>
-        })
+    private async seed(listJson: Array<unknown> = [], users: Array<User>, withReturnSeed = true) {
+        const seeds = listJson.map((item) => transformObjectDateAndNulls<Finance, unknown>(item));
+        console.info(`# => Start Finance seeding`);
+        const existingEntities = await this.repository.find({ withDeleted: true });
+        const existingEntitiesBy = new Set(
+            existingEntities.map((entity) => entity.id),
+        );
+
+        const entitiesToCreate = seeds.filter(
+            (entity) => !existingEntitiesBy.has(entity.id),
+        );
+
+        if (entitiesToCreate.length === 0) {
+            console.info(`# => No new Finances to seed`);
+            return existingEntities;
+        }
+
+        const createdEntities = (
+            await Promise.all(
+                entitiesToCreate.map(async (entity) => {
+                    const user = users.find((item) => item.cpf === entity.user.cpf);
+                    if (!user) {
+                        return;
+                    }
+                    const finance = new FinanceConstructor({
+                        ...entity,
+                        user,
+                        bills: undefined,
+                    });
+                    return this.save(finance);
+                })
+            )
+        ).filter((entity) => !!entity);
+        console.info(
+            `# => Seeded ${createdEntities.length} new finance`,
+        );
+        const seed = [...existingEntities, ...createdEntities];
+        if (!withReturnSeed) {
+            return { message: `Seeding Finance Completed Successfully!` };
+        }
+        return seed;
     }
 
+    // async seeds({
+    //                 user,
+    //                 bankListJson,
+    //                 billListJson,
+    //                 expenseListJson,
+    //                 groupListJson,
+    //                 supplierListJson,
+    //                 supplierTypeListJson
+    //             }: FinanceSeedsParams) {
+    //     try {
+    //         const finance = (await this.seed(user, {})) as Finance;
+    //         const billList = await this.seeder.executeSeed<Bill>({
+    //             label: 'Bills',
+    //             seedMethod: async () => {
+    //                 const result = await this.billService.seeds({
+    //                     finance,
+    //                     bankListJson,
+    //                     groupListJson,
+    //                     billListJson,
+    //                 });
+    //                 return Array.isArray(result) ? result : [];
+    //             },
+    //         });
+    //
+    //         await this.seeder.executeSeed<Expense>({
+    //             label: 'Expenses',
+    //             seedMethod: async () => {
+    //                 const result = await this.billService.expense.seeds({
+    //                     billList,
+    //                     expenseListJson,
+    //                     supplierListJson,
+    //                     supplierTypeListJson,
+    //                 });
+    //                 return Array.isArray(result) ? result : [];
+    //             },
+    //         })
+    //
+    //         return {
+    //             message: 'Seeds finances executed successfully',
+    //         };
+    //     } catch (error) {
+    //         console.error('# => Error during seeds execution:', error);
+    //         throw this.error(new ConflictException('Seed Execution Failed'));
+    //     }
+    // }
+    //
+    // private async seed(user: User, financeJson: unknown, withReturnSeed: boolean = true) {
+    //     return await this.seeder.entity({
+    //         by: 'id',
+    //         seed: transformObjectDateAndNulls<Finance, unknown>(financeJson) as Finance,
+    //         label: 'Finance',
+    //         withReturnSeed,
+    //         createdEntityFn: (item) => this.save({
+    //             id: item.id,
+    //             user: user,
+    //             created_at: item.created_at,
+    //             updated_at: item.updated_at,
+    //             deleted_at: item.deleted_at
+    //         }) as Promise<Finance>
+    //     })
+    // }
+
+    async createSeeds(users: Array<User>, createFinanceSeedsDto: CreateFinanceSeedsDto) {
+        const bills: Array<Bill> = [];
+        const groups: Array<Group> = [];
+        const banks: Array<Bank> = [];
+        const expenses: Array<Expense> = [];
+        const finances: Array<Finance> = [];
+        const suppliers: Array<Supplier> = [];
+        const supplierTypes: Array<SupplierType> = [];
+
+        return {
+            bills: bills.length,
+            groups: groups.length,
+            banks: banks.length,
+            expenses: expenses.length,
+            finances: finances.length,
+            suppliers: suppliers.length,
+            supplierTypes: supplierTypes.length,
+        }
+    }
 }

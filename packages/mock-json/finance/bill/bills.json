@@ -216,7 +216,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "66c25cf9-ddba-4591-810f-3b60911f47c1",
       "name": "Ingrid Residential",
       "name_code": "ingrid_residential",
@@ -349,7 +349,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "85029be6-313b-45f9-a27c-0aaeb63309f4",
       "name": "Monte Carlo Residential",
       "name_code": "monte_carlo_residential",
@@ -530,7 +530,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "85029be6-313b-45f9-a27c-0aaeb63309f4",
       "name": "Monte Carlo Residential",
       "name_code": "monte_carlo_residential",
@@ -711,7 +711,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "66c25cf9-ddba-4591-810f-3b60911f47c1",
       "name": "Ingrid Residential",
       "name_code": "ingrid_residential",
@@ -796,7 +796,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "85029be6-313b-45f9-a27c-0aaeb63309f4",
       "name": "Monte Carlo Residential",
       "name_code": "monte_carlo_residential",
@@ -1025,7 +1025,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "566a7e84-fac6-4ebb-b6f2-91d02f715b52",
       "name": "Mother",
       "name_code": "mother",
@@ -1158,7 +1158,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "41437bff-2d77-4985-8a14-fa7643f9249b",
       "name": "Personal",
       "name_code": "personal",
@@ -1243,7 +1243,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "566a7e84-fac6-4ebb-b6f2-91d02f715b52",
       "name": "Mother",
       "name_code": "mother",
@@ -1328,7 +1328,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "566a7e84-fac6-4ebb-b6f2-91d02f715b52",
       "name": "Mother",
       "name_code": "mother",
@@ -1509,7 +1509,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "41437bff-2d77-4985-8a14-fa7643f9249b",
       "name": "Personal",
       "name_code": "personal",
@@ -1594,7 +1594,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "41437bff-2d77-4985-8a14-fa7643f9249b",
       "name": "Personal",
       "name_code": "personal",
@@ -1679,7 +1679,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "41437bff-2d77-4985-8a14-fa7643f9249b",
       "name": "Personal",
       "name_code": "personal",
@@ -1764,7 +1764,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "41437bff-2d77-4985-8a14-fa7643f9249b",
       "name": "Personal",
       "name_code": "personal",
@@ -2137,7 +2137,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "41437bff-2d77-4985-8a14-fa7643f9249b",
       "name": "Personal",
       "name_code": "personal",
@@ -4718,7 +4718,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "41437bff-2d77-4985-8a14-fa7643f9249b",
       "name": "Personal",
       "name_code": "personal",
@@ -5043,7 +5043,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "41437bff-2d77-4985-8a14-fa7643f9249b",
       "name": "Personal",
       "name_code": "personal",
@@ -5128,7 +5128,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "41437bff-2d77-4985-8a14-fa7643f9249b",
       "name": "Personal",
       "name_code": "personal",
@@ -5261,7 +5261,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "41437bff-2d77-4985-8a14-fa7643f9249b",
       "name": "Personal",
       "name_code": "personal",
@@ -5394,7 +5394,7 @@
         "deleted_at": null
       }
     ],
-    "category": {
+    "group": {
       "id": "41437bff-2d77-4985-8a14-fa7643f9249b",
       "name": "Personal",
       "name_code": "personal",

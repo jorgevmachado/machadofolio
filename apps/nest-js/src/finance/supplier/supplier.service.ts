@@ -75,25 +75,26 @@ export class SupplierService extends Service<Supplier> {
     }
 
     async seeds({
-                    withReturnSeed = true,
                     supplierListJson: listJson,
                     supplierTypeListJson,
                 }: FinanceSeederParams) {
       const listType = (
-          (await this.supplierTypeService.seeds({ supplierTypeListJson, withReturnSeed})) as Array<SupplierType>
+          (await this.supplierTypeService.seeds({ supplierTypeListJson, withReturnSeed: true})) as Array<SupplierType>
       ).filter((type): type is SupplierType => !!type);
 
         if(!listJson) {
-            return [];
+            return {
+                supplierList: [],
+                supplierTypeList: listType
+            }
         }
         const seeds = listJson.map((item) => transformObjectDateAndNulls<Supplier, unknown>(item));
-
-        return this.seeder.entities({
+        const list = await this.seeder.entities({
             by: 'name',
             key: 'all',
             label: 'Supplier',
             seeds,
-            withReturnSeed,
+            withReturnSeed: true,
             createdEntityFn: async (item) => {
                 const type = this.seeder.getRelation<SupplierType>({
                     key: 'name',
@@ -106,6 +107,11 @@ export class SupplierService extends Service<Supplier> {
                     type
                 })
             },
-        })
+        }) as Array<Supplier>;
+
+        return {
+            supplierList: list,
+            supplierTypeList: listType
+        };
     }
 }

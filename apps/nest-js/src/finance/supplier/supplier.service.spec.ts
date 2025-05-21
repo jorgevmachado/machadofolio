@@ -215,7 +215,10 @@ describe('SupplierService', () => {
       expect(await service.seeds({
         supplierListJson: [mockEntity],
         supplierTypeListJson: [mockEntity.type],
-      })).toEqual([mockEntity]);
+      })).toEqual({
+        supplierList: [mockEntity],
+        supplierTypeList: [mockEntity.type]
+      });
     });
 
     it('should seed the database when not exist in database', async () => {
@@ -228,7 +231,10 @@ describe('SupplierService', () => {
       expect(await service.seeds({
         supplierListJson: [mockEntity],
         supplierTypeListJson: [mockEntity.type],
-      })).toEqual([mockEntity]);
+      })).toEqual({
+        supplierList: [mockEntity],
+        supplierTypeList: [mockEntity.type]
+      });
     });
 
     it('should return conflict Exception because dont exist one SupplierType in dataBase', async () => {

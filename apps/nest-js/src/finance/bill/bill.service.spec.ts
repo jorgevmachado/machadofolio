@@ -522,10 +522,10 @@ describe('BillService', () => {
             jest.spyOn(repository, 'find').mockResolvedValueOnce([mockEntity]);
 
             expect(await service.seeds({
+                banks: [mockEntity.bank],
+                groups: [mockEntity.group],
                 finance: financeMockEntity,
-                bankListJson: [mockEntity.bank],
                 billListJson: [mockEntity],
-                groupListJson: [mockEntity.group],
             })).toEqual([mockEntity]);
         });
 
@@ -538,16 +538,20 @@ describe('BillService', () => {
 
             jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
             expect(await service.seeds({
+                banks: [mockEntity.bank],
+                groups: [mockEntity.group],
                 finance: financeMockEntity,
-                bankListJson: [mockEntity.bank],
                 billListJson: [mockEntity],
-                groupListJson: [mockEntity.group],
             })).toEqual([mockEntity]);
         });
 
         it('Should return a seed empty when received a empty list', async () => {
             jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
-            expect(await service.seeds({ finance: financeMockEntity })).toEqual([]);
+            expect(await service.seeds({
+                banks: [mockEntity.bank],
+                groups: [mockEntity.group],
+                finance: financeMockEntity,
+            })).toEqual([]);
         });
     });
 

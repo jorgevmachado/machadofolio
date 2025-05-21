@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { removeUndefinedFields } from '@repo/services/object/object';
+import { removeUndefinedFields, transformObjectDateAndNulls } from '@repo/services/object/object';
 
 import AuthBusiness from '@repo/business/auth/business/business';
 import { ERole } from '@repo/business/enum';
@@ -64,14 +64,6 @@ export class AuthService {
         return removeUndefinedFields(currentUser);
     }
 
-    async seed(withReturnSeed: boolean = true) {
-        const currentUser = (await this.userService.seed()) as User;
-        if (withReturnSeed) {
-            return currentUser;
-        }
-        return { message: 'Seeding Completed Successfully!' };
-    }
-
     async promoteUser(id: string, authUser: User) {
         this.authBusiness.validateCurrentUser({ authUser });
         const currentUser = await this.findOne(id, authUser);
@@ -85,5 +77,22 @@ export class AuthService {
         return {
             message: 'File uploaded successfully!',
         };
+    }
+
+    async seed(userJson: unknown, password: string, withReturnSeed: boolean = true) {
+        const user = transformObjectDateAndNulls<User, unknown>(userJson);
+        const currentUser = (await this.userService.seed(user, password)) as User;
+        if (withReturnSeed) {
+            return currentUser;
+        }
+        return { message: 'Seeding Completed Successfully!' };
+    }
+
+    async seeds(listJson: Array<unknown>, password: string, withReturnSeed: boolean = true) {
+        const currentListUser = (await this.userService.seeds(listJson, password)) as Array<User>;
+        if (withReturnSeed) {
+            return currentListUser;
+        }
+        return { message: 'Seeding list of user Completed Successfully!' };
     }
 }

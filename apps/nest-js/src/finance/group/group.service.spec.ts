@@ -12,7 +12,7 @@ import { type CreateGroupDto } from './dto/create-group.dto';
 import { GroupService } from './group.service';
 import { type UpdateGroupDto } from './dto/update-group.dto';
 
-describe('CategoryService', () => {
+describe('GroupService', () => {
   let repository: Repository<Group>;
   let service: GroupService;
   
@@ -42,7 +42,7 @@ describe('CategoryService', () => {
   });
 
   describe('create', () => {
-    it('should create a new billCategory and save it', async () => {
+    it('should create a new group and save it', async () => {
       const createDto: CreateGroupDto = {
         name: mockEntity.name,
       };
@@ -58,7 +58,7 @@ describe('CategoryService', () => {
   });
 
   describe('update', () => {
-    it('should update a billCategory and save it', async () => {
+    it('should update a group and save it', async () => {
       const updateDto: UpdateGroupDto = {
         name: `${mockEntity.name}2`,
       };
@@ -88,7 +88,7 @@ describe('CategoryService', () => {
   });
 
   describe('remove', () => {
-    it('should remove billCategory when there are no associated bills', async () => {
+    it('should remove group when there are no associated bills', async () => {
       const expected: Group = {
         ...mockEntity,
         bills: [],
@@ -113,7 +113,7 @@ describe('CategoryService', () => {
       });
     });
 
-    it('should throw a ConflictException when billCategory is in use', async () => {
+    it('should throw a ConflictException when group is in use', async () => {
       const expected: Group = {
         ...mockEntity,
         bills: [BILL_MOCK],
@@ -138,7 +138,7 @@ describe('CategoryService', () => {
           .spyOn(repository, 'find')
           .mockResolvedValueOnce([mockEntity]);
 
-      expect(await service.seeds({ categoryListJson: [mockEntity]})).toEqual([mockEntity]);
+      expect(await service.seeds({ groupListJson: [mockEntity]})).toEqual([mockEntity]);
     });
 
     it('should seed the database when not exist in database', async () => {
@@ -146,7 +146,7 @@ describe('CategoryService', () => {
 
       jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
 
-      expect(await service.seeds({ categoryListJson: [mockEntity]})).toEqual([mockEntity]);
+      expect(await service.seeds({ groupListJson: [mockEntity]})).toEqual([mockEntity]);
     });
 
     it('Should return a seed empty when received a empty list', async () => {

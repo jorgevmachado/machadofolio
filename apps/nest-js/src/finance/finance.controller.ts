@@ -20,11 +20,6 @@ export class FinanceController {
         return this.service.initialize(user);
     }
 
-    @Get('/seeds')
-    seeds(@GetUserAuth() user: User) {
-        return this.service.seeds({ user });
-    }
-
     @Get('/generate-document')
     async generateDocument(@Res() res: Response, @GetUserAuth() user: User): Promise<void> {
         const buffer = await this.service.generateDocument(user);

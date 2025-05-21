@@ -34,7 +34,9 @@ type ExistExpenseInBill = {
     fallBackMessage?: string;
 }
 
-type BillSeederParams = FinanceSeederParams & {
+type BillSeederParams = Pick<FinanceSeederParams, 'billListJson'> & {
+    banks: Array<Bank>;
+    groups: Array<Group>;
     finance: Finance;
 }
 
@@ -321,27 +323,10 @@ export class BillService extends Service<Bill> {
 
     async seeds({
                     finance,
-                    bankListJson,
-                    groupListJson,
+                    banks,
+                    groups,
                     billListJson: listJson,
-                    withReturnSeed = true,
                 }: BillSeederParams) {
-
-        const groupList = await this.seeder.executeSeed<Group>({
-            label: 'Bill Categories',
-            seedMethod: async () => {
-                const result = await this.groupService.seeds({ groupListJson });
-                return Array.isArray(result) ? result : [];
-            },
-        });
-
-        const bankList = await this.seeder.executeSeed<Bank>({
-            label: 'Banks',
-            seedMethod: async () => {
-                const result = await this.bankService.seeds({ bankListJson });
-                return Array.isArray(result) ? result : [];
-            }
-        });
         if (!listJson) {
             return [];
         }
@@ -351,21 +336,23 @@ export class BillService extends Service<Bill> {
             key: 'id',
             label: 'Bill',
             seeds,
-            withReturnSeed,
+            withReturnSeed: true,
             createdEntityFn: async (item) => {
                 const bank = this.seeder.getRelation<Bank>({
                     key: 'name',
-                    list: bankList as Array<Bank>,
+                    list: banks,
                     param: item?.bank?.name,
                     relation: 'Bank'
                 });
 
                 const group = this.seeder.getRelation<Group>({
                     key: 'name',
-                    list: groupList as Array<Group>,
+                    list: groups,
                     param: item?.group?.name,
-                    relation: 'Bill Category'
+                    relation: 'Group'
                 });
+
+
 
                 return new BillConstructor({
                     ...item,

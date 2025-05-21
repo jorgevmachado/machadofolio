@@ -20,11 +20,6 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {
   }
 
-  @Get('seed')
-  seed() {
-    return this.authService.seed(false);
-  }
-
   @Post('signUp')
   signUp(@Body() signUpAuthDto: SignUpAuthDto) {
     return this.authService.signUp(signUpAuthDto);

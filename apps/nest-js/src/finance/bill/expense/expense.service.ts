@@ -28,8 +28,9 @@ export type InitializeParams = {
     instalment_number?: number;
 }
 
-export type ExpenseSeederParams = FinanceSeederParams &  {
-    billList: Array<Bill>
+export type ExpenseSeederParams = Pick<FinanceSeederParams, 'expenseListJson'> &  {
+    bills: Array<Bill>;
+    suppliers: Array<Supplier>;
 }
 
 @Injectable()
@@ -106,16 +107,11 @@ export class ExpenseService extends Service<Expense> {
     }
 
     async seeds({
-        billList,
-        withReturnSeed = true,
+        bills,
+        suppliers,
         expenseListJson: listJson,
-        supplierListJson,
-        supplierTypeListJson,
-    }: ExpenseSeederParams) {
 
-        const supplierList = (
-            (await this.supplierService.seeds({ supplierListJson, supplierTypeListJson }) as Array<Supplier>)
-        ).filter((item): item is Supplier => !!item);
+    }: ExpenseSeederParams) {
 
         if(!listJson) {
             return [];
@@ -128,16 +124,16 @@ export class ExpenseService extends Service<Expense> {
             key: 'id',
             label: 'Expense',
             seeds,
-            withReturnSeed,
+            withReturnSeed: true,
             createdEntityFn: async (item) => {
                 const supplier = this.seeder.getRelation<Supplier>({
                     key: 'name',
-                    list: supplierList,
+                    list: suppliers,
                     relation: 'Supplier',
                     param: item?.supplier?.name,
                 });
 
-                const bill = billList.find((bill) => bill.id === item.bill?.id) as Bill;
+                const bill = bills.find((bill) => bill.id === item.bill?.id) as Bill;
 
                 return {
                     ...item,

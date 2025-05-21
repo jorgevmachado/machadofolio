@@ -3,7 +3,7 @@ export type BasicEntity = {
     name?: string
 };
 
-export type TByParam = 'name' | 'id';
+export type TByParam = 'name' | 'id' | 'cpf';
 
 export type TBy =
     | 'id'

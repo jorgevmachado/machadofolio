@@ -40,7 +40,6 @@ describe('ExpenseService', () => {
         {
           provide: SupplierService,
           useValue: {
-            seeds: jest.fn(),
             findOne: jest.fn(),
             treatEntityParam: jest.fn(),
           },
@@ -214,40 +213,32 @@ describe('ExpenseService', () => {
 
   describe('seeds', () => {
     it('Should return a seed empty when received a empty list', async () => {
-      jest.spyOn(supplierService, 'seeds').mockResolvedValueOnce([mockEntity.supplier]);
-
       jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
 
-      expect(await service.seeds({ billList: [mockEntity.bill]})).toEqual([]);
+      expect(await service.seeds({ bills: [mockEntity.bill], suppliers: [mockEntity.supplier]})).toEqual([]);
     });
 
     it('should seed the database when exist in database', async () => {
-      jest.spyOn(supplierService, 'seeds').mockResolvedValueOnce([mockEntity.supplier]);
-
       jest
           .spyOn(repository, 'find')
           .mockResolvedValueOnce([mockEntity]);
 
       expect(await service.seeds({
-        billList: [mockEntity.bill],
+        bills: [mockEntity.bill],
+        suppliers: [mockEntity.supplier],
         expenseListJson: [mockEntity],
-        supplierListJson: [mockEntity.supplier],
-        supplierTypeListJson: [mockEntity.supplier.type],
       })).toEqual([mockEntity])
     });
 
     it('should seed the database when not exist in database', async () => {
-      jest.spyOn(supplierService, 'seeds').mockResolvedValueOnce([mockEntity.supplier]);
-
       jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
 
       jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
 
       expect(await service.seeds({
-        billList: [mockEntity.bill],
+        bills: [mockEntity.bill],
+        suppliers: [mockEntity.supplier],
         expenseListJson: [mockEntity],
-        supplierListJson: [mockEntity.supplier],
-        supplierTypeListJson: [mockEntity.supplier.type],
       })).toEqual([mockEntity])
     });
   });

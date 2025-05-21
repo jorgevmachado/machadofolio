@@ -6,21 +6,25 @@ import { JwtService } from '@nestjs/jwt';
 
 import { EGender } from '@repo/services/personal-data/enum';
 
-import { USER_ENTITY_MOCK, USER_PASSWORD } from '@repo/business/auth/mock/mock';
 import AuthBusiness from '@repo/business/auth/business/business';
 import { ERole } from '@repo/business/enum';
+
+import { USER_MOCK, USER_PASSWORD } from '../mocks/user.mock';
 
 import { type SignUpAuthDto } from './dto/sign-up-auth.dto';
 import { type UpdateAuthDto } from './dto/update-auth.dto';
 
-import { UsersService } from './users/users.service';
-
 import { AuthService } from './auth.service';
+import { type User } from './entities/user.entity';
+import { UsersService } from './users/users.service';
 
 describe('AuthService', () => {
   let service: AuthService;
   let userService: UsersService;
   let jwtService: JwtService;
+
+  const userMockEntity: User = USER_MOCK
+  const passwordMock: string = USER_PASSWORD;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -32,6 +36,7 @@ describe('AuthService', () => {
           useValue: {
             me: jest.fn(),
             seed: jest.fn(),
+            seeds: jest.fn(),
             create: jest.fn(),
             update: jest.fn(),
             upload: jest.fn(),
@@ -64,14 +69,14 @@ describe('AuthService', () => {
   describe('signUp', () => {
     it('should be registered user', async () => {
       const signUpParams: SignUpAuthDto = {
-        cpf: USER_ENTITY_MOCK.cpf,
-        name: USER_ENTITY_MOCK.name,
-        email: USER_ENTITY_MOCK.email,
-        gender: USER_ENTITY_MOCK.gender,
-        whatsapp: USER_ENTITY_MOCK.whatsapp,
-        password: USER_PASSWORD,
-        date_of_birth: USER_ENTITY_MOCK.date_of_birth,
-        password_confirmation: USER_PASSWORD
+        cpf: userMockEntity.cpf,
+        name: userMockEntity.name,
+        email: userMockEntity.email,
+        gender: userMockEntity.gender,
+        whatsapp: userMockEntity.whatsapp,
+        password: passwordMock,
+        date_of_birth: userMockEntity.date_of_birth,
+        password_confirmation: passwordMock
       }
       expect(
           await service.signUp(signUpParams),
@@ -83,12 +88,12 @@ describe('AuthService', () => {
     it('should be authenticate user', async () => {
       jest
           .spyOn(userService, 'checkCredentials')
-          .mockResolvedValueOnce(USER_ENTITY_MOCK);
+          .mockResolvedValueOnce(userMockEntity);
 
       expect(
           await service.signIn({
-            email: USER_ENTITY_MOCK.email,
-            password: USER_PASSWORD,
+            email: userMockEntity.email,
+            password: passwordMock,
           }),
       ).toEqual({ token: 'token', message: 'Authentication Successfully!' });
     });
@@ -99,22 +104,25 @@ describe('AuthService', () => {
 
       jest
           .spyOn(userService, 'findOne')
-          .mockResolvedValueOnce(USER_ENTITY_MOCK);
+          .mockResolvedValueOnce({
+            ...userMockEntity,
+            finance: undefined,
+          });
 
       expect(
-          await service.findOne(USER_ENTITY_MOCK.id, USER_ENTITY_MOCK),
+          await service.findOne(userMockEntity.id, userMockEntity),
       ).toEqual({
-        id: USER_ENTITY_MOCK.id,
-        cpf: USER_ENTITY_MOCK.cpf,
-        role: USER_ENTITY_MOCK.role,
-        name: USER_ENTITY_MOCK.name,
-        email: USER_ENTITY_MOCK.email,
-        status: USER_ENTITY_MOCK.status,
-        gender: USER_ENTITY_MOCK.gender,
-        whatsapp: USER_ENTITY_MOCK.whatsapp,
-        date_of_birth: USER_ENTITY_MOCK.date_of_birth,
-        created_at: USER_ENTITY_MOCK.created_at,
-        updated_at: USER_ENTITY_MOCK.updated_at,
+        id: userMockEntity.id,
+        cpf: userMockEntity.cpf,
+        role: userMockEntity.role,
+        name: userMockEntity.name,
+        email: userMockEntity.email,
+        status: userMockEntity.status,
+        gender: userMockEntity.gender,
+        whatsapp: userMockEntity.whatsapp,
+        date_of_birth: userMockEntity.date_of_birth,
+        created_at: userMockEntity.created_at,
+        updated_at: userMockEntity.updated_at,
         finance: undefined,
       });
     });
@@ -130,16 +138,16 @@ describe('AuthService', () => {
       }
       jest
           .spyOn(userService, 'findOne')
-          .mockResolvedValueOnce(USER_ENTITY_MOCK);
+          .mockResolvedValueOnce(userMockEntity);
 
       jest.spyOn(userService, 'update').mockResolvedValueOnce({
-        ...USER_ENTITY_MOCK,
+        ...userMockEntity,
         name: updateAuthDto.name ?? '',
         gender: updateAuthDto.gender ?? EGender.FEMALE,
       });
 
       expect(
-          await service.update(updateAuthDto, USER_ENTITY_MOCK),
+          await service.update(updateAuthDto, userMockEntity),
       ).toEqual({ message: 'Update Successfully!' });
     });
   });
@@ -147,98 +155,126 @@ describe('AuthService', () => {
   describe('me', () => {
     it('should be found a complete user', async () => {
       const received = {
-        id: USER_ENTITY_MOCK.id,
-        cpf: USER_ENTITY_MOCK.cpf,
+        id: userMockEntity.id,
+        cpf: userMockEntity.cpf,
         salt: undefined,
-        role: USER_ENTITY_MOCK.role,
-        name: USER_ENTITY_MOCK.name,
-        email: USER_ENTITY_MOCK.email,
-        status: USER_ENTITY_MOCK.status,
-        avatar: USER_ENTITY_MOCK.avatar,
-        gender: USER_ENTITY_MOCK.gender,
+        role: userMockEntity.role,
+        name: userMockEntity.name,
+        email: userMockEntity.email,
+        status: userMockEntity.status,
+        avatar: userMockEntity.avatar,
+        gender: userMockEntity.gender,
         password: undefined,
-        whatsapp: USER_ENTITY_MOCK.whatsapp,
-        created_at: USER_ENTITY_MOCK.created_at,
-        updated_at: USER_ENTITY_MOCK.updated_at,
+        whatsapp: userMockEntity.whatsapp,
+        created_at: userMockEntity.created_at,
+        updated_at: userMockEntity.updated_at,
         deleted_at: undefined,
         recover_token: undefined,
-        date_of_birth: USER_ENTITY_MOCK.date_of_birth,
+        date_of_birth: userMockEntity.date_of_birth,
         confirmation_token: undefined,
       }
       jest
           .spyOn(userService, 'me')
           .mockResolvedValueOnce(received);
 
-      expect(await service.me(USER_ENTITY_MOCK)).toEqual({
-        id: USER_ENTITY_MOCK.id,
-        cpf: USER_ENTITY_MOCK.cpf,
-        role: USER_ENTITY_MOCK.role,
-        name: USER_ENTITY_MOCK.name,
-        email: USER_ENTITY_MOCK.email,
-        status: USER_ENTITY_MOCK.status,
-        avatar: USER_ENTITY_MOCK.avatar,
-        gender: USER_ENTITY_MOCK.gender,
-        whatsapp: USER_ENTITY_MOCK.whatsapp,
-        created_at: USER_ENTITY_MOCK.created_at,
-        updated_at: USER_ENTITY_MOCK.updated_at,
-        date_of_birth: USER_ENTITY_MOCK.date_of_birth,
+      expect(await service.me(userMockEntity)).toEqual({
+        id: userMockEntity.id,
+        cpf: userMockEntity.cpf,
+        role: userMockEntity.role,
+        name: userMockEntity.name,
+        email: userMockEntity.email,
+        status: userMockEntity.status,
+        avatar: userMockEntity.avatar,
+        gender: userMockEntity.gender,
+        whatsapp: userMockEntity.whatsapp,
+        created_at: userMockEntity.created_at,
+        updated_at: userMockEntity.updated_at,
+        date_of_birth: userMockEntity.date_of_birth,
       });
     });
   });
 
   describe('seed', () => {
     it('should be seed data', async () => {
+      const expectedReceived = {
+        id: userMockEntity.id,
+        cpf: userMockEntity.cpf,
+        salt: undefined,
+        role: userMockEntity.role,
+        name: userMockEntity.name,
+        email: userMockEntity.email,
+        status: userMockEntity.status,
+        avatar: userMockEntity.avatar,
+        gender: userMockEntity.gender,
+        password: undefined,
+        whatsapp: userMockEntity.whatsapp,
+        created_at: userMockEntity.created_at,
+        updated_at: userMockEntity.updated_at,
+        deleted_at: undefined,
+        recover_token: undefined,
+        date_of_birth: userMockEntity.date_of_birth,
+        confirmation_token: undefined,
+      }
       jest
           .spyOn(userService, 'findOne')
-          .mockResolvedValueOnce(USER_ENTITY_MOCK);
+          .mockResolvedValueOnce(expectedReceived);
 
       jest
           .spyOn(userService, 'seed')
-          .mockResolvedValueOnce({
-            id: USER_ENTITY_MOCK.id,
-            cpf: USER_ENTITY_MOCK.cpf,
-            salt: undefined,
-            role: USER_ENTITY_MOCK.role,
-            name: USER_ENTITY_MOCK.name,
-            email: USER_ENTITY_MOCK.email,
-            status: USER_ENTITY_MOCK.status,
-            avatar: USER_ENTITY_MOCK.avatar,
-            gender: USER_ENTITY_MOCK.gender,
-            password: undefined,
-            whatsapp: USER_ENTITY_MOCK.whatsapp,
-            created_at: USER_ENTITY_MOCK.created_at,
-            updated_at: USER_ENTITY_MOCK.updated_at,
-            deleted_at: undefined,
-            recover_token: undefined,
-            date_of_birth: USER_ENTITY_MOCK.date_of_birth,
-            confirmation_token: undefined,
-          });
+          .mockResolvedValueOnce(expectedReceived);
 
-      expect(await service.seed()).toEqual({
-        id: USER_ENTITY_MOCK.id,
-        cpf: USER_ENTITY_MOCK.cpf,
-        role: USER_ENTITY_MOCK.role,
-        name: USER_ENTITY_MOCK.name,
-        email: USER_ENTITY_MOCK.email,
-        status: USER_ENTITY_MOCK.status,
-        gender: USER_ENTITY_MOCK.gender,
-        whatsapp: USER_ENTITY_MOCK.whatsapp,
-        date_of_birth: USER_ENTITY_MOCK.date_of_birth,
-        created_at: USER_ENTITY_MOCK.created_at,
-        updated_at: USER_ENTITY_MOCK.updated_at,
-      });
+      expect(await service.seed(userMockEntity, passwordMock)).toEqual(expectedReceived);
     });
 
     it('should be seed data only message', async () => {
       jest
           .spyOn(userService, 'findOne')
-          .mockResolvedValueOnce(USER_ENTITY_MOCK);
+          .mockResolvedValueOnce(userMockEntity);
 
       jest
           .spyOn(userService, 'seed')
-          .mockResolvedValueOnce(USER_ENTITY_MOCK);
+          .mockResolvedValueOnce(userMockEntity);
 
-      expect(await service.seed(false)).toEqual({ message: 'Seeding Completed Successfully!' });
+      expect(await service.seed(userMockEntity, passwordMock, false)).toEqual({ message: 'Seeding Completed Successfully!' });
+    });
+  });
+
+  describe('seeds', () => {
+    it('should be seeds data', async () => {
+      const expectedReceived = {
+        id: userMockEntity.id,
+        cpf: userMockEntity.cpf,
+        salt: undefined,
+        role: userMockEntity.role,
+        name: userMockEntity.name,
+        email: userMockEntity.email,
+        status: userMockEntity.status,
+        avatar: userMockEntity.avatar,
+        gender: userMockEntity.gender,
+        password: undefined,
+        whatsapp: userMockEntity.whatsapp,
+        created_at: userMockEntity.created_at,
+        updated_at: userMockEntity.updated_at,
+        deleted_at: undefined,
+        recover_token: undefined,
+        date_of_birth: userMockEntity.date_of_birth,
+        confirmation_token: undefined,
+      }
+
+      jest
+          .spyOn(userService, 'seeds')
+          .mockResolvedValueOnce([expectedReceived]);
+
+      expect(await service.seeds([userMockEntity], passwordMock)).toEqual([expectedReceived]);
+    });
+
+    it('should be seeds data only message', async () => {
+
+      jest
+          .spyOn(userService, 'seeds')
+          .mockResolvedValueOnce([userMockEntity]);
+
+      expect(await service.seeds([userMockEntity], passwordMock, false)).toEqual({ message: 'Seeding list of user Completed Successfully!' });
     });
   });
 
@@ -246,21 +282,21 @@ describe('AuthService', () => {
     it('should promote user with success', async () => {
       jest
           .spyOn(userService, 'findOne')
-          .mockResolvedValueOnce({ ...USER_ENTITY_MOCK, role: ERole.USER });
+          .mockResolvedValueOnce({ ...userMockEntity, role: ERole.USER });
 
       jest.spyOn(userService, 'promote').mockResolvedValueOnce({
-        user: { ...USER_ENTITY_MOCK, role: ERole.ADMIN },
+        user: { ...userMockEntity, role: ERole.ADMIN },
         valid: true,
         message: 'User promoted successfully!',
       });
 
       expect(
-          await service.promoteUser(USER_ENTITY_MOCK.id, {
-            ...USER_ENTITY_MOCK,
+          await service.promoteUser(userMockEntity.id, {
+            ...userMockEntity,
             role: ERole.ADMIN,
           }),
       ).toEqual({
-        user: { ...USER_ENTITY_MOCK, role: ERole.ADMIN },
+        user: { ...userMockEntity, role: ERole.ADMIN },
         valid: true,
         message: 'User promoted successfully!',
       });
@@ -286,15 +322,15 @@ describe('AuthService', () => {
     it('should upload file with success', async () => {
       jest
           .spyOn(userService, 'findOne')
-          .mockResolvedValueOnce(USER_ENTITY_MOCK);
+          .mockResolvedValueOnce(userMockEntity);
 
       jest.spyOn(userService, 'upload').mockResolvedValueOnce({
-        ...USER_ENTITY_MOCK,
-        avatar: `http://localhost:3001/uploads/${USER_ENTITY_MOCK.email}.jpeg`
+        ...userMockEntity,
+        avatar: `http://localhost:3001/uploads/${userMockEntity.email}.jpeg`
       });
 
       expect(
-          await service.upload(mockFile, USER_ENTITY_MOCK),
+          await service.upload(mockFile, userMockEntity),
       ).toEqual({ message: 'File uploaded successfully!' });
     });
   });
