@@ -207,24 +207,22 @@ export class FinanceService extends Service<Finance> {
         const suppliers: Array<Supplier> = supplierList;
         const supplierTypes: Array<SupplierType> = supplierTypeList;
 
-        const groups: Array<Group> = [];
+        const groups: Array<Group> = await this.seeder.executeSeed<Group>({
+            label: 'Group',
+            seedMethod: async () => {
+                const result = await this.groupService.seeds({
+                    finances,
+                    groupListJson: financeSeedsParams.groupListJson
+                });
+                return Array.isArray(result) ? result : [];
+            }
+        });
 
         const expenses: Array<Expense> = [];
 
         const bills: Array<Bill> = [];
 
         for (const finance of finances) {
-            const groupList: Array<Group> = await this.seeder.executeSeed<Group>({
-                label: 'Group',
-                seedMethod: async () => {
-                    const result = await this.groupService.seeds({
-                        finance,
-                        groupListJson: financeSeedsParams.groupListJson
-                    });
-                    return Array.isArray(result) ? result : [];
-                }
-            });
-            groups.push(...groupList);
 
             const billList = await this.seeder.executeSeed<Bill>({
                 label: 'Bills',
@@ -232,7 +230,7 @@ export class FinanceService extends Service<Finance> {
                     const result = await this.billService.seeds({
                         finance,
                         banks,
-                        groups: groupList,
+                        groups,
                         billListJson: financeSeedsParams.billListJson,
                     });
                     return Array.isArray(result) ? result : [];
