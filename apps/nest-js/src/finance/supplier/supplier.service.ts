@@ -6,7 +6,7 @@ import { transformObjectDateAndNulls } from '@repo/services/object/object';
 
 import SupplierConstructor from '@repo/business/finance/supplier/supplier';
 
-import { Service } from '../../shared';
+import { ListParams, Service } from '../../shared';
 
 import type { FinanceSeederParams } from '../types';
 
@@ -57,9 +57,10 @@ export class SupplierService extends Service<Supplier> {
         return await this.save(supplier);
     }
 
-    async remove(param: string, withDeleted: boolean = false) {
+    async remove(param: string, filters: ListParams['filters'] = [], withDeleted: boolean = false) {
         const result = await this.findOne({
             value: param,
+            filters,
             relations: ['expenses'],
             withDeleted,
         }) as Supplier;

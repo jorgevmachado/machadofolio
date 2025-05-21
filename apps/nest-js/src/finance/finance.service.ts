@@ -16,7 +16,6 @@ import { Bank } from './entities/bank.entity';
 import { BankService } from './bank/bank.service';
 import { Bill } from './entities/bill.entity';
 import { BillService } from './bill/bill.service';
-import { CreateFinanceSeedsDto } from './dto/create-finance-seeds.dto';
 import { Expense } from './entities/expense.entity';
 import { Finance } from './entities/finance.entity';
 import { FinanceSeedsParams } from './types';
@@ -180,13 +179,11 @@ export class FinanceService extends Service<Finance> {
         });
 
         // Gerar o arquivo
-        const excelBuffer = XLSX.write(workbook, {
+        return XLSX.write(workbook, {
             type: 'buffer',
             bookType: 'xlsx',
             compression: true
         });
-
-        return excelBuffer;
 
     }
 
@@ -268,7 +265,7 @@ export class FinanceService extends Service<Finance> {
         }
     }
 
-    private async seed(listJson: Array<unknown> = [], users: Array<User>, withReturnSeed = true) {
+    private async seed(listJson: Array<unknown> = [], users: Array<User>) {
         const seeds = listJson.map((item) => transformObjectDateAndNulls<Finance, unknown>(item));
         console.info(`# => Start Finance seeding`);
         const existingEntities = await this.repository.find({ withDeleted: true });
@@ -304,72 +301,6 @@ export class FinanceService extends Service<Finance> {
         console.info(
             `# => Seeded ${createdEntities.length} new finance`,
         );
-        const seed = [...existingEntities, ...createdEntities];
-        if (!withReturnSeed) {
-            return { message: `Seeding Finance Completed Successfully!` };
-        }
-        return seed;
+        return [...existingEntities, ...createdEntities];
     }
-
-    // async seeds({
-    //                 user,
-    //                 bankListJson,
-    //                 billListJson,
-    //                 expenseListJson,
-    //                 groupListJson,
-    //                 supplierListJson,
-    //                 supplierTypeListJson
-    //             }: FinanceSeedsParams) {
-    //     try {
-    //         const finance = (await this.seed(user, {})) as Finance;
-    //         const billList = await this.seeder.executeSeed<Bill>({
-    //             label: 'Bills',
-    //             seedMethod: async () => {
-    //                 const result = await this.billService.seeds({
-    //                     finance,
-    //                     bankListJson,
-    //                     groupListJson,
-    //                     billListJson,
-    //                 });
-    //                 return Array.isArray(result) ? result : [];
-    //             },
-    //         });
-    //
-    //         await this.seeder.executeSeed<Expense>({
-    //             label: 'Expenses',
-    //             seedMethod: async () => {
-    //                 const result = await this.billService.expense.seeds({
-    //                     billList,
-    //                     expenseListJson,
-    //                     supplierListJson,
-    //                     supplierTypeListJson,
-    //                 });
-    //                 return Array.isArray(result) ? result : [];
-    //             },
-    //         })
-    //
-    //         return {
-    //             message: 'Seeds finances executed successfully',
-    //         };
-    //     } catch (error) {
-    //         console.error('# => Error during seeds execution:', error);
-    //         throw this.error(new ConflictException('Seed Execution Failed'));
-    //     }
-    // }
-    //
-    // private async seed(user: User, financeJson: unknown, withReturnSeed: boolean = true) {
-    //     return await this.seeder.entity({
-    //         by: 'id',
-    //         seed: transformObjectDateAndNulls<Finance, unknown>(financeJson) as Finance,
-    //         label: 'Finance',
-    //         withReturnSeed,
-    //         createdEntityFn: (item) => this.save({
-    //             id: item.id,
-    //             user: user,
-    //             created_at: item.created_at,
-    //             updated_at: item.updated_at,
-    //             deleted_at: item.deleted_at
-    //         }) as Promise<Finance>
-    //     })
-    // }
 }
