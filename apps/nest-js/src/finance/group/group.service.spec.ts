@@ -51,7 +51,7 @@ describe('GroupService', () => {
           .spyOn(repository, 'save')
           .mockResolvedValueOnce(mockEntity);
 
-      expect(await service.create(createDto)).toEqual(
+      expect(await service.create(mockEntity.finance, createDto)).toEqual(
           mockEntity,
       );
     });
@@ -80,6 +80,7 @@ describe('GroupService', () => {
 
       expect(
           await service.update(
+              mockEntity.finance,
               mockEntity.id,
               updateDto,
           ),
@@ -138,7 +139,7 @@ describe('GroupService', () => {
           .spyOn(repository, 'find')
           .mockResolvedValueOnce([mockEntity]);
 
-      expect(await service.seeds({ groupListJson: [mockEntity]})).toEqual([mockEntity]);
+      expect(await service.seeds({ finance: mockEntity.finance, groupListJson: [mockEntity]})).toEqual([mockEntity]);
     });
 
     it('should seed the database when not exist in database', async () => {
@@ -146,12 +147,12 @@ describe('GroupService', () => {
 
       jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
 
-      expect(await service.seeds({ groupListJson: [mockEntity]})).toEqual([mockEntity]);
+      expect(await service.seeds({ finance: mockEntity.finance, groupListJson: [mockEntity]})).toEqual([mockEntity]);
     });
 
     it('Should return a seed empty when received a empty list', async () => {
       jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
-      expect(await service.seeds({})).toEqual([]);
+      expect(await service.seeds({ finance: mockEntity.finance, })).toEqual([]);
     });
   });
 });

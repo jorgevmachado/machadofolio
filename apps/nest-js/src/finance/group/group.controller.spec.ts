@@ -1,6 +1,9 @@
 import { Test, type TestingModule } from '@nestjs/testing';
 
 import { GROUP_MOCK } from '../../mocks/group.mock';
+import { USER_MOCK } from '../../mocks/user.mock';
+import { type User } from '../../auth/entities/user.entity';
+
 import { type Group } from '../entities/group.entity';
 
 import { type CreateGroupDto } from './dto/create-group.dto';
@@ -8,11 +11,12 @@ import { GroupController } from './group.controller';
 import { GroupService } from './group.service';
 import { type UpdateGroupDto } from './dto/update-group.dto';
 
-describe('CategoryController', () => {
+describe('GroupController', () => {
   let controller: GroupController;
   let service: GroupService;
 
   const mockEntity: Group =  GROUP_MOCK;
+  const userMock: User = USER_MOCK;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -47,7 +51,7 @@ describe('CategoryController', () => {
           .spyOn(service, 'findAll')
           .mockResolvedValue([mockEntity]);
 
-      expect(await controller.findAll({})).toEqual([mockEntity]);
+      expect(await controller.findAll(userMock,{})).toEqual([mockEntity]);
     });
   });
 
@@ -61,7 +65,7 @@ describe('CategoryController', () => {
           .spyOn(service, 'create')
           .mockResolvedValueOnce(mockEntity);
 
-      expect(await controller.create(createDto)).toEqual(
+      expect(await controller.create(userMock, createDto)).toEqual(
           mockEntity,
       );
     });
@@ -74,7 +78,7 @@ describe('CategoryController', () => {
           .mockResolvedValue(mockEntity);
 
       expect(
-          await controller.findOne(mockEntity.name),
+          await controller.findOne(userMock, mockEntity.name),
       ).toEqual(mockEntity);
     });
   });
@@ -94,6 +98,7 @@ describe('CategoryController', () => {
 
       expect(
           await controller.update(
+              userMock,
               mockEntity.id,
               updateDto,
           ),
@@ -108,7 +113,7 @@ describe('CategoryController', () => {
           .mockResolvedValueOnce({ message: 'Successfully removed' });
 
       expect(
-          await controller.remove(mockEntity.id),
+          await controller.remove(userMock, mockEntity.id),
       ).toEqual({ message: 'Successfully removed' });
     });
   });

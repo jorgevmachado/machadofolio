@@ -207,14 +207,14 @@ Utilitários relacionados a manipulação de serviços de pokemon nestJs.
   yarn run test -- --findRelatedTests src/finance/supplier/service/service.spec.ts               
 ```
 
-##### **bill-category**: Utilitários relacionados a manipulação de Categoria de contas no contexto de finanças.
-- **bill-category**: Utilitários relacionados a manipulação da entidade Categoria de Contas.
+##### **group**: Utilitários relacionados a manipulação de Grupo de contas no contexto de finanças.
+- **group**: Utilitários relacionados a manipulação da entidade Grupo de Contas.
 ```bash
-  yarn run test -- --findRelatedTests src/finance/bill-category/bill-category.spec.ts               
+  yarn run test -- --findRelatedTests src/finance/group/group.spec.ts               
 ```
-- **service**: Utilitários relacionados ao consumo de serviços de manipulação de Categoria de Contas.
+- **service**: Utilitários relacionados ao consumo de serviços de manipulação de Grupo de Contas.
 ```bash
-  yarn run test -- --findRelatedTests src/finance/bill-category/service/service.spec.ts               
+  yarn run test -- --findRelatedTests src/finance/group/service/service.spec.ts               
 ```
 
 ##### **expense**: Utilitários relacionados a manipulação de despesas no contexto de finanças.

@@ -58,12 +58,16 @@ describe('Group Service', () => {
         it('should successfully create an group', async () => {
             mockNest.finance.group.create.mockResolvedValue(mockEntity);
 
-            const result = await service.create({ name: mockEntity.name });
+            const result = await service.create({ name: mockEntity.name, finance: mockEntity.finance });
 
             expect(mockNest.finance.group.create).toHaveBeenCalledWith({
                 name: mockEntity.name,
+                finance: mockEntity.finance
             }, undefined);
-            expect(result).toEqual(mockEntity);
+            expect(result.id).toEqual(mockEntity.id);
+            expect(result.name).toEqual(mockEntity.name);
+            expect(result.name_code).toEqual(mockEntity.name_code);
+            expect(result.finance.id).toEqual(mockEntity.finance.id);
         });
     });
 
@@ -73,16 +77,21 @@ describe('Group Service', () => {
 
             const result = await service.update(mockEntity.id, {
                 name: mockEntity.name,
+                finance: mockEntity.finance
             });
 
             expect(mockNest.finance.group.update).toHaveBeenCalledWith(
                 mockEntity.id,
                 {
                     name: mockEntity.name,
+                    finance: mockEntity.finance
                 },
                 undefined
             );
-            expect(result).toEqual(mockEntity);
+            expect(result.id).toEqual(mockEntity.id);
+            expect(result.name).toEqual(mockEntity.name);
+            expect(result.name_code).toEqual(mockEntity.name_code);
+            expect(result.finance.id).toEqual(mockEntity.finance.id);
         });
 
         it('should throw an error if the update fails', async () => {
@@ -90,19 +99,20 @@ describe('Group Service', () => {
             mockNest.finance.group.update.mockRejectedValue(mockError);
 
             await expect(
-                service.update(mockEntity.id, { name: mockEntity.name }),
+                service.update(mockEntity.id, { name: mockEntity.name, finance: mockEntity.finance }),
             ).rejects.toThrow('Failed to update group');
         });
 
         it('should call the update method with correct arguments', async () => {
             mockNest.finance.group.update.mockResolvedValue(mockEntity);
 
-            await service.update(mockEntity.id, { name: mockEntity.name });
+            await service.update(mockEntity.id, { name: mockEntity.name, finance: mockEntity.finance });
 
             expect(mockNest.finance.group.update).toHaveBeenCalledWith(
                 mockEntity.id,
                 {
                     name: mockEntity.name,
+                    finance: mockEntity.finance
                 },
                 undefined
             );
@@ -133,7 +143,10 @@ describe('Group Service', () => {
                 mockEntity.id,
                 undefined
             );
-            expect(result).toEqual(mockEntity);
+            expect(result.id).toEqual(mockEntity.id);
+            expect(result.name).toEqual(mockEntity.name);
+            expect(result.name_code).toEqual(mockEntity.name_code);
+            expect(result.finance.id).toEqual(mockEntity.finance.id);
         });
     });
 

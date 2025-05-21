@@ -3,7 +3,7 @@ import {
     CreateDateColumn,
     DeleteDateColumn,
     Entity,
-    JoinTable,
+    JoinTable, ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn
@@ -12,6 +12,7 @@ import {
 import type { GroupEntity } from '@repo/business/finance/group/types';
 
 import { Bill } from './bill.entity';
+import { Finance } from './finance.entity';
 
 @Entity({ name: 'groups' })
 export class Group implements GroupEntity {
@@ -24,6 +25,12 @@ export class Group implements GroupEntity {
     @OneToMany(() => Bill, (bill) => bill.group)
     @JoinTable()
     bills?: Array<Bill>;
+
+    @ManyToOne(() => Finance, (finance) => finance.groups, {
+        nullable: false,
+    })
+    @JoinTable()
+    finance!: Finance;
 
     @Column({ nullable: false, unique: true, length: 200 })
     name_code!: string;

@@ -77,9 +77,10 @@ export abstract class Service<T extends BasicEntity> extends Base {
         return await this.queries.findOne(findOneByParams);
     }
 
-    async remove(param: string, withDeleted: boolean = false) {
+    async remove(param: string, filters: ListParams['filters'] = [], withDeleted: boolean = false) {
         const result = await this.queries.findOne({
             value: param,
+            filters,
             relations: this.relations,
             withDeleted,
         });

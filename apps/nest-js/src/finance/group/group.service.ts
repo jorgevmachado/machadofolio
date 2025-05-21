@@ -6,14 +6,18 @@ import { transformObjectDateAndNulls } from '@repo/services/object/object';
 
 import GroupConstructor from '@repo/business/finance/group/group';
 
-import { Service } from '../../shared';
+import { ListParams, Service } from '../../shared';
 
+import { Finance } from '../entities/finance.entity';
 import type { FinanceSeederParams } from '../types';
+import { Group } from '../entities/group.entity';
 
 import { CreateGroupDto } from './dto/create-group.dto';
-import { Group } from '../entities/group.entity';
 import { UpdateGroupDto } from './dto/update-group.dto';
 
+type GroupSeederParams = FinanceSeederParams & {
+    finance: Finance;
+}
 
 @Injectable()
 export class GroupService extends Service<Group> {
@@ -21,23 +25,24 @@ export class GroupService extends Service<Group> {
         @InjectRepository(Group)
         protected repository: Repository<Group>,
     ) {
-        super('groups', [], repository);
+        super('groups', ['finance'], repository);
     }
 
-    async create({ name }: CreateGroupDto) {
-        const billGroup = new GroupConstructor({ name });
+    async create(finance: Finance, { name }: CreateGroupDto) {
+        const billGroup = new GroupConstructor({ name, finance });
         return await this.save(billGroup);
     }
 
-    async update(param: string, { name }: UpdateGroupDto) {
+    async update(finance: Finance, param: string, { name }: UpdateGroupDto) {
         const result = await this.findOne({ value: param, withDeleted: true });
-        const billGroup = new GroupConstructor({ ...result, name });
+        const billGroup = new GroupConstructor({ ...result, name, finance });
         return await this.save(billGroup);
     }
 
-    async remove(param: string) {
+    async remove(param: string, filters?: ListParams['filters']) {
         const result = await this.findOne({
             value: param,
+            filters,
             relations: ['bills'],
             withDeleted: true,
         }) as Group;
@@ -54,9 +59,10 @@ export class GroupService extends Service<Group> {
     }
 
     async seeds({
+                    finance,
                     withReturnSeed = true,
                     groupListJson: listJson,
-                }: FinanceSeederParams) {
+                }: GroupSeederParams) {
         if (!listJson) {
             return [];
         }
@@ -69,7 +75,10 @@ export class GroupService extends Service<Group> {
             label: 'Group',
             seeds,
             withReturnSeed,
-            createdEntityFn: async (item) => item,
+            createdEntityFn: async (item) => new GroupConstructor({
+                ...item,
+                finance
+            }),
         });
     }
 }

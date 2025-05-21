@@ -11,7 +11,7 @@ import Group from './group';
 import type { GroupConstructorParams } from './types';
 
 describe('Group', () => {
-    const billCategoryMock = GROUP_MOCK;
+    const mockEntity = GROUP_MOCK;
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
@@ -22,7 +22,7 @@ describe('Group', () => {
     });
     describe('constructor', () => {
         it('should create an instance with all parameters when valid data is provided', () => {
-            const params: GroupConstructorParams = billCategoryMock;
+            const params: GroupConstructorParams = mockEntity;
 
             const group = new Group(params);
 
@@ -36,6 +36,7 @@ describe('Group', () => {
         it('should create an instance with minimal valid data', () => {
             const params: GroupConstructorParams = {
                 name: 'Bill B',
+                finance: mockEntity.finance
             };
 
             const group = new Group(params);
