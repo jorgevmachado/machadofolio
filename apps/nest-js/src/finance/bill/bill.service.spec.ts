@@ -555,24 +555,6 @@ describe('BillService', () => {
         });
     });
 
-    describe('groupService', () => {
-        it('Should return the group service instance', () => {
-            const result = service.group;
-
-            expect(result).toBeDefined();
-            expect(result).toBe(groupService);
-        });
-    });
-
-    describe('billBankService', () => {
-        it('Should return the bank service instance', () => {
-            const result = service.bank;
-
-            expect(result).toBeDefined();
-            expect(result).toBe(bankService);
-        });
-    });
-
     describe('billExpenseService', () => {
         it('Should return the expense service instance', () => {
             const result = service.expense;

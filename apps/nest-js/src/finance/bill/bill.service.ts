@@ -55,14 +55,6 @@ export class BillService extends Service<Bill> {
         );
     }
 
-    get bank(): BankService {
-        return this.bankService;
-    }
-
-    get group(): GroupService {
-        return this.groupService;
-    }
-
     get expense(): ExpenseService {
         return this.expenseService;
     }

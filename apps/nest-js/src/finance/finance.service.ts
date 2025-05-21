@@ -1,7 +1,7 @@
 import * as XLSX from 'xlsx';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
 import FinanceConstructor from '@repo/business/finance/finance';
@@ -134,56 +134,365 @@ export class FinanceService extends Service<Finance> {
     //     }
     // }
     //
-    async generateDocument(user: User) {
-        const groups = await this.billService.group.findAll({}) as Array<Group>;
 
-        console.log('# => user => ', user)
-        const finance = user.finance;
-        if (finance) {
-            finance.bills?.forEach((bill) => {
-                console.log('# => bill => ', bill);
-            })
+    // async generateDocument(user: User): Promise<Buffer> {
+    //     const finance = user?.finance;
+    //     if (!finance) {
+    //         throw new ConflictException('Error');
+    //     }
+    //     const groups = await this.groupService.findAll({
+    //         filters: [{
+    //             value: finance.id,
+    //             param: 'finance',
+    //             condition: '='
+    //         }],
+    //         withRelations: true
+    //     }) as Array<Group>;
+    //
+    //     const workbook = XLSX.utils.book_new();
+    //
+    //     for (const group of groups) {
+    //         const bills = await this.billService.findAll({
+    //             filters: [{
+    //                 value: group.id,
+    //                 param: 'group',
+    //                 condition: '='
+    //             }],
+    //             withRelations: true
+    //         }) as Array<Bill>;
+    //
+    //         // Aumentar o tamanho inicial da matriz para comportar todos os dados
+    //         const initialData = Array(1000).fill(null).map(() => Array(15).fill(''));
+    //         const ws = XLSX.utils.aoa_to_sheet(initialData);
+    //
+    //         // Configurar larguras das colunas uma única vez
+    //         ws['!cols'] = Array(15).fill({ wch: 15 });
+    //
+    //         // Configurar alturas das linhas uma única vez
+    //         ws['!rows'] = Array(1000).fill({ hpt: 30 });
+    //
+    //         // Configurar a mesclagem inicial
+    //         ws['!merges'] = [{
+    //             s: { r: 1, c: 1 },
+    //             e: { r: 10, c: 14 }
+    //         }];
+    //
+    //         // Título principal do grupo
+    //         ws['B2'] = {
+    //             v: String(group.name || ''),
+    //             t: 's',
+    //             s: {
+    //                 font: { sz: 14, bold: true, name: 'Arial' },
+    //                 alignment: { vertical: 'center', horizontal: 'center', wrapText: true },
+    //                 border: {
+    //                     top: { style: 'medium' },
+    //                     bottom: { style: 'medium' },
+    //                     left: { style: 'medium' },
+    //                     right: { style: 'medium' }
+    //                 }
+    //             }
+    //         };
+    //
+    //         let currentRow = 13;
+    //
+    //         for (const bill of bills) {
+    //             // Título da bill
+    //             ws[XLSX.utils.encode_cell({ r: currentRow, c: 1 })] = {
+    //                 v: String(bill.type || ''),
+    //                 t: 's',
+    //                 s: {
+    //                     font: { sz: 12, bold: true, name: 'Arial' },
+    //                     alignment: { vertical: 'center', horizontal: 'center', wrapText: true },
+    //                     border: {
+    //                         top: { style: 'medium' },
+    //                         bottom: { style: 'medium' },
+    //                         left: { style: 'medium' },
+    //                         right: { style: 'medium' }
+    //                     }
+    //                 }
+    //             };
+    //
+    //             ws['!merges'].push({
+    //                 s: { r: currentRow, c: 1 },
+    //                 e: { r: currentRow, c: 4 }
+    //             });
+    //             currentRow += 2;
+    //
+    //             if (bill.expenses) {
+    //                 for (const expense of bill.expenses) {
+    //                     // Título do fornecedor
+    //                     ws[XLSX.utils.encode_cell({ r: currentRow, c: 1 })] = {
+    //                         v: String(expense.supplier.name || ''),
+    //                         t: 's',
+    //                         s: {
+    //                             font: { sz: 12, bold: true, name: 'Arial' },
+    //                             alignment: { vertical: 'center', horizontal: 'center', wrapText: true },
+    //                             border: {
+    //                                 top: { style: 'medium' },
+    //                                 bottom: { style: 'medium' },
+    //                                 left: { style: 'medium' },
+    //                                 right: { style: 'medium' }
+    //                             }
+    //                         }
+    //                     };
+    //
+    //                     ws['!merges'].push({
+    //                         s: { r: currentRow, c: 1 },
+    //                         e: { r: currentRow, c: 4 }
+    //                     });
+    //                     currentRow += 1;
+    //
+    //                     // Headers da tabela mensal
+    //                     const headers = ['month', 'value', 'pay'];
+    //                     headers.forEach((header, index) => {
+    //                         ws[XLSX.utils.encode_cell({ r: currentRow, c: index + 1 })] = {
+    //                             v: header,
+    //                             t: 's',
+    //                             s: {
+    //                                 font: { bold: true, name: 'Arial' },
+    //                                 alignment: { horizontal: 'center' },
+    //                                 border: {
+    //                                     top: { style: 'thin' },
+    //                                     bottom: { style: 'thin' },
+    //                                     left: { style: 'thin' },
+    //                                     right: { style: 'thin' }
+    //                                 }
+    //                             }
+    //                         };
+    //                     });
+    //                     currentRow++;
+    //
+    //                     // Dados mensais
+    //                     const monthlyData = this.generateExpenseData(expense);
+    //
+    //                     monthlyData.forEach((row) => {
+    //                         row.forEach((cell, colIndex) => {
+    //                             ws[XLSX.utils.encode_cell({ r: currentRow, c: colIndex + 1 })] = {
+    //                                 v: cell,
+    //                                 t: 's',
+    //                                 s: {
+    //                                     alignment: { horizontal: 'center' },
+    //                                     border: {
+    //                                         top: { style: 'thin' },
+    //                                         bottom: { style: 'thin' },
+    //                                         left: { style: 'thin' },
+    //                                         right: { style: 'thin' }
+    //                                     }
+    //                                 }
+    //                             };
+    //                         });
+    //                         currentRow++;
+    //                     });
+    //
+    //                     currentRow += 2; // Espaço extra após cada tabela
+    //                 }
+    //             }
+    //             currentRow += 2; // Espaço extra após cada bill
+    //         }
+    //
+    //         // Adicionar a planilha ao workbook
+    //         XLSX.utils.book_append_sheet(workbook, ws, String(group.name || 'Sheet'));
+    //     }
+    //
+    //     // Gerar o arquivo
+    //     return XLSX.write(workbook, {
+    //         type: 'buffer',
+    //         bookType: 'xlsx',
+    //         compression: true,
+    //         cellStyles: true
+    //     });
+    // }
+
+    async generateDocument(user: User): Promise<Buffer> {
+        const finance = user?.finance;
+        if (!finance) {
+            throw new ConflictException('Error');
         }
+        const groups = await this.groupService.findAll({
+            filters: [{
+                value: finance.id,
+                param: 'finance',
+                condition: '='
+            }],
+            withRelations: true
+        }) as Array<Group>;
 
-        // Criando o workbook
         const workbook = XLSX.utils.book_new();
 
-        // Define os headers das planilhas
-        const headers = ['name', 'name_code', 'created_at'];
+        for (const group of groups) {
+            const bills = await this.billService.findAll({
+                filters: [{
+                    value: group.id,
+                    param: 'group',
+                    condition: '='
+                }],
+                withRelations: true
+            }) as Array<Bill>;
 
-        // Função para criar worksheet com formatação adequada
-        const createWorksheet = (data: any[]) => {
-            const ws = XLSX.utils.aoa_to_sheet(data);
+            // Aumentar o tamanho inicial da matriz para comportar todos os dados
+            const initialData = Array(1000).fill(null).map(() => Array(15).fill(''));
+            const ws = XLSX.utils.aoa_to_sheet(initialData);
 
-            // Configurar largura das colunas
-            ws['!cols'] = [
-                { wch: 12 }, // DATA
-                { wch: 40 }, // DESCRIÇÃO
-                { wch: 15 }, // VALOR
-                { wch: 20 }, // CATEGORIA
-                { wch: 30 }  // OBSERVAÇÃO
-            ];
+            // Configurar larguras das colunas uma única vez
+            ws['!cols'] = Array(15).fill({ wch: 15 });
 
-            return ws;
-        };
+            // Configurar alturas das linhas uma única vez
+            ws['!rows'] = Array(1000).fill({ hpt: 30 });
 
-        groups.forEach((group) => {
-            const data = [
-                headers,
-                [group.name, group.name_code, group.created_at]
-            ];
-            // Adicionar as planilhas ao workbook
-            XLSX.utils.book_append_sheet(workbook, createWorksheet(data), group.name);
-        });
+            // Configurar a mesclagem inicial
+            ws['!merges'] = [{
+                s: { r: 1, c: 1 },
+                e: { r: 10, c: 14 }
+            }];
+
+            // Título principal do grupo
+            ws['B2'] = {
+                v: String(group.name || ''),
+                t: 's',
+                s: {
+                    font: { sz: 14, bold: true, name: 'Arial' },
+                    alignment: { vertical: 'center', horizontal: 'center', wrapText: true },
+                    border: {
+                        top: { style: 'medium' },
+                        bottom: { style: 'medium' },
+                        left: { style: 'medium' },
+                        right: { style: 'medium' }
+                    }
+                }
+            };
+
+            let currentRow = 13;
+
+            for (const bill of bills) {
+                if (bill.expenses) {
+                    let currentCol = 1;
+                    const tableWidth = 4;
+                    const tablesPerRow = 3;
+                    let tableCount = 0;
+                    let baseRow = currentRow;
+                    const rowHeight = 14; // Altura fixa baseada no número de meses (12) + headers (2)
+
+                    for (const expense of bill.expenses) {
+                        // Título do fornecedor
+                        ws[XLSX.utils.encode_cell({ r: baseRow, c: currentCol })] = {
+                            v: String(expense.supplier.name || ''),
+                            t: 's',
+                            s: {
+                                font: { sz: 12, bold: true, name: 'Arial' },
+                                alignment: { vertical: 'center', horizontal: 'center', wrapText: true },
+                                border: {
+                                    top: { style: 'medium' },
+                                    bottom: { style: 'medium' },
+                                    left: { style: 'medium' },
+                                    right: { style: 'medium' }
+                                }
+                            }
+                        };
+
+                        // Mesclagem do título do fornecedor
+                        ws['!merges'].push({
+                            s: { r: baseRow, c: currentCol },
+                            e: { r: baseRow, c: currentCol + 2 }
+                        });
+
+                        // Headers da tabela
+                        const headers = ['month', 'value', 'pay'];
+                        headers.forEach((header, index) => {
+                            ws[XLSX.utils.encode_cell({ r: baseRow + 1, c: currentCol + index })] = {
+                                v: header,
+                                t: 's',
+                                s: {
+                                    font: { bold: true, name: 'Arial' },
+                                    alignment: { horizontal: 'center' },
+                                    border: {
+                                        top: { style: 'thin' },
+                                        bottom: { style: 'thin' },
+                                        left: { style: 'thin' },
+                                        right: { style: 'thin' }
+                                    }
+                                }
+                            };
+                        });
+
+                        // Dados mensais específicos para cada expense
+                        const monthlyData = [
+                            ['JANEIRO', String(expense.january || '0'), String(expense.january_paid ? 'SIM' : 'NÃO')],
+                            ['FEVEREIRO', String(expense.february || '0'), String(expense.february_paid ? 'SIM' : 'NÃO')],
+                            ['MARÇO', String(expense.march || '0'), String(expense.march_paid ? 'SIM' : 'NÃO')],
+                            ['ABRIL', String(expense.april || '0'), String(expense.april_paid ? 'SIM' : 'NÃO')],
+                            ['MAIO', String(expense.may || '0'), String(expense.may_paid ? 'SIM' : 'NÃO')],
+                            ['JUNHO', String(expense.june || '0'), String(expense.june_paid ? 'SIM' : 'NÃO')],
+                            ['JULHO', String(expense.july || '0'), String(expense.july_paid ? 'SIM' : 'NÃO')],
+                            ['AGOSTO', String(expense.august || '0'), String(expense.august_paid ? 'SIM' : 'NÃO')],
+                            ['SETEMBRO', String(expense.september || '0'), String(expense.september_paid ? 'SIM' : 'NÃO')],
+                            ['OUTUBRO', String(expense.october || '0'), String(expense.october_paid ? 'SIM' : 'NÃO')],
+                            ['NOVEMBRO', String(expense.november || '0'), String(expense.november_paid ? 'SIM' : 'NÃO')],
+                            ['DEZEMBRO', String(expense.december || '0'), String(expense.december_paid ? 'SIM' : 'NÃO')]
+                        ];
+
+                        monthlyData.forEach((row, rowIndex) => {
+                            row.forEach((cell, colIndex) => {
+                                ws[XLSX.utils.encode_cell({ r: baseRow + 2 + rowIndex, c: currentCol + colIndex })] = {
+                                    v: cell,
+                                    t: 's',
+                                    s: {
+                                        alignment: { horizontal: 'center' },
+                                        border: {
+                                            top: { style: 'thin' },
+                                            bottom: { style: 'thin' },
+                                            left: { style: 'thin' },
+                                            right: { style: 'thin' }
+                                        }
+                                    }
+                                };
+                            });
+                        });
+
+                        // Ajusta a posição para a próxima tabela
+                        tableCount++;
+                        if (tableCount % tablesPerRow === 0) {
+                            currentCol = 1;
+                            baseRow += rowHeight;
+                        } else {
+                            currentCol += tableWidth;
+                        }
+                    }
+
+                    // Atualiza currentRow para a próxima bill
+                    currentRow = baseRow + rowHeight;
+                }
+            }
+
+            // Adicionar a planilha ao workbook
+            XLSX.utils.book_append_sheet(workbook, ws, String(group.name || 'Sheet'));
+        }
 
         // Gerar o arquivo
         return XLSX.write(workbook, {
             type: 'buffer',
             bookType: 'xlsx',
-            compression: true
+            compression: true,
+            cellStyles: true
         });
-
     }
+
+    private generateExpenseData(expense: Expense) {
+        return [
+            ['JANUARY', String(expense.january || '0'), String(expense.january_paid ? 'YES' : 'NO')],
+            ['february', String(expense.february || '0'), String(expense.february_paid ? 'YES' : 'NO')],
+            ['march', String(expense.march || '0'), String(expense.march_paid ? 'YES' : 'NO')],
+            ['april', String(expense.april || '0'), String(expense.april_paid ? 'YES' : 'NO')],
+            ['may', String(expense.may || '0'), String(expense.may_paid ? 'YES' : 'NO')],
+            ['june', String(expense.june || '0'), String(expense.june_paid ? 'YES' : 'NO')],
+            ['july', String(expense.july || '0'), String(expense.july_paid ? 'YES' : 'NO')],
+            ['august', String(expense.august || '0'), String(expense.august_paid ? 'YES' : 'NO')],
+            ['september', String(expense.september || '0'), String(expense.september_paid ? 'YES' : 'NO')],
+            ['october', String(expense.october || '0'), String(expense.october_paid ? 'YES' : 'NO')],
+            ['november', String(expense.november || '0'), String(expense.november_paid ? 'YES' : 'NO')],
+            ['december', String(expense.december || '0'), String(expense.december_paid ? 'YES' : 'NO')],
+        ]
+    }
+
 
 
     async seeds(financeSeedsParams: FinanceSeedsParams) {

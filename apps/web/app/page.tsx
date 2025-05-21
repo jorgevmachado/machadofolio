@@ -15,7 +15,11 @@ export default function Home() {
   const handleDownload = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('http://localhost:3001/finance/generate-document', { method: 'GET' });
+      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMwMTljZDEwLTRmNjgtNDZkZS04MjE2LTY5MTY3ZTFhYmRjOCIsImlhdCI6MTc0Nzg1MzQ4MCwiZXhwIjoxNzQ3OTM5ODgwfQ.fsGlXpbhkRbC4riEkwYpITteyevYVfwzBOx8mpeXQ3c';
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      const response = await fetch('http://localhost:3001/finance/generate-document', { method: 'GET', headers });
 
       if (!response.ok) {
         throw new Error('Falha ao baixar o arquivo');
