@@ -35,7 +35,7 @@ export class Seeder<T extends BasicEntity> {
         const list = this.currentSeeds<T>({ seeds, seedsJson });
         this.validate.listMock<T>({ key, list, label });
         console.info(`# => Start ${label.toLowerCase()} seeding`);
-        const existingEntities = await this.repository.find({ withDeleted: true });
+        const existingEntities = await this.repository.find({ withDeleted: true, relations: this.relations });
         const existingEntitiesBy = new Set(
             existingEntities.map((entity) => entity[by]),
         );

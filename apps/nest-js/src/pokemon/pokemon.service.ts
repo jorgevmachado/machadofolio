@@ -110,7 +110,8 @@ export class PokemonService extends Service<Pokemon> {
                 return Array.isArray(result) ? result : [];
             }
         });
-        const pokemons = await this.seeder.entities({
+
+        const list = await this.seeder.entities({
             by: 'name',
             key: 'all',
             label: 'Pokemon',
@@ -126,9 +127,26 @@ export class PokemonService extends Service<Pokemon> {
                 if(entity.abilities) {
                     entity.abilities = abilities?.filter((ability) => entity?.abilities?.find(item => item.id === ability.id));
                 }
+                entity.evolutions = undefined;
                 return entity;
             }
         }) as Array<Pokemon>;
+
+        const seeds = this.seeder.currentSeeds<Pokemon>({ seedsJson: pokemonSeederParams?.listJson });
+
+        const pokemons = await Promise.all(
+            list?.map(async (item) => {
+                if (!item?.evolutions) {
+                    const currentPokemon = seeds.find((seed) => seed.name === item.name);
+                    if (!currentPokemon || !currentPokemon?.evolutions) {
+                        return item;
+                    }
+                    const evolutions = list?.filter((pokemon) => currentPokemon?.evolutions?.find((item) => item.name === pokemon.name));
+                    return await this.save({ ...item, evolutions });
+                }
+                return item;
+            })
+        )
 
         return {
             moves,

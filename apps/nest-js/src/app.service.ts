@@ -10,6 +10,11 @@ import GROUP_LIST_FIXTURE_JSON from '@repo/mock-json/finance/group/groups.json';
 import SUPPLIER_LIST_FIXTURE_JSON from '@repo/mock-json/finance/supplier/suppliers.json';
 import SUPPLIER_TYPE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/supplier-type/supplier-types.json';
 
+import POKEMON_ABILITY_LIST_FIXTURE_JSON from '@repo/mock-json/pokemon/ability/pokemon-abilities.json';
+import POKEMON_LIST_FIXTURE_JSON from '@repo/mock-json/pokemon/pokemons.json';
+import POKEMON_MOVE_LIST_FIXTURE_JSON from '@repo/mock-json/pokemon/move/pokemon-moves.json';
+import POKEMON_TYPE_LIST_FIXTURE_JSON from '@repo/mock-json/pokemon/type/pokemon-types.json';
+
 import { AuthService } from './auth/auth.service';
 import { USER_PASSWORD } from './mocks/user.mock';
 import { User } from './auth/entities/user.entity';
@@ -19,6 +24,8 @@ import { CreateSeedDto } from './dto/create-seed.dto';
 import { FinanceSeederParams } from './finance/types';
 import { FinanceService } from './finance/finance.service';
 
+import { CreatePokemonSeedsDto } from './pokemon/dto/create-pokemon-seeds.dto';
+import { PokemonSeederParams } from './pokemon/types';
 import { PokemonService } from './pokemon/pokemon.service';
 
 @Injectable()
@@ -35,6 +42,7 @@ export class AppService {
         return {
             users: users.length,
             finances: await this.financeSeeds(users, body.finance),
+            pokemons: await this.pokemonSeeds(users, body.pokemon),
             message: 'Seeds successfully',
         }
     }
@@ -84,6 +92,29 @@ export class AppService {
         }
     }
 
+    private async pokemonSeeds(users: Array<User>, createPokemonSeedsDto?:CreatePokemonSeedsDto) {
+        if(!createPokemonSeedsDto) {
+            return;
+        }
+        const pokemonSeederParams = this.createPokemonSeederParams(createPokemonSeedsDto);
+
+        const {
+            moves,
+            types,
+            abilities,
+            pokemons,
+        } = await this.pokemonService.seeds({
+            users,
+            ...pokemonSeederParams
+        })
+        return {
+            moves: moves.length,
+            types: types.length,
+            abilities: abilities.length,
+            pokemons: pokemons.length,
+        }
+    }
+
     private createFinanceSeederParams(createFinanceSeedsDto: CreateFinanceSeedsDto) {
         const financeParams: FinanceSeederParams = {
             financeListJson: FINANCE_LIST_FIXTURE_JSON,
@@ -113,5 +144,26 @@ export class AppService {
             financeParams.groupListJson = GROUP_LIST_FIXTURE_JSON;
         }
         return financeParams;
+    }
+
+    private createPokemonSeederParams(createPokemonSeedsDto: CreatePokemonSeedsDto) {
+        const pokemonSeederParams: PokemonSeederParams = {}
+
+        if(createPokemonSeedsDto.pokemon) {
+            pokemonSeederParams.listJson = POKEMON_LIST_FIXTURE_JSON;
+        }
+
+        if(createPokemonSeedsDto.move) {
+            pokemonSeederParams.moveListJson = POKEMON_MOVE_LIST_FIXTURE_JSON;
+        }
+
+        if(createPokemonSeedsDto.type) {
+            pokemonSeederParams.typeListJson = POKEMON_TYPE_LIST_FIXTURE_JSON;
+        }
+
+        if(createPokemonSeedsDto.ability) {
+            pokemonSeederParams.abilityListJson = POKEMON_ABILITY_LIST_FIXTURE_JSON;
+        }
+        return pokemonSeederParams;
     }
 }
