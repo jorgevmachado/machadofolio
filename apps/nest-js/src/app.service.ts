@@ -4,36 +4,30 @@ import USER_LIST_FIXTURE_JSON from '@repo/mock-json/auth/users.json';
 
 import BANK_LIST_FIXTURE_JSON from '@repo/mock-json/finance/bank/banks.json';
 import BILL_LIST_FIXTURE_JSON from '@repo/mock-json/finance/bill/bills.json';
-import GROUP_LIST_FIXTURE_JSON from '@repo/mock-json/finance/group/groups.json';
 import EXPENSE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/expense/expenses.json';
 import FINANCE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/finances.json';
+import GROUP_LIST_FIXTURE_JSON from '@repo/mock-json/finance/group/groups.json';
 import SUPPLIER_LIST_FIXTURE_JSON from '@repo/mock-json/finance/supplier/suppliers.json';
 import SUPPLIER_TYPE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/supplier-type/supplier-types.json';
 
-import { normalize } from "@repo/services/string/string";
-
 import { AuthService } from './auth/auth.service';
+import { USER_PASSWORD } from './mocks/user.mock';
+import { User } from './auth/entities/user.entity';
+
 import { CreateFinanceSeedsDto } from './finance/dto/create-finance-seeds.dto';
 import { CreateSeedDto } from './dto/create-seed.dto';
 import { FinanceSeederParams } from './finance/types';
 import { FinanceService } from './finance/finance.service';
-import { USER_PASSWORD } from './mocks/user.mock';
-import { User } from './auth/entities/user.entity';
+
+import { PokemonService } from './pokemon/pokemon.service';
 
 @Injectable()
 export class AppService {
     constructor(
         private authService: AuthService,
         private financeService: FinanceService,
+        private pokemonService: PokemonService
     ) {
-    }
-
-    getHello(): { name: string, normalize: string } {
-        const name = 'João';
-        return {
-            name,
-            normalize: normalize(name),
-        }
     }
 
     async seeds(body: CreateSeedDto) {

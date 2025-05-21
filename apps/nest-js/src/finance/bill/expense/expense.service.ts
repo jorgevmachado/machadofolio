@@ -2,8 +2,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { transformObjectDateAndNulls } from '@repo/services/object/object';
-
 import ExpenseBusiness from '@repo/business/finance/expense/business/business';
 import ExpenseConstructor from '@repo/business/finance/expense/expense';
 import type { ExpenseEntity } from '@repo/business/finance/expense/types';
@@ -109,21 +107,15 @@ export class ExpenseService extends Service<Expense> {
     async seeds({
         bills,
         suppliers,
-        expenseListJson: listJson,
+        expenseListJson: seedsJson,
 
     }: ExpenseSeederParams) {
-
-        if(!listJson) {
-            return [];
-        }
-
-        const seeds = listJson.map((item) => transformObjectDateAndNulls<Expense, unknown>(item))
 
         return this.seeder.entities({
             by: 'id',
             key: 'id',
             label: 'Expense',
-            seeds,
+            seedsJson,
             withReturnSeed: true,
             createdEntityFn: async (item) => {
                 const supplier = this.seeder.getRelation<Supplier>({

@@ -1,5 +1,5 @@
 import { Test, type TestingModule } from '@nestjs/testing';
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
@@ -72,6 +72,24 @@ describe('MoveService', () => {
 
             const result = await service.findList([mockEntity]);
             expect(result).toEqual([mockEntity]);
+        });
+    });
+
+    describe('seeds', () => {
+        it('should seed the database when exist in database', async () => {
+            jest
+                .spyOn(repository, 'find')
+                .mockResolvedValueOnce([mockEntity]);
+
+            expect(await service.seeds([mockEntity])).toEqual([mockEntity]);
+        });
+
+        it('should seed the database when not exist in database', async () => {
+            jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
+
+            jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+
+            expect(await service.seeds( [mockEntity])).toEqual([mockEntity]);
         });
     });
 });

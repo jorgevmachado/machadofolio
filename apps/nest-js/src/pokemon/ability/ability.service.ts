@@ -47,5 +47,16 @@ export class PokemonAbilityService extends Service<PokemonAbility> {
 
         return entity;
     }
+
+    async seeds(seedsJson?: Array<unknown>) {
+        return this.seeder.entities({
+            by: 'order',
+            key: 'all',
+            label: 'Pokemon Abilities',
+            seedsJson,
+            withReturnSeed: true,
+            createdEntityFn: async (item) => item
+        })
+    }
 }
 

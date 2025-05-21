@@ -2,8 +2,6 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { transformObjectDateAndNulls } from '@repo/services/object/object';
-
 import GroupConstructor from '@repo/business/finance/group/group';
 
 import { ListParams, Service } from '../../shared';
@@ -58,15 +56,12 @@ export class GroupService extends Service<Group> {
         return { message: 'Successfully removed' };
     }
 
-    async seeds({ finances, groupListJson: listJson }: GroupSeederParams) {
-        if (!listJson) {
-            return [];
-        }
+    async seeds({ finances, groupListJson: seedsJson }: GroupSeederParams) {
         return this.seeder.entities({
             by: 'id',
             key: 'all',
             label: 'Group',
-            seeds: listJson.map((item) => transformObjectDateAndNulls<Group, unknown>(item)),
+            seedsJson,
             withReturnSeed: true,
             createdEntityFn: async (entity) => {
                 const finance = finances.find((item) => item.id === entity.finance.id);

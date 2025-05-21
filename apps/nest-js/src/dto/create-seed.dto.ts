@@ -12,4 +12,8 @@ export class CreateSeedDto {
     @IsOptional()
     @Type(() => CreateFinanceSeedsDto)
     finance?: CreateFinanceSeedsDto;
+
+    @IsBoolean()
+    @IsOptional()
+    pokemon?: boolean;
 }

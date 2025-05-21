@@ -2,8 +2,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { transformObjectDateAndNulls } from '@repo/services/object/object';
-
 import BankConstructor from '@repo/business/finance/bank/bank';
 
 import { Service } from '../../shared';
@@ -37,18 +35,15 @@ export class BankService extends Service<Bank> {
   }
 
   async seeds({
-                bankListJson: listJson,
+                bankListJson: seedsJson,
                 withReturnSeed = true
               }: FinanceSeederParams) {
-    if (!listJson) {
-      return [];
-    }
-    const seeds = listJson.map((item) => transformObjectDateAndNulls<Bank, unknown>(item));
+
     return this.seeder.entities({
       by: 'name',
       key: 'all',
       label: 'Bank',
-      seeds,
+      seedsJson,
       withReturnSeed,
       createdEntityFn: async (item) => item
     })

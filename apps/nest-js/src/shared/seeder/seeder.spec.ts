@@ -260,5 +260,20 @@ describe('Seeder', () => {
 
     });
 
+    describe('currentSeeds', () => {
+        it('Should return a empty seeds when seedsJson and seeds is undefined in params.', () => {
+            const result = seeder.currentSeeds({});
+            expect(result).toEqual([]);
+        });
 
+        it('Should return seeds when seedsJson is undefined in params.', () => {
+            const result = seeder.currentSeeds({ seeds: [mockEntity1] });
+            expect(result).toEqual([mockEntity1]);
+        });
+
+        it('Should return seeds when seedsJson is defined in params.', () => {
+            const result = seeder.currentSeeds({ seedsJson: [mockEntity2] });
+            expect(result).toEqual([mockEntity2]);
+        });
+    });
 });

@@ -2,8 +2,6 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { transformObjectDateAndNulls } from '@repo/services/object/object';
-
 import { snakeCaseToNormal } from '@repo/services/string/string';
 
 import BillBusiness from '@repo/business/finance/bill/business/business';
@@ -325,17 +323,13 @@ export class BillService extends Service<Bill> {
                     finance,
                     banks,
                     groups,
-                    billListJson: listJson,
+                    billListJson: seedsJson,
                 }: BillSeederParams) {
-        if (!listJson) {
-            return [];
-        }
-        const seeds = listJson.map((item) => transformObjectDateAndNulls<Bill, unknown>(item));
         return this.seeder.entities({
             by: 'id',
             key: 'id',
             label: 'Bill',
-            seeds,
+            seedsJson,
             withReturnSeed: true,
             createdEntityFn: async (item) => {
                 const bank = this.seeder.getRelation<Bank>({
@@ -351,8 +345,6 @@ export class BillService extends Service<Bill> {
                     param: item?.group?.name,
                     relation: 'Group'
                 });
-
-
 
                 return new BillConstructor({
                     ...item,

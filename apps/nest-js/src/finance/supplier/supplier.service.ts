@@ -2,8 +2,6 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { transformObjectDateAndNulls } from '@repo/services/object/object';
-
 import SupplierConstructor from '@repo/business/finance/supplier/supplier';
 
 import { ListParams, Service } from '../../shared';
@@ -76,25 +74,18 @@ export class SupplierService extends Service<Supplier> {
     }
 
     async seeds({
-                    supplierListJson: listJson,
+                    supplierListJson: seedsJson,
                     supplierTypeListJson,
                 }: FinanceSeederParams) {
       const listType = (
           (await this.supplierTypeService.seeds({ supplierTypeListJson, withReturnSeed: true})) as Array<SupplierType>
       ).filter((type): type is SupplierType => !!type);
 
-        if(!listJson) {
-            return {
-                supplierList: [],
-                supplierTypeList: listType
-            }
-        }
-        const seeds = listJson.map((item) => transformObjectDateAndNulls<Supplier, unknown>(item));
         const list = await this.seeder.entities({
             by: 'name',
             key: 'all',
             label: 'Supplier',
-            seeds,
+            seedsJson,
             withReturnSeed: true,
             createdEntityFn: async (item) => {
                 const type = this.seeder.getRelation<SupplierType>({
