@@ -48,6 +48,9 @@ export class Seeder<T extends BasicEntity> {
             await Promise.all(
                 entitiesToCreate.map(async (entity) => {
                     const newEntity = await createdEntityFn(entity);
+                    if(!newEntity) {
+                        return ;
+                    }
                     return this.repository
                         .save(newEntity)
                         .then((entity) => entity)

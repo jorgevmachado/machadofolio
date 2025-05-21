@@ -62,42 +62,22 @@ export class GroupService extends Service<Group> {
         if (!listJson) {
             return [];
         }
-        const seeds = listJson.map((item) =>
-            transformObjectDateAndNulls<Group, unknown>(item)
-        )
-        console.info(`# => Start Group seeding`);
-        const existingEntities = await this.repository.find({ withDeleted: true });
-        const existingEntitiesBy = new Set(
-            existingEntities.map((entity) => entity.id),
-        );
-
-        const entitiesToCreate = seeds.filter(
-            (entity) => !existingEntitiesBy.has(entity.id),
-        );
-
-        if (entitiesToCreate.length === 0) {
-            console.info(`# => No new Finances to seed`);
-            return existingEntities;
-        }
-
-        const createdEntities = (
-            await Promise.all(
-                entitiesToCreate.map(async (entity) => {
-                    const finance = finances.find((item) => item.id === entity.finance.id);
-                    if(!finance) {
-                        return;
-                    }
-                    const group = new GroupConstructor({
-                        ...entity,
-                        finance,
-                    });
-                    return this.save(group);
-                }),
-            )
-        ).filter((entity) => !!entity);
-        console.info(
-            `# => Seeded ${createdEntities.length} new Group`,
-        );
-        return [...existingEntities, ...createdEntities];
+        return this.seeder.entities({
+            by: 'id',
+            key: 'all',
+            label: 'Group',
+            seeds: listJson.map((item) => transformObjectDateAndNulls<Group, unknown>(item)),
+            withReturnSeed: true,
+            createdEntityFn: async (entity) => {
+                const finance = finances.find((item) => item.id === entity.finance.id);
+                if(!finance) {
+                    return;
+                }
+                return new GroupConstructor({
+                    ...entity,
+                    finance
+                })
+            }
+        });
     }
 }

@@ -264,41 +264,23 @@ export class FinanceService extends Service<Finance> {
     }
 
     private async seed(listJson: Array<unknown> = [], users: Array<User>) {
-        const seeds = listJson.map((item) => transformObjectDateAndNulls<Finance, unknown>(item));
-        console.info(`# => Start Finance seeding`);
-        const existingEntities = await this.repository.find({ withDeleted: true });
-        const existingEntitiesBy = new Set(
-            existingEntities.map((entity) => entity.id),
-        );
-
-        const entitiesToCreate = seeds.filter(
-            (entity) => !existingEntitiesBy.has(entity.id),
-        );
-
-        if (entitiesToCreate.length === 0) {
-            console.info(`# => No new Finances to seed`);
-            return existingEntities;
-        }
-
-        const createdEntities = (
-            await Promise.all(
-                entitiesToCreate.map(async (entity) => {
-                    const user = users.find((item) => item.cpf === entity.user.cpf);
-                    if (!user) {
-                        return;
-                    }
-                    const finance = new FinanceConstructor({
-                        ...entity,
-                        user,
-                        bills: undefined,
-                    });
-                    return this.save(finance);
+        return this.seeder.entities({
+            by: 'id',
+            key: 'all',
+            label: 'Finance',
+            seeds: listJson.map((item) => transformObjectDateAndNulls<Finance, unknown>(item)),
+            withReturnSeed: true,
+            createdEntityFn: async (entity) => {
+                const user = users.find((item) => item.cpf === entity.user.cpf);
+                if(!user) {
+                    return;
+                }
+                return new FinanceConstructor({
+                    ...entity,
+                    user,
+                    bills: undefined,
                 })
-            )
-        ).filter((entity) => !!entity);
-        console.info(
-            `# => Seeded ${createdEntities.length} new finance`,
-        );
-        return [...existingEntities, ...createdEntities];
+            }
+        });
     }
 }

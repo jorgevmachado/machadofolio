@@ -6,7 +6,7 @@ export type SeedEntityParams<T> = {
     seed: T;
     label: string;
     withReturnSeed?: boolean;
-    createdEntityFn: (entity: T) => Promise<T>;
+    createdEntityFn: (entity: T) => Promise<T | undefined>;
 }
 
 export type SeedEntitiesParams<T> = Omit<SeedEntityParams<T>, 'seed'> & {

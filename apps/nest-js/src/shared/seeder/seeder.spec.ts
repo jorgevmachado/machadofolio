@@ -161,7 +161,7 @@ describe('Seeder', () => {
                 key: 'id',
                 label,
                 seeds,
-                createdEntityFn,
+                createdEntityFn: async (entity) => entity,
             });
 
             expect(mockValidate.listMock).toHaveBeenCalledWith({
