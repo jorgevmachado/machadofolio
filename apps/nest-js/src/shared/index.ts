@@ -3,6 +3,7 @@ export * from './base';
 export * from './file';
 export * from './queries';
 export * from './query';
+export * from './sheet';
 export * from './seeder';
 export * from './service';
 export * from './validate';
