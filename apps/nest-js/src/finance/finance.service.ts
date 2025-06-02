@@ -6,7 +6,7 @@ import { MONTHS } from '@repo/services/date/month/month';
 
 import FinanceConstructor from '@repo/business/finance/finance';
 
-import { Service, Sheet } from '../shared';
+import { Service, Sheet, TableConfig } from '../shared';
 
 import { User } from '../auth/entities/user.entity';
 
@@ -136,204 +136,74 @@ export class FinanceService extends Service<Finance> {
     // }
     //
 
-    // async generateDocument(user: User): Promise<Buffer> {
-    //     const finance = this.validateFinance(user);
-    //     const groups = await this.fetchGroups(finance.id);
-    //
-    //
-    //     const sheetBuilder = new Sheet();
-    //
-    //     for (const group of groups) {
-    //         const bills = await this.fetchBills(group.id);
-    //
-    //         sheetBuilder.createWorkSheet(1000, 15);
-    //
-    //         sheetBuilder.workSheet.addTitle({
-    //             value: group.name || '',
-    //             cellLabel: 'B2',
-    //             mergePosition: { startRow: 1, startColumn: 1, endRow: 10, endColumn: 14 }
-    //         });
-    //
-    //         let currentRow = 13;
-    //
-    //         for (const bill of bills) {
-    //             if (bill.expenses) {
-    //                 let currentCol = 1;
-    //                 const tableWidth = 4;
-    //                 const tablesPerRow = 3;
-    //                 let tableCount = 0;
-    //                 let baseRow = currentRow;
-    //                 const rowHeight = 14;
-    //
-    //                 for (const expense of bill.expenses) {
-    //
-    //                     const bodyList = MONTHS.map((month) => ({
-    //                         month: month.toUpperCase(),
-    //                         value: expense[month],
-    //                         paid: expense[`${month}_paid`],
-    //                     }));
-    //
-    //                     sheetBuilder.workSheet.addTable({
-    //                         title: {
-    //                             value: expense.supplier.name || '',
-    //                             style: {
-    //                                 font: {
-    //                                     sz: 12
-    //                                 }
-    //                             },
-    //                             cellPosition: {
-    //                                 row: baseRow,
-    //                                 column: currentCol
-    //                             },
-    //                             mergePosition: {
-    //                                 startRow: baseRow,
-    //                                 startColumn: currentCol,
-    //                                 endRow: baseRow,
-    //                                 endColumn: currentCol + 2
-    //                             }
-    //                         },
-    //                         header: {
-    //                             list: ['month', 'value', 'paid'],
-    //                             style: {
-    //                                 font: {
-    //                                     sz: 12
-    //                                 },
-    //                                 borderLabel: 'thin'
-    //                             }
-    //                         },
-    //                         body: {
-    //                             list: bodyList,
-    //                             style: {
-    //                                 font: {
-    //                                     sz: 12
-    //                                 },
-    //                                 borderLabel: 'thin'
-    //                             }
-    //                         },
-    //                         position: {
-    //                             row: baseRow,
-    //                             column: currentCol,
-    //                         }
-    //                     })
-    //
-    //
-    //                     tableCount++;
-    //                     if (tableCount % tablesPerRow === 0) {
-    //                         currentCol = 1;
-    //                         baseRow += rowHeight;
-    //                     } else {
-    //                         currentCol += tableWidth;
-    //                     }
-    //                 }
-    //                 currentRow = baseRow + rowHeight;
-    //             }
-    //         }
-    //         sheetBuilder.workBook.addToWorkBook(sheetBuilder.workSheet.workSheet, group.name)
-    //     }
-    //
-    //     return sheetBuilder.workBook.generateWorkBook()
-    // }
-
     async generateDocument(user: User): Promise<Buffer> {
         const finance = this.validateFinance(user);
         const groups = await this.fetchGroups(finance.id);
 
         const sheetBuilder = new Sheet();
 
-        return this.processGroups(groups, sheetBuilder);
+        await Promise.all(groups.map(group => this.processGroup(group, sheetBuilder)));
+
+        return sheetBuilder.workBook.generateWorkBook();
     }
 
-    private async processGroups(groups: Array<Group>, sheetBuilder: Sheet): Promise<Buffer> {
-        for (const group of groups) {
-            const bills = await this.fetchBills(group.id);
+    private async processGroup(group: Group, sheet: Sheet) {
+        const bills = await this.fetchBills(group.id);
+        const tableConfig: TableConfig = {
+            width: 4,
+            fontSize: 12,
+            rowHeight: 14,
+            initialRow: 13,
+            tablesPerRow: 3,
+        };
 
-            sheetBuilder.createWorkSheet(1000, 15);
+        sheet.createWorkSheet(1000, 15);
 
-            sheetBuilder.workSheet.addTitle({
-                value: group.name || '',
-                cellLabel: 'B2',
-                mergePosition: { startRow: 1, startColumn: 1, endRow: 10, endColumn: 14 }
-            });
+        sheet.workSheet.addTitle({
+            value: group.name || '',
+            label: 'B2',
+            mergePosition: { startRow: 1, startColumn: 1, endRow: 10, endColumn: 14 }
+        });
 
-            let currentRow = 13;
+        bills.reduce((currentRow, bill) => this.processExpenses(bill.expenses ?? [], currentRow, sheet, tableConfig), tableConfig.initialRow);
 
-            for (const bill of bills) {
-                if (bill.expenses) {
-                    let currentCol = 1;
-                    const tableWidth = 4;
-                    const tablesPerRow = 3;
-                    let tableCount = 0;
-                    let baseRow = currentRow;
-                    const rowHeight = 14;
-
-                    for (const expense of bill.expenses) {
-
-                        const bodyList = MONTHS.map((month) => ({
-                            month: month.toUpperCase(),
-                            value: expense[month],
-                            paid: expense[`${month}_paid`],
-                        }));
-
-                        sheetBuilder.workSheet.addTable({
-                            title: {
-                                value: expense.supplier.name || '',
-                                style: {
-                                    font: {
-                                        sz: 12
-                                    }
-                                },
-                                cellPosition: {
-                                    row: baseRow,
-                                    column: currentCol
-                                },
-                                mergePosition: {
-                                    startRow: baseRow,
-                                    startColumn: currentCol,
-                                    endRow: baseRow,
-                                    endColumn: currentCol + 2
-                                }
-                            },
-                            header: {
-                                list: ['month', 'value', 'paid'],
-                                style: {
-                                    font: {
-                                        sz: 12
-                                    },
-                                    borderLabel: 'thin'
-                                }
-                            },
-                            body: {
-                                list: bodyList,
-                                style: {
-                                    font: {
-                                        sz: 12
-                                    },
-                                    borderLabel: 'thin'
-                                }
-                            },
-                            position: {
-                                row: baseRow,
-                                column: currentCol,
-                            }
-                        })
-
-
-                        tableCount++;
-                        if (tableCount % tablesPerRow === 0) {
-                            currentCol = 1;
-                            baseRow += rowHeight;
-                        } else {
-                            currentCol += tableWidth;
-                        }
-                    }
-                    currentRow = baseRow + rowHeight;
-                }
-            }
-            sheetBuilder.workBook.addToWorkBook(sheetBuilder.workSheet.workSheet, group.name)
-        }
-
-        return sheetBuilder.workBook.generateWorkBook()
+        sheet.workBook.addToWorkBook(sheet.workSheet.workSheet, group.name)
     }
+
+    private processExpenses(expenses: Array<Expense>, startRow: number, sheet: Sheet, tableConfig: TableConfig ): number {
+        const defaultStyles = { font: { sz: 12 } };
+
+        return expenses.reduce((acc, expense, index) => {
+            const monthlyData = MONTHS.map((month) => ({
+                month: month.toUpperCase(),
+                value: expense[month],
+                paid: expense[`${month}_paid`],
+            }));
+            return sheet.workSheet.AddTable({
+                body: monthlyData,
+                index,
+                title: expense?.supplier?.name,
+                config: tableConfig,
+                headers: ['month', 'value', 'paid'],
+                tableStyle: {
+                    body: {
+                        ...defaultStyles,
+                        borderStyle: 'thin'
+                    },
+                    header: {
+                        ...defaultStyles,
+                        borderStyle: 'thin'
+                    },
+                    title: defaultStyles,
+
+                },
+                currentRow: acc,
+            })
+        }, startRow)
+
+
+    }
+
 
     private validateFinance(user: User): Finance {
         if (!user?.finance) {

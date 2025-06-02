@@ -15,7 +15,7 @@ export default function Home() {
   const handleDownload = async () => {
     try {
       setIsLoading(true);
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMwMTljZDEwLTRmNjgtNDZkZS04MjE2LTY5MTY3ZTFhYmRjOCIsImlhdCI6MTc0ODQzNTUwNiwiZXhwIjoxNzQ4NTIxOTA2fQ.uBd5Puo1093e8lAFpygok4DblJynRDrbX3ozHkjhfEw';
+      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMwMTljZDEwLTRmNjgtNDZkZS04MjE2LTY5MTY3ZTFhYmRjOCIsImlhdCI6MTc0ODg3OTc5MCwiZXhwIjoxNzQ4OTY2MTkwfQ.HDbUkoxPFdrG_WLDEno7m1B57Y8VyHNBCjvP625wRek';
       const headers = {
         Authorization: `Bearer ${token}`,
       };
