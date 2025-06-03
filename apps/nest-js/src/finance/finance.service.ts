@@ -1,3 +1,6 @@
+import { Buffer } from 'buffer';
+
+
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,7 +9,7 @@ import { MONTHS } from '@repo/services/date/month/month';
 
 import FinanceConstructor from '@repo/business/finance/finance';
 
-import { Service, Sheet, TableConfig } from '../shared';
+import { Service, Sheet } from '../shared';
 
 import { User } from '../auth/entities/user.entity';
 
@@ -23,6 +26,129 @@ import { Supplier } from './entities/supplier.entity';
 import { SupplierService } from './supplier/supplier.service';
 import { SupplierType } from './entities/type.entity';
 
+
+const BODY = [
+    {
+        month: 'january',
+        value: 100,
+        paid: true,
+    },
+    {
+        month: 'February',
+        value: 200,
+        paid: false,
+    },
+    {
+        month: 'March',
+        value: 300,
+        paid: true,
+    },
+    {
+        month: 'April',
+        value: 400,
+        paid: false,
+    },
+    {
+        month: 'May',
+        value: 500,
+        paid: true,
+    },
+    {
+        month: 'June',
+        value: 600,
+        paid: false,
+    },
+    {
+        month: 'July',
+        value: 700,
+        paid: true,
+    },
+    {
+        month: 'August',
+        value: 800,
+        paid: false,
+    },
+    {
+        month: 'September',
+        value: 900,
+        paid: true,
+    },
+    {
+        month: 'October',
+        value: 1000,
+        paid: false,
+    },
+    {
+        month: 'November',
+        value: 1100,
+        paid: true,
+    },
+    {
+        month: 'December',
+        value: 1200,
+        paid: false,
+    }
+]
+
+const TABLES = [
+    { name: 'TABLE 1', data: BODY },
+    { name: 'TABLE 2', data: BODY },
+    { name: 'TABLE 3', data: BODY },
+    { name: 'TABLE 4', data: BODY },
+    { name: 'TABLE 5', data: BODY },
+    { name: 'TABLE 6', data: BODY },
+    { name: 'TABLE 7', data: BODY },
+    { name: 'TABLE 8', data: BODY },
+    { name: 'TABLE 9', data: BODY },
+    { name: 'TABLE 10', data: BODY },
+    { name: 'TABLE 11', data: BODY },
+    { name: 'TABLE 12', data: BODY },
+    { name: 'TABLE 13', data: BODY },
+    { name: 'TABLE 14', data: BODY },
+    { name: 'TABLE 15', data: BODY },
+    { name: 'TABLE 16', data: BODY },
+    { name: 'TABLE 17', data: BODY },
+    { name: 'TABLE 18', data: BODY },
+    { name: 'TABLE 19', data: BODY },
+    { name: 'TABLE 20', data: BODY },
+]
+
+// const TABLES =  [
+//     [
+//         { name: 'TABLE 1', data: BODY },
+//         { name: 'TABLE 2', data: BODY },
+//         { name: 'TABLE 3', data: BODY },
+//     ],
+//     [
+//         { name: 'TABLE 4', data: BODY },
+//         { name: 'TABLE 5', data: BODY },
+//         { name: 'TABLE 6', data: BODY },
+//     ],
+//     [
+//         { name: 'TABLE 7', data: BODY },
+//         { name: 'TABLE 8', data: BODY },
+//         { name: 'TABLE 9', data: BODY },
+//     ],
+//     [
+//         { name: 'TABLE 10', data: BODY },
+//         { name: 'TABLE 11', data: BODY },
+//         { name: 'TABLE 12', data: BODY },
+//     ],
+//     [
+//         { name: 'TABLE 13', data: BODY },
+//         { name: 'TABLE 14', data: BODY },
+//         { name: 'TABLE 15', data: BODY },
+//     ],
+//     [
+//         { name: 'TABLE 16', data: BODY },
+//         { name: 'TABLE 17', data: BODY },
+//         { name: 'TABLE 18', data: BODY },
+//     ],
+//     [
+//         { name: 'TABLE 19', data: BODY },
+//         { name: 'TABLE 20', data: BODY },
+//     ]
+// ]
 
 @Injectable()
 export class FinanceService extends Service<Finance> {
@@ -136,73 +262,120 @@ export class FinanceService extends Service<Finance> {
     // }
     //
 
+    // async generateDocument(user: User): Promise<Buffer> {
+    //     const finance = this.validateFinance(user);
+    //     const groups = await this.fetchGroups(finance.id);
+    //
+    //     const sheetBuilder = new Sheet();
+    //
+    //     await Promise.all(groups.map(group => this.processGroup(group, sheetBuilder)));
+    //
+    //     return sheetBuilder.workBook.generateWorkBook();
+    // }
+
+
     async generateDocument(user: User): Promise<Buffer> {
-        const finance = this.validateFinance(user);
-        const groups = await this.fetchGroups(finance.id);
+        const sheet = new Sheet();
+        sheet.createWorkSheet('Planilha 1');
 
-        const sheetBuilder = new Sheet();
-
-        await Promise.all(groups.map(group => this.processGroup(group, sheetBuilder)));
-
-        return sheetBuilder.workBook.generateWorkBook();
-    }
-
-    private async processGroup(group: Group, sheet: Sheet) {
-        const bills = await this.fetchBills(group.id);
-        const tableConfig: TableConfig = {
-            width: 4,
-            fontSize: 12,
-            rowHeight: 14,
-            initialRow: 13,
-            tablesPerRow: 3,
-        };
-
-        sheet.createWorkSheet(1000, 15);
-
-        sheet.workSheet.addTitle({
-            value: group.name || '',
-            label: 'B2',
-            mergePosition: { startRow: 1, startColumn: 1, endRow: 10, endColumn: 14 }
+        sheet.cell.add({
+            cell: 'B2',
+            type: 'title',
+            value: 'TITULO',
+            merge: { cellStart: 'B2', cellEnd: 'P11' }
         });
 
-        bills.reduce((currentRow, bill) => this.processExpenses(bill.expenses ?? [], currentRow, sheet, tableConfig), tableConfig.initialRow);
-
-        sheet.workBook.addToWorkBook(sheet.workSheet.workSheet, group.name)
-    }
-
-    private processExpenses(expenses: Array<Expense>, startRow: number, sheet: Sheet, tableConfig: TableConfig ): number {
-        const defaultStyles = { font: { sz: 12 } };
-
-        return expenses.reduce((acc, expense, index) => {
-            const monthlyData = MONTHS.map((month) => ({
-                month: month.toUpperCase(),
-                value: expense[month],
-                paid: expense[`${month}_paid`],
-            }));
-            return sheet.workSheet.AddTable({
-                body: monthlyData,
-                index,
-                title: expense?.supplier?.name,
-                config: tableConfig,
-                headers: ['month', 'value', 'paid'],
-                tableStyle: {
-                    body: {
-                        ...defaultStyles,
-                        borderStyle: 'thin'
-                    },
-                    header: {
-                        ...defaultStyles,
-                        borderStyle: 'thin'
-                    },
-                    title: defaultStyles,
-
+        sheet.addTables({
+            tables: TABLES,
+            headers: ['month', 'value', 'paid'],
+            bodyStyle: {
+                alignment: {
+                    horizontal: 'center',
+                    vertical: undefined,
+                    wrapText: false,
                 },
-                currentRow: acc,
-            })
-        }, startRow)
+                borderStyle: 'thin',
+            },
+            titleStyle: {
+                font: { bold: true },
+                alignment: { wrapText: false },
+                borderStyle: 'medium',
+                fillColor: 'FFDDEE',
+            },
+            headerStyle: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: 'center',
+                    vertical: undefined,
+                    wrapText: false,
+                },
+                borderStyle: 'thin',
+            },
+            tableDataRows: MONTHS.length,
+        })
 
-
+        return await sheet.generateSheetBuffer();
     }
+
+
+    // private async processGroup(group: Group, sheet: Sheet) {
+    //     const bills = await this.fetchBills(group.id);
+    //     const tableConfig: TableConfig = {
+    //         width: 4,
+    //         fontSize: 12,
+    //         rowHeight: 14,
+    //         initialRow: 13,
+    //         tablesPerRow: 3,
+    //     };
+    //
+    //     sheet.createWorkSheet(1000, 15);
+    //
+    //     sheet.workSheet.addTitle({
+    //         value: group.name || '',
+    //         label: 'B2',
+    //         mergePosition: { startRow: 1, startColumn: 1, endRow: 10, endColumn: 14 }
+    //     });
+    //
+    //     bills.reduce((currentRow, bill) => this.processExpenses(bill.expenses ?? [], currentRow, sheet, tableConfig), tableConfig.initialRow);
+    //
+    //     sheet.workBook.addToWorkBook(sheet.workSheet.workSheet, group.name)
+    // }
+    //
+    // private processExpenses(expenses: Array<Expense>, startRow: number, sheet: Sheet, tableConfig: TableConfig ): number {
+    //     const defaultStyles = { font: { sz: 12 } };
+    //
+    //     return expenses.reduce((acc, expense, index) => {
+    //         const monthlyData = MONTHS.map((month) => ({
+    //             month: month.toUpperCase(),
+    //             value: expense[month],
+    //             paid: expense[`${month}_paid`],
+    //         }));
+    //         return sheet.workSheet.AddTable({
+    //             body: monthlyData,
+    //             index,
+    //             title: expense?.supplier?.name,
+    //             config: tableConfig,
+    //             headers: ['month', 'value', 'paid'],
+    //             tableStyle: {
+    //                 body: {
+    //                     ...defaultStyles,
+    //                     borderStyle: 'thin'
+    //                 },
+    //                 header: {
+    //                     ...defaultStyles,
+    //                     borderStyle: 'thin'
+    //                 },
+    //                 title: defaultStyles,
+    //
+    //             },
+    //             currentRow: acc,
+    //         })
+    //     }, startRow)
+    //
+    //
+    // }
 
 
     private validateFinance(user: User): Finance {

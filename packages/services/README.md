@@ -55,6 +55,13 @@ yarn lint
   yarn run test -- --findRelatedTests src/address/address.spec.ts               
 ```
 
+### **Array**: Utilitários ou manipuladores de arrays.
+- **chunk**: Responsável por separar itens de um array em outro array.
+#### Comando para testes unitários exclusivo para esté módulo.
+```bash
+  yarn run test -- --findRelatedTests src/array/array.spec.ts               
+```
+
 ### **Contact**: Utilitários relacionados a manipulação ou validação de formas de contato (telefone, e-mail e etc).
 - **emailValidator**: Valida se o valor é um e-mail valido.
 - **phoneValidator**: Valida se o valor é um telefone valido.
