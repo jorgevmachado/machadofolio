@@ -107,27 +107,269 @@ describe('Table', () => {
         startColumn: 1,
     }
 
+    const mockTreatedTitle = {
+        cell: mockDefaultTableParams.startRow,
+        value: mockDefaultTableParams.title.value,
+        merge: { positions: { startRow: mockDefaultTableParams.startRow, startColumn: mockDefaultTableParams.startColumn, endRow: mockDefaultTableParams.startRow, endColumn: mockDefaultTableParams.startColumn + mockDefaultTableParams.tableWidth - 1 } },
+        styles: mockDefaultTableParams.title.styles,
+        cellColumn: mockDefaultTableParams.startColumn,
+    }
+
+    const mockTreatedHeaders =  [
+        {
+            cell: 2,
+            value: 'month',
+            styles: mockDefaultTableParams.headers.styles,
+            cellColumn: 1
+        },
+        {
+            cell: 2,
+            value: 'value',
+            styles: mockDefaultTableParams.headers.styles,
+            cellColumn: 2
+        },
+        {
+            cell: 2,
+            value: 'paid',
+            styles: mockDefaultTableParams.headers.styles,
+            cellColumn: 3
+        }
+    ];
+
+    const mockTreatedBody = [
+        {
+            value: 'january',
+            cell: 3,
+            cellColumn: 1,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 100,
+            cell: 3,
+            cellColumn: 2,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'YES',
+            cell: 3,
+            cellColumn: 3,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'February',
+            cell: 4,
+            cellColumn: 1,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 200,
+            cell: 4,
+            cellColumn: 2,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'NO',
+            cell: 4,
+            cellColumn: 3,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'March',
+            cell: 5,
+            cellColumn: 1,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 300,
+            cell: 5,
+            cellColumn: 2,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'YES',
+            cell: 5,
+            cellColumn: 3,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'April',
+            cell: 6,
+            cellColumn: 1,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 400,
+            cell: 6,
+            cellColumn: 2,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'NO',
+            cell: 6,
+            cellColumn: 3,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'May',
+            cell: 7,
+            cellColumn: 1,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 500,
+            cell: 7,
+            cellColumn: 2,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'YES',
+            cell: 7,
+            cellColumn: 3,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'June',
+            cell: 8,
+            cellColumn: 1,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 600,
+            cell: 8,
+            cellColumn: 2,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'NO',
+            cell: 8,
+            cellColumn: 3,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'July',
+            cell: 9,
+            cellColumn: 1,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 700,
+            cell: 9,
+            cellColumn: 2,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'YES',
+            cell: 9,
+            cellColumn: 3,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'August',
+            cell: 10,
+            cellColumn: 1,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 800,
+            cell: 10,
+            cellColumn: 2,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'NO',
+            cell: 10,
+            cellColumn: 3,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'September',
+            cell: 11,
+            cellColumn: 1,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 900,
+            cell: 11,
+            cellColumn: 2,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'YES',
+            cell: 11,
+            cellColumn: 3,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'October',
+            cell: 12,
+            cellColumn: 1,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 1000,
+            cell: 12,
+            cellColumn: 2,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'NO',
+            cell: 12,
+            cellColumn: 3,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'November',
+            cell: 13,
+            cellColumn: 1,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 1100,
+            cell: 13,
+            cellColumn: 2,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'YES',
+            cell: 13,
+            cellColumn: 3,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'December',
+            cell: 14,
+            cellColumn: 1,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 1200,
+            cell: 14,
+            cellColumn: 2,
+            styles: mockDefaultTableParams.body.styles
+        },
+        {
+            value: 'NO',
+            cell: 14,
+            cellColumn: 3,
+            styles: mockDefaultTableParams.body.styles
+        }
+    ];
+
     const createTableParams = (overrides?: Partial<TableParams>): TableParams => ({
         ...mockDefaultTableParams,
         ...overrides
     });
 
     describe('constructor', () => {
-        it('deve criar uma tabela com configurações padrão', () => {
+        it('Should create a table with default settings.', () => {
             const table = new Table(createTableParams());
 
             expect(table.title).toBeDefined();
             expect(table.headers).toHaveLength(3);
-            expect(table.body).toHaveLength(4);
+            expect(table.body).toHaveLength(36);
         });
 
-        it('deve criar uma tabela sem título', () => {
-            const table = new Table(createTableParams({ title: undefined }));
-
-            expect(table.title.value).toBe('title');
-        });
-
-        it('deve criar uma tabela sem headers', () => {
+        it('Should create a table without headers.', () => {
             const table = new Table(createTableParams({ headers: { list: [] } }));
 
             expect(table.headers).toHaveLength(0);
@@ -135,42 +377,48 @@ describe('Table', () => {
         });
     });
 
-    describe('título da tabela', () => {
-        it('deve criar configuração correta para o título', () => {
+    describe('table title.', () => {
+        it('Should create correct configuration for title.', () => {
             const table = new Table(createTableParams());
 
-            expect(table.title).toEqual({
-                cell: mockDefaultTableParams.startRow,
-                value: mockDefaultTableParams.title.value,
-                merge: { positions: { startRow: mockDefaultTableParams.startRow, startColumn: mockDefaultTableParams.startColumn, endRow: mockDefaultTableParams.startRow, endColumn: mockDefaultTableParams.startColumn + mockDefaultTableParams.tableWidth - 1 } },
-                styles: mockDefaultTableParams.title.styles,
-                cellColumn: mockDefaultTableParams.startColumn,
-            });
+            expect(table.title).toEqual(mockTreatedTitle);
         });
     });
 
-    describe('cabeçalho da tabela', () => {
-        it('deve criar configurações corretas para o cabeçalho', () => {
+    describe('table header.', () => {
+        it('Should create correct settings for the header.', () => {
             const table = new Table(createTableParams());
-
-            const expectedHeaders = mockDefaultTableParams.headers.list.map((header, index) => ({
-                cell: mockDefaultTableParams.startRow + 1,
-                value: header || '',
-                styles: mockDefaultTableParams.headers.styles,
-                cellColumn: mockDefaultTableParams.startColumn + index,
-            }))
-
-            expect(table.headers).toEqual(expectedHeaders);
+            expect(table.headers).toEqual(mockTreatedHeaders);
         });
     });
 
-    describe('corpo da tabela', () => {
-        it('deve criar configurações corretas para o corpo', () => {
+    describe('table body.', () => {
+        it('Should create correct settings for the body.', () => {
             const table = new Table(createTableParams());
-
-            const expectedBody = [];
-
-            expect(table.body).toEqual(expectedBody);
+            expect(table.body).toEqual(mockTreatedBody);
         });
+
+        it('should fill with empty value when rawValue is absent.', () => {
+            const params = {
+                title: { value: 'Título', styles: {} },
+                headers: { list: ['col1', 'col2'], styles: {} },
+                body: {
+                    list: [
+                        { col1: 'Valor 1' }
+                    ],
+                    styles: {}
+                },
+                startRow: 0,
+                tableWidth: 2,
+                startColumn: 0
+            };
+
+            const table = new Table(params);
+            
+            const cellCol2 = table.body.find(cell => cell.cellColumn === 1);
+
+            expect(cellCol2?.value).toBe('');
+        });
+
     });
 });

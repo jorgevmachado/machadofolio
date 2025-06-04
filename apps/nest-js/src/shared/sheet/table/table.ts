@@ -36,7 +36,7 @@ export class Table {
     ): Array<CellParams> {
         return headers?.list?.map((header, index) => ({
             cell: startRow + 1,
-            value: header || '',
+            value: header,
             styles: headers.styles,
             cellColumn: startColumn + index,
         }))
@@ -51,8 +51,8 @@ export class Table {
         startColumn: number,
     ): Array<CellParams> {
         const result: Array<CellParams> = [];
-        const rowList = body.list ?? [];
-        const headerKeys = headers ?? [];
+        const rowList = body.list;
+        const headerKeys = headers;
         rowList.forEach((row, rowIndex) => {
             headerKeys.slice(0, tableWidth).forEach((headerKey, colIndex) => {
                 const rawValue = row?.[headerKey];
