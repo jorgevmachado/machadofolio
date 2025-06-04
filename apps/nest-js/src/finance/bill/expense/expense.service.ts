@@ -1,12 +1,12 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
 import ExpenseBusiness from '@repo/business/finance/expense/business/business';
 import ExpenseConstructor from '@repo/business/finance/expense/expense';
 import type { ExpenseEntity } from '@repo/business/finance/expense/types';
 
-import { Service } from '../../../shared';
+import { FilterParams, Service } from '../../../shared';
 
 import type { FinanceSeederParams } from '../../types';
 
@@ -39,7 +39,7 @@ export class ExpenseService extends Service<Expense> {
       protected expenseBusiness: ExpenseBusiness,
       protected supplierService: SupplierService,
   ) {
-    super('expenses', ['supplier', 'bill'], repository);
+    super('expenses', ['supplier', 'bill', 'children', 'parent'], repository);
   }
 
     async buildForCreation(bill: Bill, createExpenseDto: CreateExpenseDto) {
@@ -47,6 +47,11 @@ export class ExpenseService extends Service<Expense> {
             createExpenseDto.supplier,
             'Supplier',
         ) as Supplier;
+        
+        const parent = !createExpenseDto.parent 
+            ? undefined 
+            : await this.findOne({ value: createExpenseDto.parent, withRelations: true }) as Expense;
+
         return new ExpenseConstructor({
             supplier,
             bill,
@@ -55,22 +60,31 @@ export class ExpenseService extends Service<Expense> {
             paid: Boolean(createExpenseDto.paid),
             value: createExpenseDto.value,
             month: createExpenseDto.month,
+            parent,
             description: createExpenseDto.description,
+            is_aggregate: Boolean(parent),
+            aggregate_name: !parent ? undefined :  createExpenseDto.aggregate_name,
             instalment_number: createExpenseDto.instalment_number,
         });
     }
 
     async initialize({ type, expense, value = 0, month, instalment_number }: InitializeParams) {
+
         const expenseToInitialize = new ExpenseConstructor({
             ...expense,
             type: type ?? expense.type,
             instalment_number: instalment_number ?? expense.instalment_number,
         })
+
+        await this.validateExistExpense(expenseToInitialize);
+
         const result = this.expenseBusiness.initialize(expenseToInitialize, value, month);
         const initializedExpense = await this.customSave(result.expenseForCurrentYear);
+
         if(initializedExpense) {
             result.expenseForCurrentYear = initializedExpense;
         }
+        await this.validateParent(initializedExpense as Expense);
         return result;
     }
 
@@ -80,8 +94,9 @@ export class ExpenseService extends Service<Expense> {
             expense,
             existingExpense
         );
-
-        return await this.customSave({...currentExpenseForNextYear, bill });
+        const expenseCreated = await this.customSave({...currentExpenseForNextYear, bill });
+        await this.validateParent(expenseCreated as Expense);
+        return expenseCreated;
     }
 
     async customSave(expense: Expense) {
@@ -134,6 +149,52 @@ export class ExpenseService extends Service<Expense> {
                 }
             }
         })
+
+    }
+
+    private async validateParent(expense: Expense) {
+      if(!expense?.parent) {
+          return;
+      }
+
+      const parent = await this.findOne({ value: expense.parent.id, withRelations: true }) as Expense;
+
+      if(!parent?.children?.length) {
+          await this.customSave({
+              ...parent,
+              children: [expense],
+          });
+          return;
+      }
+
+      const existExpenseInChildren = parent.children.find((item) =>  item.id === expense.id);
+
+      if(!existExpenseInChildren) {
+          parent.children.push(expense);
+          await this.customSave(parent)
+      }
+    }
+
+    private async validateExistExpense(expense: Expense) {
+        const filters: Array<FilterParams> = [
+            {
+                value: expense.name_code,
+                param: 'expenses.name_code',
+                relation: true,
+                condition: 'LIKE',
+            },
+            {
+                value: expense.year,
+                param: 'expenses.year',
+                relation: true,
+                condition: '='
+            }
+        ];
+        const result = await this.findAll({ withRelations: true, filters }) as Array<Expense>;
+
+        if(result.length) {
+            throw this.error(new ConflictException('Expense already exists'));
+        }
 
     }
 }

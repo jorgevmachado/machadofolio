@@ -13,6 +13,7 @@ export type ExpenseConstructorParams
     = Omit<IExpenseBase, 'id' | 'year' | 'paid' | 'name' | 'total' | 'total_paid' | 'instalment_number' | 'name_code' | 'created_at' | 'updated_at' | 'deleted_at'>
     & IPartialNestBaseEntity
     & Partial<IExpenseMonthsWithPaid>
+    & Pick<ExpenseEntity, 'is_aggregate' | 'children' | 'parent' | 'aggregate_name'>
     & {
     paid?: boolean;
     year?: number;

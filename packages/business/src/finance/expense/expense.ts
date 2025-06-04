@@ -43,6 +43,10 @@ export default class Expense implements ExpenseEntity {
     deleted_at?: ExpenseEntity['deleted_at'];
     description?: ExpenseEntity['description'];
     instalment_number: ExpenseEntity['instalment_number'] = 1;
+    is_aggregate?: ExpenseEntity['is_aggregate'] = false;
+    children?: ExpenseEntity['children'];
+    parent?: ExpenseEntity['parent'];
+    aggregate_name?: ExpenseEntity['aggregate_name'];
 
     constructor(params: ExpenseConstructorParams) {
         this.id = params?.id ?? this.id;
@@ -54,7 +58,11 @@ export default class Expense implements ExpenseEntity {
         this.supplier = params.supplier;
         this.total_paid = params?.total_paid ?? this.total_paid;
 
-        this.name = `${params.bill.name} ${params.supplier.name}`;
+        this.name = !params?.is_aggregate
+            ? `${params.bill.name} ${params.supplier.name}`
+            : `${params.bill.name} ${params.supplier.name} ${params?.aggregate_name ?? ''}`;
+
+        this.aggregate_name = !params?.is_aggregate ? undefined : params?.aggregate_name;
         this.name_code = toSnakeCase(normalize(this.name));
 
         MONTHS.forEach(month => {
@@ -71,5 +79,9 @@ export default class Expense implements ExpenseEntity {
         this.created_at = params?.created_at ?? this.created_at;
         this.updated_at = params?.updated_at ?? this.updated_at;
         this.deleted_at = params?.deleted_at ?? this.deleted_at;
+
+        this.is_aggregate = params?.is_aggregate ?? this.is_aggregate;
+        this.parent = params?.parent ?? this.parent;
+        this.children = params?.children ?? this.children;
     }
 }

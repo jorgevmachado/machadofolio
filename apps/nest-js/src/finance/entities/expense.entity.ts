@@ -5,6 +5,7 @@ import {
     Entity,
     JoinTable,
     ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
@@ -236,6 +237,19 @@ export class Expense implements ExpenseEntity {
 
     @Column({ nullable: false })
     instalment_number!: number;
+
+    @ManyToOne(() => Expense, (expense) => expense.children, { nullable: true })
+    @JoinTable()
+    parent?: Expense;
+
+    @OneToMany(() => Expense, (expense) => expense.parent)
+    children?: Array<Expense>;
+
+    @Column({ default: false })
+    is_aggregate?: boolean;
+
+    @Column({ nullable: true })
+    aggregate_name?: string;
 
     @CreateDateColumn()
     created_at!: Date;

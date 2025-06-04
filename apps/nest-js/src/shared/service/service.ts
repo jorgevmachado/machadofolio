@@ -97,7 +97,7 @@ export abstract class Service<T extends BasicEntity> extends Base {
             return value;
         }
         const entity = !list
-            ? await this.queries.findOne({ value, withThrow: false })
+            ? await this.queries.findOne({ value, withThrow: false, withRelations: true })
             : this.findOneByList<T>(value, list);
         this.validate.param<T>(entity as unknown as string | T, label);
         return entity;

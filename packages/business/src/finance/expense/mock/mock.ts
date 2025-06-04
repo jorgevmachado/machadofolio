@@ -45,5 +45,8 @@ export const EXPENSE_MOCK: ExpenseEntity = {
     instalment_number: 1,
     created_at: new Date('2025-01-01T17:37:47.783Z'),
     updated_at: new Date('2025-01-01T14:40:31.207Z'),
-    deleted_at: undefined
+    deleted_at: undefined,
+    is_aggregate: false,
+    parent: undefined,
+    children: undefined,
 };

@@ -1,9 +1,11 @@
-import { IsBoolean, IsEmpty, IsEnum, IsNotEmpty, IsNumber, IsPositive, MaxLength } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, MaxLength } from 'class-validator';
 
 import { EMonth } from '@repo/services/date/month/enum';
 
 import type { CreateExpenseParams } from '@repo/business/finance/expense/types';
 import { EExpenseType } from '@repo/business/finance/expense/enum';
+
+import { IsNameDependingOnParent } from '../../../../decorators/name-depending-parent/name-depending-parent.decorator';
 
 import { Supplier } from '../../../entities/supplier.entity';
 
@@ -12,7 +14,7 @@ export class CreateExpenseDto implements CreateExpenseParams {
     @IsEnum(EExpenseType)
     type!: EExpenseType;
 
-    @IsEmpty()
+    @IsOptional()
     @IsBoolean()
     paid?: boolean;
 
@@ -21,7 +23,7 @@ export class CreateExpenseDto implements CreateExpenseParams {
     @IsNumber({ maxDecimalPlaces: 0 })
     value?: number;
 
-    @IsEmpty()
+    @IsOptional()
     @IsEnum(EMonth)
     month?: EMonth;
 
@@ -29,7 +31,7 @@ export class CreateExpenseDto implements CreateExpenseParams {
     @MaxLength(200)
     supplier!: string | Supplier;
 
-    @IsEmpty()
+    @IsOptional()
     @MaxLength(200)
     description?: string | undefined;
 
@@ -37,4 +39,10 @@ export class CreateExpenseDto implements CreateExpenseParams {
     @IsNotEmpty()
     @IsNumber({ maxDecimalPlaces: 0 })
     instalment_number?: number | undefined;
+
+    @IsOptional()
+    parent?: string;
+
+    @IsNameDependingOnParent()
+    aggregate_name?:string;
 }

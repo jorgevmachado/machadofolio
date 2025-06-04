@@ -98,5 +98,35 @@ describe('Expense', () => {
             });
 
         });
+
+        it('should create an instance with is_aggregate true', () => {
+            const expenseSubAggregateMock = {
+                ...expenseMock,
+                is_aggregate: true,
+                parent: expenseMock,
+                children: [expenseMock],
+                aggregate_name: 'aggregate',
+            };
+            const expense = new Expense(expenseSubAggregateMock);
+            expect(expense.is_aggregate).toBeTruthy();
+            expect(expense.parent).toEqual(expenseMock);
+            expect(expense.children).toHaveLength(1);
+            expect(expense.name).toEqual(`${expense.bill.name} ${expense.supplier.name} aggregate`);
+        });
+
+        it('should create an instance with is_aggregate true and no name', () => {
+            const expenseSubAggregateMock = {
+                ...expenseMock,
+                is_aggregate: true,
+                parent: expenseMock,
+                children: [expenseMock],
+                aggregate_name: undefined,
+            };
+            const expense = new Expense(expenseSubAggregateMock);
+            expect(expense.is_aggregate).toBeTruthy();
+            expect(expense.parent).toEqual(expenseMock);
+            expect(expense.children).toHaveLength(1);
+            expect(expense.name).toEqual(`${expense.bill.name} ${expense.supplier.name} `);
+        });
     });
 });

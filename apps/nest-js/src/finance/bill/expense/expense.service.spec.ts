@@ -7,6 +7,7 @@ import {
   it,
   jest,
 } from '@jest/globals';
+import { ConflictException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
@@ -23,6 +24,7 @@ import { MONTHS } from '@repo/services/date/month/month';
 import { type Supplier } from '../../entities/supplier.entity';
 import { SupplierService } from '../../supplier/supplier.service';
 import { type UpdateExpenseDto } from './dto/update-expense.dto';
+
 
 describe('ExpenseService', () => {
   let service: ExpenseService;
@@ -84,12 +86,69 @@ describe('ExpenseService', () => {
         type: createDto.type,
         name: `${mockEntity.bill.name} ${mockEntity.supplier.name}`,
         total: 0,
+        children: undefined,
         supplier: mockEntity.supplier,
         total_paid: 0,
         created_at: undefined,
         updated_at: undefined,
         deleted_at: undefined,
         description: undefined,
+        is_aggregate: false,
+        aggregate_name: undefined,
+        instalment_number: createDto.instalment_number,
+      };
+
+      MONTHS.forEach((month) => {
+        mockExpenseBuildCreation[month] = 0;
+        mockExpenseBuildCreation[`${month}_paid`] = true;
+      });
+
+      expect(await service.buildForCreation(mockEntity.bill, createDto)).toEqual(
+          mockExpenseBuildCreation,
+      );
+    });
+
+    it('should build a creation expense with parent.', async () => {
+      const createDto: CreateExpenseDto = {
+        type: EExpenseType.FIXED,
+        paid: true,
+        value: 93.59,
+        supplier: mockEntity.supplier.name,
+        instalment_number: 1,
+        parent: mockEntity.id,
+        aggregate_name: 'son'
+      };
+
+      jest
+          .spyOn(supplierService, 'treatEntityParam')
+          .mockResolvedValueOnce(mockEntity.supplier);
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getOne: jest.fn().mockReturnValueOnce(mockEntity),
+      } as any);
+
+      const mockExpenseBuildCreation = {
+        ...mockEntity,
+        id: undefined,
+        bill: mockEntity.bill,
+        paid: createDto.paid,
+        type: createDto.type,
+        name: `${mockEntity.bill.name} ${mockEntity.supplier.name} ${createDto.aggregate_name}`,
+        name_code: `${mockEntity.name_code}_${createDto.aggregate_name}`,
+        total: 0,
+        parent: mockEntity,
+        children: undefined,
+        supplier: mockEntity.supplier,
+        total_paid: 0,
+        created_at: undefined,
+        updated_at: undefined,
+        deleted_at: undefined,
+        description: undefined,
+        is_aggregate: true,
+        aggregate_name: createDto.aggregate_name,
         instalment_number: createDto.instalment_number,
       };
 
@@ -112,6 +171,14 @@ describe('ExpenseService', () => {
         expenseForCurrentYear[month] = 100;
         expenseForCurrentYear[`${month}_paid`] = mockEntity.paid;
       })
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getMany: jest.fn().mockReturnValueOnce([]),
+      } as any);
+
       jest.spyOn(repository, 'save').mockResolvedValueOnce(expenseForCurrentYear);
 
       const result = await service.initialize({
@@ -132,6 +199,135 @@ describe('ExpenseService', () => {
       });
     });
 
+    it('should initialize a new expense with all parameters and parent and children empty', async () => {
+      const mockEntityWithParent = { ...mockEntity, parent: mockEntity, aggregate_name: 'son', is_aggregate: true };
+      const expenseForCurrentYear: Expense = { ...mockEntityWithParent };
+      const monthsForCurrentYear = ['january', 'february', 'march'];
+      monthsForCurrentYear.forEach((month) => {
+        expenseForCurrentYear[month] = 100;
+        expenseForCurrentYear[`${month}_paid`] = mockEntity.paid;
+      })
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getMany: jest.fn().mockReturnValueOnce([]),
+      } as any);
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce(expenseForCurrentYear);
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getOne: jest.fn().mockReturnValueOnce({...mockEntity, children: []}),
+      } as any);
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce({...mockEntity, children: [expenseForCurrentYear]});
+
+      const result = await service.initialize({
+        type: mockEntity.type,
+        expense: mockEntityWithParent,
+        value: 100,
+        month: EMonth.JANUARY,
+        instalment_number: 3
+      });
+
+      expect(result.nextYear).toEqual(expenseForCurrentYear.year + 1);
+      expect(result.monthsForNextYear).toEqual([]);
+      expect(result.expenseForNextYear).toBeUndefined();
+      expect(result.requiresNewBill).toBeFalsy();
+      expect(result.monthsForCurrentYear).toEqual(monthsForCurrentYear);
+      expect(result.expenseForCurrentYear).toEqual(expenseForCurrentYear);
+    });
+
+    it('should initialize a new expense with all parameters and parent and children with entity exist', async () => {
+      const mockEntityWithParent = { ...mockEntity, parent: mockEntity, aggregate_name: 'son', is_aggregate: true };
+      const expenseForCurrentYear: Expense = { ...mockEntityWithParent };
+      const monthsForCurrentYear = ['january', 'february', 'march'];
+      monthsForCurrentYear.forEach((month) => {
+        expenseForCurrentYear[month] = 100;
+        expenseForCurrentYear[`${month}_paid`] = mockEntity.paid;
+      })
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getMany: jest.fn().mockReturnValueOnce([]),
+      } as any);
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce(expenseForCurrentYear);
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getOne: jest.fn().mockReturnValueOnce({...mockEntity, children: [expenseForCurrentYear]}),
+      } as any);
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce({...mockEntity, children: [expenseForCurrentYear]});
+
+      const result = await service.initialize({
+        type: mockEntity.type,
+        expense: mockEntityWithParent,
+        value: 100,
+        month: EMonth.JANUARY,
+        instalment_number: 3
+      });
+
+      expect(result.nextYear).toEqual(expenseForCurrentYear.year + 1);
+      expect(result.monthsForNextYear).toEqual([]);
+      expect(result.expenseForNextYear).toBeUndefined();
+      expect(result.requiresNewBill).toBeFalsy();
+      expect(result.monthsForCurrentYear).toEqual(monthsForCurrentYear);
+      expect(result.expenseForCurrentYear).toEqual(expenseForCurrentYear);
+    });
+
+    it('should initialize a new expense with all parameters and parent and children with entity not exist', async () => {
+      const mockEntityWithParent = { ...mockEntity, parent: mockEntity, aggregate_name: 'son', is_aggregate: true };
+      const expenseForCurrentYear: Expense = { ...mockEntityWithParent };
+      const monthsForCurrentYear = ['january', 'february', 'march'];
+      monthsForCurrentYear.forEach((month) => {
+        expenseForCurrentYear[month] = 100;
+        expenseForCurrentYear[`${month}_paid`] = mockEntity.paid;
+      })
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getMany: jest.fn().mockReturnValueOnce([]),
+      } as any);
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce(expenseForCurrentYear);
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getOne: jest.fn().mockReturnValueOnce({...mockEntity, children: [{...mockEntity, id: '12334' }]}),
+      } as any);
+
+      jest.spyOn(repository, 'save').mockResolvedValueOnce({...mockEntity, children: [expenseForCurrentYear]});
+
+      const result = await service.initialize({
+        type: mockEntity.type,
+        expense: mockEntityWithParent,
+        value: 100,
+        month: EMonth.JANUARY,
+        instalment_number: 3
+      });
+
+      expect(result.nextYear).toEqual(expenseForCurrentYear.year + 1);
+      expect(result.monthsForNextYear).toEqual([]);
+      expect(result.expenseForNextYear).toBeUndefined();
+      expect(result.requiresNewBill).toBeFalsy();
+      expect(result.monthsForCurrentYear).toEqual(monthsForCurrentYear);
+      expect(result.expenseForCurrentYear).toEqual(expenseForCurrentYear);
+    });
+
     it('should initialize a new expense without type and instalment_number', async () => {
       const expense: Expense = { ...mockEntity, instalment_number: 3 };
       const expenseForCurrentYear: Expense = { ...expense };
@@ -140,6 +336,14 @@ describe('ExpenseService', () => {
         expenseForCurrentYear[month] = 100;
         expenseForCurrentYear[`${month}_paid`] = mockEntity.paid;
       })
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getMany: jest.fn().mockReturnValueOnce([]),
+      } as any);
+
       jest.spyOn(repository, 'save').mockResolvedValueOnce(expenseForCurrentYear);
 
       const result = await service.initialize({
@@ -153,6 +357,29 @@ describe('ExpenseService', () => {
       expect(result.expenseForCurrentYear).toEqual(expenseForCurrentYear);
       expect(result.monthsForCurrentYear).toEqual(monthsForCurrentYear);
       expect(result.requiresNewBill).toBeFalsy();
+    });
+
+    it('should initialize with error', async () => {
+      const expense: Expense = { ...mockEntity, instalment_number: 3 };
+      const expenseForCurrentYear: Expense = { ...expense };
+      const monthsForCurrentYear = ['january', 'february', 'march'];
+      monthsForCurrentYear.forEach((month) => {
+        expenseForCurrentYear[month] = 100;
+        expenseForCurrentYear[`${month}_paid`] = mockEntity.paid;
+      })
+
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+        andWhere: jest.fn(),
+        withDeleted: jest.fn(),
+        leftJoinAndSelect: jest.fn(),
+        getMany: jest.fn().mockReturnValueOnce([mockEntity]),
+      } as any);
+
+      await expect(service.initialize({
+        expense,
+        value: 100,
+        month: EMonth.JANUARY,
+      })).rejects.toThrowError(ConflictException);
     });
   });
 

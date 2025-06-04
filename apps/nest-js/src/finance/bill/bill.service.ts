@@ -50,7 +50,7 @@ export class BillService extends Service<Bill> {
     ) {
         super(
             'bills',
-            ['bank', 'group', 'finance', 'expenses', 'expenses.supplier'],
+            ['bank', 'group', 'finance', 'expenses', 'expenses.supplier', 'expenses.bill' ],
             repository,
         );
     }
@@ -169,7 +169,7 @@ export class BillService extends Service<Bill> {
     }
 
     async addExpense(param: string, createExpenseDto: CreateExpenseDto) {
-        const bill = await this.findOne({ value: param }) as Bill;
+        const bill = await this.findOne({ value: param, withRelations: true }) as Bill;
         const createdExpense = await this.expenseService.buildForCreation(
             bill,
             createExpenseDto,
@@ -181,6 +181,12 @@ export class BillService extends Service<Bill> {
             withThrow: false,
         });
 
+        const currentExistExpense =  !existExpense ? undefined : {
+            ...existExpense,
+            parent: createdExpense?.parent,
+            is_aggregate: createdExpense?.is_aggregate,
+            aggregate_name: createdExpense?.aggregate_name,
+        }
 
         const { type, value, month, instalment_number } = createExpenseDto;
 
@@ -194,10 +200,9 @@ export class BillService extends Service<Bill> {
             type,
             value,
             month,
-            expense: !existExpense ? createdExpense : existExpense,
+            expense: !currentExistExpense ? createdExpense : currentExistExpense,
             instalment_number,
         });
-
 
         if (requiresNewBill && expenseForNextYear) {
             const newBill = (await this.createNewBillForNextYear(
@@ -240,7 +245,7 @@ export class BillService extends Service<Bill> {
             });
         }
 
-        const result = (await this.findAll({ filters })) as Array<Bill>;
+        const result = (await this.findAll({ filters, withRelations: true })) as Array<Bill>;
 
         if (withThrow && result.length) {
             throw this.error(new ConflictException(fallBackMessage));
@@ -256,6 +261,7 @@ export class BillService extends Service<Bill> {
             year,
             expenses: [],
         });
+        console.log('# => currentBill => ', currentBill)
         return await this.customSave(currentBill, false);
     }
 
@@ -263,6 +269,7 @@ export class BillService extends Service<Bill> {
         const bill = await this.findOne({ value: param }) as Bill;
         return await this.expenseService.findOne({
             value: expenseId,
+            withRelations: true,
             filters: [
                 {
                     value: bill.id,
@@ -274,7 +281,7 @@ export class BillService extends Service<Bill> {
     }
 
     async findAllExpense(param: string, params: ListParams) {
-        const bill = await this.findOne({ value: param }) as Bill;
+        const bill = await this.findOne({ value: param, withRelations: true }) as Bill;
         return await this.expenseService.findAll({
             ...params,
             filters: [

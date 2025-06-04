@@ -163,6 +163,7 @@ Utilitários relacionados a manipulação de serviços de pokemon nestJs.
   yarn run test -- --findRelatedTests src/auth/user/config.spec.ts               
 ```
 ---
+
 ### **finance**: Utilitários relacionados a manipulação de finanças.
 - **finance**: Utilitários relacionados a manipulação da entidade finance.
 ```bash
