@@ -9,7 +9,7 @@ export class Cell {
         this.workSheetInstance = workSheet;
     }
 
-    public add({ cell, cellColumn, value, type, styles, merge }: CellParams) {
+    public add({ cell, cellColumn, value, type, styles, merge }: CellParams): void {
         if (merge) {
             this.merge(merge);
         }
@@ -24,11 +24,11 @@ export class Cell {
         }
     }
 
-    public reference(cellRoll: string | number, cellColumn?: string | number) {
+    public reference(cellRoll: string | number, cellColumn?: string | number): ExcelJS.Cell {
         return this.workSheetInstance.getCell(cellRoll, cellColumn);
     }
 
-    public merge({ cellEnd, cellStart, positions }: MergeParams) {
+    public merge({ cellEnd, cellStart, positions }: MergeParams): void {
         if (positions) {
             this.workSheetInstance.mergeCells(positions.startRow, positions.startColumn, positions.endRow, positions.endColumn);
         }
@@ -38,7 +38,7 @@ export class Cell {
         return;
     }
 
-    public column(value: number | string) {
+    public column(value: number | string): ExcelJS.Column {
         return this.workSheetInstance.getColumn(value);
     }
 

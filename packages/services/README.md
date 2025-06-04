@@ -180,6 +180,25 @@ yarn lint
   yarn run test -- --findRelatedTests src/personal-data/personal-data.spec.ts               
 ```
 
+### **Spreadsheet**: Utilitários relacionados a manipulação de planilhas no formato xlsx.
+- **workBook**: Utilitário responsável por manipular a planilha geral caso seja necessário algo mais personalizado.
+- **createWorkSheet**: Utilitário responsável por criar uma aba dentro de uma planilha (worksheet).
+- **addTables**: Utilitário responsável por facilitar a criação de multiplas tabelas.
+- **addTable**: Utilitário responsável pela criação de uma tabela.
+- **generateSheetBuffer**: Utilitário responsável por gerar uma planilha no formato Buffer para download.
+- **cell**: Subutilitário responsável por manipular as celulas de uma planilha.
+  - **add**: Responsável por adicionar uma célula a planilha.
+  - **reference**: Responsável por retornar a célula a ser criada na planilha.
+  - **merge**: Responsável mesclar um grupo de células numa planilha.
+  - **column**: Responsável retornar ou manipular uma coluna numa planilha.
+- **table**: Subutilitários responsável por manipular os parameters de criação de uma tabela. 
+#### Comando para testes unitários exclusivo para esté módulo.
+```bash
+  yarn run test -- --findRelatedTests src/spreadsheet/spreadsheet.spec.ts               
+  yarn run test -- --findRelatedTests src/spreadsheet/cell/cell.spec.ts               
+  yarn run test -- --findRelatedTests src/spreadsheet/table/table.spec.ts                         
+```
+
 ### **String**: Utilitários relacionados a manipulação ou validação de 'strings'.
 - **initials**: Retorna as iniciais de uma 'string' com um número específico de letras.
 - **Normalize**: Remove acentos e espaços extras e Normaliza espaços múltiplos para um único espaço.

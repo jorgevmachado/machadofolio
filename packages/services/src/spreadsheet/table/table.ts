@@ -39,7 +39,7 @@ export class Table {
             value: header,
             styles: headers.styles,
             cellColumn: startColumn + index,
-        }))
+        }));
     }
 
 

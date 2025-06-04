@@ -1,3 +1,12 @@
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    jest,
+} from '@jest/globals';
+
 import { Table } from './table';
 import type { TableParams } from './types';
 
@@ -105,7 +114,7 @@ describe('Table', () => {
         startRow: 1,
         tableWidth: 3,
         startColumn: 1,
-    }
+    };
 
     const mockTreatedTitle = {
         cell: mockDefaultTableParams.startRow,
@@ -113,7 +122,7 @@ describe('Table', () => {
         merge: { positions: { startRow: mockDefaultTableParams.startRow, startColumn: mockDefaultTableParams.startColumn, endRow: mockDefaultTableParams.startRow, endColumn: mockDefaultTableParams.startColumn + mockDefaultTableParams.tableWidth - 1 } },
         styles: mockDefaultTableParams.title.styles,
         cellColumn: mockDefaultTableParams.startColumn,
-    }
+    };
 
     const mockTreatedHeaders =  [
         {
@@ -354,6 +363,15 @@ describe('Table', () => {
             styles: mockDefaultTableParams.body.styles
         }
     ];
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
+    });
+
+    afterEach(() => {
+        jest.resetModules();
+    });
 
     const createTableParams = (overrides?: Partial<TableParams>): TableParams => ({
         ...mockDefaultTableParams,

@@ -1,30 +1,14 @@
 import * as ExcelJS from 'exceljs';
 import { Buffer } from 'buffer';
 
-import { chunk } from '@repo/services/array/array';
+import { chunk } from '../array';
 
-import { Cell, type CellStyles } from './cell';
-import { Table, type TableParams } from './table';
+import { Table, type TableParams, type TablesParams } from './table';
+import { Cell } from './cell';
 
-type TablesParams = {
-    tables: Array<any>;
-    headers: Array<string>;
-    bodyStyle?: Partial<CellStyles>;
-    titleStyle?: Partial<CellStyles>;
-    tableWidth?: number;
-    spaceLines?: number;
-    headerStyle?: Partial<CellStyles>;
-    tableDataRows: number;
-    tableStartCol?: Array<number>;
-    firstTableRow?: number;
-    tableTitleHeight?: number;
-    tableHeaderHeight?: number;
-};
-
-export class Sheet {
+export class Spreadsheet {
     private readonly workbookInstance: ExcelJS.Workbook;
     private cellInstance: Cell | null;
-
 
     constructor() {
         this.workbookInstance = new ExcelJS.Workbook();
@@ -33,6 +17,10 @@ export class Sheet {
 
     public get workBook(): ExcelJS.Workbook {
         return this.workbookInstance;
+    }
+
+    public createWorkSheet(name: string): void {
+        this.cellInstance =  new Cell(this.workbookInstance.addWorksheet(name));
     }
 
     public get cell(): Cell {
@@ -55,7 +43,7 @@ export class Sheet {
                          tableStartCol = [3, 8, 13],
                          tableTitleHeight = 1,
                          tableHeaderHeight = 1
-                     }: TablesParams) {
+                     }: TablesParams): void {
         const chunkedTables = chunk(tables, tableWidth);
         const blockHeight = tableTitleHeight + tableHeaderHeight + tableDataRows;
 
@@ -63,12 +51,12 @@ export class Sheet {
             const row = firstTableRow + index * (blockHeight + spaceLines);
             group.forEach((table, tableIndex) => {
                 const col = tableStartCol[tableIndex] || 0;
-                const label = table?.['name'] || 'title';
+                const label = table?.['title'] || 'title';
                 const body = table?.['data'];
 
                 this.addTable({
                     title: {
-                        value: label || '',
+                        value: label,
                         styles: titleStyle
                     },
                     startRow: row,
@@ -82,12 +70,12 @@ export class Sheet {
                         list: body ?? [],
                         styles: bodyStyle
                     }
-                })
-            })
-        })
+                });
+            });
+        });
     }
 
-    public addTable({ title, body, headers, startRow, tableWidth, startColumn, }: TableParams) {
+    public addTable({ title, body, headers, startRow, tableWidth, startColumn, }: TableParams): void {
         const table = new Table({
             body,
             title,
@@ -100,7 +88,7 @@ export class Sheet {
         table.headers.forEach((header) => this.cell.add(header));
         table.body.forEach((body) => this.cell.add(body));
 
-        (headers.list ?? [])
+        (headers?.list ?? [])
             .slice(0, tableWidth)
             .forEach((_, idx) => {
                 const defaultWidths = [14, 8, 8];
@@ -108,12 +96,8 @@ export class Sheet {
             });
     }
 
-    createWorkSheet(name: string) {
-        this.cellInstance =  new Cell(this.workbookInstance.addWorksheet(name));
-    }
-
-    public async generateSheetBuffer() {
+    public async generateSheetBuffer(): Promise<Buffer> {
         const arrayBuffer = await this.workbookInstance.xlsx.writeBuffer();
-        return Buffer.from(arrayBuffer as ArrayBuffer);
+        return Buffer.from(arrayBuffer);
     }
 }

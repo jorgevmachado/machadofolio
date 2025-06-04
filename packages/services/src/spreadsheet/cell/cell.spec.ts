@@ -1,3 +1,12 @@
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    jest,
+} from '@jest/globals';
+
 import { Cell } from './cell';
 
 describe('Cell', () => {
@@ -15,6 +24,12 @@ describe('Cell', () => {
             mergeCells: jest.fn(),
             getColumn: jest.fn().mockReturnValue({}),
         };
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
+    });
+
+    afterEach(() => {
+        jest.resetModules();
     });
 
     describe('constructor', () => {
@@ -151,7 +166,7 @@ describe('Cell', () => {
                     name: 'Arial',
                     size: 24,
                     bold: true,
-                    color: { argb: '000000'}
+                    color: { argb: '000000' }
                 },
                 alignment: { wrapText: false },
                 fill: {

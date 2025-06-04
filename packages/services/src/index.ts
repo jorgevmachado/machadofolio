@@ -13,3 +13,4 @@ export * from './contact';
 export * from './personal-data';
 export * from './file';
 export * from './password';
+export * from './spreadsheet';
