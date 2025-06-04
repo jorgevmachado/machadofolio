@@ -92,14 +92,15 @@ yarn test
 ```bash
   yarn run test -- --findRelatedTests src/shared/sheet/sheet.spec.ts                                 
 ```
-#### **workSheet**: Classe responsável pela manipulação de workSheet
+#### **table**: Classe responsável pela manipulação de tabelas de workSheet.
 ```bash
-  yarn run test -- --findRelatedTests src/shared/sheet/worksheet/worksheet.spec.ts                                 
+  yarn run test -- --findRelatedTests src/shared/sheet/table/table.spec.ts                                 
 ```
-- **table**: Classe responsável pela manipulação de tabelas de workSheet.
+#### **cell**: Classe responsável pela manipulação de celulas de planilhas.
 ```bash
-  yarn run test -- --findRelatedTests src/shared/sheet/worksheet/table/table.spec.ts                                 
+  yarn run test -- --findRelatedTests src/shared/sheet/cell/cell.spec.ts                                 
 ```
+
 #### **workBook**: Classe responsável pela manipulação de workBook
 
 #### **validate**: classe que fornece métodos para validação de dados e entidades em uma aplicação. Seu objetivo é garantir a consistência dos dados manipulados, evitando erros durante o processamento ou persistência. Ele é usado principalmente para verificar a existência de parâmetros, validar se um objeto é uma entidade válida e identificar duplicatas em listas de dados.
