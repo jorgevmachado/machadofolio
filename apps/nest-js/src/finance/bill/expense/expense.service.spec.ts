@@ -11,6 +11,8 @@ import { ConflictException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
+import { normalize, toSnakeCase } from '@repo/services/string/string';
+
 import { EExpenseType } from '@repo/business/finance/expense/enum';
 import ExpenseBusiness from '@repo/business/finance/expense/business/business';
 
@@ -129,15 +131,15 @@ describe('ExpenseService', () => {
         leftJoinAndSelect: jest.fn(),
         getOne: jest.fn().mockReturnValueOnce(mockEntity),
       } as any);
-
+      const name =  `${mockEntity.bill.name} ${createDto.aggregate_name} ${mockEntity.supplier.name}`;
       const mockExpenseBuildCreation = {
         ...mockEntity,
         id: undefined,
         bill: mockEntity.bill,
         paid: createDto.paid,
         type: createDto.type,
-        name: `${mockEntity.bill.name} ${mockEntity.supplier.name} ${createDto.aggregate_name}`,
-        name_code: `${mockEntity.name_code}_${createDto.aggregate_name}`,
+        name,
+        name_code: toSnakeCase(normalize(name)),
         total: 0,
         parent: mockEntity,
         children: undefined,
@@ -441,32 +443,59 @@ describe('ExpenseService', () => {
   describe('seeds', () => {
     it('Should return a seed empty when received a empty list', async () => {
       jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
+      jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
 
       expect(await service.seeds({ bills: [mockEntity.bill], suppliers: [mockEntity.supplier]})).toEqual([]);
     });
 
     it('should seed the database when exist in database', async () => {
+      const mock = {
+        ...mockEntity,
+        parent: undefined,
+        children: [mockEntity],
+        is_aggregate: false,
+        aggregate_name: undefined,
+      }
+      jest
+          .spyOn(repository, 'find')
+          .mockResolvedValueOnce([mock]);
+
       jest
           .spyOn(repository, 'find')
           .mockResolvedValueOnce([mockEntity]);
 
       expect(await service.seeds({
-        bills: [mockEntity.bill],
+        bills: [{...mockEntity.bill, expenses: [mockEntity]}],
         suppliers: [mockEntity.supplier],
         expenseListJson: [mockEntity],
+        billListJson: [{...mockEntity.bill, expenses: [mockEntity]}]
       })).toEqual([mockEntity])
     });
 
     it('should seed the database when not exist in database', async () => {
+      const mock = {
+        ...mockEntity,
+        parent: undefined,
+        children: [mockEntity],
+        is_aggregate: false,
+        aggregate_name: undefined,
+      }
+
       jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
 
-      jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+      jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
 
-      expect(await service.seeds({
-        bills: [mockEntity.bill],
-        suppliers: [mockEntity.supplier],
-        expenseListJson: [mockEntity],
-      })).toEqual([mockEntity])
+      jest.spyOn(repository, 'save').mockResolvedValueOnce(mock);
+      jest.spyOn(repository, 'save').mockResolvedValueOnce({ ...mockEntity, parent: mock, });
+
+      const result = await service.seeds({
+        bills: [{...mock.bill, expenses: [mockEntity]}],
+        suppliers: [mock.supplier],
+        expenseListJson: [mock],
+        billListJson: [{...mock.bill, expenses: [mockEntity]}]
+      })
+
+      expect(result).toHaveLength(1);
     });
   });
 });

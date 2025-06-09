@@ -8,6 +8,7 @@ import { MONTHS } from '@repo/services/date/month/month';
 import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
 import type { TablesParams } from '@repo/services/spreadsheet/table/types';
 
+
 import FinanceConstructor from '@repo/business/finance/finance';
 
 import { Service } from '../shared';
@@ -27,6 +28,7 @@ import { Supplier } from './entities/supplier.entity';
 import { SupplierService } from './supplier/supplier.service';
 import { SupplierType } from './entities/type.entity';
 
+
 @Injectable()
 export class FinanceService extends Service<Finance> {
     constructor(
@@ -37,7 +39,7 @@ export class FinanceService extends Service<Finance> {
         protected readonly supplierService: SupplierService,
         protected readonly billService: BillService,
     ) {
-        super('finances', [], repository);
+        super('finances', ['bills', 'bills.expenses'], repository);
     }
 
     async initialize(user: User) {
@@ -180,39 +182,58 @@ export class FinanceService extends Service<Finance> {
             }
         });
 
-        const expenses: Array<Expense> = [];
-
+        const addedBillIds = new Set<string>();
         const bills: Array<Bill> = [];
 
+        const addedExpenseIds = new Set<string>();
+        const expenses: Array<Expense> = [];
+
+        const financeListSeed = this.seeder.currentSeeds<Finance>({ seedsJson: financeSeedsParams.financeListJson });
+
         for (const finance of finances) {
+            const financeSeed = financeListSeed.find((item) => item.id === finance.id);
+            if(financeSeed) {
+                const billList = await this.seeder.executeSeed<Bill>({
+                    label: 'Bills',
+                    seedMethod: async () => {
+                        const result = await this.billService.seeds({
+                            finance: financeSeed,
+                            banks,
+                            groups,
+                            billListJson: financeSeedsParams.billListJson,
+                        });
+                        return Array.isArray(result) ? result : [];
+                    },
+                });
 
-            const billList = await this.seeder.executeSeed<Bill>({
-                label: 'Bills',
-                seedMethod: async () => {
-                    const result = await this.billService.seeds({
-                        finance,
-                        banks,
-                        groups,
-                        billListJson: financeSeedsParams.billListJson,
-                    });
-                    return Array.isArray(result) ? result : [];
-                },
-            });
-            bills.push(...billList);
+                for (const bill of billList) {
+                    if (!addedBillIds.has(bill.id)) {
+                        bills.push(bill);
+                        addedBillIds.add(bill.id);
+                    }
+                }
 
-            const expenseList = await this.seeder.executeSeed<Expense>({
-                label: 'Expenses',
-                seedMethod: async () => {
-                    const result = await this.billService.expense.seeds({
-                        bills: billList,
-                        suppliers,
-                        expenseListJson: financeSeedsParams.expenseListJson,
-                    });
-                    return Array.isArray(result) ? result : [];
-                },
-            });
-            expenses.push(...expenseList);
+                const expenseList = await this.seeder.executeSeed<Expense>({
+                    label: 'Expenses',
+                    seedMethod: async () => {
+                        const result = await this.billService.expense.seeds({
+                            bills: billList,
+                            suppliers,
+                            billListJson: financeSeedsParams.billListJson,
+                            expenseListJson: financeSeedsParams.expenseListJson,
+                        });
+                        return Array.isArray(result) ? result : [];
+                    },
+                });
+                for (const expense of expenseList) {
+                    if (!addedExpenseIds.has(expense.id)) {
+                        expenses.push(expense);
+                        addedExpenseIds.add(expense.id);
+                    }
+                }
+            }
         }
+
 
         return {
             bills: bills,

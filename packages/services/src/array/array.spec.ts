@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
 import {
-    chunk
+    chunk, filterByCommonKeys, intersectArrays
 } from './array';
 
 describe('Array function', () => {
@@ -74,6 +74,39 @@ describe('Array function', () => {
                 ['ITEM 13', 'ITEM 14', 'ITEM 15'],
                 ['ITEM 16', 'ITEM 17', 'ITEM 18'],
                 ['ITEM 19', 'ITEM 20']
+            ]);
+        });
+    });
+
+    describe('intersectArrays', () => {
+        it('Should return array search in array source', () => {
+            const arrSource = [1, 2, 3, 4];
+            const arrSearch = [2, 4, 6];
+            expect(intersectArrays(arrSource, arrSearch)).toEqual([2, 4]);
+        });
+    });
+
+    describe('filterByCommonKeys', () => {
+        it('Should return array search in array source by key', () => {
+            const arrSource = [
+                { id: '1', name: 'name 1' },
+                { id: '2', name: 'name 2' },
+                { id: '3', name: 'name 3' },
+                { id: '4', name: 'name 4' },
+                { id: '5', name: 'name 5' },
+                { id: '6', name: 'name 6' },
+            ];
+
+            const arrSearch = [
+                { id: '2', name: 'name 2' },
+                { id: '4', name: 'name 4' },
+                { id: '6', name: 'name 6' },
+                { id: '8', name: 'name 8' },
+            ];
+            expect(filterByCommonKeys( 'id', arrSource, arrSearch)).toEqual([
+                { id: '2', name: 'name 2' },
+                { id: '4', name: 'name 4' },
+                { id: '6', name: 'name 6' },
             ]);
         });
     });

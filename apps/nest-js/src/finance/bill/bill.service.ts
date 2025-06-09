@@ -2,7 +2,9 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { filterByCommonKeys } from '@repo/services/array/array';
 import { snakeCaseToNormal } from '@repo/services/string/string';
+
 
 import BillBusiness from '@repo/business/finance/bill/business/business';
 import BillConstructor from '@repo/business/finance/bill/bill';
@@ -24,6 +26,7 @@ import { ExpenseService } from './expense/expense.service';
 import { GroupService } from '../group/group.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
+
 
 type ExistExpenseInBill = {
     year?: number;
@@ -290,7 +293,13 @@ export class BillService extends Service<Bill> {
                     param: 'bill',
                     condition: '=',
                 },
+                {
+                    value: false,
+                    param: 'is_aggregate',
+                    condition: '='
+                }
             ],
+            withRelations: true
         });
     }
 
@@ -319,16 +328,18 @@ export class BillService extends Service<Bill> {
     }
 
     async seeds({
-                    finance,
-                    banks,
-                    groups,
-                    billListJson: seedsJson,
+        finance,
+        banks,
+        groups,
+        billListJson: seedsJson
                 }: BillSeederParams) {
+        const billListSeed = this.seeder.currentSeeds<Bill>({ seedsJson });
+        const financeBillListSeed = filterByCommonKeys<Bill>('id', billListSeed, finance.bills ?? []);
         return this.seeder.entities({
             by: 'id',
             key: 'id',
             label: 'Bill',
-            seedsJson,
+            seeds: financeBillListSeed,
             withReturnSeed: true,
             createdEntityFn: async (item) => {
                 const bank = this.seeder.getRelation<Bank>({
@@ -354,7 +365,5 @@ export class BillService extends Service<Bill> {
                 })
             }
         });
-
-
     }
 }

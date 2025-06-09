@@ -11,4 +11,5 @@ export interface QueryParameters {
     limit?: number;
     status?: EStatus;
     withDeleted?: boolean;
+    withRelations?: boolean;
 }

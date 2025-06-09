@@ -530,6 +530,10 @@ describe('BillService', () => {
         });
 
         it('should seed the database when not exist in database', async () => {
+            const financeMock = {
+                ...financeMockEntity,
+                bills: [mockEntity]
+            }
             jest.spyOn(bankService, 'seeds').mockResolvedValueOnce([mockEntity.bank]);
 
             jest.spyOn(groupService, 'seeds').mockResolvedValueOnce([mockEntity.group]);
@@ -540,7 +544,7 @@ describe('BillService', () => {
             expect(await service.seeds({
                 banks: [mockEntity.bank],
                 groups: [mockEntity.group],
-                finance: financeMockEntity,
+                finance: financeMock,
                 billListJson: [mockEntity],
             })).toEqual([mockEntity]);
         });

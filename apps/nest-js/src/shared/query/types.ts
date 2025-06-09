@@ -20,7 +20,7 @@ export type TQueryCondition =
     | 'NOT';
 
 export type FilterParams  ={
-    value: string | number;
+    value: string | number | boolean;
     param: string;
     relation?: boolean;
     condition: TQueryCondition;
@@ -28,7 +28,7 @@ export type FilterParams  ={
 
 export type SearchParams = {
     by: TBy;
-    value: string | number;
+    value: string | number | boolean;
     condition?: TQueryCondition;
 }
 

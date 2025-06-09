@@ -1,6 +1,8 @@
-import { InjectRepository } from '@nestjs/typeorm';
 import { ConflictException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import { filterByCommonKeys } from '@repo/services/array/array';
 
 import ExpenseBusiness from '@repo/business/finance/expense/business/business';
 import ExpenseConstructor from '@repo/business/finance/expense/expense';
@@ -8,14 +10,13 @@ import type { ExpenseEntity } from '@repo/business/finance/expense/types';
 
 import { FilterParams, Service } from '../../../shared';
 
-import type { FinanceSeederParams } from '../../types';
-
 import { Bill } from '../../entities/bill.entity';
 import { Expense } from '../../entities/expense.entity';
+import type { FinanceSeederParams } from '../../types';
 import { Supplier } from '../../entities/supplier.entity';
+import { SupplierService } from '../../supplier/supplier.service';
 
 import { CreateExpenseDto } from './dto/create-expense.dto';
-import { SupplierService } from '../../supplier/supplier.service';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
 
 export type InitializeParams = {
@@ -26,9 +27,10 @@ export type InitializeParams = {
     instalment_number?: number;
 }
 
-export type ExpenseSeederParams = Pick<FinanceSeederParams, 'expenseListJson'> &  {
+export type ExpenseSeederParams = Pick<FinanceSeederParams, 'expenseListJson' | 'billListJson'> & {
     bills: Array<Bill>;
     suppliers: Array<Supplier>;
+
 }
 
 @Injectable()
@@ -120,36 +122,80 @@ export class ExpenseService extends Service<Expense> {
     }
 
     async seeds({
-        bills,
-        suppliers,
-        expenseListJson: seedsJson,
+                    bills,
+                    suppliers,
+                    billListJson,
+                    expenseListJson,
+                }: ExpenseSeederParams) {
+      const seeds = this.seeder.currentSeeds<Expense>({ seedsJson: expenseListJson });
+      console.log('# => seeds => ', seeds)
+      const billListSeed = this.seeder.currentSeeds<Bill>({ seedsJson: billListJson });
+        console.log('# => billListSeed => ', billListSeed)
 
-    }: ExpenseSeederParams) {
+      const financeBillExpenseListSeed = billListSeed.flatMap((bill) => bill.expenses ?? []);
+      const financeExpenseListSeed = filterByCommonKeys<Expense>('id', seeds, financeBillExpenseListSeed);
+
+      const currentSeeds = this.flattenParentsAndChildren(financeExpenseListSeed);
+
+        const parents = currentSeeds.filter(item => !item.parent);
+        const children = currentSeeds.filter(item => item.parent);
+
+        const parentsSeeded = await this.seeder.entities({
+            by: 'id',
+            key: 'id',
+            label: 'Expense',
+            seeds: parents,
+            createdEntityFn: async (item) => this.createdEntity(item, suppliers, bills)
+        }) as Array<Expense>;
+
+        const parentMap = new Map<string, Expense>(parentsSeeded.map(parent => [parent.id, parent]));
+
+        const childrenPrepared = children.map(child => ({
+            ...child,
+            parent: parentMap.get(child?.parent?.id ?? '')
+        }))
 
         return this.seeder.entities({
             by: 'id',
             key: 'id',
             label: 'Expense',
-            seedsJson,
+            seeds: childrenPrepared,
             withReturnSeed: true,
-            createdEntityFn: async (item) => {
-                const supplier = this.seeder.getRelation<Supplier>({
-                    key: 'name',
-                    list: suppliers,
-                    relation: 'Supplier',
-                    param: item?.supplier?.name,
-                });
+            createdEntityFn: async (item) => this.createdEntity(item, suppliers, bills)
+        });
+    }
 
-                const bill = bills.find((bill) => bill.id === item.bill?.id) as Bill;
+    private createdEntity(expense: Expense, suppliers: Array<Supplier>, bills: Array<Bill>) {
+        const supplier = this.seeder.getRelation<Supplier>({
+            key: 'name',
+            list: suppliers,
+            relation: 'Supplier',
+            param: expense?.supplier?.name,
+        });
 
-                return {
-                    ...item,
-                    bill,
-                    supplier,
-                }
-            }
+        const bill = bills.find((bill) => bill.id === expense.bill?.id) as Bill;
+
+        return new ExpenseConstructor({
+            ...expense,
+            bill,
+            supplier,
         })
+    }
 
+    private flattenParentsAndChildren(seeds: Array<Expense> = []) {
+        return seeds.flatMap((item) => {
+            if(!item.is_aggregate && Array.isArray(item?.children) && item.children.length > 0) {
+                const childrenPrepared = item.children.map((child) => ({
+                    ...child,
+                    parent: item,
+                }))
+                return [
+                    { ...item, children: undefined },
+                    ...childrenPrepared
+                ]
+            }
+            return item;
+        })
     }
 
     private async validateParent(expense: Expense) {
