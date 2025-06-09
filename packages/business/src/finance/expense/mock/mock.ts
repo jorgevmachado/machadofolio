@@ -8,14 +8,14 @@ import { BILL_MOCK } from '../../bill';
 
 export const EXPENSE_MOCK: ExpenseEntity = {
     id: 'e8ff59cb-6702-43f3-9a08-1f1c68324eac',
-    name: 'Personal Physical Credit Card Porto Vivo',
+    name: 'Personal Credit Card Porto Vivo',
     year: 2025,
     bill: BILL_MOCK,
     type: EExpenseType.VARIABLE,
     paid: false,
     total: 100,
     supplier: SUPPLIER_MOCK,
-    name_code: 'personal_physical_credit_card_porto_vivo',
+    name_code: 'personal_credit_card_porto_vivo',
     total_paid: 0,
     january: 100,
     january_paid: true,

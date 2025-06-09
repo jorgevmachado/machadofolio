@@ -60,7 +60,7 @@ export default class Expense implements ExpenseEntity {
 
         this.name = !params?.is_aggregate
             ? `${params.bill.name} ${params.supplier.name}`
-            : `${params.bill.name} ${params.supplier.name} ${params?.aggregate_name ?? ''}`;
+            : `${params.bill.name} ${params?.aggregate_name ?? ''} ${params.supplier.name}`;
 
         this.aggregate_name = !params?.is_aggregate ? undefined : params?.aggregate_name;
         this.name_code = toSnakeCase(normalize(this.name));

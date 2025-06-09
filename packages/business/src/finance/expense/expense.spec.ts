@@ -111,7 +111,7 @@ describe('Expense', () => {
             expect(expense.is_aggregate).toBeTruthy();
             expect(expense.parent).toEqual(expenseMock);
             expect(expense.children).toHaveLength(1);
-            expect(expense.name).toEqual(`${expense.bill.name} ${expense.supplier.name} aggregate`);
+            expect(expense.name).toEqual(`${expense.bill.name} aggregate ${expense.supplier.name}`);
         });
 
         it('should create an instance with is_aggregate true and no name', () => {
@@ -126,7 +126,7 @@ describe('Expense', () => {
             expect(expense.is_aggregate).toBeTruthy();
             expect(expense.parent).toEqual(expenseMock);
             expect(expense.children).toHaveLength(1);
-            expect(expense.name).toEqual(`${expense.bill.name} ${expense.supplier.name} `);
+            expect(expense.name).toEqual(`${expense.bill.name}  ${expense.supplier.name}`);
         });
     });
 });
