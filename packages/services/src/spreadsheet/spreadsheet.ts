@@ -6,6 +6,20 @@ import { chunk } from '../array';
 import { Table, type TableParams, type TablesParams } from './table';
 import { Cell } from './cell';
 
+type CalculateTablesParamsNextRowParams = {
+    spaceTop?: number;
+    startRow: number;
+    tableWidth: number;
+    totalTables: number;
+    linesPerTable: number;
+    spaceBottomPerLine?: number;
+}
+
+type CalculateTableHeightParams = {
+    total?: number;
+    startHeight?: number;
+}
+
 export class Spreadsheet {
     private readonly workbookInstance: ExcelJS.Workbook;
     private cellInstance: Cell | null;
@@ -28,6 +42,25 @@ export class Spreadsheet {
             throw new Error('Worksheet não foi inicializado. Use createWorksheet primeiro.');
         }
         return this.cellInstance;
+    }
+
+    public calculateTablesParamsNextRow({
+        spaceTop = 1,
+        startRow,
+        tableWidth,
+        totalTables,
+        linesPerTable,
+        spaceBottomPerLine = 1,
+    }: CalculateTablesParamsNextRowParams): number {
+        const groupRows = Math.ceil(totalTables / tableWidth);
+        const totalLines = groupRows * linesPerTable;
+        const totalSpaces = spaceTop + (groupRows + spaceBottomPerLine);
+        return startRow + totalLines + totalSpaces;
+    }
+
+
+    public calculateTableHeight({ startHeight = 1, total = 0 }: CalculateTableHeightParams): number {
+        return startHeight + total;
     }
 
     public addTables({
@@ -84,7 +117,9 @@ export class Spreadsheet {
             tableWidth,
             startColumn,
         });
-        this.cell.add(table.title);
+        if(table.title) {
+            this.cell.add(table.title);
+        }
         table.headers.forEach((header) => this.cell.add(header));
         table.body.forEach((body) => this.cell.add(body));
 

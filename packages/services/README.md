@@ -186,6 +186,8 @@ yarn lint
 - **addTables**: Utilitário responsável por facilitar a criação de multiplas tabelas.
 - **addTable**: Utilitário responsável pela criação de uma tabela.
 - **generateSheetBuffer**: Utilitário responsável por gerar uma planilha no formato Buffer para download.
+- **calculateTableHeight**: Utilitário responsável por calcular a quantidade de linhas que tem uma tabela.
+- **calculateTablesParamsNextRow**: Utilitário responsável por calcular a proxima linha na a partir de uma lista de tabelas.
 - **cell**: Subutilitário responsável por manipular as celulas de uma planilha.
   - **add**: Responsável por adicionar uma célula a planilha.
   - **reference**: Responsável por retornar a célula a ser criada na planilha.
@@ -214,6 +216,7 @@ yarn lint
 - **extractLastItemFromUrl**: Extrai o último segmento de uma URL.
 - **cleanFormatter**: Responsável por limpar a formatação do texto.
 - **sanitize**: Responsável por realizar a higienização do texto.
+- **cleanTextByListText**: Responsável por remover do texto os textos que estiverem na lista de textos.
 #### Comando para testes unitários exclusivo para esté módulo.
 ```bash
   yarn run test -- --findRelatedTests src/string/string.spec.ts               

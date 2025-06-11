@@ -408,6 +408,21 @@ describe('Table', () => {
             const table = new Table(createTableParams());
             expect(table.headers).toEqual(mockTreatedHeaders);
         });
+
+        it('Should create correct settings for the header without title.', () => {
+            const params =  createTableParams();
+            const table = new Table({
+                ...params,
+                title: undefined
+            });
+            const expectedHeader = mockTreatedHeaders.map((item) => ({
+                ...item,
+                cell: 1
+            }));
+            expect(table.title).toBeUndefined();
+            expect(table.headers).toEqual(expectedHeader);
+
+        });
     });
 
     describe('table body.', () => {

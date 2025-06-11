@@ -1,21 +1,26 @@
 import type { CellParams } from '../cell';
 
-import type { TableParams } from './types';
+import type { TableParams, TableTitleParams } from './types';
 
 export class Table {
 
-    public readonly title: CellParams;
+    public readonly title?: CellParams;
     public readonly headers: Array<CellParams>;
     public readonly body: Array<CellParams>;
+    private readonly hasTitle: boolean = false;
 
     constructor({ title, body, headers, startRow, tableWidth, startColumn }: TableParams) {
-        this.title = this.createTitleConfig(title, startRow, tableWidth, startColumn);
-        this.headers = this.createHeadersConfig(headers, startRow, startColumn);
-        this.body = this.createBodyConfig(body, headers.list, startRow, tableWidth, startColumn);
+        if(title) {
+            this.title = this.createTitleConfig(title, startRow, tableWidth, startColumn);
+            this.hasTitle = true;
+        }
+        const currentStartRow = !this.hasTitle ? startRow - 1 : startRow;
+        this.headers = this.createHeadersConfig(headers, currentStartRow, startColumn);
+        this.body = this.createBodyConfig(body, headers.list, currentStartRow, tableWidth, startColumn);
     }
 
     private createTitleConfig(
-        title: TableParams['title'],
+        title: TableTitleParams,
         startRow: number,
         tableWidth: number,
         startColumn: number,

@@ -35,23 +35,27 @@ export type ExpenseSeederParams = Pick<FinanceSeederParams, 'expenseListJson' | 
 
 @Injectable()
 export class ExpenseService extends Service<Expense> {
-  constructor(
-      @InjectRepository(Expense)
-      protected repository: Repository<Expense>,
-      protected expenseBusiness: ExpenseBusiness,
-      protected supplierService: SupplierService,
-  ) {
-    super('expenses', ['supplier', 'bill', 'children', 'parent'], repository);
-  }
+    constructor(
+        @InjectRepository(Expense)
+        protected repository: Repository<Expense>,
+        protected expenseBusiness: ExpenseBusiness,
+        protected supplierService: SupplierService,
+    ) {
+        super('expenses', ['supplier', 'bill', 'children', 'parent'], repository);
+    }
+
+    get business(): ExpenseBusiness {
+        return this.expenseBusiness;
+    }
 
     async buildForCreation(bill: Bill, createExpenseDto: CreateExpenseDto) {
         const supplier = await this.supplierService.treatEntityParam<Supplier>(
             createExpenseDto.supplier,
             'Supplier',
         ) as Supplier;
-        
-        const parent = !createExpenseDto.parent 
-            ? undefined 
+
+        const parent = !createExpenseDto.parent
+            ? undefined
             : await this.findOne({ value: createExpenseDto.parent, withRelations: true }) as Expense;
 
         return new ExpenseConstructor({
@@ -65,7 +69,7 @@ export class ExpenseService extends Service<Expense> {
             parent,
             description: createExpenseDto.description,
             is_aggregate: Boolean(parent),
-            aggregate_name: !parent ? undefined :  createExpenseDto.aggregate_name,
+            aggregate_name: !parent ? undefined : createExpenseDto.aggregate_name,
             instalment_number: createExpenseDto.instalment_number,
         });
     }
@@ -83,7 +87,7 @@ export class ExpenseService extends Service<Expense> {
         const result = this.expenseBusiness.initialize(expenseToInitialize, value, month);
         const initializedExpense = await this.customSave(result.expenseForCurrentYear);
 
-        if(initializedExpense) {
+        if (initializedExpense) {
             result.expenseForCurrentYear = initializedExpense;
         }
         await this.validateParent(initializedExpense as Expense);
@@ -96,7 +100,7 @@ export class ExpenseService extends Service<Expense> {
             expense,
             existingExpense
         );
-        const expenseCreated = await this.customSave({...currentExpenseForNextYear, bill });
+        const expenseCreated = await this.customSave({ ...currentExpenseForNextYear, bill });
         await this.validateParent(expenseCreated as Expense);
         return expenseCreated;
     }
@@ -127,15 +131,15 @@ export class ExpenseService extends Service<Expense> {
                     billListJson,
                     expenseListJson,
                 }: ExpenseSeederParams) {
-      const seeds = this.seeder.currentSeeds<Expense>({ seedsJson: expenseListJson });
-      console.log('# => seeds => ', seeds)
-      const billListSeed = this.seeder.currentSeeds<Bill>({ seedsJson: billListJson });
+        const seeds = this.seeder.currentSeeds<Expense>({ seedsJson: expenseListJson });
+        console.log('# => seeds => ', seeds)
+        const billListSeed = this.seeder.currentSeeds<Bill>({ seedsJson: billListJson });
         console.log('# => billListSeed => ', billListSeed)
 
-      const financeBillExpenseListSeed = billListSeed.flatMap((bill) => bill.expenses ?? []);
-      const financeExpenseListSeed = filterByCommonKeys<Expense>('id', seeds, financeBillExpenseListSeed);
+        const financeBillExpenseListSeed = billListSeed.flatMap((bill) => bill.expenses ?? []);
+        const financeExpenseListSeed = filterByCommonKeys<Expense>('id', seeds, financeBillExpenseListSeed);
 
-      const currentSeeds = this.flattenParentsAndChildren(financeExpenseListSeed);
+        const currentSeeds = this.flattenParentsAndChildren(financeExpenseListSeed);
 
         const parents = currentSeeds.filter(item => !item.parent);
         const children = currentSeeds.filter(item => item.parent);
@@ -184,7 +188,7 @@ export class ExpenseService extends Service<Expense> {
 
     private flattenParentsAndChildren(seeds: Array<Expense> = []) {
         return seeds.flatMap((item) => {
-            if(!item.is_aggregate && Array.isArray(item?.children) && item.children.length > 0) {
+            if (!item.is_aggregate && Array.isArray(item?.children) && item.children.length > 0) {
                 const childrenPrepared = item.children.map((child) => ({
                     ...child,
                     parent: item,
@@ -199,26 +203,26 @@ export class ExpenseService extends Service<Expense> {
     }
 
     private async validateParent(expense: Expense) {
-      if(!expense?.parent) {
-          return;
-      }
+        if (!expense?.parent) {
+            return;
+        }
 
-      const parent = await this.findOne({ value: expense.parent.id, withRelations: true }) as Expense;
+        const parent = await this.findOne({ value: expense.parent.id, withRelations: true }) as Expense;
 
-      if(!parent?.children?.length) {
-          await this.customSave({
-              ...parent,
-              children: [expense],
-          });
-          return;
-      }
+        if (!parent?.children?.length) {
+            await this.customSave({
+                ...parent,
+                children: [expense],
+            });
+            return;
+        }
 
-      const existExpenseInChildren = parent.children.find((item) =>  item.id === expense.id);
+        const existExpenseInChildren = parent.children.find((item) => item.id === expense.id);
 
-      if(!existExpenseInChildren) {
-          parent.children.push(expense);
-          await this.customSave(parent)
-      }
+        if (!existExpenseInChildren) {
+            parent.children.push(expense);
+            await this.customSave(parent)
+        }
     }
 
     private async validateExistExpense(expense: Expense) {
@@ -238,7 +242,7 @@ export class ExpenseService extends Service<Expense> {
         ];
         const result = await this.findAll({ withRelations: true, filters }) as Array<Expense>;
 
-        if(result.length) {
+        if (result.length) {
             throw this.error(new ConflictException('Expense already exists'));
         }
 

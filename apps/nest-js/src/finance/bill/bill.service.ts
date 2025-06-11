@@ -5,13 +5,10 @@ import { Repository } from 'typeorm';
 import { filterByCommonKeys } from '@repo/services/array/array';
 import { snakeCaseToNormal } from '@repo/services/string/string';
 
-
 import BillBusiness from '@repo/business/finance/bill/business/business';
 import BillConstructor from '@repo/business/finance/bill/bill';
 
 import { FilterParams, ListParams, Service } from '../../shared';
-
-import type { FinanceSeederParams } from '../types';
 
 import { Bank } from '../entities/bank.entity';
 import { Bill } from '../entities/bill.entity';
@@ -27,19 +24,8 @@ import { GroupService } from '../group/group.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
+import { BillSeederParams, ExistExpenseInBill, SpreadsheetProcessingParams } from './types';
 
-type ExistExpenseInBill = {
-    year?: number;
-    nameCode: string;
-    withThrow?: boolean;
-    fallBackMessage?: string;
-}
-
-type BillSeederParams = Pick<FinanceSeederParams, 'billListJson'> & {
-    banks: Array<Bank>;
-    groups: Array<Group>;
-    finance: Finance;
-}
 
 @Injectable()
 export class BillService extends Service<Bill> {
@@ -53,7 +39,7 @@ export class BillService extends Service<Bill> {
     ) {
         super(
             'bills',
-            ['bank', 'group', 'finance', 'expenses', 'expenses.supplier', 'expenses.bill' ],
+            ['bank', 'group', 'finance', 'expenses', 'expenses.supplier', 'expenses.bill', 'expenses.children', 'expenses.children.supplier'],
             repository,
         );
     }
@@ -184,7 +170,7 @@ export class BillService extends Service<Bill> {
             withThrow: false,
         });
 
-        const currentExistExpense =  !existExpense ? undefined : {
+        const currentExistExpense = !existExpense ? undefined : {
             ...existExpense,
             parent: createdExpense?.parent,
             is_aggregate: createdExpense?.is_aggregate,
@@ -328,10 +314,10 @@ export class BillService extends Service<Bill> {
     }
 
     async seeds({
-        finance,
-        banks,
-        groups,
-        billListJson: seedsJson
+                    finance,
+                    banks,
+                    groups,
+                    billListJson: seedsJson
                 }: BillSeederParams) {
         const billListSeed = this.seeder.currentSeeds<Bill>({ seedsJson });
         const financeBillListSeed = filterByCommonKeys<Bill>('id', billListSeed, finance.bills ?? []);
@@ -366,4 +352,33 @@ export class BillService extends Service<Bill> {
             }
         });
     }
+
+    async spreadsheetProcessing(params: SpreadsheetProcessingParams) {
+        const bills = await this.findAllByGroup(params.groupId);
+        this.billBusiness.spreadsheetProcessing({
+            ...params,
+            bills,
+            isAllPaid: this.expenseService.business.isAllPaid,
+            totalByMonth: this.expenseService.business.totalByMonth,
+            totalPaidByMonth: this.expenseService.business.totalPaidByMonth,
+            buildExpensesTablesParams: this.expenseService.business.buildTablesParams
+        })
+    }
+
+    private async findAllByGroup(groupId: string) {
+        const bills = await this.findAll({
+            filters: [{
+                value: groupId,
+                param: 'group',
+                condition: '='
+            }],
+            withRelations: true
+        });
+
+        if (Array.isArray(bills)) {
+            return bills;
+        }
+        return [];
+    }
+
 }

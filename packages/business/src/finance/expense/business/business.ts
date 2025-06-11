@@ -1,10 +1,11 @@
 import { MONTHS, getCurrentMonth , getMonthByIndex, getMonthIndex, isMonthValid } from '@repo/services/date/month/month';
+import { DEFAULT_TABLES_PARAMS } from '@repo/services/spreadsheet/table/constants';
+import type { TablesParams } from '@repo/services/spreadsheet/table/types';
 
 import { EExpenseType } from '../../../api';
 
 import type { ExpenseEntity, InitializedExpense } from '../types';
 import type Expense from '../expense';
-
 
 export default class ExpenseBusiness {
     initialize(expense: Expense, value: number, month?: ExpenseEntity['month']): InitializedExpense {
@@ -137,5 +138,57 @@ export default class ExpenseBusiness {
         });
 
         return result;
+    }
+
+    public buildTablesParams(expenses: Array<Expense> = [], tableWidth: number): TablesParams {
+        const tables: TablesParams['tables'] = [];
+
+        expenses.forEach((expense) => {
+            const monthlyData = MONTHS.map((month) => ({
+                month: month.toUpperCase(),
+                value: expense[month],
+                paid: expense[`${month}_paid`],
+            }));
+            const body = {
+                title: expense?.supplier?.name || 'expense',
+                data: monthlyData
+            };
+            tables.push(body);
+        });
+
+        return {
+            ...DEFAULT_TABLES_PARAMS,
+            tables,
+            headers: ['month', 'value', 'paid'],
+            tableWidth,
+            tableDataRows: MONTHS.length,
+        };
+    }
+
+    public totalByMonth(month: string, expenses: Array<Expense> = []): number {
+        return expenses.reduce((sum, expense) => sum + (Number(expense?.[month]) || 0), 0);
+    }
+
+    public isAllPaid(expense: Expense): boolean {
+        for (const month of MONTHS) {
+            if (!expense || !Object.prototype.hasOwnProperty.call(expense, `${month}_paid`) || !expense[`${month}_paid`]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public totalPaidByMonth(expenses: Array<Expense> = []): boolean {
+        if (expenses.length === 0) {
+            return false;
+        }
+        for (const month of MONTHS) {
+            for (const expense of expenses) {
+                if (!expense || !Object.prototype.hasOwnProperty.call(expense, `${month}_paid`) || !expense[`${month}_paid`]) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

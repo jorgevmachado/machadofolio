@@ -4,7 +4,7 @@ export type TableParams = {
     body: Pick<CellParams, 'styles'> & {
         list: Array<Record<string, string | number | boolean>>;
     };
-    title: Pick<CellParams, 'value' | 'styles'>;
+    title?: TableTitleParams;
     headers: Pick<CellParams, 'styles'> & {
         list: Array<string>;
     };
@@ -13,12 +13,14 @@ export type TableParams = {
     startColumn: number;
 }
 
+export type TableTitleParams = Pick<CellParams, 'value' | 'styles'>;
+
 export type TableData<Headers extends readonly string[]> = Array<{
     [K in Headers[number]]: string | number | boolean;
 }>;
 
 export type TableItem<Headers extends readonly string[]> = {
-    title: string;
+    title?: string;
     data: TableData<Headers>;
 };
 

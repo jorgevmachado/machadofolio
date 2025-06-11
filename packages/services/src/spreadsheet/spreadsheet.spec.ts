@@ -274,7 +274,6 @@ describe('Spreadsheet', () => {
         });
 
         it('deve chamar writeBuffer no workbook e retornar um Buffer', async () => {
-            // Simula um ArrayBuffer fictício
             const arrayBuffer = Uint8Array.from([1, 2, 3]).buffer;
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error
@@ -290,8 +289,34 @@ describe('Spreadsheet', () => {
 
             bufferFromSpy.mockRestore();
         });
+    });
 
+    describe('calculateTablesParamsNextRow', () => {
+        const defaultCalculateTablesParamsNextRowParams = {
+            spaceTop: undefined,
+            startRow: 19,
+            tableWidth: 3,
+            totalTables: 6,
+            linesPerTable: 14,
+            spaceBottomPerLine: undefined,
+        };
+        it('Should calculate tables next row successfully', () => {
+            expect(spreadsheet.calculateTablesParamsNextRow(defaultCalculateTablesParamsNextRowParams)).toEqual(51);
+        });
+    });
 
+    describe('calculateTableHeight', () => {
+        const defaultCalculateTableHeightParams = {
+            total: 10,
+            startHeight: 1
+        };
+        it('Should calculate table height successfully', () => {
+            expect(spreadsheet.calculateTableHeight(defaultCalculateTableHeightParams)).toEqual(11);
+        });
+
+        it('Should calculate table height successfully with default values', () => {
+            expect(spreadsheet.calculateTableHeight({})).toEqual(1);
+        });
     });
 
 });

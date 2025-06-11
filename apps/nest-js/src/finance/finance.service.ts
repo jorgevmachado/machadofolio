@@ -4,10 +4,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { MONTHS } from '@repo/services/date/month/month';
 import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
-import type { TablesParams } from '@repo/services/spreadsheet/table/types';
-
 
 import FinanceConstructor from '@repo/business/finance/finance';
 
@@ -58,8 +55,14 @@ export class FinanceService extends Service<Finance> {
         const groups = await this.fetchGroups(finance.id);
 
         const sheet = new Spreadsheet();
+        const groupsName: Array<string> = [];
         for (const group of groups) {
             sheet.createWorkSheet(group.name);
+            groupsName.push(group.name);
+
+            const startRow = 14;
+            const startColumn = 2;
+            const tableWidth = 3;
 
             sheet.cell.add({
                 cell: 'B2',
@@ -68,56 +71,14 @@ export class FinanceService extends Service<Finance> {
                 merge: { cellStart: 'B2', cellEnd: 'P11' }
             });
 
-            const bills = await this.fetchBills(group.id);
-
-            const data: TablesParams['tables'] = [];
-
-            bills.forEach((bill) => {
-                const expenses = bill.expenses ?? [];
-                expenses.forEach((expense) => {
-                    const monthlyData = MONTHS.map((month) => ({
-                        month: month.toUpperCase(),
-                        value: expense[month],
-                        paid: expense[`${month}_paid`],
-                    }));
-                    const body = {
-                        title: expense?.supplier?.name || 'expense',
-                        data: monthlyData
-                    }
-                    data.push(body);
-                })
-            })
-
-            sheet.addTables({
-                tables: data,
-                headers: ['month', 'value', 'paid'],
-                bodyStyle: {
-                    alignment: {
-                        horizontal: 'center',
-                        vertical: undefined,
-                        wrapText: false,
-                    },
-                    borderStyle: 'thin',
-                },
-                titleStyle: {
-                    font: { bold: true },
-                    alignment: { wrapText: false },
-                    borderStyle: 'medium',
-                    fillColor: 'FFFFFF',
-                },
-                headerStyle: {
-                    font: {
-                        bold: true
-                    },
-                    alignment: {
-                        horizontal: 'center',
-                        vertical: undefined,
-                        wrapText: false,
-                    },
-                    borderStyle: 'thin',
-                },
-                tableDataRows: MONTHS.length,
-            })
+            await this.billService.spreadsheetProcessing({
+                groupId: group.id,
+                sheet,
+                startRow,
+                tableWidth,
+                groupsName,
+                startColumn,
+            });
         }
 
         return await sheet.generateSheetBuffer();
@@ -139,17 +100,6 @@ export class FinanceService extends Service<Finance> {
             }],
             withRelations: true
         }) as Array<Group>;
-    }
-
-    private async fetchBills(groupId: string) {
-        return await this.billService.findAll({
-            filters: [{
-                value: groupId,
-                param: 'group',
-                condition: '='
-            }],
-            withRelations: true
-        }) as Array<Bill>;
     }
 
     async seeds(financeSeedsParams: FinanceSeedsParams) {
