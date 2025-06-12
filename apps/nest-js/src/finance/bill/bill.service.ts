@@ -250,7 +250,6 @@ export class BillService extends Service<Bill> {
             year,
             expenses: [],
         });
-        console.log('# => currentBill => ', currentBill)
         return await this.customSave(currentBill, false);
     }
 
@@ -358,9 +357,8 @@ export class BillService extends Service<Bill> {
         this.billBusiness.spreadsheetProcessing({
             ...params,
             bills,
-            isAllPaid: this.expenseService.business.isAllPaid,
-            totalByMonth: this.expenseService.business.totalByMonth,
-            totalPaidByMonth: this.expenseService.business.totalPaidByMonth,
+            totalExpenseByMonth: this.expenseService.business.totalByMonth,
+            allExpensesHaveBeenPaid: this.expenseService.business.allHaveBeenPaid,
             buildExpensesTablesParams: this.expenseService.business.buildTablesParams
         })
     }

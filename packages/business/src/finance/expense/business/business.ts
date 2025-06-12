@@ -169,26 +169,10 @@ export default class ExpenseBusiness {
         return expenses.reduce((sum, expense) => sum + (Number(expense?.[month]) || 0), 0);
     }
 
-    public isAllPaid(expense: Expense): boolean {
-        for (const month of MONTHS) {
-            if (!expense || !Object.prototype.hasOwnProperty.call(expense, `${month}_paid`) || !expense[`${month}_paid`]) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public totalPaidByMonth(expenses: Array<Expense> = []): boolean {
+    public allHaveBeenPaid(expenses: Array<Expense> = []): boolean {
         if (expenses.length === 0) {
             return false;
         }
-        for (const month of MONTHS) {
-            for (const expense of expenses) {
-                if (!expense || !Object.prototype.hasOwnProperty.call(expense, `${month}_paid`) || !expense[`${month}_paid`]) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return expenses.every(expense => expense && expense.paid === true);
     }
 }

@@ -30,31 +30,32 @@ export type BodyData = Omit<Expense,
 export type SpreadsheetProcessingParams = {
     sheet: Spreadsheet;
     bills?: Array<Bill>;
+    headers?: Array<string>;
     startRow?: number;
-    isAllPaid: (expense: Expense) => boolean;
     tableWidth?: number;
     groupsName?: Array<string>;
     startColumn?: number;
-    totalByMonth: (month: string, expenses: Array<Expense>) => number;
-    totalPaidByMonth: (expenses: Array<Expense>) => boolean;
+    totalExpenseByMonth: (month: string, expenses: Array<Expense>) => number;
+    allExpensesHaveBeenPaid: (expenses: Array<Expense>) => boolean;
     buildExpensesTablesParams: (expenses: Array<Expense>, tableWidth: number) => TablesParams;
 }
 
-export type ProcessingSpreadsheetTableParams = Pick<SpreadsheetProcessingParams, 'sheet' | 'bills' | 'isAllPaid' | 'totalPaidByMonth' | 'totalByMonth'> & {
+export type ProcessingSpreadsheetTableParams = Pick<SpreadsheetProcessingParams, 'sheet' | 'allExpensesHaveBeenPaid' | 'totalExpenseByMonth'> & {
+    bills: Array<Bill>;
     headers: Array<string>;
     startRow: number;
     groupsName: Array<string>;
     startColumn: number;
 }
 
-export type ProcessingSpreadsheetBasicExpenseTableParams = Omit<ProcessingSpreadsheetTableParams, 'startColumn' | 'headers' | 'groupsName' | 'totalPaidByMonth' | 'isAllPaid' | 'totalByMonth'> & Pick<SpreadsheetProcessingParams, 'buildExpensesTablesParams'> & {
+export type ProcessingSpreadsheetBasicExpenseTableParams = Omit<ProcessingSpreadsheetTableParams, 'startColumn' | 'headers' | 'groupsName' | 'allExpensesHaveBeenPaid' | 'totalExpenseByMonth'> & Pick<SpreadsheetProcessingParams, 'buildExpensesTablesParams'> & {
     tableWidth: number;
 }
 
 export type ProcessingSpreadSheetCreditCardExpenseTableParams = ProcessingSpreadsheetTableParams & Pick<ProcessingSpreadsheetBasicExpenseTableParams, 'tableWidth' | 'buildExpensesTablesParams'>;
 
 export type GroupTablesParams = {
-    title?: string;
+    title: string;
     tablesParams: TablesParams;
 }
 
@@ -63,7 +64,7 @@ export type GroupTables = {
     groupTablesParams?: Array<GroupTablesParams>;
 }
 
-export type BuildBodyDataParams = Pick<SpreadsheetProcessingParams, 'isAllPaid' | 'totalByMonth' | 'totalPaidByMonth'> & {
+export type BuildBodyDataParams = Pick<SpreadsheetProcessingParams, 'totalExpenseByMonth' | 'allExpensesHaveBeenPaid'> & {
     title: string;
     expense?: Expense;
     expenses?: Array<Expense>;

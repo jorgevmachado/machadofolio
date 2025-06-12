@@ -30,7 +30,6 @@ export type InitializeParams = {
 export type ExpenseSeederParams = Pick<FinanceSeederParams, 'expenseListJson' | 'billListJson'> & {
     bills: Array<Bill>;
     suppliers: Array<Supplier>;
-
 }
 
 @Injectable()
@@ -132,9 +131,7 @@ export class ExpenseService extends Service<Expense> {
                     expenseListJson,
                 }: ExpenseSeederParams) {
         const seeds = this.seeder.currentSeeds<Expense>({ seedsJson: expenseListJson });
-        console.log('# => seeds => ', seeds)
         const billListSeed = this.seeder.currentSeeds<Bill>({ seedsJson: billListJson });
-        console.log('# => billListSeed => ', billListSeed)
 
         const financeBillExpenseListSeed = billListSeed.flatMap((bill) => bill.expenses ?? []);
         const financeExpenseListSeed = filterByCommonKeys<Expense>('id', seeds, financeBillExpenseListSeed);

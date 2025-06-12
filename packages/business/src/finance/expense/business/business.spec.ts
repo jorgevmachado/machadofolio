@@ -420,4 +420,53 @@ describe('Expense Business', () => {
             expect(result.name_code).toEqual(existingExpense.name_code);
         });
     });
+
+    describe('buildTablesParams', () => {
+        const tableWidth = 3;
+        it('Should build table parameters correctly.', () => {
+            const result = business.buildTablesParams([mockEntity], tableWidth);
+            expect(result).toHaveProperty('tables');
+            expect(Array.isArray(result.tables)).toBe(true);
+            expect(result.tableWidth).toBe(tableWidth);
+            expect(result.tables[0].title).toBeDefined();
+            expect(Array.isArray(result.tables[0].data)).toBe(true);
+        });
+
+        it('Should build the table parameters correctly with the default title.', () => {
+            const result = business.buildTablesParams([{ ...mockEntity, supplier: undefined }], tableWidth);
+            expect(result.tables[0].title).toEqual('expense');
+        });
+    });
+
+    describe('totalByMonth', () => {
+        it('Should add the value of each month between expenses', () => {
+            const sumJanuary = business.totalByMonth('january', [mockEntity]);
+            expect(sumJanuary).toBe(100);
+
+            const sumFebruary = business.totalByMonth('february', [mockEntity]);
+            expect(sumFebruary).toBe(0);
+
+            const sumMarch = business.totalByMonth('march', [mockEntity]);
+            expect(sumMarch).toBe(0);
+        });
+
+    });
+
+    describe('allHaveBeenPaid', () => {
+        it('Should return false because the expense list is empty.', () => {
+            const result = business.allHaveBeenPaid([]);
+            expect(result).toBeFalsy();
+        });
+
+        it('Should return false as all expenses have not been paid.', () => {
+            const result = business.allHaveBeenPaid([mockEntity]);
+            expect(result).toBeFalsy();
+        });
+
+        it('Should return true since all expenses have been paid.', () => {
+            const mockEntityAllPaid = { ...mockEntity, paid: true };
+            const result = business.allHaveBeenPaid([mockEntityAllPaid]);
+            expect(result).toBeTruthy();
+        });
+    });
 });
