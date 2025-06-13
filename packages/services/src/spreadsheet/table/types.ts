@@ -5,6 +5,7 @@ export type TableParams = {
         list: Array<Record<string, string | number | boolean>>;
     };
     title?: TableTitleParams;
+    footer?: Record<string, string | number | boolean>;
     headers: Pick<CellParams, 'styles'> & {
         list: Array<string>;
     };
@@ -31,10 +32,12 @@ export type TablesParams<Headers extends readonly string[] = string[]> = {
     titleStyle?: Partial<CellStyles>;
     tableWidth?: number;
     spaceLines?: number;
+    blockTitle?: string;
     headerStyle?: Partial<CellStyles>;
     tableDataRows: number;
     tableStartCol?: Array<number>;
     firstTableRow?: number;
+    blockTitleStyle?: Partial<CellStyles>;
     tableTitleHeight?: number;
     tableHeaderHeight?: number;
 };

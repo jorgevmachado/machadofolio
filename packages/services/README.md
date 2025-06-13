@@ -98,6 +98,7 @@ yarn lint
   - **getMonthByIndex**: Responsável por transformar um índice em um enum de mês.
   - **monthValidator**: Valida se o valor do mês passado é válido.
   - **parseMonth**: Garante que o mes fornecido esta dentro dos limites 0 e 12.
+  - **totalByMonth**: Calcula o valor total de um array por mes que conter méses vãlidos.
 - **year**: Subutilitários relacionados a manipulação ou validação de anos de uma data.
   - **yearValidator**: Valida se o valor do ano passado é válido.
   - **parseYear**: Garante que o ano fornecido esta dentro dos limites 1000 e 9999.

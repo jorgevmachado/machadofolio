@@ -337,7 +337,7 @@ describe('String function', () => {
 
     describe('cleanTextByListText', () => {
         it('must remove all exact terms from the list in the text', () => {
-            expect(cleanTextByListText(['Study', 'Meeting'], 'Technology Study Group Meeting')).toBe('Technology Meeting');
+            expect(cleanTextByListText(['Study', 'Meeting'], 'Technology Study Group Meeting')).toBe('Technology Group');
         });
 
         it('does not change when no term is present', () => {

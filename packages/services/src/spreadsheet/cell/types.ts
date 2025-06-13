@@ -1,3 +1,12 @@
+import type { ECellType } from './enum';
+
+export type TCell = ECellType;
+
+export type Positions = {
+    row: number;
+    column: number;
+}
+
 export type MergeParams = {
     cellEnd?: string;
     cellStart?: string;
@@ -45,8 +54,6 @@ type ColorStyle = {
     argb: string;
 };
 
-type TCell = 'title' | 'text';
-
 type BorderStyles = {
     top: { style: TBorderStyle; };
     left: { style: TBorderStyle; };
@@ -63,3 +70,20 @@ type AlignmentStyle = {
 type TBorderStyle = | 'thin' | 'dotted' | 'hair' | 'medium' | 'double' | 'thick' | 'dashed' | 'dashDot' | 'dashDotDot' | 'slantDashDot' | 'mediumDashed' | 'mediumDashDotDot' | 'mediumDashDot';
 
 export type CellBorderStyle = | 'thin' | 'dotted' | 'hair' | 'medium' | 'double' | 'thick' | 'dashed' | 'dashDot' | 'dashDotDot' | 'slantDashDot' | 'mediumDashed' | 'mediumDashDotDot' | 'mediumDashDot';
+
+export type ReferenceCell = {
+    row: number;
+    cell: string;
+    column: number;
+    nextRow: number;
+    nextColumn: number;
+}
+
+export type MergeReferenceCell = {
+    endRow: number;
+    cellEnd: string;
+    startRow: number;
+    cellStart: string;
+    endColumn: number;
+    startColumn: number;
+}

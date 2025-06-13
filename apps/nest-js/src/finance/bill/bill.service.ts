@@ -2,11 +2,13 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { filterByCommonKeys } from '@repo/services/array/array';
 import { snakeCaseToNormal } from '@repo/services/string/string';
+
+import { filterByCommonKeys } from '@repo/services/array/array';
 
 import BillBusiness from '@repo/business/finance/bill/business/business';
 import BillConstructor from '@repo/business/finance/bill/bill';
+import { EBillType } from '@repo/business/finance/bill/enum';
 
 import { FilterParams, ListParams, Service } from '../../shared';
 
@@ -352,15 +354,27 @@ export class BillService extends Service<Bill> {
         });
     }
 
+
     async spreadsheetProcessing(params: SpreadsheetProcessingParams) {
         const bills = await this.findAllByGroup(params.groupId);
+
+        const detailTables = [
+            EBillType.BANK_SLIP,
+            EBillType.ACCOUNT_DEBIT,
+            EBillType.PIX,
+            EBillType.CREDIT_CARD,
+        ];
+
         this.billBusiness.spreadsheetProcessing({
             ...params,
-            bills,
-            totalExpenseByMonth: this.expenseService.business.totalByMonth,
+            data: bills,
+            summary: true,
+            detailTables,
+            summaryTitle: 'Summary',
             allExpensesHaveBeenPaid: this.expenseService.business.allHaveBeenPaid,
             buildExpensesTablesParams: this.expenseService.business.buildTablesParams
         })
+
     }
 
     private async findAllByGroup(groupId: string) {

@@ -1,61 +1,27 @@
+import { type CycleOfMonths, MONTHS, totalByMonth } from '@repo/services/date/month/month';
 import { cleanTextByListText } from '@repo/services/string/string';
 
-import { MONTHS } from '@repo/services/date/month/month';
-
-import { DEFAULT_TABLE_PARAMS, DEFAULT_TITLE_STYLES } from '@repo/services/spreadsheet/table/constants';
+import { ECellType } from '@repo/services/spreadsheet/cell/enum';
 import type { TableParams } from '@repo/services/spreadsheet/table/types';
+
 
 import type Expense from '../../expense';
 
 import type Bill from '../bill';
-import { EBillType } from '../enum';
 
 import type {
     BodyData,
     BuildBodyDataParams,
-    GroupTables,
-    ProcessingSpreadSheetCreditCardExpenseTableParams,
-    ProcessingSpreadsheetBasicExpenseTableParams,
+    ProcessingSpreadsheetDetailTableParams,
+    ProcessingSpreadsheetSecondaryTablesParams,
     ProcessingSpreadsheetTableParams,
     SpreadsheetProcessingParams
 } from './types';
 
-const DEFAULT_BODY_DATA: BodyData =  {
-    title: '',
-    type: EBillType.CREDIT_CARD,
-    january: 0,
-    january_paid: false,
-    february: 0,
-    february_paid: false,
-    march: 0,
-    march_paid: false,
-    april: 0,
-    april_paid: false,
-    may: 0,
-    may_paid: false,
-    june: 0,
-    june_paid: false,
-    july: 0,
-    july_paid: false,
-    august: 0,
-    august_paid: false,
-    september: 0,
-    september_paid: false,
-    october: 0,
-    october_paid: false,
-    november: 0,
-    november_paid: false,
-    december: 0,
-    december_paid: false,
-    total: 0,
-    paid: false,
-};
-
-const DEFAULT_TABLE_HEADERS: Array<string> = ['title', ...MONTHS, 'paid', 'total'];
 
 export default class BillBusiness {
 
-    calculate(bill: Bill): Bill {
+    public calculate(bill: Bill): Bill {
         if (bill?.expenses?.length) {
             bill.total = this.sumTotalExpenses(bill.expenses, 'total');
             bill.total_paid = this.sumTotalExpenses(bill.expenses, 'total_paid');
@@ -64,235 +30,227 @@ export default class BillBusiness {
         return bill;
     }
 
-    spreadsheetProcessing({
-                              sheet,
-                              bills = [],
-                              headers = DEFAULT_TABLE_HEADERS,
-                              startRow = 14,
-                              tableWidth = 3,
-                              groupsName = [],
-                              startColumn = 2,
-                              totalExpenseByMonth,
-                              allExpensesHaveBeenPaid,
-                              buildExpensesTablesParams
-                          }: SpreadsheetProcessingParams): void {
+    public spreadsheetProcessing({
+                                     summary = true,
+                                     startRow = 14,
+                                     tableWidth = 3,
+                                     groupsName = [],
+                                     startColumn = 2,
+                                     summaryTitle = 'Summary',
+                                     detailTables = [],
+                                     ...params
+                                 }: SpreadsheetProcessingParams): number {
+        const tableHeader = ['title', ...MONTHS, 'paid', 'total'];
 
-        if (!bills?.length) {
-            return;
-        }
+        const { data, sheet, groupName, allExpensesHaveBeenPaid, buildExpensesTablesParams } = params;
 
-        const secondStartRow = this.processingSpreadsheetTable({
-            bills,
-            sheet,
-            headers,
-            startRow,
-            groupsName,
-            startColumn,
-            totalExpenseByMonth,
-            allExpensesHaveBeenPaid
+        sheet.createWorkSheet(groupName);
+
+        sheet.cell.add({
+            cell: 'B2',
+            type: ECellType.TITLE,
+            value: groupName,
+            merge: { cellStart: 'B2', cellEnd: 'P11' }
         });
 
-        const thirdStartRow = this.processingSpreadsheetBasicExpenseTable({
-            bills,
-            sheet,
-            startRow: secondStartRow,
-            tableWidth,
-            buildExpensesTablesParams
-        });
+        const initialRow = summary
+            ? this.processingSpreadsheetTable({
+                sheet,
+                startRow,
+                startColumn,
+                table: {
+                    data: data.map((item) => ({
+                        title: cleanTextByListText(groupsName, item.name),
+                        list: item.expenses ?? []
+                    })),
+                    title: summaryTitle,
+                    footer: true,
+                    header: tableHeader,
+                },
+                allExpensesHaveBeenPaid
+            })
+            : startRow;
 
-        this.processingSpreadSheetCreditCardExpenseTable({
-            bills,
+        return this.processingSpreadsheetSecondaryTables({
+            data,
             sheet,
-            headers,
-            startRow: thirdStartRow,
-            groupsName,
+            startRow: initialRow,
             tableWidth,
+            groupsName,
             startColumn,
-            totalExpenseByMonth,
+            detailTables,
             allExpensesHaveBeenPaid,
             buildExpensesTablesParams
         });
     }
 
-    private processingSpreadsheetTable(params: ProcessingSpreadsheetTableParams) {
-        const { bills, sheet, headers, startRow, groupsName, startColumn, totalExpenseByMonth, allExpensesHaveBeenPaid } = params;
+    private processingSpreadsheetTable(params: ProcessingSpreadsheetTableParams): number {
+        const { sheet, table, startRow, startColumn, allExpensesHaveBeenPaid } = params;
 
-        const tableBodyData = bills.map((bill) => this.buildBodyData({
-            title: bill.name,
-            expenses: bill.expenses,
-            groupsName,
-            totalExpenseByMonth,
-            allExpensesHaveBeenPaid
+        if (!table) {
+            return startRow;
+        }
+
+        const { title, data = [], header, footer } = table;
+
+        const tableBodyData = data.map((body) => this.buildBodyData<Expense>({
+            data: !body.item ? body.list : body.item,
+            title: body.title,
+            allHaveBeenPaid: allExpensesHaveBeenPaid
         }));
 
+
+        if (!tableBodyData.length) {
+            return startRow;
+        }
+
         const tableParams: TableParams = {
-            ...DEFAULT_TABLE_PARAMS,
-            body: { ...DEFAULT_TABLE_PARAMS.body, list: tableBodyData },
-            headers: { ...DEFAULT_TABLE_PARAMS.headers, list: headers },
-            tableWidth: headers.length,
+            body: { list: tableBodyData },
+            title: !title ? undefined : { value: title },
+            headers: { list: header },
+            startRow: startRow,
+            tableWidth: header.length,
+            startColumn
         };
 
-        sheet.addTable({
-            ...tableParams,
-            startRow,
-            startColumn,
-        });
+        if (footer) {
+            const monthsObj = MONTHS.reduce((acc, month) => {
+                acc[month] = totalByMonth(month, tableBodyData);
+                return acc;
+            }, {} as CycleOfMonths);
+            tableParams.footer = {
+                paid: tableBodyData.every(item => item && item.paid),
+                footer: true,
+                title: 'TOTAL',
+                ...monthsObj,
+                total: tableBodyData.reduce((sum, item) => sum + (Number(item.total) || 0), 0),
+            };
+        }
 
-        return startRow + tableBodyData.length + 2;
+        const positions = sheet.addTable(tableParams);
+
+
+        return positions.nextRow + 1;
     }
 
-    private processingSpreadsheetBasicExpenseTable({
-                                                       bills,
-                                                       sheet,
-                                                       startRow,
-                                                       tableWidth,
-                                                       buildExpensesTablesParams
-                                                   }: ProcessingSpreadsheetBasicExpenseTableParams) {
-
-        const basicExpenses = bills
-            .filter(bill => bill.type !== EBillType.CREDIT_CARD)
-            .flatMap(bill => bill.expenses ?? []);
-        const basicExpensesTables = buildExpensesTablesParams(basicExpenses, tableWidth);
-
-        sheet.addTables({
-            ...basicExpensesTables,
-            firstTableRow: startRow
-        });
-
-        return sheet.calculateTablesParamsNextRow({
-            spaceTop: 1,
-            startRow: startRow,
-            tableWidth,
-            totalTables: basicExpensesTables.tables.length,
-            linesPerTable: MONTHS.length + 2,
-            spaceBottomPerLine: 1,
-        });
-    }
-
-    private processingSpreadSheetCreditCardExpenseTable(params: ProcessingSpreadSheetCreditCardExpenseTableParams) {
+    private processingSpreadsheetSecondaryTables(params: ProcessingSpreadsheetSecondaryTablesParams): number {
         const {
-            bills,
+            data,
             sheet,
-            headers,
-            groupsName,
             startRow,
             tableWidth,
+            groupsName,
             startColumn,
-            totalExpenseByMonth,
-            buildExpensesTablesParams,
-            allExpensesHaveBeenPaid
+            detailTables,
+            allExpensesHaveBeenPaid,
+            buildExpensesTablesParams
         } = params;
+        const header = ['title', ...MONTHS, 'paid', 'total'];
+        return detailTables?.reduce((currentRow, type) => {
+            const currentData = data.filter((item) => item.type === type);
 
-        const groupTablesExpenses: Array<GroupTables> = bills
-            .filter(bill => bill.type === EBillType.CREDIT_CARD)
-            .map(bill => {
-                const tableBodyData = (bill.expenses ?? [])
-                    .filter(expense => !expense.is_aggregate)
-                    .map(expense => {
-                        const bodyData = this.buildBodyData({
-                            title: expense.name,
-                            expense,
-                            groupsName,
-                            totalExpenseByMonth,
-                            allExpensesHaveBeenPaid
-                        });
-                        const children = expense.children ?? [];
-                        const childrenTables = children.length
-                            ? buildExpensesTablesParams(children, tableWidth)
-                            : null;
-
-                        return { bodyData, childrenTables, title: expense.name };
-                    });
-
-                const list = tableBodyData.map(item => item.bodyData);
-                const groupTablesParams = tableBodyData
-                    .filter(item => !!item.childrenTables)
-                    .map(item => ({
-                        title: item.title,
-                        tablesParams: item.childrenTables
-                    }));
-
-                return {
-                    tableParams: {
-                        ...DEFAULT_TABLE_PARAMS,
-                        body: { ...DEFAULT_TABLE_PARAMS.body, list },
-                        headers: { ...DEFAULT_TABLE_PARAMS.headers, list: headers },
-                        title: {
-                            value: cleanTextByListText(groupsName, bill.name),
-                            styles: DEFAULT_TITLE_STYLES
-                        },
-                        tableWidth: headers.length
+            if (type !== 'CREDIT_CARD') {
+                return this.processingSpreadsheetDetailTable({
+                    sheet,
+                    table: {
+                        data: currentData.map((data) => ({
+                            title: cleanTextByListText(groupsName, data.name),
+                            list: data.expenses ?? []
+                        })),
+                        title: type,
+                        header: ['month', 'value', 'paid'],
                     },
-                    groupTablesParams
-                } as GroupTables;
-            });
-
-        groupTablesExpenses.reduce((rowAcc, groupTable) => {
-            const { tableParams, groupTablesParams = [] } = groupTable;
-            sheet.addTable({
-                ...tableParams,
-                startRow: rowAcc,
-                startColumn,
-            });
-
-            const tableHeight = sheet.calculateTableHeight({ total: tableParams?.body?.list?.length });
-            const afterMainTableRow = rowAcc + tableHeight + 2;
-
-            return groupTablesParams.reduce((row, group) => {
-                sheet.cell.add({
-                    cell: row + 1,
-                    cellColumn: 2,
-                    value: group.title,
-                    styles: {
-                        font: { bold: true },
-                        alignment: { wrapText: false },
-                        borderStyle: 'medium',
-                        fillColor: 'FFFFFF'
-                    },
-                    merge: {
-                        positions: {
-                            startRow: row + 1,
-                            startColumn: 2,
-                            endRow: row + 1,
-                            endColumn: 16
-                        }
-                    }
-                });
-                const firstTableRow = row + 2;
-
-                sheet.addTables({
-                    ...group.tablesParams,
-                    firstTableRow
-                });
-
-                return sheet.calculateTablesParamsNextRow({
-                    spaceTop: 1,
-                    startRow: row,
+                    startRow: currentRow,
                     tableWidth,
-                    totalTables: group.tablesParams.tables.length,
-                    linesPerTable: MONTHS.length + 2,
-                    spaceBottomPerLine: 1,
+                    buildExpensesTablesParams
                 });
-            }, afterMainTableRow);
+            }
+
+            return currentData.reduce((row, data) => {
+                const expenses = data.expenses ?? [];
+                const parentExpenses = expenses.filter((expense) => !expense.is_aggregate);
+
+                const rowAfterParent = !parentExpenses.length ? row : this.processingSpreadsheetTable({
+                    sheet,
+                    startRow: row,
+                    startColumn,
+                    table: {
+                        data: parentExpenses.map((parent) => ({
+                            title: cleanTextByListText(groupsName, parent.name),
+                            list: [],
+                            item: parent
+                        })),
+                        title: cleanTextByListText(groupsName, data.name),
+                        footer: true,
+                        header: header,
+                    },
+                    allExpensesHaveBeenPaid
+                });
+                return parentExpenses.reduce((parentRow, parent) => {
+                    const childrenExpenses = parent.children ?? [];
+                    return !childrenExpenses.length ? parentRow : this.processingSpreadsheetTable({
+                        sheet,
+                        startRow: parentRow,
+                        startColumn,
+                        table: {
+                            data: childrenExpenses.map((child) => ({
+                                title: cleanTextByListText(groupsName, child.name),
+                                list: [],
+                                item: child
+                            })),
+                            title: cleanTextByListText(groupsName, parent.name),
+                            footer: true,
+                            header: header,
+                        },
+                        allExpensesHaveBeenPaid
+                    });
+                }, rowAfterParent);
+            }, currentRow);
         }, startRow);
     }
 
-    private buildBodyData({
-                              title,
-                              expense,
-                              expenses = [],
-                              groupsName = [],
-                              totalExpenseByMonth,
-                              allExpensesHaveBeenPaid
-                          }: BuildBodyDataParams): BodyData {
-        const bodyData: BodyData = { ...DEFAULT_BODY_DATA };
-        bodyData.title = cleanTextByListText(groupsName, title);
-        bodyData.paid = !expense ? allExpensesHaveBeenPaid(expenses) : expense.paid;
-        MONTHS.forEach((month) => {
-            bodyData[month] = !expense ? totalExpenseByMonth(month, expenses) : expense[month];
-        });
-        bodyData.total = MONTHS.reduce((sum, month) => sum + (Number(bodyData[month]) || 0), 0);
+    private buildBodyData<T>({ data, title, allHaveBeenPaid }: BuildBodyDataParams<T>): BodyData {
+        const isDataArray = Array.isArray(data);
+        const monthsObj = MONTHS.reduce((acc, month) => {
+            acc[month] = isDataArray ? totalByMonth(month, data as Array<Record<string, unknown>>) : data[month];
+            return acc;
+        }, {} as CycleOfMonths);
+
+        const bodyData: BodyData = {
+            paid: isDataArray ? allHaveBeenPaid(data) : data['paid'],
+            title: title,
+            ...monthsObj,
+            total: 0
+        };
+
+        bodyData['total'] = MONTHS.reduce((sum, month) => sum + (Number(bodyData[month]) || 0), 0);
         return bodyData;
+    }
+
+    private processingSpreadsheetDetailTable(params: ProcessingSpreadsheetDetailTableParams): number {
+        const { sheet, startRow, tableWidth, table, buildExpensesTablesParams } = params;
+
+        if (!table) {
+            return startRow;
+        }
+
+        const { title, data = [] } = table;
+
+        const expenses = data.flatMap(item => item.list ?? []);
+
+        const expenseTables = buildExpensesTablesParams(expenses, tableWidth);
+
+        if (!expenseTables.tables.length) {
+            return startRow;
+        }
+
+        const positions = sheet.addTables({
+            ...expenseTables,
+            blockTitle: !title ? undefined : title,
+            firstTableRow: startRow
+        });
+
+        return positions.nextRow + 1;
     }
 
     private sumTotalExpenses(expenses: Array<Expense>, property: 'total' | 'total_paid'): number {

@@ -1,3 +1,5 @@
+import * as ExcelJS from 'exceljs';
+
 import { Buffer } from 'buffer';
 
 import { ConflictException, Injectable } from '@nestjs/common';
@@ -25,6 +27,23 @@ import { Supplier } from './entities/supplier.entity';
 import { SupplierService } from './supplier/supplier.service';
 import { SupplierType } from './entities/type.entity';
 
+type SpreadsheetTable = {
+    title: string;
+    january: string | number;
+    february: string | number;
+    march: string | number;
+    april: string | number;
+    may: string | number;
+    june: string | number;
+    july: string | number;
+    august: string | number;
+    september: string | number;
+    october: string | number;
+    november: string | number;
+    december: string | number;
+    paid: string | number;
+    total: string | number;
+}
 
 @Injectable()
 export class FinanceService extends Service<Finance> {
@@ -55,31 +74,19 @@ export class FinanceService extends Service<Finance> {
         const groups = await this.fetchGroups(finance.id);
 
         const sheet = new Spreadsheet();
-        const groupsName: Array<string> = [];
-        for (const group of groups) {
-            sheet.createWorkSheet(group.name);
-            groupsName.push(group.name);
+        const groupsName: Array<string> = groups.map((group) => group.name);
 
-            const startRow = 14;
-            const startColumn = 2;
-            const tableWidth = 3;
-
-            sheet.cell.add({
-                cell: 'B2',
-                type: 'title',
-                value: group.name,
-                merge: { cellStart: 'B2', cellEnd: 'P11' }
-            });
-
-            await this.billService.spreadsheetProcessing({
+        await Promise.all(
+            groups.map(group => this.billService.spreadsheetProcessing({
                 groupId: group.id,
                 sheet,
-                startRow,
-                tableWidth,
+                startRow: 14,
+                groupName: group.name,
+                tableWidth: 3,
                 groupsName,
-                startColumn,
-            });
-        }
+                startColumn: 2,
+            }))
+        )
 
         return await sheet.generateSheetBuffer();
     }
@@ -142,7 +149,7 @@ export class FinanceService extends Service<Finance> {
 
         for (const finance of finances) {
             const financeSeed = financeListSeed.find((item) => item.id === finance.id);
-            if(financeSeed) {
+            if (financeSeed) {
                 const billList = await this.seeder.executeSeed<Bill>({
                     label: 'Bills',
                     seedMethod: async () => {
@@ -215,5 +222,84 @@ export class FinanceService extends Service<Finance> {
                 })
             }
         });
+    }
+
+    async initializeWithDocument(file: Express.Multer.File, user: User) {
+        if (!file?.buffer) {
+            throw new Error('Arquivo não enviado ou inválido.');
+        }
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(file.buffer);
+
+        const worksheet = workbook.worksheets[0];
+        if (!worksheet) {
+            throw new Error('O arquivo Excel não contém nenhuma planilha.');
+        }
+
+        const headerRowNumber = 14;
+        const headerRow = worksheet.getRow(headerRowNumber);
+
+        if (!headerRow) {
+            throw new Error('Cabeçalho ausente na planilha.');
+        }
+
+        const headerMap: { [col: number]: keyof SpreadsheetTable } = {};
+        headerRow.eachCell({ includeEmpty: false }, (cell, colNumber) => {
+            const header = String(cell.value).trim().toLowerCase();
+            // Relacionamento defensivo para prevenir erros de capitalização
+            switch (header) {
+                case 'title': headerMap[colNumber] = 'title'; break;
+                case 'january': headerMap[colNumber] = 'january'; break;
+                case 'february': headerMap[colNumber] = 'february'; break;
+                case 'march': headerMap[colNumber] = 'march'; break;
+                case 'april': headerMap[colNumber] = 'april'; break;
+                case 'may': headerMap[colNumber] = 'may'; break;
+                case 'june': headerMap[colNumber] = 'june'; break;
+                case 'july': headerMap[colNumber] = 'july'; break;
+                case 'august': headerMap[colNumber] = 'august'; break;
+                case 'september': headerMap[colNumber] = 'september'; break;
+                case 'october': headerMap[colNumber] = 'october'; break;
+                case 'november': headerMap[colNumber] = 'november'; break;
+                case 'december': headerMap[colNumber] = 'december'; break;
+                case 'paid': headerMap[colNumber] = 'paid'; break;
+                case 'total': headerMap[colNumber] = 'total'; break;
+                // Adicione outras opções conforme necessário
+            }
+        });
+
+        const data: SpreadsheetTable[] = [];
+
+        for (
+            let rowNumber = headerRowNumber + 1;
+            rowNumber <= worksheet.rowCount;
+            rowNumber++
+        ) {
+            const row = worksheet.getRow(rowNumber);
+            if (!row) break;
+
+            let rowIsEmpty = true;
+            const obj: Partial<SpreadsheetTable> = {};
+
+            for (const col in headerMap) {
+                const colNum = parseInt(col, 10);
+                const key = headerMap[colNum];
+                const value = row.getCell(colNum).value;
+
+                if (value !== null && value !== undefined && value !== '') {
+                    rowIsEmpty = false;
+                }
+                if(key) {
+                    obj[key] = (typeof value === 'object' && value !== null && 'result' in value) ? (value as any).result : value ?? '';
+                }
+            }
+
+            if (rowIsEmpty) break;
+
+            // Faz um cast porque testamos todos os campos no começo.
+            data.push(obj as SpreadsheetTable);
+        }
+
+        return data;
+
     }
 }

@@ -3,8 +3,8 @@ import { Buffer } from 'buffer';
 
 import { chunk } from '../array';
 
+import { Cell, ECellType, type ReferenceCell } from './cell';
 import { Table, type TableParams, type TablesParams } from './table';
-import { Cell } from './cell';
 
 type CalculateTablesParamsNextRowParams = {
     spaceTop?: number;
@@ -70,24 +70,49 @@ export class Spreadsheet {
                          titleStyle,
                          tableWidth = 3,
                          spaceLines = 1,
+                         blockTitle,
                          headerStyle,
                          firstTableRow = 13,
                          tableDataRows,
                          tableStartCol = [3, 8, 13],
+                         blockTitleStyle,
                          tableTitleHeight = 1,
                          tableHeaderHeight = 1
-                     }: TablesParams): void {
+                     }: TablesParams): ReferenceCell {
         const chunkedTables = chunk(tables, tableWidth);
         const blockHeight = tableTitleHeight + tableHeaderHeight + tableDataRows;
 
+        const initialRow = blockTitle ? firstTableRow + 1 : firstTableRow;
+
+        if(blockTitle) {
+            const titleColumn = tableStartCol[0] || 1;
+            this.cell.add({
+                cell: firstTableRow,
+                type: ECellType.SUBTITLE,
+                value: blockTitle,
+                styles: blockTitleStyle,
+                cellColumn: titleColumn,
+                merge: {
+                    positions: {
+                        startRow: firstTableRow,
+                        endRow: firstTableRow,
+                        startColumn: titleColumn,
+                        endColumn: (tableStartCol[tableWidth-1] || 1) + (headers?.length ?? 1) - 1
+                    }
+                }
+            });
+        }
+
+        const referenceCells: Array<ReferenceCell> = [];
+
         chunkedTables.forEach((group, index) => {
-            const row = firstTableRow + index * (blockHeight + spaceLines);
+            const row = initialRow + index * (blockHeight + spaceLines);
             group.forEach((table, tableIndex) => {
                 const col = tableStartCol[tableIndex] || 0;
                 const label = table?.['title'] || 'title';
                 const body = table?.['data'];
 
-                this.addTable({
+                const referenceCell = this.addTable({
                     title: {
                         value: label,
                         styles: titleStyle
@@ -103,25 +128,26 @@ export class Spreadsheet {
                         list: body ?? [],
                         styles: bodyStyle
                     }
-                });
+                }) as ReferenceCell;
+                referenceCells.push(referenceCell);
             });
         });
+
+        return referenceCells[referenceCells.length - 1] as ReferenceCell;
     }
 
-    public addTable({ title, body, headers, startRow, tableWidth, startColumn, }: TableParams): void {
-        const table = new Table({
-            body,
-            title,
-            headers,
-            startRow,
-            tableWidth,
-            startColumn,
-        });
+    public addTable(params: TableParams): ReferenceCell {
+        const table = new Table(params);
+
+        const { headers, tableWidth, startColumn } = params;
+
         if(table.title) {
             this.cell.add(table.title);
         }
+
         table.headers.forEach((header) => this.cell.add(header));
-        table.body.forEach((body) => this.cell.add(body));
+        const referenceCells = table.body.map((body) => this.cell.add(body));
+        const referenceCell = referenceCells[referenceCells.length - 1] as ReferenceCell;
 
         (headers?.list ?? [])
             .slice(0, tableWidth)
@@ -129,6 +155,8 @@ export class Spreadsheet {
                 const defaultWidths = [14, 8, 8];
                 this.cell.column(startColumn + idx).width = defaultWidths[idx] ?? 12;
             });
+
+        return referenceCell;
     }
 
     public async generateSheetBuffer(): Promise<Buffer> {
