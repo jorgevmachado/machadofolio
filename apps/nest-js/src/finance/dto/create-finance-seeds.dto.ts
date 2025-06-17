@@ -20,4 +20,8 @@ export class CreateFinanceSeedsDto {
     @IsBoolean()
     @IsOptional()
     supplier?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    finance?: boolean;
 }

@@ -2,9 +2,9 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { snakeCaseToNormal } from '@repo/services/string/string';
-
+import { MONTHS } from '@repo/services/date/month/month';
 import { filterByCommonKeys } from '@repo/services/array/array';
+import { snakeCaseToNormal } from '@repo/services/string/string';
 
 import BillBusiness from '@repo/business/finance/bill/business/business';
 import BillConstructor from '@repo/business/finance/bill/bill';
@@ -26,7 +26,8 @@ import { GroupService } from '../group/group.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
-import { BillSeederParams, ExistExpenseInBill, SpreadsheetProcessingParams } from './types';
+import { BillSeederParams, CreateToSheetParams, ExistExpenseInBill, SpreadsheetProcessingParams } from './types';
+
 
 
 @Injectable()
@@ -356,7 +357,8 @@ export class BillService extends Service<Bill> {
 
 
     async spreadsheetProcessing(params: SpreadsheetProcessingParams) {
-        const bills = await this.findAllByGroup(params.groupId);
+        const currentYear = params.year ?? new Date().getFullYear();
+        const bills = await this.findAllByGroupYear(params.groupId, currentYear);
 
         const detailTables = [
             EBillType.BANK_SLIP,
@@ -367,23 +369,33 @@ export class BillService extends Service<Bill> {
 
         this.billBusiness.spreadsheetProcessing({
             ...params,
+            year: currentYear,
             data: bills,
             summary: true,
             detailTables,
             summaryTitle: 'Summary',
+            detailTablesHeader: ['month', 'value', 'paid', 'type'],
+            summaryTableHeader: ['type', 'bank', ...MONTHS, 'paid', 'total'],
             allExpensesHaveBeenPaid: this.expenseService.business.allHaveBeenPaid,
             buildExpensesTablesParams: this.expenseService.business.buildTablesParams
         })
 
     }
 
-    private async findAllByGroup(groupId: string) {
+    private async findAllByGroupYear(groupId: string, year: number) {
         const bills = await this.findAll({
-            filters: [{
-                value: groupId,
-                param: 'group',
-                condition: '='
-            }],
+            filters: [
+                {
+                    value: groupId,
+                    param: 'group',
+                    condition: '='
+                },
+                {
+                    value: year,
+                    param: 'year',
+                    condition: '='
+                }
+            ],
             withRelations: true
         });
 
@@ -393,4 +405,42 @@ export class BillService extends Service<Bill> {
         return [];
     }
 
+    async createToSheet(createToSheetParams: CreateToSheetParams) {
+        const bank = await this.bankService.treatEntityParam<Bank>(
+            createToSheetParams.bank,
+            'Bank'
+        ) as Bank;
+
+        const group = await this.groupService.treatEntityParam<Group>(
+            createToSheetParams.group,
+            'Group'
+        ) as Group;
+
+        const name = `${group.name} ${snakeCaseToNormal(createToSheetParams.type)}`;
+
+        const item = await this.findOne({
+            value: name,
+            filters: [{
+                value: createToSheetParams.year,
+                param: 'year',
+                condition: '='
+            }],
+            withDeleted: true,
+            withThrow: false });
+
+        if(item) {
+            return item;
+        }
+
+        const bill = new BillConstructor({
+            name,
+            year: createToSheetParams.year,
+            type: createToSheetParams.type,
+            finance: createToSheetParams.finance,
+            bank,
+            group,
+        })
+
+        return await this.save(bill);
+    }
 }

@@ -1,5 +1,5 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
 import BankConstructor from '@repo/business/finance/bank/bank';
@@ -48,4 +48,18 @@ export class BankService extends Service<Bank> {
       createdEntityFn: async (item) => item
     })
   }
+
+    async createToSheet(value?: string) {
+      if(!value) {
+        throw new NotFoundException(`${this.alias} not found`);
+      }
+
+      const item = await this.findOne({ value, withDeleted: true, withThrow: false });
+
+      if(item) {
+        return item;
+      }
+
+      return this.create({ name: value });
+    }
 }

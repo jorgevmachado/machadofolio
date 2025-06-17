@@ -1,4 +1,3 @@
-import { type  CycleOfMonths } from '@repo/services/date/month/month';
 import type { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
 import type { TablesParams } from '@repo/services/spreadsheet/table/types';
 
@@ -7,6 +6,7 @@ import type Expense from '../../expense';
 import type Bill from '../bill';
 
 export type SpreadsheetProcessingParams = {
+    year: number;
     data: Array<Bill>;
     sheet: Spreadsheet;
     summary?: boolean;
@@ -14,56 +14,63 @@ export type SpreadsheetProcessingParams = {
     groupName: string;
     tableWidth?: number;
     groupsName?: Array<string>;
+    tableHeader?: Array<string>;
     startColumn?: number;
     detailTables?: Array<string>;
     summaryTitle?: string;
+    detailTablesHeader?: Array<string>;
+    summaryTableHeader?: Array<string>;
     allExpensesHaveBeenPaid: (data: Array<Expense>) => boolean;
-    buildExpensesTablesParams: (data: Array<Expense>, tableWidth: number) => TablesParams;
+    buildExpensesTablesParams: (data: Array<Expense>, tableWidth: number, headers: Array<string>) => TablesParams;
 }
 
-export type ProcessingSpreadsheetTableParams = Pick<SpreadsheetProcessingParams, 'sheet' | 'allExpensesHaveBeenPaid'> & {
-    table?: SpreadsheetTable;
+export type ProcessingSpreadsheetTableParams<T> = Pick<SpreadsheetProcessingParams, 'sheet'> & {
+    table?: SpreadsheetTable<T>;
     startRow: number;
     startColumn: number;
+    buildFooterData?: (data: Array<BodyData>) => BodyData;
+    buildBodyDataMap: (data: SpreadsheetTableData<T>) => BuildBodyDataParams<T>;
 }
 
 export type ProcessingSpreadsheetDetailTableParams =
     Pick<SpreadsheetProcessingParams, 'sheet' | 'buildExpensesTablesParams'> &
-    Pick<ProcessingSpreadsheetTableParams, 'startRow'> &
+    Pick<ProcessingSpreadsheetTableParams<unknown>, 'startRow'> &
 {
-    table: SpreadsheetTable;
+    table: SpreadsheetTable<Expense>;
     startRow: number;
     tableWidth: number;
+    detailTablesHeader: Array<string>;
 }
 
 
 export type ProcessingSpreadsheetSecondaryTablesParams =
     Pick<SpreadsheetProcessingParams, 'sheet' | 'data' | 'buildExpensesTablesParams' | 'allExpensesHaveBeenPaid'> &
-    Pick<ProcessingSpreadsheetTableParams, 'startRow' | 'startColumn'> &
-    Pick<ProcessingSpreadsheetDetailTableParams, 'tableWidth'> & {
+    Pick<ProcessingSpreadsheetTableParams<unknown>, 'startRow' | 'startColumn'> &
+    Pick<ProcessingSpreadsheetDetailTableParams, 'tableWidth' | 'detailTablesHeader'> & {
     groupsName: Array<string>;
+    tableHeader: Array<string>;
     detailTables: Array<string>;
 
 }
 
-export type BuildBodyDataParams<T> = {
+type BuildBodyDataCore<T> = {
     data: Array<T> | T;
-    title: string;
-    allHaveBeenPaid: (data: Array<T>) => boolean;
-}
+    arrFunction: (data: Array<T>) => boolean;
+};
 
-export type BodyData = CycleOfMonths & {
-    paid: boolean;
-    title: string;
-    total: number;
-}
+type BuildBodyDataExtras = Record<string, string | number | boolean | undefined | object | unknown[]>;
 
-type SpreadsheetTable = {
-    data?: Array<{
-        list: Array<Expense>;
-        item?: Expense;
-        title: string;
-    }>;
+export type BuildBodyDataParams<T> = BuildBodyDataExtras & BuildBodyDataCore<T>;
+
+export type BodyData = Record<string, string | number | boolean>;
+
+export type SpreadsheetTableData<T> = {
+    list: Array<T>;
+    item?: T;
+} & BuildBodyDataExtras;
+
+type SpreadsheetTable<T> = {
+    data?: Array<SpreadsheetTableData<T>>;
     title?: string;
     footer?: boolean;
     header: Array<string>;

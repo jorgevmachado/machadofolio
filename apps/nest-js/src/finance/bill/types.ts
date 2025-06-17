@@ -7,6 +7,7 @@ import type { Finance } from '../entities/finance.entity';
 import type { Group } from '../entities/group.entity';
 
 import type { FinanceSeederParams } from '../types';
+import { type Bill } from '../entities/bill.entity';
 
 export type ExistExpenseInBill = {
     year?: number;
@@ -22,6 +23,15 @@ export type BillSeederParams = Pick<FinanceSeederParams, 'billListJson'> & {
 }
 
 export type SpreadsheetProcessingParams = Pick<SpreadsheetProcessingBusinessParams, 'sheet' | 'startRow' | 'tableWidth' | 'groupsName' | 'startColumn'> & {
+    year?: number;
     groupId: string;
     groupName: string;
+}
+
+export type CreateToSheetParams = {
+    year: number;
+    type: Bill['type'];
+    bank: Bank;
+    group: Group;
+    finance: Finance;
 }

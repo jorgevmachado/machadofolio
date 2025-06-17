@@ -140,13 +140,14 @@ export default class ExpenseBusiness {
         return result;
     }
 
-    public buildTablesParams(expenses: Array<Expense> = [], tableWidth: number): TablesParams {
+    public buildTablesParams(expenses: Array<Expense> = [], tableWidth: number, headers: Array<string> = ['month', 'value', 'paid']): TablesParams {
         const tables: TablesParams['tables'] = [];
 
         expenses.forEach((expense) => {
             const monthlyData = MONTHS.map((month) => ({
                 month: month.toUpperCase(),
                 value: expense[month],
+                type: expense.type,
                 paid: expense[`${month}_paid`],
             }));
             const body = {
@@ -159,7 +160,7 @@ export default class ExpenseBusiness {
         return {
             ...DEFAULT_TABLES_PARAMS,
             tables,
-            headers: ['month', 'value', 'paid'],
+            headers,
             tableWidth,
             tableDataRows: MONTHS.length,
         };

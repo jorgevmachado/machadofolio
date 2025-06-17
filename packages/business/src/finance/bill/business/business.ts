@@ -1,5 +1,5 @@
 import { type CycleOfMonths, MONTHS, totalByMonth } from '@repo/services/date/month/month';
-import { cleanTextByListText } from '@repo/services/string/string';
+import { cleanTextByListText, snakeCaseToNormal } from '@repo/services/string/string';
 
 import { ECellType } from '@repo/services/spreadsheet/cell/enum';
 import type { TableParams } from '@repo/services/spreadsheet/table/types';
@@ -15,7 +15,7 @@ import type {
     ProcessingSpreadsheetDetailTableParams,
     ProcessingSpreadsheetSecondaryTablesParams,
     ProcessingSpreadsheetTableParams,
-    SpreadsheetProcessingParams
+    SpreadsheetProcessingParams,
 } from './types';
 
 
@@ -35,13 +35,14 @@ export default class BillBusiness {
                                      startRow = 14,
                                      tableWidth = 3,
                                      groupsName = [],
+                                     tableHeader = ['title', ...MONTHS, 'paid', 'total'],
                                      startColumn = 2,
                                      summaryTitle = 'Summary',
                                      detailTables = [],
+                                     detailTablesHeader = ['month', 'value', 'paid'],
+                                     summaryTableHeader = ['title', 'bank', ...MONTHS, 'paid', 'total'],
                                      ...params
                                  }: SpreadsheetProcessingParams): number {
-        const tableHeader = ['title', ...MONTHS, 'paid', 'total'];
-
         const { data, sheet, groupName, allExpensesHaveBeenPaid, buildExpensesTablesParams } = params;
 
         sheet.createWorkSheet(groupName);
@@ -49,8 +50,8 @@ export default class BillBusiness {
         sheet.cell.add({
             cell: 'B2',
             type: ECellType.TITLE,
-            value: groupName,
-            merge: { cellStart: 'B2', cellEnd: 'P11' }
+            value: `${groupName}(${params.year})`,
+            merge: { cellStart: 'B2', cellEnd: 'Q11' }
         });
 
         const initialRow = summary
@@ -60,14 +61,33 @@ export default class BillBusiness {
                 startColumn,
                 table: {
                     data: data.map((item) => ({
-                        title: cleanTextByListText(groupsName, item.name),
+                        type: snakeCaseToNormal(item.type),
+                        bank: item.bank.name,
                         list: item.expenses ?? []
                     })),
                     title: summaryTitle,
                     footer: true,
-                    header: tableHeader,
+                    header: summaryTableHeader,
                 },
-                allExpensesHaveBeenPaid
+                buildBodyDataMap: (data) => ({
+                    data: !data.item ? data.list : data.item,
+                    bank: data.bank,
+                    type: data.type,
+                    arrFunction: allExpensesHaveBeenPaid
+                }),
+                buildFooterData: (data) => {
+                    const monthsObj = MONTHS.reduce((acc, month) => {
+                        acc[month] = totalByMonth(month, data);
+                        return acc;
+                    }, {} as CycleOfMonths);
+                    return {
+                        paid: data.every(item => item && item.paid),
+                        footer: true,
+                        type: 'TOTAL',
+                        ...monthsObj,
+                        total: data.reduce((sum, item) => sum + (Number(item.total) || 0), 0),
+                    };
+                }
             })
             : startRow;
 
@@ -77,15 +97,17 @@ export default class BillBusiness {
             startRow: initialRow,
             tableWidth,
             groupsName,
+            tableHeader,
             startColumn,
             detailTables,
+            detailTablesHeader,
             allExpensesHaveBeenPaid,
             buildExpensesTablesParams
         });
     }
 
-    private processingSpreadsheetTable(params: ProcessingSpreadsheetTableParams): number {
-        const { sheet, table, startRow, startColumn, allExpensesHaveBeenPaid } = params;
+    private processingSpreadsheetTable(params: ProcessingSpreadsheetTableParams<Expense>): number {
+        const { sheet, table, startRow, startColumn, buildBodyDataMap, buildFooterData } = params;
 
         if (!table) {
             return startRow;
@@ -93,11 +115,7 @@ export default class BillBusiness {
 
         const { title, data = [], header, footer } = table;
 
-        const tableBodyData = data.map((body) => this.buildBodyData<Expense>({
-            data: !body.item ? body.list : body.item,
-            title: body.title,
-            allHaveBeenPaid: allExpensesHaveBeenPaid
-        }));
+        const tableBodyData = data.map((body) => this.buildBodyData<Expense>(buildBodyDataMap(body)));
 
 
         if (!tableBodyData.length) {
@@ -113,18 +131,8 @@ export default class BillBusiness {
             startColumn
         };
 
-        if (footer) {
-            const monthsObj = MONTHS.reduce((acc, month) => {
-                acc[month] = totalByMonth(month, tableBodyData);
-                return acc;
-            }, {} as CycleOfMonths);
-            tableParams.footer = {
-                paid: tableBodyData.every(item => item && item.paid),
-                footer: true,
-                title: 'TOTAL',
-                ...monthsObj,
-                total: tableBodyData.reduce((sum, item) => sum + (Number(item.total) || 0), 0),
-            };
+        if (footer && buildFooterData) {
+            tableParams.footer = buildFooterData(tableBodyData);
         }
 
         const positions = sheet.addTable(tableParams);
@@ -140,12 +148,13 @@ export default class BillBusiness {
             startRow,
             tableWidth,
             groupsName,
+            tableHeader,
             startColumn,
             detailTables,
+            detailTablesHeader,
             allExpensesHaveBeenPaid,
             buildExpensesTablesParams
         } = params;
-        const header = ['title', ...MONTHS, 'paid', 'total'];
         return detailTables?.reduce((currentRow, type) => {
             const currentData = data.filter((item) => item.type === type);
 
@@ -158,10 +167,11 @@ export default class BillBusiness {
                             list: data.expenses ?? []
                         })),
                         title: type,
-                        header: ['month', 'value', 'paid'],
+                        header: detailTablesHeader,
                     },
                     startRow: currentRow,
                     tableWidth,
+                    detailTablesHeader,
                     buildExpensesTablesParams
                 });
             }
@@ -182,9 +192,27 @@ export default class BillBusiness {
                         })),
                         title: cleanTextByListText(groupsName, data.name),
                         footer: true,
-                        header: header,
+                        header: tableHeader,
                     },
-                    allExpensesHaveBeenPaid
+                    buildBodyDataMap: (data) => ({
+                        data: !data.item ? data.list : data.item,
+                        bank: data.bank,
+                        title: data.title,
+                        arrFunction: allExpensesHaveBeenPaid
+                    }),
+                    buildFooterData: (data) => {
+                        const monthsObj = MONTHS.reduce((acc, month) => {
+                            acc[month] = totalByMonth(month, data);
+                            return acc;
+                        }, {} as CycleOfMonths);
+                        return {
+                            paid: data.every(item => item && item.paid),
+                            footer: true,
+                            title: 'TOTAL',
+                            ...monthsObj,
+                            total: data.reduce((sum, item) => sum + (Number(item.total) || 0), 0),
+                        };
+                    }
                 });
                 return parentExpenses.reduce((parentRow, parent) => {
                     const childrenExpenses = parent.children ?? [];
@@ -200,16 +228,21 @@ export default class BillBusiness {
                             })),
                             title: cleanTextByListText(groupsName, parent.name),
                             footer: true,
-                            header: header,
+                            header: tableHeader,
                         },
-                        allExpensesHaveBeenPaid
+                        buildBodyDataMap: (data) => ({
+                            data: !data.item ? data.list : data.item,
+                            bank: data.bank,
+                            title: data.title,
+                            arrFunction: allExpensesHaveBeenPaid
+                        }),
                     });
                 }, rowAfterParent);
             }, currentRow);
         }, startRow);
     }
 
-    private buildBodyData<T>({ data, title, allHaveBeenPaid }: BuildBodyDataParams<T>): BodyData {
+    private buildBodyData<T>({ data, arrFunction, ...params }: BuildBodyDataParams<T>): BodyData {
         const isDataArray = Array.isArray(data);
         const monthsObj = MONTHS.reduce((acc, month) => {
             acc[month] = isDataArray ? totalByMonth(month, data as Array<Record<string, unknown>>) : data[month];
@@ -217,8 +250,8 @@ export default class BillBusiness {
         }, {} as CycleOfMonths);
 
         const bodyData: BodyData = {
-            paid: isDataArray ? allHaveBeenPaid(data) : data['paid'],
-            title: title,
+            paid: isDataArray ? arrFunction(data) : data['paid'],
+            ...params,
             ...monthsObj,
             total: 0
         };
@@ -228,7 +261,7 @@ export default class BillBusiness {
     }
 
     private processingSpreadsheetDetailTable(params: ProcessingSpreadsheetDetailTableParams): number {
-        const { sheet, startRow, tableWidth, table, buildExpensesTablesParams } = params;
+        const { sheet, startRow, tableWidth, table, detailTablesHeader, buildExpensesTablesParams } = params;
 
         if (!table) {
             return startRow;
@@ -238,7 +271,7 @@ export default class BillBusiness {
 
         const expenses = data.flatMap(item => item.list ?? []);
 
-        const expenseTables = buildExpensesTablesParams(expenses, tableWidth);
+        const expenseTables = buildExpensesTablesParams(expenses, tableWidth, detailTablesHeader);
 
         if (!expenseTables.tables.length) {
             return startRow;

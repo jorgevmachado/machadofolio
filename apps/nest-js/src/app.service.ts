@@ -116,9 +116,11 @@ export class AppService {
     }
 
     private createFinanceSeederParams(createFinanceSeedsDto: CreateFinanceSeedsDto) {
-        const financeParams: FinanceSeederParams = {
-            financeListJson: FINANCE_LIST_FIXTURE_JSON,
-        };
+        const financeParams: FinanceSeederParams = {};
+        if(createFinanceSeedsDto.finance) {
+            financeParams.financeListJson = FINANCE_LIST_FIXTURE_JSON;
+        }
+
         if (createFinanceSeedsDto.expense) {
             createFinanceSeedsDto.bill = true;
             financeParams.expenseListJson = EXPENSE_LIST_FIXTURE_JSON;

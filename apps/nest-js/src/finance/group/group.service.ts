@@ -75,4 +75,14 @@ export class GroupService extends Service<Group> {
             }
         });
     }
+
+    async createToSheet(finance: Finance, value: string) {
+        const item = await this.findOne({ value, withDeleted: true, withThrow: false });
+
+        if(item) {
+            return item;
+        }
+
+        return this.create(finance, { name: value });
+    }
 }
