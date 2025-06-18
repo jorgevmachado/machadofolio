@@ -1,6 +1,6 @@
 import * as ExcelJS from 'exceljs';
 
-import { toSnakeCase } from '@repo/services/string/string';
+import { cleanTextByListText, snakeCaseToNormal, toSnakeCase } from '@repo/services/string/string';
 
 import { type CycleOfMonths, MONTHS } from '@repo/services/date/month/month';
 
@@ -33,6 +33,8 @@ import { Supplier } from './entities/supplier.entity';
 import { SupplierService } from './supplier/supplier.service';
 import { SupplierType } from './entities/type.entity';
 
+type DataAccumulator = Array<Record<string, string | number | boolean | object>>;
+
 @Injectable()
 export class FinanceService extends Service<Finance> {
     constructor(
@@ -63,7 +65,6 @@ export class FinanceService extends Service<Finance> {
 
         const sheet = new Spreadsheet();
         const groupsName: Array<string> = groups.map((group) => group.name);
-
         await Promise.all(
             groups.map(group => this.billService.spreadsheetProcessing({
                 year,
@@ -213,100 +214,36 @@ export class FinanceService extends Service<Finance> {
         });
     }
 
-    // async initializeWithDocument(file: Express.Multer.File, user: User) {
-    //     if (!file?.buffer) {
-    //         throw new Error('Arquivo não enviado ou inválido.');
-    //     }
-    //     const workbook = new ExcelJS.Workbook();
-    //     await workbook.xlsx.load(file.buffer);
-    //
-    //     const worksheet = workbook.worksheets[0];
-    //     if (!worksheet) {
-    //         throw new Error('O arquivo Excel não contém nenhuma planilha.');
-    //     }
-    //
-    //     const headerRowNumber = 14;
-    //     const headerRow = worksheet.getRow(headerRowNumber);
-    //
-    //     if (!headerRow) {
-    //         throw new Error('Cabeçalho ausente na planilha.');
-    //     }
-    //
-    //     const headerMap: { [col: number]: keyof SpreadsheetTable } = {};
-    //     headerRow.eachCell({ includeEmpty: false }, (cell, colNumber) => {
-    //         const header = String(cell.value).trim().toLowerCase();
-    //         // Relacionamento defensivo para prevenir erros de capitalização
-    //         switch (header) {
-    //             case 'title': headerMap[colNumber] = 'title'; break;
-    //             case 'january': headerMap[colNumber] = 'january'; break;
-    //             case 'february': headerMap[colNumber] = 'february'; break;
-    //             case 'march': headerMap[colNumber] = 'march'; break;
-    //             case 'april': headerMap[colNumber] = 'april'; break;
-    //             case 'may': headerMap[colNumber] = 'may'; break;
-    //             case 'june': headerMap[colNumber] = 'june'; break;
-    //             case 'july': headerMap[colNumber] = 'july'; break;
-    //             case 'august': headerMap[colNumber] = 'august'; break;
-    //             case 'september': headerMap[colNumber] = 'september'; break;
-    //             case 'october': headerMap[colNumber] = 'october'; break;
-    //             case 'november': headerMap[colNumber] = 'november'; break;
-    //             case 'december': headerMap[colNumber] = 'december'; break;
-    //             case 'paid': headerMap[colNumber] = 'paid'; break;
-    //             case 'total': headerMap[colNumber] = 'total'; break;
-    //             // Adicione outras opções conforme necessário
-    //         }
-    //     });
-    //
-    //     const data: SpreadsheetTable[] = [];
-    //
-    //     for (
-    //         let rowNumber = headerRowNumber + 1;
-    //         rowNumber <= worksheet.rowCount;
-    //         rowNumber++
-    //     ) {
-    //         const row = worksheet.getRow(rowNumber);
-    //         if (!row) break;
-    //
-    //         let rowIsEmpty = true;
-    //         const obj: Partial<SpreadsheetTable> = {};
-    //
-    //         for (const col in headerMap) {
-    //             const colNum = parseInt(col, 10);
-    //             const key = headerMap[colNum];
-    //             const value = row.getCell(colNum).value;
-    //
-    //             if (value !== null && value !== undefined && value !== '') {
-    //                 rowIsEmpty = false;
-    //             }
-    //             if(key) {
-    //                 obj[key] = (typeof value === 'object' && value !== null && 'result' in value) ? (value as any).result : value ?? '';
-    //             }
-    //         }
-    //
-    //         if (rowIsEmpty) break;
-    //
-    //         // Faz um cast porque testamos todos os campos no começo.
-    //         data.push(obj as SpreadsheetTable);
-    //     }
-    //
-    //     return data;
-    //
-    // }
-
     async initializeWithDocument(file: Express.Multer.File, user: User) {
         if (!file?.buffer) {
-            throw new Error('Arquivo não enviado ou inválido.');
+            throw new ConflictException('File not sent or invalid.');
         }
 
+        const result: Array<{ groupName: string; bills: number; expenses: number; }> = [];
         const finance = await this.initialize(user) as Finance;
 
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.load(file.buffer);
 
-        const worksheet = workbook.worksheets[0];
-        if (!worksheet) {
-            throw new Error('O arquivo Excel não contém nenhuma planilha.');
-        }
+        const worksheets = workbook.worksheets;
 
+        for(const worksheet of worksheets) {
+            if (!worksheet) {
+                throw new ConflictException('The Excel file does not contain any worksheets.');
+            }
+
+            const { groupName, expenses, bills } = await this.initializeWithWorksheet(worksheet, finance);
+            result.push({
+                groupName,
+                bills: bills.length,
+                expenses: expenses.length,
+            });
+        }
+        return result;
+
+    }
+
+    private async initializeWithWorksheet(worksheet: ExcelJS.Worksheet, finance: Finance) {
         const titleCell = worksheet.getCell('B2');
 
         const fullText = titleCell.value ? titleCell.value.toString().trim() : '';
@@ -321,46 +258,76 @@ export class FinanceService extends Service<Finance> {
         const year = title.year || currentYear;
         const groupName = title.name;
         const titleNextRow = 14
-        console.log('# => titleNextRow => ', titleNextRow);
 
         const summaryTableCell = worksheet.getCell('B14');
         const summaryTableCellValue = summaryTableCell.value ? summaryTableCell.value.toString().trim() : '';
         const summaryTableCellValueNextRow = Number(summaryTableCell.row) + 1;
         const bills: Array<Bill> = [];
+        const expenses: Array<Expense> = [];
+        const expensesData: Array<Record<string, string | number | boolean | object>> = [];
         if(summaryTableCellValue === 'Summary') {
             const summaryTableHeaderCellRow = worksheet.getRow(summaryTableCellValueNextRow);
-            const tableHeader = ['title', 'bank', ...MONTHS, 'paid', 'total'];
+            const tableHeader = ['type', 'bank', ...MONTHS, 'paid', 'total'];
             const filterTitle = ['TOTAL'];
             const { data, nextRow } = this.generateObjList(summaryTableHeaderCellRow, worksheet, titleNextRow, filterTitle, tableHeader)
 
-            console.log('# => nextRow => ', nextRow)
+            if(nextRow !== titleNextRow) {
+                for(const item of data) {
+                    const type = !item['type'] ? '' : item['type'].toString();
 
-            for(const item of data) {
-                const title = !item['title'] ? '' : item['title'].toString();
+                    const bill = await this.billService.createToSheet({
+                        ...item,
+                        type: toSnakeCase(type).toUpperCase(),
+                        year,
+                        group: groupName,
+                        finance
+                    }) as Bill;
 
-                const bank = await this.bankService.createToSheet(item['bank']?.toString()) as Bank;
-                const group = await this.groupService.createToSheet(finance, groupName) as Group;
-
-                const bill = await this.billService.createToSheet({
-                    type: toSnakeCase(title).toUpperCase() as EBillType,
-                    year,
-                    bank,
-                    group,
-                    finance
-                }) as Bill;
-
-                bills.push(bill);
+                    bills.push(bill);
+                }
             }
 
-            const { data: detailsTable, nextRow: detailsTableNextRow } = this.generateDetailsTable(worksheet, nextRow, bills);
-            console.log('# => detailsTable => ', detailsTable.length);
-            console.log('# => detailsTableNextRow => ', detailsTableNextRow);
+            const secondaryBillList = bills.filter((bill) => bill.type !== EBillType.CREDIT_CARD);
+            const { data: secondaryTableList, nextRow: secondaryTableListNextRow } = this.generateDetailsTable(
+                worksheet,
+                nextRow,
+                secondaryBillList
+            );
+
+            if(secondaryTableListNextRow !== nextRow) {
+                expensesData.push(...secondaryTableList);
+            }
+
+            const creditCardBillList = bills.filter((bill) => bill.type === EBillType.CREDIT_CARD);
+            const { data: creditCardTableList , nextRow: creditCardTableListNextRow } = this.generateCreditCardTable(
+                worksheet,
+                groupName,
+                secondaryTableListNextRow,
+                creditCardBillList
+            )
+            if(creditCardTableListNextRow !== secondaryTableListNextRow) {
+                expensesData.push(...creditCardTableList);
+            }
+        }
+
+        for(const itemData of expensesData) {
+            const expense = await this.billService.expense.createToSheet({
+                ...itemData,
+                year: currentYear,
+            })
+            if(expense) {
+                expenses.push(expense);
+            }
+        }
+
+        return {
+            groupName,
+            bills,
+            expenses,
         }
     }
 
-
     private generateObjList(row: ExcelJS.Row, worksheet: ExcelJS.Worksheet, startRow: number, ignoreTitles: Array<string> = [], header: Array<string> = []) {
-        console.log('# => startRow => ', startRow);
         const normalizedHeader = header.map(h => h.trim().toLowerCase());
         const headerMap: { [col: number]: string } = {};
         row.eachCell({ includeEmpty: false }, (cell, colNumber) => {
@@ -407,9 +374,9 @@ export class FinanceService extends Service<Finance> {
         for (const item of rowsParsed) {
             if (!item) break;
             totalData.push(item);
-            const titleField = normalizedHeader.find(h => h === 'title');
-            const itemTitle = titleField && typeof item[titleField] === 'string'
-                ? item[titleField].trim().toLowerCase()
+            const typeField = normalizedHeader.find(h => h === 'type');
+            const itemTitle = typeField && typeof item[typeField] === 'string'
+                ? item[typeField].trim().toLowerCase()
                 : '';
 
             const hasHeaderValue = normalizedHeader.some(
@@ -437,7 +404,7 @@ export class FinanceService extends Service<Finance> {
         const bodyData = {
             ...monthsObj,
             bill,
-            name: title,
+            supplier: title
         }
         let tableRow = row;
         MONTHS.forEach((month) => {
@@ -456,8 +423,8 @@ export class FinanceService extends Service<Finance> {
     private buildGroupTable(worksheet: ExcelJS.Worksheet, row: number, bill: Bill) {
         const tableCell1 = worksheet.getCell(row, 3);
         if(tableCell1.isMerged && tableCell1['_mergeCount'] === 2) {
-            const groupTableData: Array<Record<string, string | number | boolean | Bill>> = [];
-            const groupTableRow = row + 1;
+            const groupTableData: Array<Record<string, string | number | boolean | object | Bill>> = [];
+            const groupTableRow = row + 2;
             const groupTable1Data1 = this.buildDetailData(worksheet, tableCell1, groupTableRow, 4, bill);
             if(groupTable1Data1) {
                 groupTableData.push(groupTable1Data1);
@@ -481,45 +448,217 @@ export class FinanceService extends Service<Finance> {
     }
 
     private generateDetailsTable(worksheet: ExcelJS.Worksheet, startRow: number, bills: Array<Bill>) {
-        const data: Array<Record<string, string | number | boolean | Bill>> = [];
-        const cell = worksheet.getCell(startRow, 3);
-        const type = cell.value ? cell.value.toString().trim() : '';
-        let nextRow = Number(cell.row) + 1;
+        const billTypeMap = new Map(bills.map(bill => [bill.type, bill]));
 
-        if(type === EBillType.BANK_SLIP || type === EBillType.PIX || type === EBillType.ACCOUNT_DEBIT) {
-            const bill = bills.find((bill) => bill.type === type);
-            if(bill) {
-                const { data: groupTable1, nextRow: groupTable1Row, hasNext: grouTable1HasNext } = this.buildGroupTable(
+        const collectGroupsRecursively = (row: number, acc: DataAccumulator): { data: DataAccumulator; nextRow: number } => {
+            const cell = worksheet.getCell(row, 3);
+            const type = cell.value ? cell.value.toString().trim() : '';
+            if (!type) {
+                return { data: acc, nextRow: row };
+            }
+
+            const bill = billTypeMap.get(type as EBillType);
+
+            if (!bill) {
+                return { data: acc, nextRow: row };
+            }
+
+            const { acc: filledAcc, lastRow } = this.accumulateGroupTables(worksheet, row + 1, bill, acc);
+            return collectGroupsRecursively(lastRow, filledAcc);
+        }
+
+        const { data, nextRow } = collectGroupsRecursively(startRow, []);
+        return { data, nextRow };
+
+    }
+
+    private accumulateGroupTables(worksheet: ExcelJS.Worksheet, startRow: number, bill: Bill, acc: DataAccumulator): { acc: DataAccumulator; lastRow: number;} {
+        const constructedGroupTable = this.buildGroupTable(worksheet, startRow, bill);
+        const updatedAcc = [...acc, ...constructedGroupTable.data];
+        if(constructedGroupTable.hasNext) {
+            return this.accumulateGroupTables(worksheet, constructedGroupTable.nextRow, bill, updatedAcc);
+        }
+        return { acc: updatedAcc, lastRow: constructedGroupTable.nextRow };
+    }
+
+    private generateCreditCardTable(
+        worksheet: ExcelJS.Worksheet,
+        groupName: string,
+        startRow: number,
+        bills: Array<Bill>
+    ): { data: DataAccumulator; nextRow: number } {
+        const regex = /^([A-Z_]+)\(([^)]+)\)$/;
+
+        const readExpensesBlock = (
+            bill: Bill,
+            supplierList: Array<string>,
+            currentRow: number,
+            stopValue: string,
+            parent?: DataAccumulator[number]
+        ) => {
+            const inner = (
+                row: number,
+                acc: DataAccumulator
+            ): { expenses: typeof acc, nextRow: number } => {
+                const cellValue = worksheet.getCell(row, 2).value?.toString().trim() || '';
+                if (!cellValue || cellValue === stopValue) {
+                    return { expenses: acc, nextRow: row };
+                }
+                const { data: bodyData, supplierList: suppliers } = this.buildCreditCardBodyData(
                     worksheet,
-                    nextRow,
-                    bill
-                )
-                if(grouTable1HasNext) {
-                    nextRow = groupTable1Row;
-                    data.push(...groupTable1);
-                    const { data: groupTable2, nextRow: groupTable2Row, hasNext: groupTable2HasNext } = this.buildGroupTable(
-                        worksheet,
-                        nextRow,
-                        bill
-                    );
-                    if(groupTable2HasNext) {
-                        nextRow = groupTable2Row;
-                        data.push(...groupTable2);
-                        const { data: groupTable3, nextRow: groupTable3Row, hasNext: groupTable3HasNext } = this.buildGroupTable(
-                            worksheet,
-                            nextRow,
-                            bill
+                    bill,
+                    groupName,
+                    row,
+                    2,
+                    !parent,
+                    supplierList
+                );
+
+                if (suppliers?.length) {
+                    supplierList.push(...suppliers);
+                }
+                const accNext = bodyData
+                    ? [...acc, { ...bodyData, ...(parent ? { parent } : {}) }]
+                    : acc;
+                return inner(row + 1, accNext);
+            };
+            return inner(currentRow, []);
+        };
+
+        const processParentWithChildren = (
+            data: DataAccumulator,
+            initialRow: number,
+            supplierList: Array<string>,
+            bill: Bill
+        ): number => {
+            const recurse = (row: number): number => {
+                const cell = worksheet.getCell(row, 2);
+                const value = cell.value?.toString().trim() || '';
+                if (cell.isMerged && (cell as any)['_mergeCount'] > 2) {
+                    const parentName = `${groupName} ${value}`;
+                    const parent = data.find((item) => item.name === parentName);
+                    if (parent) {
+                        const { expenses: children, nextRow } = readExpensesBlock(
+                            bill,
+                            supplierList,
+                            row + 2,
+                            '',
+                            parent
                         );
-                        if(groupTable3HasNext) {
-                            nextRow = groupTable3Row;
-                            data.push(...groupTable3);
-                        }
+                        if (children.length) parent.children = children;
+                        return recurse(nextRow + 1); // Continua do próximo bloco
                     }
                 }
+                return row;
+            };
+            return recurse(initialRow);
+        };
+
+        const processBills = (
+            row: number,
+            acc: DataAccumulator
+        ): { allBills: typeof acc, nextRow: number } => {
+            const cell = worksheet.getCell(row, 2);
+            const cellValue = cell.value?.toString().trim() || '';
+            const match = cellValue.match(regex);
+            if (!match) {
+                return { allBills: acc, nextRow: row };
             }
-        }
-        return { data, nextRow: nextRow };
+            const billType = match[1] as EBillType;
+            const bankName = match[2] || 'Bank';
+            const billName = `${groupName} ${snakeCaseToNormal(billType)} ${bankName}`;
+            const bill = bills.find((item) => item.name === billName);
+            if (!bill) {
+                return processBills(row + 1, acc);
+            }
+            const supplierList: Array<string> = [];
+            const { expenses: data, nextRow } = readExpensesBlock(
+                bill,
+                supplierList,
+                row + 2,
+                'TOTAL'
+            );
+            const afterParentRow = processParentWithChildren(data, nextRow + 2, supplierList, bill);
+            return processBills(
+                afterParentRow,
+                [...acc, { ...bill, expenses: data }]
+            );
+        };
+
+        const { allBills, nextRow } = processBills(startRow, []);
+
+        const data: DataAccumulator = [];
+        allBills.forEach((bill) => {
+            if(bill['expenses']) {
+                const items = bill['expenses'];
+                if(Array.isArray(items)) {
+                    data.push(...items);
+                }
+            }
+        });
+
+        return {
+            data,
+            nextRow: nextRow
+        };
     }
 
 
+    private buildCreditCardBodyData(worksheet: ExcelJS.Worksheet, bill: Bill, groupName: string, row: number, column: number, isParent: boolean = true, supplierList: Array<string> = []) {
+        const filterTexts: Array<string> = [];
+        filterTexts.push(bill.name);
+        if(!isParent) {
+            filterTexts.push(...supplierList);
+        }
+
+        const titleCellTable = worksheet.getCell(row, column);
+        const titleCellTableValue = titleCellTable.value ? titleCellTable.value.toString().trim() : '';
+
+        const name = `${groupName} ${titleCellTableValue}`;
+
+        const monthsObj = MONTHS.reduce((acc, month) => {
+            acc[month] = 0;
+            acc[`${month}_paid`] = false;
+            return acc;
+        }, {} as CycleOfMonths);
+
+        const supplier = cleanTextByListText(filterTexts, name);
+
+        if(isParent) {
+            supplierList = [supplier];
+        }
+
+        let nextColumn = column + 1;
+
+        const bodyData = {
+            ...monthsObj,
+            year: bill.year,
+            bill,
+            name,
+            supplier,
+            is_aggregate: !isParent,
+            aggregate_name: cleanTextByListText([bill.name, supplier], name) ?? 'FUCK',
+        }
+
+        MONTHS.forEach((month) => {
+            const monthCell = worksheet.getCell(row, nextColumn);
+            const monthCellValue = monthCell.value ? monthCell.value.toString().trim() : '0';
+            bodyData[month] = Number(monthCellValue);
+            nextColumn++;
+        });
+
+        const paidCell = worksheet.getCell(row, nextColumn);
+        const paidCellValue = paidCell.value ? paidCell.value.toString().trim() : 'NO';
+        bodyData['paid'] = paidCellValue === 'YES';
+
+        MONTHS.forEach((month) => {
+            bodyData[`${month}_paid`] = bodyData['paid'];
+        });
+        nextColumn++;
+        const totalCell = worksheet.getCell(row, nextColumn);
+        const totalCellValue = totalCell.value ? totalCell.value.toString().trim() : '0';
+        bodyData['total'] = Number(totalCellValue) || 0;
+
+        return { data: bodyData, supplierList: !isParent ? [] : supplierList };
+    }
 }

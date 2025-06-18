@@ -147,7 +147,6 @@ export default class ExpenseBusiness {
             const monthlyData = MONTHS.map((month) => ({
                 month: month.toUpperCase(),
                 value: expense[month],
-                type: expense.type,
                 paid: expense[`${month}_paid`],
             }));
             const body = {

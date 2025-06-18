@@ -374,7 +374,7 @@ export class BillService extends Service<Bill> {
             summary: true,
             detailTables,
             summaryTitle: 'Summary',
-            detailTablesHeader: ['month', 'value', 'paid', 'type'],
+            detailTablesHeader: ['month', 'value', 'paid'],
             summaryTableHeader: ['type', 'bank', ...MONTHS, 'paid', 'total'],
             allExpensesHaveBeenPaid: this.expenseService.business.allHaveBeenPaid,
             buildExpensesTablesParams: this.expenseService.business.buildTablesParams
@@ -405,23 +405,17 @@ export class BillService extends Service<Bill> {
         return [];
     }
 
-    async createToSheet(createToSheetParams: CreateToSheetParams) {
-        const bank = await this.bankService.treatEntityParam<Bank>(
-            createToSheetParams.bank,
-            'Bank'
-        ) as Bank;
-
-        const group = await this.groupService.treatEntityParam<Group>(
-            createToSheetParams.group,
-            'Group'
-        ) as Group;
-
-        const name = `${group.name} ${snakeCaseToNormal(createToSheetParams.type)}`;
+    async createToSheet(params: CreateToSheetParams) {
+        const year = Number(params['year']);
+        const type = params['type'] as EBillType;
+        const groupName = params['group']?.toString() || '';
+        const bankName = params['bank']?.toString() || '';
+        const name = `${groupName} ${snakeCaseToNormal(type)}`;
 
         const item = await this.findOne({
             value: name,
             filters: [{
-                value: createToSheetParams.year,
+                value: year,
                 param: 'year',
                 condition: '='
             }],
@@ -432,11 +426,16 @@ export class BillService extends Service<Bill> {
             return item;
         }
 
+        const finance = params.finance;
+        const bank = await this.bankService.createToSheet(bankName) as Bank;
+
+        const group = await this.groupService.createToSheet(finance, groupName) as Group;
+
         const bill = new BillConstructor({
             name,
-            year: createToSheetParams.year,
-            type: createToSheetParams.type,
-            finance: createToSheetParams.finance,
+            year,
+            type,
+            finance,
             bank,
             group,
         })

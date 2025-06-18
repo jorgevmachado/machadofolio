@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -105,5 +105,20 @@ export class SupplierService extends Service<Supplier> {
             supplierList: list,
             supplierTypeList: listType
         };
+    }
+
+    async createToSheet(value?: string) {
+        if(!value || value === '') {
+            throw new NotFoundException(`${this.alias} not found`);
+        }
+        const item = await this.findOne({ value, withDeleted: true, withThrow: false });
+
+        if(item) {
+            return item;
+        }
+
+        const supplierType = await this.supplierTypeService.createToSheet('Unknown') as SupplierType;
+
+        return this.create({ name: value, type: supplierType });
     }
 }

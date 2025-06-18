@@ -50,7 +50,7 @@ export class BankService extends Service<Bank> {
   }
 
     async createToSheet(value?: string) {
-      if(!value) {
+      if(!value || value === '') {
         throw new NotFoundException(`${this.alias} not found`);
       }
 

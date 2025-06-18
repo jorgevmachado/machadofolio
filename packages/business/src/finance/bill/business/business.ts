@@ -44,7 +44,6 @@ export default class BillBusiness {
                                      ...params
                                  }: SpreadsheetProcessingParams): number {
         const { data, sheet, groupName, allExpensesHaveBeenPaid, buildExpensesTablesParams } = params;
-
         sheet.createWorkSheet(groupName);
 
         sheet.cell.add({
@@ -190,7 +189,7 @@ export default class BillBusiness {
                             list: [],
                             item: parent
                         })),
-                        title: cleanTextByListText(groupsName, data.name),
+                        title: `${data.type}(${data.bank.name})`,
                         footer: true,
                         header: tableHeader,
                     },
