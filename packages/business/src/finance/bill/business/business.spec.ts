@@ -1,49 +1,59 @@
-import {
-    afterEach,
-    beforeEach,
-    describe,
-    expect,
-    it,
-    jest,
-} from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
-import { type Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
+import { type CycleOfMonths, MONTHS, totalByMonth } from '@repo/services/date/month/month';
+import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
 import type { TablesParams } from '@repo/services/spreadsheet/table/types';
+import { snakeCaseToNormal } from '@repo/services/string/string';
 
-import {  EXPENSE_PARENT_MOCK } from '../../expense';
+
+import { EXPENSE_PARENT_MOCK } from '../../expense';
 import type Expense from '../../expense';
 
 import { BILL_MOCK } from '../mock';
 import type Bill from '../bill';
 import { EBillType } from '../enum';
 
-import BillBusiness from './business';
+jest.mock('@repo/services/spreadsheet/spreadsheet');
 
 import type { SpreadsheetProcessingParams } from './types';
 
-const sheet = {
-    addTable: jest.fn(),
-    addTables: jest.fn(),
-    calculateTablesParamsNextRow: jest.fn(({ startRow = 0, totalTables = 0, linesPerTable = 0 }) => (
-        startRow + (totalTables * (linesPerTable + 1))
-    )),
-    calculateTableHeight: jest.fn(({ total }) => total || 0),
-    cell: { add: jest.fn() },
-} as unknown as Spreadsheet;
+import BillBusiness from './business';
+
 
 
 const buildExpensesTablesParams: jest.MockedFunction<(expenses: Array<Expense>, tableWidth: number) => TablesParams> = jest.fn();
 
-const totalExpenseByMonth = jest.fn(() => 100);
 const allExpensesHaveBeenPaid = jest.fn(() => true);
 
 describe('Bill Business', () => {
     let business: BillBusiness;
+    let spreadsheetMock: jest.Mocked<Spreadsheet>;
+    const mockDetailTables = [
+        EBillType.BANK_SLIP,
+        EBillType.ACCOUNT_DEBIT,
+        EBillType.PIX,
+        EBillType.CREDIT_CARD,
+    ];
 
     const mockEntity: Bill = BILL_MOCK;
     const mockExpense: Expense = EXPENSE_PARENT_MOCK;
     const mockExpenses: Array<Expense> = [mockExpense];
     beforeEach(() => {
+        spreadsheetMock = {
+            addTable: jest.fn().mockImplementation(() => {
+                return { nextRow: 1 };
+            }),
+            addTables: jest.fn().mockImplementation(() => {
+                return { nextRow: 1 };
+            }),
+            workSheet: { addCell: jest.fn() },
+            createWorkSheet: jest.fn(),
+            calculateTableHeight: jest.fn(({ total }) => total || 0),
+            calculateTablesParamsNextRow: jest.fn(({ startRow = 0, totalTables = 0, linesPerTable = 0 }) => (
+                startRow + (totalTables * (linesPerTable + 1))
+            )),
+        } as unknown as jest.Mocked<Spreadsheet>;
+        (Spreadsheet as unknown as jest.Mock).mockImplementation(() => spreadsheetMock);
         jest.clearAllMocks();
         jest.restoreAllMocks();
         business = new BillBusiness();
@@ -66,7 +76,7 @@ describe('Bill Business', () => {
                     { month: 'DECEMBER', value: expense.december, paid: expense.december_paid },
                 ]
             })),
-            headers: [ 'month', 'value', 'paid' ],
+            headers: ['month', 'value', 'paid'],
             bodyStyle: {
                 alignment: { horizontal: 'center', vertical: undefined, wrapText: false },
                 borderStyle: 'thin'
@@ -90,7 +100,7 @@ describe('Bill Business', () => {
     afterEach(() => {
         jest.resetModules();
     });
-    
+
     describe('calculate', () => {
         it('should calculate bill without expenses', () => {
             const result = business.calculate(mockEntity);
@@ -129,63 +139,326 @@ describe('Bill Business', () => {
         });
 
     });
-    
+
     describe('spreadsheetProcessing', () => {
-        it('Shouldn\'t do anything because the bills is empty.', () => {
+        it('Shouldn\'t do anything because the data is empty.', () => {
             business.spreadsheetProcessing({
-                sheet,
-                bills: [],
-                totalExpenseByMonth,
+                year: 2025,
+                sheet: spreadsheetMock,
+                data: [],
+                summary: false,
+                groupName: 'groupName',
                 allExpensesHaveBeenPaid,
                 buildExpensesTablesParams
             });
 
-            expect(sheet.addTable).not.toHaveBeenCalled();
-            expect(sheet.addTables).not.toHaveBeenCalled();
+            expect(spreadsheetMock.addTable).not.toHaveBeenCalled();
+            expect(spreadsheetMock.addTables).not.toHaveBeenCalled();
         });
 
         it('Processes normally with basic bills.', () => {
             const params: SpreadsheetProcessingParams = {
-                sheet,
-                bills: [{ ...mockEntity, type: EBillType.BANK_SLIP, expenses: mockExpenses }],
-                buildExpensesTablesParams,
-                groupsName: undefined,
-                headers: undefined,
-                startColumn: 0,
+                year: 2025,
+                sheet: spreadsheetMock,
+                data: [{ ...mockEntity, type: EBillType.BANK_SLIP, expenses: mockExpenses }],
                 startRow: 0,
+                groupName: 'groupName',
                 tableWidth: 0,
-                totalExpenseByMonth,
-                allExpensesHaveBeenPaid
+                tableHeader: undefined,
+                startColumn: 0,
+                detailTables: mockDetailTables,
+                buildExpensesTablesParams,
+                allExpensesHaveBeenPaid,
+
             };
             business.spreadsheetProcessing(params);
-            expect(sheet.addTable).toHaveBeenCalled();
-            expect(sheet.addTables).toHaveBeenCalled();
+            expect(spreadsheetMock.createWorkSheet).toHaveBeenCalled();
+            expect(spreadsheetMock.addTable).toHaveBeenCalled();
+            expect(spreadsheetMock.addTables).toHaveBeenCalled();
 
         });
 
         it('Covers flow with childrenTables.', () => {
             const params: SpreadsheetProcessingParams = {
-                sheet,
-                bills: [
+                year: 2025,
+                sheet: spreadsheetMock,
+                data: [
                     { ...mockEntity, type: EBillType.BANK_SLIP, expenses: mockExpenses },
                     { ...mockEntity, type: EBillType.BANK_SLIP, expenses: undefined },
                     { ...mockEntity, expenses: mockExpenses },
                     { ...mockEntity, expenses: [{ ...mockExpense, children: undefined }] },
                     { ...mockEntity },
                 ],
-                buildExpensesTablesParams,
-                groupsName: undefined,
-                headers: undefined,
-                startColumn: 0,
                 startRow: 0,
+                groupName: 'groupName',
                 tableWidth: 0,
-                totalExpenseByMonth,
-                allExpensesHaveBeenPaid
+                tableHeader: undefined,
+                startColumn: 0,
+                detailTables: mockDetailTables,
+                allExpensesHaveBeenPaid,
+                buildExpensesTablesParams,
+
             };
             business.spreadsheetProcessing(params);
-            expect(sheet.addTable).toHaveBeenCalled();
-            expect(sheet.addTables).toHaveBeenCalled();
+            expect(spreadsheetMock.addTable).toHaveBeenCalled();
+            expect(spreadsheetMock.addTables).toHaveBeenCalled();
         });
     });
-    
+
+    describe('privates', () => {
+        const mockData = [
+            { ...mockEntity, type: EBillType.BANK_SLIP, expenses: mockExpenses },
+            { ...mockEntity, type: EBillType.BANK_SLIP, expenses: undefined },
+            { ...mockEntity, expenses: mockExpenses },
+            { ...mockEntity, expenses: [{ ...mockExpense, children: undefined }] },
+            { ...mockEntity },
+        ];
+
+        const mockTableData = mockData.map((item) => ({
+            type: snakeCaseToNormal(item.type),
+            bank: item.bank.name,
+            list: item.expenses ?? []
+        }));
+
+        describe('processingSpreadsheetTable', () => {
+
+            it('should return startRow when not have table', () => {
+                const result = business['processingSpreadsheetTable']({
+                    sheet: spreadsheetMock,
+                    table: undefined,
+                    startRow: 14,
+                    startColumn: 2,
+                    buildBodyDataMap: (data) => ({
+                        data: data.list,
+                        bank: data.bank,
+                        type: data.type,
+                        arrFunction: allExpensesHaveBeenPaid
+                    })
+                });
+
+                expect(result).toBe(14);
+            });
+
+            it('should return startRow when not have tableBodyData', () => {
+                const result = business['processingSpreadsheetTable']({
+                    sheet: spreadsheetMock,
+                    table: {
+                        data: [],
+                        header: []
+                    },
+                    startRow: 14,
+                    startColumn: 2,
+                    buildBodyDataMap: (data) => ({
+                        data: data.list,
+                        bank: data.bank,
+                        type: data.type,
+                        arrFunction: allExpensesHaveBeenPaid
+                    })
+                });
+
+                expect(result).toBe(14);
+            });
+
+            it('should return a new start row when table title is defined', () => {
+                const result = business['processingSpreadsheetTable']({
+                    sheet: spreadsheetMock,
+                    table: {
+                        data: mockTableData,
+                        title: 'Summary',
+                        footer: true,
+                        header: ['title', 'bank', ...MONTHS, 'paid', 'total']
+                    },
+                    startRow: 14,
+                    startColumn: 2,
+                    buildBodyDataMap: (data) => ({
+                        data: data.list,
+                        bank: data.bank,
+                        type: data.type,
+                        arrFunction: allExpensesHaveBeenPaid
+                    }),
+                    buildFooterData: (data) => {
+                        const monthsObj = MONTHS.reduce((acc, month) => {
+                            acc[month] = totalByMonth(month, data);
+                            return acc;
+                        }, {} as CycleOfMonths);
+                        return {
+                            paid: data.every(item => item && item.paid),
+                            footer: true,
+                            type: 'TOTAL',
+                            ...monthsObj,
+                            total: data.reduce((sum, item) => sum + (Number(item.total) || 0), 0),
+                        };
+                    }
+                });
+
+                expect(result).toBe(2);
+            });
+
+            it('should return a new start row when table title is undefined', () => {
+
+                const tableData = mockData.map((item) => ({
+                    type: snakeCaseToNormal(item.type),
+                    bank: item.bank.name,
+                    list: item.expenses ?? []
+                }));
+
+                const result = business['processingSpreadsheetTable']({
+                    sheet: spreadsheetMock,
+                    table: {
+                        data: tableData,
+                        title: undefined,
+                        footer: false,
+                        header: ['title', 'bank', ...MONTHS, 'paid', 'total']
+                    },
+                    startRow: 14,
+                    startColumn: 2,
+                    buildBodyDataMap: (data) => ({
+                        data: data.list,
+                        bank: data.bank,
+                        type: data.type,
+                        arrFunction: allExpensesHaveBeenPaid
+                    }),
+                });
+
+                expect(result).toBe(2);
+            });
+        });
+
+        describe('processingSpreadsheetSecondaryTables', () => {
+            it('Should processingSpreadsheetSecondaryTables with type other than  CREDIT_CARD.', () => {
+                const result = business['processingSpreadsheetSecondaryTables']({
+                    sheet: spreadsheetMock,
+                    data: [{ ...mockEntity, type: EBillType.BANK_SLIP, expenses: mockExpenses }],
+                    buildExpensesTablesParams,
+                    allExpensesHaveBeenPaid,
+                    startRow: 14,
+                    startColumn: 2,
+                    tableWidth: 3,
+                    detailTablesHeader: ['month', 'value', 'paid'],
+                    groupsName: [],
+                    tableHeader: ['title', ...MONTHS, 'paid', 'total'],
+                    detailTables: mockDetailTables
+                });
+
+                expect(result).toBe(2);
+            });
+
+            it('Should processingSpreadsheetSecondaryTables with type other than CREDIT_CARD and expenses empty.', () => {
+                const result = business['processingSpreadsheetSecondaryTables']({
+                    sheet: spreadsheetMock,
+                    data: [{ ...mockEntity, type: EBillType.BANK_SLIP, expenses: undefined }],
+                    buildExpensesTablesParams,
+                    allExpensesHaveBeenPaid,
+                    startRow: 14,
+                    startColumn: 2,
+                    tableWidth: 3,
+                    detailTablesHeader: ['month', 'value', 'paid'],
+                    groupsName: [],
+                    tableHeader: ['title', ...MONTHS, 'paid', 'total'],
+                    detailTables: mockDetailTables
+                });
+
+                expect(result).toBe(14);
+            });
+
+            it('Should processingSpreadsheetSecondaryTables with type CREDIT_CARD.', () => {
+                const result = business['processingSpreadsheetSecondaryTables']({
+                    sheet: spreadsheetMock,
+                    data: [{ ...mockEntity, type: EBillType.CREDIT_CARD, expenses: mockExpenses }],
+                    buildExpensesTablesParams,
+                    allExpensesHaveBeenPaid,
+                    startRow: 14,
+                    startColumn: 2,
+                    tableWidth: 3,
+                    detailTablesHeader: ['month', 'value', 'paid'],
+                    groupsName: [],
+                    tableHeader: ['title', ...MONTHS, 'paid', 'total'],
+                    detailTables: mockDetailTables
+                });
+
+                expect(result).toBe(2);
+            });
+
+            it('Should processingSpreadsheetSecondaryTables with type CREDIT_CARD and expenses empty.', () => {
+                const result = business['processingSpreadsheetSecondaryTables']({
+                    sheet: spreadsheetMock,
+                    data: [{ ...mockEntity, type: EBillType.CREDIT_CARD, expenses: undefined }],
+                    buildExpensesTablesParams,
+                    allExpensesHaveBeenPaid,
+                    startRow: 14,
+                    startColumn: 2,
+                    tableWidth: 3,
+                    detailTablesHeader: ['month', 'value', 'paid'],
+                    groupsName: [],
+                    tableHeader: ['title', ...MONTHS, 'paid', 'total'],
+                    detailTables: mockDetailTables
+                });
+
+                expect(result).toBe(14);
+            });
+
+            it('Should processingSpreadsheetSecondaryTables with type CREDIT_CARD and all total undefined.', () => {
+                const monthsObj = MONTHS.reduce((acc, month) => {
+                    acc[month] = 50;
+                    return acc;
+                }, {} as CycleOfMonths);
+                const buildBodyDataSpy = jest.spyOn(business as any, 'buildBodyData').mockImplementation(() => ({
+                    paid: false,
+                    ...monthsObj,
+                    total: undefined
+                }));
+                const result = business['processingSpreadsheetSecondaryTables']({
+                    sheet: spreadsheetMock,
+                    data: [{ ...mockEntity, type: EBillType.CREDIT_CARD, expenses: [{ ...mockExpense, children: undefined }] }],
+                    buildExpensesTablesParams,
+                    allExpensesHaveBeenPaid,
+                    startRow: 14,
+                    startColumn: 2,
+                    tableWidth: 3,
+                    detailTablesHeader: ['month', 'value', 'paid'],
+                    groupsName: [],
+                    tableHeader: ['title', ...MONTHS, 'paid', 'total'],
+                    detailTables: mockDetailTables
+                });
+
+                expect(result).toBe(2);
+                expect(buildBodyDataSpy).toHaveBeenCalled();
+
+                buildBodyDataSpy.mockRestore();
+            });
+        });
+
+        describe('processingSpreadsheetDetailTable', () => {
+            it('should return startRow when not have table', () => {
+                const result = business['processingSpreadsheetDetailTable']({
+                    sheet: spreadsheetMock,
+                    table: undefined,
+                    startRow: 14,
+                    tableWidth: 3,
+                    detailTablesHeader: ['month', 'value', 'paid'],
+                    buildExpensesTablesParams
+                });
+
+                expect(result).toBe(14);
+            });
+
+            it('should return startRow when table title is undefined.', () => {
+                const result = business['processingSpreadsheetDetailTable']({
+                    sheet: spreadsheetMock,
+                    table: {
+                        title: undefined,
+                        data: mockTableData,
+                        header: ['title', 'bank', ...MONTHS, 'paid', 'total']
+                    },
+                    startRow: 14,
+                    tableWidth: 3,
+                    detailTablesHeader: ['month', 'value', 'paid'],
+                    buildExpensesTablesParams
+                });
+
+                expect(result).toBe(2);
+            });
+        });
+    });
+
 });

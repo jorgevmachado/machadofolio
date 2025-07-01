@@ -1,4 +1,4 @@
-import type { CellParams, CellStyles } from '../cell';
+import type { CellParams, CellStyles } from '../worksheet';
 
 export type TableParams = {
     body: Pick<CellParams, 'styles'> & {

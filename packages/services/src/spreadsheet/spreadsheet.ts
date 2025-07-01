@@ -3,7 +3,7 @@ import { Buffer } from 'buffer';
 
 import { chunk } from '../array';
 
-import { Cell, ECellType, type ReferenceCell } from './cell';
+import { type Cell, ECellType, WorkSheet,  } from './worksheet';
 import { Table, type TableParams, type TablesParams } from './table';
 
 type CalculateTablesParamsNextRowParams = {
@@ -22,26 +22,26 @@ type CalculateTableHeightParams = {
 
 export class Spreadsheet {
     private readonly workbookInstance: ExcelJS.Workbook;
-    private cellInstance: Cell | null;
+    private workSheetInstance: WorkSheet | null;
 
     constructor() {
         this.workbookInstance = new ExcelJS.Workbook();
-        this.cellInstance = null;
+        this.workSheetInstance = null;
     }
 
     public get workBook(): ExcelJS.Workbook {
         return this.workbookInstance;
     }
 
-    public createWorkSheet(name: string): void {
-        this.cellInstance =  new Cell(this.workbookInstance.addWorksheet(name));
+    public get workSheet(): WorkSheet {
+        if(!this.workSheetInstance) {
+            throw new Error('Worksheet has not been initialized. Use createWorksheet first.');
+        }
+        return this.workSheetInstance;
     }
 
-    public get cell(): Cell {
-        if (!this.cellInstance) {
-            throw new Error('Worksheet não foi inicializado. Use createWorksheet primeiro.');
-        }
-        return this.cellInstance;
+    public createWorkSheet(name: string): void {
+        this.workSheetInstance =  new WorkSheet(this.workbookInstance.addWorksheet(name));
     }
 
     public calculateTablesParamsNextRow({
@@ -78,7 +78,7 @@ export class Spreadsheet {
                          blockTitleStyle,
                          tableTitleHeight = 1,
                          tableHeaderHeight = 1
-                     }: TablesParams): ReferenceCell {
+                     }: TablesParams): Cell {
         const chunkedTables = chunk(tables, tableWidth);
         const blockHeight = tableTitleHeight + tableHeaderHeight + tableDataRows;
 
@@ -86,7 +86,7 @@ export class Spreadsheet {
 
         if(blockTitle) {
             const titleColumn = tableStartCol[0] || 1;
-            this.cell.add({
+            this.workSheet.addCell({
                 cell: firstTableRow,
                 type: ECellType.SUBTITLE,
                 value: blockTitle,
@@ -103,7 +103,7 @@ export class Spreadsheet {
             });
         }
 
-        const referenceCells: Array<ReferenceCell> = [];
+        const referenceCells: Array<Cell> = [];
 
         chunkedTables.forEach((group, index) => {
             const row = initialRow + index * (blockHeight + spaceLines);
@@ -128,32 +128,32 @@ export class Spreadsheet {
                         list: body ?? [],
                         styles: bodyStyle
                     }
-                }) as ReferenceCell;
+                }) as Cell;
                 referenceCells.push(referenceCell);
             });
         });
 
-        return referenceCells[referenceCells.length - 1] as ReferenceCell;
+        return referenceCells[referenceCells.length - 1] as Cell;
     }
 
-    public addTable(params: TableParams): ReferenceCell {
+    public addTable(params: TableParams): Cell {
         const table = new Table(params);
 
         const { headers, tableWidth, startColumn } = params;
 
         if(table.title) {
-            this.cell.add(table.title);
+            this.workSheet.addCell(table.title);
         }
 
-        table.headers.forEach((header) => this.cell.add(header));
-        const referenceCells = table.body.map((body) => this.cell.add(body));
-        const referenceCell = referenceCells[referenceCells.length - 1] as ReferenceCell;
+        table.headers.forEach((header) => this.workSheet.addCell(header));
+        const referenceCells = table.body.map((body) => this.workSheet.addCell(body));
+        const referenceCell = referenceCells[referenceCells.length - 1] as Cell;
 
         (headers?.list ?? [])
             .slice(0, tableWidth)
             .forEach((_, idx) => {
                 const defaultWidths = [14, 8, 8];
-                this.cell.column(startColumn + idx).width = defaultWidths[idx] ?? 12;
+                this.workSheet.column(startColumn + idx).width = defaultWidths[idx] ?? 12;
             });
 
         return referenceCell;

@@ -1,31 +1,23 @@
 import type * as ExcelJS from 'exceljs';
-
-import type {
-    CellBorderStyle,
-    CellParams,
-    CellStyles,
-    MergeParams,
-    MergeReferenceCell,
-    Positions,
-    ReferenceCell
-} from './types';
+import type { Cell, CellBorderStyle, CellParams, CellStyles, MergeCell, MergeParams, Positions } from './types';
 import { ECellType } from './enum';
 
-export class Cell {
+export class WorkSheet {
     private readonly workSheetInstance: ExcelJS.Worksheet;
 
     constructor(workSheet: ExcelJS.Worksheet) {
         this.workSheetInstance = workSheet;
     }
 
-    public add({ cell, cellColumn, value, type, styles, merge }: CellParams): ReferenceCell {
-        const referenceCell: ReferenceCell = {
+    public addCell({ cell, cellColumn, value, type, styles, merge }: CellParams): Cell {
+        const referenceCell: Cell = {
             row: 0,
             cell: '',
             column: 0,
             nextRow: 0,
             nextColumn: 0,
         };
+
         if (merge) {
             const { cellEnd, endRow, endColumn } = this.merge(merge);
             referenceCell.cell = cellEnd;
@@ -34,7 +26,8 @@ export class Cell {
             referenceCell.nextRow = endRow + 1;
             referenceCell.nextColumn = endColumn + 1;
         }
-        const reference = this.reference(cell, cellColumn);
+
+        const reference = this.cell(cell, cellColumn);
         reference.value = value;
         const { font, alignment, fill, border } = this.createStyles(styles, type);
         reference.font = font;
@@ -56,11 +49,7 @@ export class Cell {
         return referenceCell;
     }
 
-    public reference(cellRoll: string | number, cellColumn?: string | number): ExcelJS.Cell {
-        return this.workSheetInstance.getCell(cellRoll, cellColumn);
-    }
-
-    public merge({ cellEnd, cellStart, positions }: MergeParams): MergeReferenceCell {
+    public merge({ cellEnd, cellStart, positions }: MergeParams): MergeCell {
         const cellReference = {
             cellStart: '',
             cellEnd: '',
@@ -92,8 +81,37 @@ export class Cell {
         return cellReference;
     }
 
-    public column(value: number | string): ExcelJS.Column {
-        return this.workSheetInstance.getColumn(value);
+    private parsePositionsToCell(row: number, column: number): string {
+        const columnLetters = (col: number): string =>
+            col <= 0
+                ? ''
+                : columnLetters(Math.floor((col - 1) / 26)) + String.fromCharCode(65 + ((col - 1) % 26));
+
+        return `${columnLetters(column)}${row}`;
+
+    }
+
+    private parseCellToPositions(cell: string): Positions {
+        const match = cell.match(/^([A-Z]+)(\d+)$/i);
+        if (!match) {
+            throw new Error('Invalid cell format.');
+        }
+
+        const colLetters = match[1]!;
+        const rowStr = match[2]!;
+
+        const column = [...colLetters.toUpperCase()]
+            .reduce((acc, char) => acc * 26 + (char.charCodeAt(0) - 64), 0);
+
+        return {
+            column,
+            row: Number(rowStr)
+        };
+
+    }
+
+    public cell(cellRoll: string | number, cellColumn?: string | number): ExcelJS.Cell {
+        return this.workSheetInstance.getCell(cellRoll, cellColumn);
     }
 
     private createStyles(styles?: Partial<CellStyles>, type: CellParams['type'] = ECellType.TEXT): CellStyles {
@@ -170,40 +188,14 @@ export class Cell {
             return border;
         }
         return {
-            top: { style: borderStyle || defaultCellBorderStyle },
-            left: { style: borderStyle || defaultCellBorderStyle },
-            right: { style: borderStyle || defaultCellBorderStyle },
-            bottom: { style: borderStyle || defaultCellBorderStyle },
+            top: { style: borderStyle },
+            left: { style: borderStyle },
+            right: { style: borderStyle },
+            bottom: { style: borderStyle },
         };
     }
 
-    private parseCellToPositions(cell: string): Positions {
-        const match = cell.match(/^([A-Z]+)(\d+)$/i);
-        if (!match) {
-            throw new Error('Invalid cell format.');
-        }
-
-        const colLetters = match[1]!;
-        const rowStr = match[2]!;
-
-        const column = [...colLetters.toUpperCase()]
-            .reduce((acc, char) => acc * 26 + (char.charCodeAt(0) - 64), 0);
-
-        return {
-            column,
-            row: Number(rowStr)
-        };
-
+    public column(value: number | string): ExcelJS.Column {
+        return this.workSheetInstance.getColumn(value);
     }
-
-    private parsePositionsToCell(row: number, column: number): string {
-        const columnLetters = (col: number): string =>
-            col <= 0
-                ? ''
-                : columnLetters(Math.floor((col - 1) / 26)) + String.fromCharCode(65 + ((col - 1) % 26));
-
-        return `${columnLetters(column)}${row}`;
-
-    }
-
 }

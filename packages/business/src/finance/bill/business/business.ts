@@ -1,7 +1,7 @@
 import { type CycleOfMonths, MONTHS, totalByMonth } from '@repo/services/date/month/month';
 import { cleanTextByListText, snakeCaseToNormal } from '@repo/services/string/string';
 
-import { ECellType } from '@repo/services/spreadsheet/cell/enum';
+import { ECellType } from '@repo/services/spreadsheet/worksheet/enum';
 import type { TableParams } from '@repo/services/spreadsheet/table/types';
 
 
@@ -46,7 +46,7 @@ export default class BillBusiness {
         const { data, sheet, groupName, allExpensesHaveBeenPaid, buildExpensesTablesParams } = params;
         sheet.createWorkSheet(groupName);
 
-        sheet.cell.add({
+        sheet.workSheet.addCell({
             cell: 'B2',
             type: ECellType.TITLE,
             value: `${groupName}(${params.year})`,

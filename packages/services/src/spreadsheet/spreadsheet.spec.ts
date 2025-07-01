@@ -6,20 +6,20 @@ import { Buffer } from 'buffer';
 
 import { chunk } from '../array';
 
-import { Cell } from './cell';
 import { Spreadsheet } from './spreadsheet';
 import { Table } from './table';
+import { WorkSheet } from './worksheet';
 
 jest.mock('exceljs');
 jest.mock('../array');
-jest.mock('./cell');
+jest.mock('./worksheet');
 jest.mock('./table');
 
 describe('Spreadsheet', () => {
     let spreadsheet: Spreadsheet;
     let workbookMock: jest.Mocked<ExcelJS.Workbook>;
     let worksheetMock: any;
-    let cellMock: jest.Mocked<Cell>;
+    let workSheetMock: jest.Mocked<WorkSheet>;
     let tableMock: jest.Mocked<Table>;
 
 
@@ -32,11 +32,11 @@ describe('Spreadsheet', () => {
 
         worksheetMock = {};
 
-        cellMock = {
-            add: jest.fn(),
+        workSheetMock = {
+            addCell: jest.fn(),
             column: jest.fn().mockReturnValue({ width: 0 }),
-        } as unknown as jest.Mocked<Cell>;
-        (Cell as unknown as jest.Mock).mockImplementation(() => cellMock);
+        } as unknown as jest.Mocked<WorkSheet>;
+        (WorkSheet as unknown as jest.Mock).mockImplementation(() => workSheetMock);
 
         tableMock = {
             title: { value: '', styles: {} },
@@ -60,40 +60,41 @@ describe('Spreadsheet', () => {
     });
 
     describe('constructor', () => {
-        it('deve instanciar corretamente', () => {
-            expect((spreadsheet as any).workbookInstance).toBeInstanceOf(Object);
-            expect((spreadsheet as any).cellInstance).toBeNull();
+        it('must correctly instantiate all instances.', () => {
+            expect(spreadsheet['workbookInstance']).toBeInstanceOf(Object);
+            expect(spreadsheet['workSheetInstance']).toBeNull();
             expect(spreadsheet.workBook).toBe(workbookMock);
         });
     });
 
     describe('createWorkSheet', () => {
-        it('deve criar worksheet e instanciar Cell', () => {
-            spreadsheet.createWorkSheet('MinhaPlanilha');
-            expect(workbookMock.addWorksheet).toHaveBeenCalledWith('MinhaPlanilha');
-            expect(Cell).toHaveBeenCalledWith(worksheetMock);
-            expect((spreadsheet as any).cellInstance).toBe(cellMock);
+        it('must create worksheet and instantiate WorkSheet.', () => {
+            spreadsheet.createWorkSheet('MySpreadsheet');
+            expect(workbookMock.addWorksheet).toHaveBeenCalledWith('MySpreadsheet');
+            expect(WorkSheet).toHaveBeenCalledWith(worksheetMock);
+            expect(spreadsheet['workSheetInstance']).toBe(workSheetMock);
         });
     });
 
-    describe('cell', () => {
-        it('get cell deve lançar erro se não houver worksheet', () => {
-            expect(() => spreadsheet.cell).toThrow('Worksheet não foi inicializado. Use createWorksheet primeiro.');
+    describe('WorkSheet', () => {
+        it('get WorkSheet should throw error if there is no worksheet.', () => {
+            expect(() => spreadsheet.workSheet).toThrow('Worksheet has not been initialized. Use createWorksheet first.');
         });
-        it('get cell deve retornar cellInstance se houver', () => {
-            spreadsheet.createWorkSheet('Planilha2');
-            expect(spreadsheet.cell).toBe(cellMock);
+
+        it('get WorkSheet should return workSheetInstance if any.', () => {
+            spreadsheet.createWorkSheet('Spreadsheet2');
+            expect(spreadsheet.workSheet).toBe(workSheetMock);
         });
 
     });
 
     describe('addTables', () => {
         beforeEach(() => {
-            spreadsheet.createWorkSheet('QualquerPlanilha');
-            jest.spyOn(spreadsheet, 'addTable').mockImplementation(jest.fn());
+            spreadsheet.createWorkSheet('AnySpreadsheet');
+            jest.spyOn(spreadsheet, 'addTable').mockImplementation(jest.fn() as any);
         });
 
-        it('deve chamar chunk com largura padrão', () => {
+        it('must call chunk with default width.', () => {
             const tables = [{ title: 'foo', data: [{ x: 1 }] }];
             spreadsheet.addTables({
                 tables,
@@ -103,27 +104,27 @@ describe('Spreadsheet', () => {
             expect(chunk).toHaveBeenCalledWith(tables, 3);
         });
 
-        it('deve processar com todos os parâmetros', () => {
+        it('must process with all parameters.', () => {
             const tables = [{ title: 'abc', data: [] }];
             spreadsheet.addTables({
                 tables,
                 headers: ['col'],
-                tableDataRows: 1,
-                tableWidth: 2,
-                firstTableRow: 5,
-                spaceLines: 2,
-                tableStartCol: [1, 10],
-                headerStyle: {},
                 bodyStyle: {},
                 titleStyle: {},
-                tableHeaderHeight: 2,
+                tableWidth: 2,
+                spaceLines: 2,
+                headerStyle: {},
+                tableDataRows: 1,
+                tableStartCol: [1, 10],
+                firstTableRow: 5,
                 tableTitleHeight: 3,
+                tableHeaderHeight: 2,
             });
             expect(chunk).toHaveBeenCalledWith(tables, 2);
             expect(spreadsheet.addTable).toHaveBeenCalled();
         });
 
-        it('usa startColumn=0 quando tableStartCol[tableIndex] for undefined', () => {
+        it('uses startColumn=0 when tableStartCol[tableIndex] is undefined.', () => {
             (chunk as jest.Mock).mockReturnValue([
                 [
                     { title: 't1', data: [1] },
@@ -145,7 +146,7 @@ describe('Spreadsheet', () => {
             expect((spreadsheet.addTable as jest.Mock).mock.calls[0][0]['startColumn']).toBe(5);
         });
 
-        it('usa "title" quando table.title for undefined', () => {
+        it('uses "title" when table.title is undefined.', () => {
             (chunk as jest.Mock).mockReturnValue([
                 [{ data: [1] }],
             ]);
@@ -164,7 +165,7 @@ describe('Spreadsheet', () => {
             expect((spreadsheet.addTable as jest.Mock).mock.calls[0][0]['title'].value).toBe('title');
         });
 
-        it('usa [] como body quando table.data for undefined', () => {
+        it('use [] as body when table.data is undefined.', () => {
             (chunk as jest.Mock).mockReturnValue([
                 [{ title: 'qualquer', data: undefined }],
             ]);
@@ -178,7 +179,7 @@ describe('Spreadsheet', () => {
             expect((spreadsheet.addTable as jest.Mock).mock.calls[0][0]['body'].list).toEqual([]);
         });
 
-        it('garante todos defaults de forma combinada', () => {
+        it('guarantees all defaults in a combined manner.', () => {
             (chunk as jest.Mock).mockReturnValue([
                 [{}, {}, { title: undefined, data: undefined }],
             ]);
@@ -201,15 +202,57 @@ describe('Spreadsheet', () => {
             expect((spreadsheet.addTable as jest.Mock).mock.calls[2][0]['body'].list).toEqual([]);
         });
 
+        it('should create tables with blockTitle.', () => {
+            const tables = [{ title: 'abc', data: [] }];
+            spreadsheet.addTables({
+                tables,
+                headers: ['col'],
+                bodyStyle: {},
+                titleStyle: {},
+                tableWidth: 2,
+                spaceLines: 2,
+                blockTitle: 'block title',
+                headerStyle: {},
+                tableDataRows: 1,
+                tableStartCol: [1, 10],
+                firstTableRow: 5,
+                tableTitleHeight: 3,
+                tableHeaderHeight: 2,
+            });
+            expect(chunk).toHaveBeenCalledWith(tables, 2);
+            expect(spreadsheet.addTable).toHaveBeenCalled();
+        });
+
+        it('should create tables with blockTitle with default fields.', () => {
+            const tables = [{ title: 'abc', data: [] }];
+            spreadsheet.addTables({
+                tables,
+                headers: undefined,
+                bodyStyle: {},
+                titleStyle: {},
+                tableWidth: 0,
+                spaceLines: 2,
+                blockTitle: 'block title',
+                headerStyle: {},
+                tableDataRows: 1,
+                tableStartCol: [],
+                firstTableRow: 5,
+                tableTitleHeight: 3,
+                tableHeaderHeight: 2,
+            });
+            expect(chunk).toHaveBeenCalledWith(tables, 0);
+            expect(spreadsheet.addTable).toHaveBeenCalled();
+        });
+
     });
 
     describe('addTable', () => {
         beforeEach(() => {
-            spreadsheet.createWorkSheet('LarguraPlanilha');
-            (spreadsheet as any).cellInstance = cellMock;
+            spreadsheet.createWorkSheet('SpreadsheetWidth');
+            spreadsheet['workSheetInstance'] = workSheetMock;
         });
 
-        it('addTable deve adicionar títulos, headers, body e setar width das colunas', () => {
+        it('Should add titles, headers, body and set column widths.', () => {
             spreadsheet.addTable({
                     title: { value: 'Teste', styles: {} },
                     body: { list: [{}], styles: {} },
@@ -220,11 +263,11 @@ describe('Spreadsheet', () => {
                 }
             );
 
-            expect(cellMock.add).toHaveBeenCalledTimes(3);
-            expect(cellMock.column).toHaveBeenCalledWith(0);
+            expect(workSheetMock.addCell).toHaveBeenCalledTimes(3);
+            expect(workSheetMock.column).toHaveBeenCalledWith(0);
         });
 
-        it('preenche com 12 se tableWidth excede defaultWidths', () => {
+        it('fill with 12 if tableWidth exceeds defaultWidths.', () => {
             spreadsheet.addTable({
                 title: { value: 'larger', styles: {} },
                 body: { list: [], styles: {} },
@@ -234,15 +277,15 @@ describe('Spreadsheet', () => {
                 startColumn: 0,
             });
 
-            expect(cellMock.column).toHaveBeenCalledWith(0);
-            expect(cellMock.column).toHaveBeenCalledWith(1);
-            expect(cellMock.column).toHaveBeenCalledWith(2);
-            expect(cellMock.column).toHaveBeenCalledWith(3);
+            expect(workSheetMock.column).toHaveBeenCalledWith(0);
+            expect(workSheetMock.column).toHaveBeenCalledWith(1);
+            expect(workSheetMock.column).toHaveBeenCalledWith(2);
+            expect(workSheetMock.column).toHaveBeenCalledWith(3);
 
-            expect(cellMock.column(3).width).toBe(12);
+            expect(workSheetMock.column(3).width).toBe(12);
         });
 
-        it('usa headers = [] se undefined (?? [])', () => {
+        it('uses headers = [] if undefined (?? []).', () => {
             spreadsheet.addTable({
                 title: { value: 'no headers', styles: {} },
                 body: { list: [], styles: {} },
@@ -251,7 +294,7 @@ describe('Spreadsheet', () => {
                 tableWidth: 2,
                 startColumn: 0,
             });
-            expect(cellMock.column).not.toHaveBeenCalled();
+            expect(workSheetMock.column).not.toHaveBeenCalled();
         });
 
 
@@ -273,7 +316,7 @@ describe('Spreadsheet', () => {
             spreadsheet = new Spreadsheet();
         });
 
-        it('deve chamar writeBuffer no workbook e retornar um Buffer', async () => {
+        it('must call writeBuffer on the workbook and return a Buffer.', async () => {
             const arrayBuffer = Uint8Array.from([1, 2, 3]).buffer;
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error

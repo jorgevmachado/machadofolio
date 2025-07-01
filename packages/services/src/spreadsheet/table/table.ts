@@ -1,4 +1,4 @@
-import { type CellParams, ECellType } from '../cell';
+import { type CellParams, ECellType } from '../worksheet';
 
 import type { TableParams, TableTitleParams } from './types';
 

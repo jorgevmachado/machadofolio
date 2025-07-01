@@ -1,11 +1,15 @@
 import type { ECellType } from './enum';
 
-export type TCell = ECellType;
-
-export type Positions = {
-    row: number;
-    column: number;
+export type CellParams = {
+    cell: string | number;
+    cellColumn?: string | number;
+    type?: TCell;
+    value: string | number | boolean;
+    merge?: MergeParams;
+    styles?: Partial<CellStyles>;
 }
+
+export type TCell = ECellType;
 
 export type MergeParams = {
     cellEnd?: string;
@@ -16,15 +20,6 @@ export type MergeParams = {
         endColumn: number;
         startColumn: number;
     }
-}
-
-export type CellParams = {
-    cell: string | number;
-    cellColumn?: string | number;
-    type?: TCell;
-    value: string | number | boolean;
-    merge?: MergeParams;
-    styles?: Partial<CellStyles>;
 }
 
 export type CellStyles = {
@@ -71,7 +66,7 @@ type TBorderStyle = | 'thin' | 'dotted' | 'hair' | 'medium' | 'double' | 'thick'
 
 export type CellBorderStyle = | 'thin' | 'dotted' | 'hair' | 'medium' | 'double' | 'thick' | 'dashed' | 'dashDot' | 'dashDotDot' | 'slantDashDot' | 'mediumDashed' | 'mediumDashDotDot' | 'mediumDashDot';
 
-export type ReferenceCell = {
+export type Cell = {
     row: number;
     cell: string;
     column: number;
@@ -79,11 +74,16 @@ export type ReferenceCell = {
     nextColumn: number;
 }
 
-export type MergeReferenceCell = {
+export type MergeCell = {
     endRow: number;
     cellEnd: string;
     startRow: number;
     cellStart: string;
     endColumn: number;
     startColumn: number;
+}
+
+export type Positions = {
+    row: number;
+    column: number;
 }

@@ -7,6 +7,8 @@ import {
     jest,
 } from '@jest/globals';
 
+import { ECellType } from '../worksheet';
+
 import { Table } from './table';
 import type { TableParams } from './types';
 
@@ -118,8 +120,16 @@ describe('Table', () => {
 
     const mockTreatedTitle = {
         cell: mockDefaultTableParams.startRow,
+        type: ECellType.SUBTITLE,
         value: mockDefaultTableParams.title.value,
-        merge: { positions: { startRow: mockDefaultTableParams.startRow, startColumn: mockDefaultTableParams.startColumn, endRow: mockDefaultTableParams.startRow, endColumn: mockDefaultTableParams.startColumn + mockDefaultTableParams.tableWidth - 1 } },
+        merge: {
+            positions: {
+                startRow: mockDefaultTableParams.startRow,
+                startColumn: mockDefaultTableParams.startColumn,
+                endRow: mockDefaultTableParams.startRow,
+                endColumn: mockDefaultTableParams.startColumn + mockDefaultTableParams.tableWidth - 1
+            }
+        },
         styles: mockDefaultTableParams.title.styles,
         cellColumn: mockDefaultTableParams.startColumn,
     };
@@ -127,18 +137,21 @@ describe('Table', () => {
     const mockTreatedHeaders =  [
         {
             cell: 2,
+            type: ECellType.HEADER,
             value: 'month',
             styles: mockDefaultTableParams.headers.styles,
             cellColumn: 1
         },
         {
             cell: 2,
+            type: ECellType.HEADER,
             value: 'value',
             styles: mockDefaultTableParams.headers.styles,
             cellColumn: 2
         },
         {
             cell: 2,
+            type: ECellType.HEADER,
             value: 'paid',
             styles: mockDefaultTableParams.headers.styles,
             cellColumn: 3
@@ -147,220 +160,256 @@ describe('Table', () => {
 
     const mockTreatedBody = [
         {
+            cell: 3,
+            type: ECellType.BODY,
             value: 'january',
-            cell: 3,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 1,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 3,
+            type: ECellType.BODY,
             value: 100,
-            cell: 3,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 2,
-            styles: mockDefaultTableParams.body.styles
+
         },
         {
-            value: 'YES',
             cell: 3,
+            type: ECellType.BODY,
+            value: 'YES',
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 3,
-            styles: mockDefaultTableParams.body.styles
         },
-        {
+        {   cell: 4,
+            type: ECellType.BODY,
             value: 'February',
-            cell: 4,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 1,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 4,
+            type: ECellType.BODY,
             value: 200,
-            cell: 4,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 2,
-            styles: mockDefaultTableParams.body.styles
         },
         {
-            value: 'NO',
             cell: 4,
+            type: ECellType.BODY,
+            value: 'NO',
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 3,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 5,
+            type: ECellType.BODY,
             value: 'March',
-            cell: 5,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 1,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 5,
+            type: ECellType.BODY,
             value: 300,
-            cell: 5,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 2,
-            styles: mockDefaultTableParams.body.styles
         },
         {
-            value: 'YES',
             cell: 5,
+            type: ECellType.BODY,
+            value: 'YES',
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 3,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 6,
+            type: ECellType.BODY,
             value: 'April',
-            cell: 6,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 1,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 6,
+            type: ECellType.BODY,
             value: 400,
-            cell: 6,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 2,
-            styles: mockDefaultTableParams.body.styles
         },
         {
-            value: 'NO',
             cell: 6,
+            type: ECellType.BODY,
+            value: 'NO',
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 3,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 7,
+            type: ECellType.BODY,
             value: 'May',
-            cell: 7,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 1,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 7,
+            type: ECellType.BODY,
             value: 500,
-            cell: 7,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 2,
-            styles: mockDefaultTableParams.body.styles
         },
         {
-            value: 'YES',
             cell: 7,
+            type: ECellType.BODY,
+            value: 'YES',
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 3,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 8,
+            type: ECellType.BODY,
             value: 'June',
-            cell: 8,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 1,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 8,
+            type: ECellType.BODY,
             value: 600,
-            cell: 8,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 2,
-            styles: mockDefaultTableParams.body.styles
         },
         {
-            value: 'NO',
             cell: 8,
+            type: ECellType.BODY,
+            value: 'NO',
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 3,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 9,
+            type: ECellType.BODY,
             value: 'July',
-            cell: 9,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 1,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 9,
+            type: ECellType.BODY,
             value: 700,
-            cell: 9,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 2,
-            styles: mockDefaultTableParams.body.styles
         },
         {
-            value: 'YES',
             cell: 9,
+            type: ECellType.BODY,
+            value: 'YES',
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 3,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 10,
+            type: ECellType.BODY,
             value: 'August',
-            cell: 10,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 1,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 10,
+            type: ECellType.BODY,
             value: 800,
-            cell: 10,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 2,
-            styles: mockDefaultTableParams.body.styles
         },
         {
-            value: 'NO',
             cell: 10,
+            type: ECellType.BODY,
+            value: 'NO',
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 3,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 11,
+            type: ECellType.BODY,
             value: 'September',
-            cell: 11,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 1,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 11,
+            type: ECellType.BODY,
             value: 900,
-            cell: 11,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 2,
-            styles: mockDefaultTableParams.body.styles
         },
         {
-            value: 'YES',
             cell: 11,
+            type: ECellType.BODY,
+            value: 'YES',
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 3,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 12,
+            type: ECellType.BODY,
             value: 'October',
-            cell: 12,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 1,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 12,
+            type: ECellType.BODY,
             value: 1000,
-            cell: 12,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 2,
-            styles: mockDefaultTableParams.body.styles
         },
         {
-            value: 'NO',
             cell: 12,
+            type: ECellType.BODY,
+            value: 'NO',
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 3,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 13,
+            type: ECellType.BODY,
             value: 'November',
-            cell: 13,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 1,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 13,
+            type: ECellType.BODY,
             value: 1100,
-            cell: 13,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 2,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 13,
+            type: ECellType.BODY,
             value: 'YES',
-            cell: 13,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 3,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 14,
+            type: ECellType.BODY,
             value: 'December',
-            cell: 14,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 1,
-            styles: mockDefaultTableParams.body.styles
         },
         {
+            cell: 14,
+            type: ECellType.BODY,
             value: 1200,
-            cell: 14,
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 2,
-            styles: mockDefaultTableParams.body.styles
         },
         {
-            value: 'NO',
             cell: 14,
+            type: ECellType.BODY,
+            value: 'NO',
+            styles: mockDefaultTableParams.body.styles,
             cellColumn: 3,
-            styles: mockDefaultTableParams.body.styles
         }
     ];
 
@@ -388,7 +437,7 @@ describe('Table', () => {
         });
 
         it('Should create a table without headers.', () => {
-            const table = new Table(createTableParams({ headers: { list: [] } }));
+            const table = new Table(createTableParams({ headers: { list: [], styles: {} } }));
 
             expect(table.headers).toHaveLength(0);
             expect(table.body).toHaveLength(0);
