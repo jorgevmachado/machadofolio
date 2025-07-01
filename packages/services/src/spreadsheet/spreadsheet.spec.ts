@@ -16,18 +16,19 @@ jest.mock('./worksheet');
 jest.mock('./table');
 
 describe('Spreadsheet', () => {
+    const mockXlsxLoad = jest.fn();
     let spreadsheet: Spreadsheet;
     let workbookMock: jest.Mocked<ExcelJS.Workbook>;
     let worksheetMock: any;
     let workSheetMock: jest.Mocked<WorkSheet>;
     let tableMock: jest.Mocked<Table>;
 
-
     beforeEach(() => {
         workbookMock = {
+            xlsx: { load: mockXlsxLoad },
+            worksheets: ['ws1','ws2'],
             addWorksheet: jest.fn(),
         } as unknown as jest.Mocked<ExcelJS.Workbook>;
-
         (ExcelJS.Workbook as unknown as jest.Mock).mockImplementation(() => workbookMock);
 
         worksheetMock = {};
@@ -67,15 +68,6 @@ describe('Spreadsheet', () => {
         });
     });
 
-    describe('createWorkSheet', () => {
-        it('must create worksheet and instantiate WorkSheet.', () => {
-            spreadsheet.createWorkSheet('MySpreadsheet');
-            expect(workbookMock.addWorksheet).toHaveBeenCalledWith('MySpreadsheet');
-            expect(WorkSheet).toHaveBeenCalledWith(worksheetMock);
-            expect(spreadsheet['workSheetInstance']).toBe(workSheetMock);
-        });
-    });
-
     describe('WorkSheet', () => {
         it('get WorkSheet should throw error if there is no worksheet.', () => {
             expect(() => spreadsheet.workSheet).toThrow('Worksheet has not been initialized. Use createWorksheet first.');
@@ -84,6 +76,19 @@ describe('Spreadsheet', () => {
         it('get WorkSheet should return workSheetInstance if any.', () => {
             spreadsheet.createWorkSheet('Spreadsheet2');
             expect(spreadsheet.workSheet).toBe(workSheetMock);
+        });
+
+        it('must create worksheet and instantiate WorkSheet.', () => {
+            spreadsheet.createWorkSheet('MySpreadsheet');
+            expect(workbookMock.addWorksheet).toHaveBeenCalledWith('MySpreadsheet');
+            expect(WorkSheet).toHaveBeenCalledWith(worksheetMock);
+            expect(spreadsheet['workSheetInstance']).toBe(workSheetMock);
+        });
+
+        it('must update worksheet and instantiate WorkSheet.', () => {
+            spreadsheet.updateWorkSheet(worksheetMock);
+            expect(WorkSheet).toHaveBeenCalledWith(worksheetMock);
+            expect(spreadsheet['workSheetInstance']).toBe(workSheetMock);
         });
 
     });
@@ -360,6 +365,17 @@ describe('Spreadsheet', () => {
         it('Should calculate table height successfully with default values', () => {
             expect(spreadsheet.calculateTableHeight({})).toEqual(1);
         });
+    });
+
+    describe('loadFile', () => {
+        it('must load the file and return the spreadsheets.', async () => {
+            const fakeBuffer = Buffer.from('anything') as Buffer;
+
+            const result = await spreadsheet.loadFile(fakeBuffer);
+
+            expect(result).toEqual(['ws1', 'ws2']);
+        });
+
     });
 
 });

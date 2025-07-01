@@ -17,6 +17,7 @@ describe('WorkSheet', () => {
                 border: undefined,
             }),
             mergeCells: jest.fn(),
+            getRow: jest.fn().mockReturnValue({}),
             getColumn: jest.fn().mockReturnValue({}),
         };
         jest.clearAllMocks();
@@ -149,6 +150,16 @@ describe('WorkSheet', () => {
             expect(mockWorkSheet.getColumn).toHaveBeenCalledWith(1);
             worksheet.column('C');
             expect(mockWorkSheet.getColumn).toHaveBeenCalledWith('C');
+        });
+    });
+
+    describe('row', () => {
+        it('Should row calls getRow from the worksheet.', () => {
+            const worksheet = new WorkSheet(mockWorkSheet);
+            worksheet.row(1);
+            expect(mockWorkSheet.getRow).toHaveBeenCalledWith(1);
+            worksheet.row(2);
+            expect(mockWorkSheet.getRow).toHaveBeenCalledWith(2);
         });
     });
 

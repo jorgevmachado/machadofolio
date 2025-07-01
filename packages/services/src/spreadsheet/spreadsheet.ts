@@ -43,6 +43,9 @@ export class Spreadsheet {
     public createWorkSheet(name: string): void {
         this.workSheetInstance =  new WorkSheet(this.workbookInstance.addWorksheet(name));
     }
+    public updateWorkSheet(worksheet: ExcelJS.Worksheet): void {
+        this.workSheetInstance =  new WorkSheet(worksheet);
+    }
 
     public calculateTablesParamsNextRow({
         spaceTop = 1,
@@ -162,5 +165,10 @@ export class Spreadsheet {
     public async generateSheetBuffer(): Promise<Buffer> {
         const arrayBuffer = await this.workbookInstance.xlsx.writeBuffer();
         return Buffer.from(arrayBuffer);
+    }
+
+    public async loadFile(buffer: Buffer<ArrayBufferLike>): Promise<Array<ExcelJS.Worksheet>> {
+        await this.workBook.xlsx.load(buffer);
+        return this.workBook.worksheets;
     }
 }

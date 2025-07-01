@@ -198,4 +198,8 @@ export class WorkSheet {
     public column(value: number | string): ExcelJS.Column {
         return this.workSheetInstance.getColumn(value);
     }
+
+    public row(value: number): ExcelJS.Row {
+        return this.workSheetInstance.getRow(value);
+    }
 }
