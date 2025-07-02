@@ -19,6 +19,7 @@ describe('WorkSheet', () => {
             mergeCells: jest.fn(),
             getRow: jest.fn().mockReturnValue({}),
             getColumn: jest.fn().mockReturnValue({}),
+            rowCount: 60,
         };
         jest.clearAllMocks();
         jest.restoreAllMocks();
@@ -160,6 +161,14 @@ describe('WorkSheet', () => {
             expect(mockWorkSheet.getRow).toHaveBeenCalledWith(1);
             worksheet.row(2);
             expect(mockWorkSheet.getRow).toHaveBeenCalledWith(2);
+        });
+    });
+
+    describe('rowCount', () => {
+        it('Should rowCount calls rowCount from the worksheet.', () => {
+            const worksheet = new WorkSheet(mockWorkSheet);
+            const rowCount = worksheet.rowCount;
+            expect(rowCount).toBe(60);
         });
     });
 

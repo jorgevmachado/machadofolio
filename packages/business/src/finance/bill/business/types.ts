@@ -1,5 +1,9 @@
+import type * as ExcelJS from 'exceljs';
+
+import type { CycleOfMonths } from '@repo/services/date/month/month';
 import type { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
 import type { TablesParams } from '@repo/services/spreadsheet/table/types';
+import type { WorkSheet } from '@repo/services/spreadsheet/worksheet/worksheet';
 
 import type Expense from '../../expense';
 
@@ -75,3 +79,80 @@ type SpreadsheetTable<T> = {
     footer?: boolean;
     header: Array<string>;
 }
+
+export type GetWorkSheetTitleParams = {
+    row: number;
+    merge?: number;
+    column: number;
+    topSpace?: number;
+    workSheet: WorkSheet
+    bottomSpace?: number;
+}
+
+export type GetWorkSheetTitle = {
+    year: number;
+    nextRow: number;
+    groupName: string;
+}
+
+export type BuildDetailDataParams = {
+    row: number;
+    cell: ExcelJS.Cell;
+    bill: Bill;
+    column: number;
+    workSheet: WorkSheet;
+}
+
+export type BuildDetailData = CycleOfMonths & {
+    bill: Bill;
+    supplier: string;
+}
+
+export type BuildGroupTableParams = {
+    row: number;
+    bill: Bill;
+    workSheet: WorkSheet;
+}
+
+export type BuildGroupTable = {
+    data: Array<Record<string, string | number | boolean | object | Bill>>
+    nextRow: number;
+    hasNext: boolean;
+}
+
+export type AccumulateGroupTablesParams = {
+    acc: DataAccumulator;
+    bill: Bill;
+    startRow: number;
+    workSheet: WorkSheet;
+};
+
+export type AccumulateGroupTables = {
+    acc: DataAccumulator;
+    lastRow: number;
+};
+
+export type GenerateDetailsTableParams = {
+    bills: Array<Bill>;
+    startRow: number;
+    workSheet: WorkSheet;
+};
+
+export type GenerateDetailsTable = {
+    data: Array<Record<string, string | number | boolean | object>>;
+    nextRow: number;
+};
+
+export type DataAccumulator = Array<Record<string, string | number | boolean | object>>;
+
+export type BuildCreditCardBodyDataParams = {
+    bill: Bill;
+    row: number;
+    column: number;
+    isParent: boolean;
+    groupName: string;
+    workSheet: WorkSheet;
+    supplierList: Array<string>;
+};
+
+export type BuildCreditCardBodyData = {};

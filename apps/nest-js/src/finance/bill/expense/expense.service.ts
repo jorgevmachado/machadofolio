@@ -292,7 +292,6 @@ export class ExpenseService extends Service<Expense> {
     async createToSheet(params: createToSheetParams) {
 
         const builtExpense = this.buildExpenseToSheet(params);
-        console.log('# => builtExpense => name => ', builtExpense.name)
 
         const item = await this.findOne({
             value: builtExpense.name,
@@ -316,8 +315,6 @@ export class ExpenseService extends Service<Expense> {
             ...builtExpense,
             supplier,
         });
-
-        console.log('# => parentExpenseConstructor => type => ', parentExpenseConstructor.type)
 
         const parentExpense = await this.customSave({...parentExpenseConstructor, children: undefined }) as Expense;
 

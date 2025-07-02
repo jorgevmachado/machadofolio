@@ -171,4 +171,82 @@ export class Spreadsheet {
         await this.workBook.xlsx.load(buffer);
         return this.workBook.worksheets;
     }
+
+    public parseExcelRowsToObjectList(currentRow: number, startRow: number, ignoreTitles: Array<string> = [], header: Array<string> = []): { data: Array<Record<string, string | number>>; nextRow: number;} {
+        const row = this.workSheet.row(currentRow);
+        const normalizedHeader = header.map(h => h.trim().toLowerCase());
+        const headerMap: { [col: number]: string } = {};
+        row.eachCell({ includeEmpty: false }, (cell, colNumber) => {
+            const header = String(cell.value).trim().toLowerCase();
+            if(normalizedHeader.includes(header)) {
+                headerMap[colNumber] = header;
+            }
+        });
+
+        const rowNumbers = Array.from(
+            { length: this.workSheet.rowCount - startRow },
+            (_, idx) => idx + startRow + 1
+        );
+
+        const getCellValue = (cell: ExcelJS.Cell): string | number => {
+            if(cell.value == null) {
+                return '';
+            }
+            if (typeof cell.value === 'object' && 'result' in cell.value && cell.value.result !== undefined) {
+                return cell.value.result as string | number;
+            }
+
+            return cell.value as string | number;
+        };
+
+        const rowsParsed = rowNumbers.map(rowNumber => {
+            const currentRow = this.workSheet.row(rowNumber);
+
+            if (!currentRow) {
+                return null;
+            }
+
+            const obj = Object.keys(headerMap).reduce(
+                (acc, key) => {
+                    const colNum = Number(key);
+                    const mapKey = headerMap[colNum];
+                    if(mapKey) {
+                        acc[mapKey] = getCellValue(currentRow.getCell(colNum));
+                    }
+                    return acc;
+                },
+                {} as Record<string, string | number>
+            );
+
+            const rowIsEmpty = Object.values(obj).every(
+                value => value === null || value === undefined || value === ''
+            );
+            return rowIsEmpty ? null : obj;
+        });
+
+        const normalizedIgnoreTitles = ignoreTitles.map(t => t.trim().toLowerCase());
+        const data: Array<Record<string, string | number>> = [];
+        const totalData: Array<Record<string, string | number>> = [];
+        for (const item of rowsParsed) {
+            if (!item) break;
+            totalData.push(item);
+            const typeField = normalizedHeader.find(h => h === 'type');
+            const itemTitle = typeField && typeof item[typeField] === 'string'
+                ? item[typeField].trim().toLowerCase()
+                : '';
+
+            const hasHeaderValue = normalizedHeader.some(
+                h => (typeof item[h] === 'string' && item[h].trim().toLowerCase() === h)
+            );
+
+            if(!hasHeaderValue && !normalizedIgnoreTitles.includes(itemTitle)) {
+                data.push(item);
+            }
+        }
+
+        return { data, nextRow: startRow + totalData.length + 1 + 1 };
+    }
+
+
+
 }

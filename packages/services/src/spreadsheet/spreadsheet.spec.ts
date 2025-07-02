@@ -17,6 +17,14 @@ jest.mock('./table');
 
 describe('Spreadsheet', () => {
     const mockXlsxLoad = jest.fn();
+    const workSheetRowEachCellMock = (
+        opts: { includeEmpty: boolean },
+        cb: (cell: { value: string }, col: number) => void
+    ) => {
+        cb({ value: 'Type' }, 1);
+        cb({ value: 'Name' }, 2);
+        cb({ value: 'Value' }, 3);
+    };
     let spreadsheet: Spreadsheet;
     let workbookMock: jest.Mocked<ExcelJS.Workbook>;
     let worksheetMock: any;
@@ -34,8 +42,20 @@ describe('Spreadsheet', () => {
         worksheetMock = {};
 
         workSheetMock = {
+            row: (rowNumber: number) => ({
+                getCell: (colNum: number) => {
+                    if (rowNumber === 2) {
+                        if (colNum === 1) return { value: 'expense' };
+                        if (colNum === 2) return { value: 'Lyla' };
+                        if (colNum === 3) return { value: 200 };
+                    }
+                    return { value: null };
+                },
+                eachCell: workSheetRowEachCellMock
+            }),
             addCell: jest.fn(),
             column: jest.fn().mockReturnValue({ width: 0 }),
+            rowCount: 2,
         } as unknown as jest.Mocked<WorkSheet>;
         (WorkSheet as unknown as jest.Mock).mockImplementation(() => workSheetMock);
 
@@ -376,6 +396,165 @@ describe('Spreadsheet', () => {
             expect(result).toEqual(['ws1', 'ws2']);
         });
 
+    });
+
+    describe('parseExcelRowsToObjectList', () => {
+        it('should correctly map lines to objects.', () => {
+            spreadsheet.createWorkSheet('Spreadsheet2');
+            const result = spreadsheet.parseExcelRowsToObjectList(
+                14,
+                1,
+                [],
+                ['Type', 'Name', 'Value']
+            );
+
+            expect(result.data).toEqual([
+                { type: 'expense', name: 'Lyla', value: 200 }
+            ]);
+
+            expect(result.nextRow).toBe(4);
+        });
+
+        it('should ignore lines by ignoreTitles.', () => {
+            spreadsheet.createWorkSheet('Spreadsheet2');
+            const result = spreadsheet.parseExcelRowsToObjectList(
+                14,
+                1,
+                ['expense'],
+                ['Type', 'Name', 'Value'],
+            );
+
+            expect(result.data).toEqual([]);
+        });
+
+        it('should ignore lines that are repeated headers.', () => {
+            spreadsheet.createWorkSheet('Spreadsheet2');
+            spreadsheet.workSheet.row = (n: number) => ({
+                getCell: (colNum: number) => ({
+                    value:
+                        colNum === 1
+                            ? 'Type'
+                            : colNum === 2
+                                ? 'Name'
+                                : 'Value'
+                }),
+                eachCell: workSheetRowEachCellMock
+            }) as any;
+
+            const result = spreadsheet.parseExcelRowsToObjectList(
+                14,
+                1,
+                [],
+                ['Type', 'Name', 'Value']
+            );
+            expect(result.data).toEqual([]);
+        });
+
+        it('should return empty if there are no valid rows.', () => {
+            spreadsheet.createWorkSheet('Spreadsheet2');
+
+            spreadsheet.workSheet.row = (rowNumber: number) => {
+                if(rowNumber === 2) {
+                    return null;
+                }
+                return {
+                    getCell: (colNum: number) => {
+                        if (rowNumber === 14) {
+                            if (colNum === 1) return { value: 'expense' };
+                            if (colNum === 2) return { value: 'Lyla' };
+                            if (colNum === 3) return { value: 200 };
+                        }
+                        return { value: null };
+                    },
+                    eachCell: workSheetRowEachCellMock
+                } as any;
+            };
+
+            // spreadsheet.workSheet.row = (_: number) => null as any;
+
+
+            const result = spreadsheet.parseExcelRowsToObjectList(
+                14,
+                1,
+                [],
+                ['col1']
+            );
+            expect(result.data).toEqual([]);
+        });
+
+        it('must handle cell values of type object with result property.', () => {
+            spreadsheet.createWorkSheet('Spreadsheet2');
+            spreadsheet.workSheet.row = (rowNum: number) => ({
+                getCell: (colNum: number) => ({
+                    value:
+                        colNum === 1
+                            ? { result: 'expense' }
+                            : colNum === 2
+                                ? { result: 'Lyla' }
+                                : { result: 200 }
+                }),
+                eachCell: workSheetRowEachCellMock
+            }) as any;
+
+            const result = spreadsheet.parseExcelRowsToObjectList(
+                14,
+                1,
+                [],
+                ['Type', 'Name', 'Value']
+            );
+            expect(result.data).toEqual([
+                { type: 'expense', name: 'Lyla', value: 200 }
+            ]);
+        });
+
+        it('returns "" when getCell returns value == null.', () => {
+            spreadsheet.createWorkSheet('Spreadsheet2');
+            spreadsheet.workSheet.row = (rowNum: number) => ({
+                getCell: (col: number) => ({ value: null }),
+                eachCell: (opt: any, fn: (cell: any, colNumber: number) => void) => {
+                    fn({ value: 'col1' }, 1);
+                }
+            }) as any;
+
+            const result = spreadsheet.parseExcelRowsToObjectList(
+                14,
+                1,
+                [],
+                ['col1']
+            );
+
+            expect(result.data).toEqual([]);
+        });
+
+        it('returns "" for itemTitle if typeKey exists but value is not string', () => {
+            spreadsheet.createWorkSheet('Spreadsheet2');
+            spreadsheet.workSheet.row = (rowNum: number) => {
+                if(rowNum === 2) {
+                    return {
+                        getCell: (col: number) => col === 1
+                            ? { value: 99 } // Não é string!!
+                            : { value: 'data' },
+                        eachCell: (opt: any, fn: (cell: any, colNumber: number) => void) => {
+                            fn({ value: 'type' }, 1);
+                            fn({ value: 'col2' }, 2);
+                        }
+                    } as any;
+                }
+                return { getCell: () => ({ value: null }), eachCell: (opt: any, fn: (cell: any, colNumber: number) => void) => {
+                        fn({ value: 'type' }, 1);
+                        fn({ value: 'col2' }, 2);
+                    } } as any;
+            };
+
+            const result = spreadsheet.parseExcelRowsToObjectList(
+                14,
+                1,
+                [],
+                ['type', 'col2']
+            );
+            expect(result.data.length).toBe(1);
+            expect(result.data[0]).toEqual({ type: 99, col2: 'data' });
+        });
     });
 
 });

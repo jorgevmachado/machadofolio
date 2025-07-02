@@ -202,4 +202,8 @@ export class WorkSheet {
     public row(value: number): ExcelJS.Row {
         return this.workSheetInstance.getRow(value);
     }
+
+    public get rowCount(): number {
+        return this.workSheetInstance.rowCount;
+    }
 }
