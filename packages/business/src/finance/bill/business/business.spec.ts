@@ -1272,7 +1272,7 @@ describe('Bill Business', () => {
                 ]);
                 const startRow = 2;
 
-                const result = business.generateCreditCardTable({
+                const result = business['generateCreditCardTable']({
                     bills: [mockEntity],
                     startRow,
                     groupName,
@@ -1299,7 +1299,7 @@ describe('Bill Business', () => {
                 ]);
                 const startRow = 2;
 
-                const result = business.generateCreditCardTable({
+                const result = business['generateCreditCardTable']({
                     bills: [],
                     startRow,
                     groupName,
@@ -1321,7 +1321,7 @@ describe('Bill Business', () => {
                 ]);
                 const startRow = 2;
 
-                const result = business.generateCreditCardTable({
+                const result = business['generateCreditCardTable']({
                     bills: [],
                     startRow,
                     groupName,
@@ -1378,7 +1378,7 @@ describe('Bill Business', () => {
 
                 buildMockWorksheetGenerateCreditCardTable();
 
-                const result = business.generateCreditCardTable({
+                const result = business['generateCreditCardTable']({
                     bills: [mockEntity],
                     startRow: 54,
                     groupName,
@@ -1398,7 +1398,7 @@ describe('Bill Business', () => {
 
                 buildMockWorksheetGenerateCreditCardTable();
 
-                const result = business.generateCreditCardTable({
+                const result = business['generateCreditCardTable']({
                     bills: [mockEntity],
                     startRow: 54,
                     groupName: 'Personal',
@@ -1435,7 +1435,7 @@ describe('Bill Business', () => {
                 });
 
 
-                const result = business.generateCreditCardTable({
+                const result = business['generateCreditCardTable']({
                     bills: [mockEntity],
                     startRow: 1,
                     groupName: 'Personal',
