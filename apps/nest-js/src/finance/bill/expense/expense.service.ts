@@ -289,7 +289,7 @@ export class ExpenseService extends Service<Expense> {
         }
     }
 
-    async createToSheet(params: createToSheetParams) {
+    private async createToSheet(params: createToSheetParams) {
 
         const builtExpense = this.buildExpenseToSheet(params);
 
