@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
 import * as stringUtils from '@repo/services/string/string';
+import { snakeCaseToNormal } from '@repo/services/string/string';
 import { type CycleOfMonths, MONTHS, totalByMonth } from '@repo/services/date/month/month';
 import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
 import type { TablesParams } from '@repo/services/spreadsheet/table/types';
-import { snakeCaseToNormal } from '@repo/services/string/string';
 
-import { EXPENSE_PARENT_MOCK } from '../../expense';
 import type Expense from '../../expense';
+import { EXPENSE_PARENT_MOCK } from '../../expense';
 
 import { BILL_MOCK } from '../mock';
 import type Bill from '../bill';
@@ -99,6 +99,7 @@ describe('Bill Business', () => {
 
     afterEach(() => {
         jest.resetModules();
+        jest.restoreAllMocks();
     });
 
     describe('calculate', () => {
@@ -221,7 +222,7 @@ describe('Bill Business', () => {
         });
 
         it('should return the current year and name when there is no year in the title.', () => {
-            const currentYear =  new Date().getFullYear();
+            const currentYear = new Date().getFullYear();
             spreadsheetMock.workSheet.cell.mockImplementation(() => ({ value: 'Other releases' }) as any);
             const result = business.getWorkSheetTitle({
                 row: 1,
@@ -275,7 +276,7 @@ describe('Bill Business', () => {
             });
         });
 
-        it('deve retornar o texto da célula diretamente quando não houver correspondência no regex (match nulo)', () => {
+        it('should return the cell text directly when there is no match in the regex (null match).', () => {
             const CELL_VALUE = 'Purchasing Group';
 
             spreadsheetMock.workSheet.cell.mockImplementation(() => ({ value: CELL_VALUE }) as any);
@@ -283,9 +284,9 @@ describe('Bill Business', () => {
             jest.spyOn(String.prototype, 'match').mockImplementation((regex) => ['Purchasing Group', undefined, '2025']);
 
             const result = business.getWorkSheetTitle({
-                row: 1,
-                column: 2,
-                workSheet: spreadsheetMock.workSheet,
+                    row: 1,
+                    column: 2,
+                    workSheet: spreadsheetMock.workSheet,
                 }
             );
 
@@ -337,13 +338,13 @@ describe('Bill Business', () => {
                 }
                 return { value: '' } as any;
             });
-            
+
             const accReturn = ['some accumulated'] as any;
 
             const spy = jest
                 .spyOn(business as any, 'accumulateGroupTables')
                 .mockReturnValue({ acc: accReturn, lastRow: 20 });
-            
+
 
             const result = business.generateDetailsTable({
                 bills: [billTypeBankSlipMock],
@@ -610,7 +611,11 @@ describe('Bill Business', () => {
                 }));
                 const result = business['processingSpreadsheetSecondaryTables']({
                     sheet: spreadsheetMock,
-                    data: [{ ...mockEntity, type: EBillType.CREDIT_CARD, expenses: [{ ...mockExpense, children: undefined }] }],
+                    data: [{
+                        ...mockEntity,
+                        type: EBillType.CREDIT_CARD,
+                        expenses: [{ ...mockExpense, children: undefined }]
+                    }],
                     buildExpensesTablesParams,
                     allExpensesHaveBeenPaid,
                     startRow: 14,
@@ -730,7 +735,7 @@ describe('Bill Business', () => {
                 expect(result?.supplier).toBe('SupplierEmpty');
                 expect(result?.bill).toBe(mockEntity);
 
-                for(const month of MONTHS) {
+                for (const month of MONTHS) {
                     expect(result?.[month]).toBe(0);
                     expect(result?.[`${month}_paid`]).toBe(false);
                 }
@@ -738,7 +743,7 @@ describe('Bill Business', () => {
 
             it('must trim the title correctly.', () => {
                 spreadsheetMock.workSheet.cell.mockImplementation((row, column) => {
-                    if(Number(column) % 2 === 0) {
+                    if (Number(column) % 2 === 0) {
                         return { value: 7 } as any;
                     }
                     return { value: 'YES' } as any;
@@ -964,7 +969,7 @@ describe('Bill Business', () => {
                 });
             });
         });
-        
+
         describe('buildCreditCardBodyData', () => {
             function buildMockWorksheet(cells: Array<any>) {
                 let call = 0;
@@ -979,22 +984,22 @@ describe('Bill Business', () => {
                     'Credit Card Nubank Physical',
                     '100',
                     '200',
-                    '300', 
+                    '300',
                     '400',
-                    '500', 
-                    '600', 
-                    '700', 
-                    '800', 
-                    '900', 
-                    '1000', 
-                    '1100', 
+                    '500',
+                    '600',
+                    '700',
+                    '800',
+                    '900',
+                    '1000',
+                    '1100',
                     '1200',
                     'YES',
                     '7800'
                 ];
-               buildMockWorksheet(cells);
+                buildMockWorksheet(cells);
 
-                const result = business.buildCreditCardBodyData({
+                const result = business['buildCreditCardBodyData']({
                     row: 1,
                     bill: mockEntity,
                     column: 1,
@@ -1024,12 +1029,12 @@ describe('Bill Business', () => {
             it('should generate correctly with isParent = false and supplierList populated.', () => {
                 const supplierList = ['Ifood', 'Physical'];
                 const cells = [
-                    'Credit Card Nubank Physical Apache', '1','2','3','4','5','6','7','8','9','10','11','12','NO','66'
+                    'Credit Card Nubank Physical Apache', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', 'NO', '66'
                 ];
 
                 buildMockWorksheet(cells);
 
-                const result = business.buildCreditCardBodyData({
+                const result = business['buildCreditCardBodyData']({
                     row: 1,
                     column: 1,
                     bill: mockEntity,
@@ -1059,7 +1064,7 @@ describe('Bill Business', () => {
 
                 buildMockWorksheet(cells);
 
-                const result = business.buildCreditCardBodyData({
+                const result = business['buildCreditCardBodyData']({
                     row: 1,
                     bill: mockEntity,
                     column: 1,
@@ -1070,9 +1075,9 @@ describe('Bill Business', () => {
                 });
 
                 MONTHS.forEach((month, i) => {
-                    const cell = cells?.[i+1];
-                    const cellNumber =  Number(cell);
-                    if(Number.isNaN(cellNumber)) {
+                    const cell = cells?.[i + 1];
+                    const cellNumber = Number(cell);
+                    if (Number.isNaN(cellNumber)) {
                         expect(result.data[month]).toBe(0);
                     } else {
                         expect(result.data[month]).toBe(cellNumber);
@@ -1090,11 +1095,11 @@ describe('Bill Business', () => {
 
             it('should work if supplierList is not passed.', () => {
                 const cells = [
-                    'SupplierX', 1,1,1,1,1,1,1,1,1,1,1,1, 'NO', '12'
+                    'SupplierX', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'NO', '12'
                 ];
                 buildMockWorksheet(cells);
 
-                const result = business.buildCreditCardBodyData({
+                const result = business['buildCreditCardBodyData']({
                     row: 1,
                     bill: mockEntity,
                     column: 1,
@@ -1112,7 +1117,7 @@ describe('Bill Business', () => {
                 const cells = new Array(15).fill(undefined);
                 buildMockWorksheet(cells);
 
-                const result = business.buildCreditCardBodyData({
+                const result = business['buildCreditCardBodyData']({
                     row: 1,
                     bill: { ...mockEntity, name: 'OTHER CARD' },
                     column: 1,
@@ -1138,7 +1143,7 @@ describe('Bill Business', () => {
                 spreadsheetMock.workSheet.cell.mockReturnValue({ value: 'SupplierX' } as any);
 
                 const business = new BillBusiness();
-                const result = business.buildCreditCardBodyData({
+                const result = business['buildCreditCardBodyData']({
                     row,
                     bill: mockEntity,
                     column,
@@ -1150,6 +1155,298 @@ describe('Bill Business', () => {
 
                 expect(result.data.aggregate_name).toBe('');
             });
+        });
+
+        describe('generateCreditCardTable', () => {
+            const groupName = 'Personal';
+
+            beforeEach(() => {
+                jest.clearAllMocks();
+                jest.restoreAllMocks();
+            });
+
+            afterEach(() => {
+                jest.resetModules();
+                jest.restoreAllMocks();
+            });
+
+            function buildMockWorksheet(rowsProps: Array<any>) {
+                spreadsheetMock.workSheet.cell.mockImplementation((row, col) => {
+                    const values = rowsProps[row] ?? {};
+                    return {
+                        value: values.value ?? '',
+                        isMerged: values.isMerged ?? false,
+                        _mergeCount: values._mergeCount ?? 0
+                    } as any;
+                });
+            }
+
+            function buildCreditCardBodyDataMock(props: Array<any>) {
+                const monthsObj = MONTHS.reduce((acc, month) => {
+                    acc[month] = 0;
+                    acc[`${month}_paid`] = false;
+                    return acc;
+                }, {} as CycleOfMonths);
+                props.forEach((prop, i) => {
+                    const { name, supplier, is_aggregate, aggregate_name, supplierList = []  } = prop ?? {};
+                    jest.spyOn(business as any, 'buildCreditCardBodyData').mockImplementationOnce(() => ({
+                        data: {
+                            ...monthsObj,
+                            name,
+                            year: 2025,
+                            paid: false,
+                            bill: mockEntity,
+                            total: 1000,
+                            supplier,
+                            is_aggregate,
+                            aggregate_name,
+                        },
+                        supplierList,
+                    }));
+                });
+            }
+
+            function buildMockWorksheetGenerateCreditCardTable() {
+                spreadsheetMock.workSheet.cell.mockImplementation((row, col) => {
+                    if (row === 54 && col === 2) {
+                        return { value: 'CREDIT_CARD(Nubank)', isMerged: true, _mergeCount: 14 } as any;
+                    }
+
+                    if (row === 56 && col === 2) {
+                        return { value: 'Credit Card Nubank Ifood', isMerged: false, _mergeCount: 0 } as any;
+                    }
+
+                    if (row === 59 && col === 2) {
+                        return { value: 'Credit Card Nubank Ifood', isMerged: true, _mergeCount: 14 } as any;
+                    }
+
+                    if (row === 61 && col === 2) {
+                        return {
+                            value: 'Credit Card Nubank IFood Andre Vinicios Pereira',
+                            isMerged: false,
+                            _mergeCount: 0
+                        } as any;
+                    }
+
+                    if (row === 62 && col === 2) {
+                        return { value: 'Credit Card Nubank IFood Google One', isMerged: false, _mergeCount: 0 } as any;
+                    }
+
+                    if (row === 63 && col === 2) {
+                        return {
+                            value: 'Credit Card Nubank IFood Xique Xique',
+                            isMerged: false,
+                            _mergeCount: 0
+                        } as any;
+                    }
+
+                    if (row === 64 && col === 2) {
+                        return {
+                            value: 'Credit Card Nubank IFood IFood Clube',
+                            isMerged: false,
+                            _mergeCount: 0
+                        } as any;
+                    }
+
+                    if (row === 65 && col === 2) {
+                        return {
+                            value: 'Credit Card Nubank IFood Anjos Restaurante',
+                            isMerged: false,
+                            _mergeCount: 0
+                        } as any;
+                    }
+
+                    return { value: '', isMerged: false, _mergeCount: 0 } as any;
+                });
+            }
+
+            it('should correctly return a simple case (no parent/children).', () => {
+                buildMockWorksheet([
+                    {},
+                    {},
+                    { value: 'CREDIT_CARD(Nubank)' },
+                    {},
+                    { value: 'Expense 1' },
+                    { value: 'TOTAL' },
+                    {},
+                ]);
+                const startRow = 2;
+
+                const result = business.generateCreditCardTable({
+                    bills: [mockEntity],
+                    startRow,
+                    groupName,
+                    workSheet: spreadsheetMock.workSheet
+                });
+                expect(result.nextRow).toEqual(7);
+                expect(result.data).toHaveLength(1);
+                expect(result.data[0].january).toEqual(0);
+                expect(result.data[0].january_paid).toBeFalsy();
+                expect(result.data[0].name).toEqual('Personal Expense 1');
+                expect(result.data[0].supplier).toEqual('Personal Expense 1');
+                expect(result.data[0].aggregate_name).toEqual('');
+                expect(result.data[0].is_aggregate).toBeFalsy();
+                expect(result.data[0].paid).toBeFalsy();
+                expect(result.data[0].total).toEqual(0);
+            });
+
+            it('should ignore missing bills.', () => {
+                buildMockWorksheet([
+                    {},
+                    {},
+                    { value: 'CREDIT_CARD(Nubank)' },
+                    { value: 'TOTAL' },
+                ]);
+                const startRow = 2;
+
+                const result = business.generateCreditCardTable({
+                    bills: [],
+                    startRow,
+                    groupName,
+                    workSheet: spreadsheetMock.workSheet
+                });
+
+                expect(result).toEqual({
+                    data: [],
+                    nextRow: 2 + 1
+                });
+            });
+
+            it('should return empty list if regex doesnt match.', () => {
+                buildMockWorksheet([
+                    {},
+                    {},
+                    { value: 'invalid' },
+                    { value: 'TOTAL' },
+                ]);
+                const startRow = 2;
+
+                const result = business.generateCreditCardTable({
+                    bills: [],
+                    startRow,
+                    groupName,
+                    workSheet: spreadsheetMock.workSheet
+                });
+
+                expect(result).toEqual({
+                    data: [],
+                    nextRow: 2
+                });
+            });
+
+            it('should process parents and children correctly (isMerged = true, _mergeCount > 2).', () => {
+
+                buildCreditCardBodyDataMock([
+                    {
+                        name: 'Personal Credit Card Nubank Ifood',
+                        supplier: 'Ifood',
+                        is_aggregate: false,
+                        aggregate_name: '',
+                        supplierList: ['Ifood']
+                    },
+                    {
+                        name: 'Personal Credit Card Nubank IFood Andre Vinicios Pereira',
+                        supplier: 'Andre Vinicios Pereira',
+                        is_aggregate: true,
+                        aggregate_name: 'IFood',
+                    },
+                    {
+                        name: 'Personal Credit Card Nubank IFood Google One',
+                        supplier: 'Google One',
+                        is_aggregate: true,
+                        aggregate_name: 'IFood',
+                    },
+                    {
+                        name: 'Personal Credit Card Nubank IFood Xique Xique',
+                        supplier: 'Xique Xique',
+                        is_aggregate: true,
+                        aggregate_name: 'IFood',
+                    },
+                    {
+                        name: 'Personal Credit Card Nubank IFood IFood Clube',
+                        supplier: 'Clube',
+                        is_aggregate: true,
+                        aggregate_name: 'IFood IFood',
+                    },
+                    {
+                        name: 'Personal Credit Card Nubank IFood Anjos Restaurante',
+                        supplier: 'Anjos Restaurante',
+                        is_aggregate: true,
+                        aggregate_name: 'IFood',
+                    }
+                ]);
+
+                buildMockWorksheetGenerateCreditCardTable();
+
+                const result = business.generateCreditCardTable({
+                    bills: [mockEntity],
+                    startRow: 54,
+                    groupName,
+                    workSheet: spreadsheetMock.workSheet
+                });
+
+                expect(result.nextRow).toEqual(67);
+                expect(result.data).toHaveLength(1);
+                expect(result.data[0].children).toHaveLength(5);
+            });
+
+            it('should not add to acc when bodyData is false.', () => {
+                jest.spyOn(business as any, 'buildCreditCardBodyData').mockImplementationOnce(() => ({
+                    data: null,
+                    supplierList: []
+                }));
+
+                buildMockWorksheetGenerateCreditCardTable();
+
+                const result = business.generateCreditCardTable({
+                    bills: [mockEntity],
+                    startRow: 54,
+                    groupName: 'Personal',
+                    workSheet: spreadsheetMock.workSheet
+                });
+
+                expect(result.data).toEqual([]);
+            });
+
+            it('should set bankName to "Bank" when regex does not capture the name.', () => {
+                const originalMatch = String.prototype.match;
+
+                String.prototype.match = function(regex) {
+                    if(this === 'CREDIT_CARD(Nubank)') {
+                        return [
+                            'CREDIT_CARD(Nubank)',
+                            'CREDIT_CARD',
+                            undefined,
+                        ];
+                    }
+                    return originalMatch.call(this, regex);
+                };
+
+                jest.spyOn(business as any, 'buildCreditCardBodyData').mockImplementationOnce(() => ({
+                    data: { name: 'Some Name' },
+                    supplierList: []
+                }));
+
+                spreadsheetMock.workSheet.cell.mockImplementation((row, col) => {
+                    if (row === 1) {
+                        return { value: 'CREDIT_CARD(Nubank)', isMerged: false, _mergeCount: 1 } as any;
+                    }
+                    return { value: '', isMerged: false, _mergeCount: 1 } as any;
+                });
+
+
+                const result = business.generateCreditCardTable({
+                    bills: [mockEntity],
+                    startRow: 1,
+                    groupName: 'Personal',
+                    workSheet: spreadsheetMock.workSheet
+                });
+
+                String.prototype.match = originalMatch;
+
+                expect(result.data).toEqual([]);
+            });
+
         });
     });
 

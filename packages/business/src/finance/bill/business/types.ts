@@ -155,4 +155,19 @@ export type BuildCreditCardBodyDataParams = {
     supplierList: Array<string>;
 };
 
-export type BuildCreditCardBodyData = {};
+export type BuildCreditCardBodyData = {
+    data: Record<string, string | number | boolean | object>;
+    supplierList: Array<string>;
+};
+
+export type GenerateCreditCardTableParams = {
+    bills: Array<Bill>;
+    startRow: number;
+    workSheet: WorkSheet;
+    groupName: string;
+};
+
+export type GenerateCreditCardTable = {
+    data: DataAccumulator;
+    nextRow: number;
+};

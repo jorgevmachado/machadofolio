@@ -11,13 +11,20 @@ import type Bill from '../bill';
 import { type EBillType } from '../enum';
 
 import {
-    type AccumulateGroupTables, type AccumulateGroupTablesParams,
+    type AccumulateGroupTables,
+    type AccumulateGroupTablesParams,
     type BodyData,
-    type BuildBodyDataParams, type BuildCreditCardBodyDataParams,
+    type BuildBodyDataParams,
+    type BuildCreditCardBodyData,
+    type BuildCreditCardBodyDataParams,
     type BuildDetailData,
     type BuildDetailDataParams,
     type BuildGroupTable,
-    type BuildGroupTableParams, type DataAccumulator, type GenerateDetailsTable, type GenerateDetailsTableParams,
+    type BuildGroupTableParams,
+    type DataAccumulator, type GenerateCreditCardTable,
+    type GenerateCreditCardTableParams,
+    type GenerateDetailsTable,
+    type GenerateDetailsTableParams,
     type GetWorkSheetTitle,
     type GetWorkSheetTitleParams,
     type ProcessingSpreadsheetDetailTableParams,
@@ -452,7 +459,144 @@ export default class BillBusiness {
         };
     }
 
-    public buildCreditCardBodyData({
+
+    public generateCreditCardTable({
+        bills,
+        startRow,
+        groupName,
+        workSheet
+    }: GenerateCreditCardTableParams): GenerateCreditCardTable {
+        const regex = /^([A-Z_]+)\(([^)]+)\)$/;
+
+        const readExpensesBlock = (
+            bill: Bill,
+            supplierList: Array<string>,
+            currentRow: number,
+            stopValue: string,
+            parent?: DataAccumulator[number]
+        ) => {
+            const inner = (
+                row: number,
+                acc: DataAccumulator
+            ): { expenses: typeof acc, nextRow: number } => {
+                const cell = workSheet.cell(row, 2);
+                const cellValue = cell.value?.toString().trim() || '';
+
+                if (!cellValue || cellValue === stopValue) {
+                    return { expenses: acc, nextRow: row };
+                }
+
+                const { data: bodyData, supplierList: suppliers } = this.buildCreditCardBodyData({
+                    row,
+                    bill,
+                    column: 2,
+                    isParent: !parent,
+                    groupName,
+                    workSheet,
+                    supplierList
+                });
+
+                if (suppliers?.length) {
+                    supplierList.push(...suppliers);
+                }
+
+                const accNext = bodyData
+                    ? [...acc, { ...bodyData, ...(parent ? { parent } : {}) }]
+                    : acc;
+                return inner(row + 1, accNext);
+            };
+            return inner(currentRow, []);
+        };
+
+        const processParentWithChildren = (
+            data: DataAccumulator,
+            initialRow: number,
+            supplierList: Array<string>,
+            bill: Bill
+        ): number => {
+            const recurse = (row: number): number => {
+                const cell = workSheet.cell(row, 2);
+                const value = cell.value?.toString().trim() || '';
+                if (cell.isMerged && cell['_mergeCount'] > 2) {
+
+                    const parentName = `${groupName} ${value}`;
+                    const parent = data.find((item) => item.name === parentName);
+                    if (parent) {
+                        const { expenses: children, nextRow } = readExpensesBlock(
+                            bill,
+                            supplierList,
+                            row + 2,
+                            '',
+                            parent
+                        );
+                        if (children.length) parent.children = children;
+                        return recurse(nextRow + 1);
+                    }
+                }
+                return row;
+            };
+            return recurse(initialRow);
+        };
+
+        const processBills = (
+            row: number,
+            acc: DataAccumulator
+        ): { allBills: typeof acc, nextRow: number } => {
+            const cell = workSheet.cell(row, 2);
+            const cellValue = cell.value?.toString().trim() || '';
+            const match = cellValue.match(regex);
+
+            if (!match) {
+                return { allBills: acc, nextRow: row };
+            }
+
+
+            const billType = match[1] as EBillType;
+
+            const bankName = match?.[2] || 'Bank';
+
+            const billName = `${groupName} ${snakeCaseToNormal(billType)} ${bankName}`;
+
+            const bill = bills.find((item) => item.name === billName);
+
+            if (!bill) {
+                return processBills(row + 1, acc);
+            }
+
+
+            const supplierList: Array<string> = [];
+            const { expenses: data, nextRow } = readExpensesBlock(
+                bill,
+                supplierList,
+                row + 2,
+                'TOTAL'
+            );
+            const afterParentRow = processParentWithChildren(data, nextRow + 2, supplierList, bill);
+            return processBills(
+                afterParentRow,
+                [...acc, { ...bill, expenses: data }]
+            );
+        };
+        const { allBills, nextRow } = processBills(startRow, []);
+
+        const data: DataAccumulator = [];
+        allBills.forEach((bill) => {
+            if (bill['expenses']) {
+                const items = bill['expenses'];
+                if (Array.isArray(items)) {
+                    data.push(...items);
+                }
+            }
+        });
+
+        return {
+            data,
+            nextRow: nextRow
+        };
+    }
+
+
+    private buildCreditCardBodyData({
             row,
             bill,
             column,
@@ -460,7 +604,7 @@ export default class BillBusiness {
             groupName,
             workSheet,
             supplierList = []
-        }: BuildCreditCardBodyDataParams) {
+        }: BuildCreditCardBodyDataParams): BuildCreditCardBodyData {
         const filterTexts: Array<string> = [
             bill.name,
             ...(!isParent ? supplierList : [])
