@@ -2,9 +2,10 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { snakeCaseToNormal, toSnakeCase } from '@repo/services/string/string';
 import { MONTHS } from '@repo/services/date/month/month';
+import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
 import { filterByCommonKeys } from '@repo/services/array/array';
-import { snakeCaseToNormal } from '@repo/services/string/string';
 
 import BillBusiness from '@repo/business/finance/bill/business/business';
 import BillConstructor from '@repo/business/finance/bill/bill';
@@ -26,9 +27,7 @@ import { GroupService } from '../group/group.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
-import { BillSeederParams, CreateToSheetParams, ExistExpenseInBill, SpreadsheetProcessingParams } from './types';
-
-
+import type { BillSeederParams, CreateToSheetParams, ExistExpenseInBill, SpreadsheetProcessingParams } from './types';
 
 @Injectable()
 export class BillService extends Service<Bill> {
@@ -64,10 +63,12 @@ export class BillService extends Service<Bill> {
 
         const name = `${group.name} ${snakeCaseToNormal(createBillDto.type)}`;
 
+        const type = createBillDto.type;
+
         const bill = new BillConstructor({
-            name,
+            name: type === EBillType.CREDIT_CARD ? `${name} ${bank.name}` : name,
             year: createBillDto.year,
-            type: createBillDto.type,
+            type,
             finance,
             bank,
             group,
@@ -107,7 +108,7 @@ export class BillService extends Service<Bill> {
         const name =
             !updateBillDto.group && !updateBillDto.type
                 ? result.name
-                : `${group.name} ${snakeCaseToNormal(type)}`;
+                : type === EBillType.CREDIT_CARD ? `${group.name} ${snakeCaseToNormal(type)} ${bank.name}` : `${group.name} ${snakeCaseToNormal(type)}`;
 
         const updatedBill = new BillConstructor({
             ...result,
@@ -379,7 +380,6 @@ export class BillService extends Service<Bill> {
             allExpensesHaveBeenPaid: this.expenseService.business.allHaveBeenPaid,
             buildExpensesTablesParams: this.expenseService.business.buildTablesParams
         })
-
     }
 
     private async findAllByGroupYear(groupId: string, year: number) {
@@ -405,13 +405,13 @@ export class BillService extends Service<Bill> {
         return [];
     }
 
-    async createToSheet(params: CreateToSheetParams) {
+    private async createToSheet(params: CreateToSheetParams) {
         const year = Number(params['year']);
         const type = params['type'] as EBillType;
         const groupName = params['group']?.toString() || '';
         const bankName = params['bank']?.toString() || '';
-        const name = `${groupName} ${snakeCaseToNormal(type)}`;
-
+        const currentName = `${groupName} ${snakeCaseToNormal(type)}`;
+        const name = type === EBillType.CREDIT_CARD ? `${currentName} ${bankName}` : currentName;
         const item = await this.findOne({
             value: name,
             filters: [{
@@ -420,9 +420,10 @@ export class BillService extends Service<Bill> {
                 condition: '='
             }],
             withDeleted: true,
-            withThrow: false });
+            withThrow: false
+        });
 
-        if(item) {
+        if (item) {
             return item;
         }
 
@@ -441,5 +442,109 @@ export class BillService extends Service<Bill> {
         })
 
         return await this.save(bill);
+    }
+
+
+    async initializeBySpreadsheet(buffer: Buffer<ArrayBufferLike>, finance: Finance): Promise<Array<{
+        groupName: string;
+        bills: number;
+        expenses: number;
+    }>> {
+        const result: Array<{ groupName: string; bills: number; expenses: number; }> = [];
+        const spreadsheet = new Spreadsheet();
+        const worksheets = await spreadsheet.loadFile(buffer);
+
+        for (const worksheet of worksheets) {
+            if (!worksheet) {
+                throw new ConflictException('The Excel file does not contain any worksheets.');
+            }
+            spreadsheet.updateWorkSheet(worksheet);
+            const { groupName, expenses, bills } = await this.initializeWithWorksheet(spreadsheet, finance);
+            result.push({ groupName, bills: bills.length, expenses: expenses.length });
+        }
+        return result;
+    }
+
+    private async initializeWithWorksheet(spreadsheet: Spreadsheet, finance: Finance): Promise<{
+        groupName: string;
+        bills: Array<Bill>;
+        expenses: Array<Expense>;
+    }> {
+        const { year, groupName, nextRow: titleNextRow } = this.billBusiness.getWorkSheetTitle({
+            row: 2,
+            column: 2,
+            workSheet: spreadsheet.workSheet,
+        });
+        const summaryCell = spreadsheet.workSheet.cell(titleNextRow, 2);
+        const summaryCellValue = summaryCell.value ? summaryCell.value.toString().trim() : '';
+        const summaryCellNextRow = Number(summaryCell.row) + 1;
+
+        if (summaryCellValue !== 'Summary') {
+            throw new ConflictException(
+                `The worksheet does not contain a summary table. The worksheet must contain a summary table with the title "Summary".`,
+            );
+        }
+
+        const { bills, nextRow } = await this.getBillsFromSheet(
+            spreadsheet,
+            titleNextRow,
+            summaryCellNextRow,
+            year,
+            groupName,
+            finance,
+        )
+
+        const expenses: Array<Expense> = await this.expenseService.getExpensesFromSheet(
+            year,
+            spreadsheet,
+            bills,
+            groupName,
+            nextRow
+        );
+
+        return {
+            groupName,
+            bills,
+            expenses,
+        }
+    }
+
+
+    private async getBillsFromSheet(
+        spreadsheet: Spreadsheet,
+        titleNextRow: number,
+        summaryCellNextRow: number,
+        year: number,
+        groupName: string,
+        finance: Finance
+    ): Promise<{ bills: Array<Bill>; nextRow: number }> {
+        const tableHeader = ['type', 'bank', ...MONTHS, 'paid', 'total'];
+        const filterTitle = ['TOTAL'];
+        const {
+            data,
+            nextRow
+        } = spreadsheet.parseExcelRowsToObjectList(summaryCellNextRow, titleNextRow, filterTitle, tableHeader);
+
+        if (nextRow === titleNextRow) {
+            return { bills: [], nextRow };
+        }
+
+        const bills: Array<Bill> = [];
+
+        for (const item of data) {
+            const type = !item['type'] ? 'bank_slip' : item['type'].toString();
+
+            const bill = await this.createToSheet({
+                ...item,
+                type: toSnakeCase(type).toUpperCase(),
+                year,
+                group: groupName,
+                finance
+            }) as Bill;
+
+            bills.push(bill);
+        }
+
+        return { bills, nextRow };
     }
 }

@@ -1,13 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
-import * as stringUtils from '@repo/services/string/string';
-import { snakeCaseToNormal } from '@repo/services/string/string';
 import { type CycleOfMonths, MONTHS, totalByMonth } from '@repo/services/date/month/month';
 import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
 import type { TablesParams } from '@repo/services/spreadsheet/table/types';
+import { snakeCaseToNormal } from '@repo/services/string/string';
 
-import type Expense from '../../expense';
 import { EXPENSE_PARENT_MOCK } from '../../expense';
+import type Expense from '../../expense';
 
 import { BILL_MOCK } from '../mock';
 import type Bill from '../bill';

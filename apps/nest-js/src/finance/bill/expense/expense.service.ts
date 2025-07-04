@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { type CycleOfMonths, MONTHS } from '@repo/services/date/month/month';
+import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
 import { filterByCommonKeys } from '@repo/services/array/array';
 
 import { EExpenseType } from '@repo/business/finance/expense/enum';
@@ -249,7 +250,6 @@ export class ExpenseService extends Service<Expense> {
 
     }
 
-
     private buildExpenseToSheet(params: createToSheetParams) {
         const year = Number(params['year']);
         const bill = params['bill'] as Bill;
@@ -358,5 +358,33 @@ export class ExpenseService extends Service<Expense> {
             }
         }
         return parentExpense;
+    }
+
+    async getExpensesFromSheet(
+        year: number,
+        spreadsheet: Spreadsheet,
+        bills: Bill[],
+        groupName: string,
+        nextRow: number
+    ): Promise<Expense[]> {
+        const expenses: Array<Expense> = [];
+        const expensesData = this.expenseBusiness.parseToDetailsTable({
+                bills,
+                startRow: nextRow,
+                groupName,
+                workSheet: spreadsheet.workSheet
+        });
+
+        for (const itemData of expensesData) {
+            const expense = await this.createToSheet({
+                ...itemData,
+                year,
+            })
+            if (expense) {
+                expenses.push(expense);
+            }
+        }
+
+        return expenses;
     }
 }
