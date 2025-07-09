@@ -8,12 +8,10 @@ import {
     getMonthIndex,
     isMonthValid,
     monthValidator,
-    parseMonth
+    parseMonth,
+    totalByMonth
 } from './month';
 import { EMonth } from './enum';
-
-
-
 
 describe('Date Month function', () => {
     beforeEach(() => {
@@ -152,6 +150,97 @@ describe('Date Month function', () => {
                 expect(parseMonth('abc')).toBeUndefined();
                 expect(parseMonth(undefined)).toBeUndefined();
                 expect(parseMonth('')).toBeUndefined();
+            });
+        });
+
+        describe('totalByMonth', () => {
+            it('returns 0 for empty array.', () => {
+                expect(totalByMonth('january', [])).toBe(0);
+            });
+
+            it('adds only the month informed in CycleOfMonths.', () => {
+                const arr = [
+                    {
+                        january: 10,
+                        february: 2,
+                        march: 3,
+                        april: 0,
+                        may: 1,
+                        june: 0,
+                        july: 0,
+                        august: 0,
+                        september: 0,
+                        october: 1,
+                        november: 0,
+                        december: 3,
+                    },
+                    {
+                        january: 5,
+                        february: 1,
+                        march: 1,
+                        april: 1,
+                        december: 8,
+                    }
+                ];
+                expect(totalByMonth('january', arr)).toBe(15);
+                expect(totalByMonth('december', arr)).toBe(11);
+                expect(totalByMonth('february', arr)).toBe(3);
+            });
+
+            it('works with multiple objects and extra fields.', () => {
+                const arr = [
+                    { january: 2, february: 3, xpto: 999 },
+                    { january: 1, february: 0, xyz: 'abc' },
+                    { march: 9, date: new Date() }
+                ];
+                expect(totalByMonth('january', arr)).toBe(3);
+                expect(totalByMonth('february', arr)).toBe(3);
+                expect(totalByMonth('march', arr)).toBe(9);
+            });
+
+            it('ignore fields not related to month.', () => {
+                const arr = [{ name: 'Maria', valor: 10 }, { outro: true }];
+                expect(totalByMonth('january', arr)).toBe(0);
+            });
+
+            it('returns 0 when there is no month field in any object.', () => {
+                const arr = [{ foo: 1, bar: 2 }];
+                expect(totalByMonth('november', arr)).toBe(0);
+            });
+
+            it('ignores non-numeric values in month.', () => {
+                const arr = [
+                    {
+                        january: 'a',
+                        february: null,
+                        march: undefined,
+                        april: 7,
+                        may: NaN,
+                        june: 3
+                    },
+                    {
+                        january: 5
+                    }
+                ];
+                expect(totalByMonth('january', arr)).toBe(5);
+                expect(totalByMonth('april', arr)).toBe(7);
+                expect(totalByMonth('june', arr)).toBe(3);
+                expect(totalByMonth('may', arr)).toBe(0);
+            });
+
+            it('works with partially filled objects.', () => {
+                const arr = [
+                    { january: 1 },
+                    { february: 2 },
+                    { march: 3 },
+                    {},
+                    { december: 10 }
+                ];
+                expect(totalByMonth('january', arr)).toBe(1);
+                expect(totalByMonth('february', arr)).toBe(2);
+                expect(totalByMonth('march', arr)).toBe(3);
+                expect(totalByMonth('december', arr)).toBe(10);
+                expect(totalByMonth('july', arr)).toBe(0);
             });
         });
     });

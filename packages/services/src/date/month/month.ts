@@ -2,6 +2,21 @@ import { INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorPara
 
 import { EMonth } from './enum';
 
+export type CycleOfMonths = {
+    january: number;
+    february: number;
+    march: number;
+    april: number;
+    may: number;
+    june: number;
+    july: number;
+    august: number;
+    september: number;
+    october: number;
+    november: number;
+    december: number;
+}
+
 export type TMonth =
     | 'january'
     | 'february'
@@ -95,4 +110,15 @@ export function parseMonth(value?: string | number): number | undefined {
         return;
     }
     return valueNumber === 0 ? valueNumber : valueNumber - 1;
+}
+
+export function totalByMonth<T extends Record<string, unknown>>(month: TMonth, items: Array<T>): number {
+    if (!Array.isArray(items) || items.length === 0) {
+        return 0;
+    }
+
+    return items
+        .map(obj => obj[month])
+        .filter((value): value is number => typeof value === 'number' && !isNaN(value))
+        .reduce((acc, num) => acc + num, 0);
 }

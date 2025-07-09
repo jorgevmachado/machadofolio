@@ -2,13 +2,16 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 
 import {
-    capitalize, cleanFormatter,
+    capitalize,
+    cleanFormatter,
+    cleanTextByListText,
     convertSubPathUrl,
     extractLastItemFromUrl,
     findRepeated,
     formatUrl,
     initials,
-    normalize, sanitize,
+    normalize,
+    sanitize,
     separateCamelCase,
     snakeCaseToNormal,
     toCamelCase,
@@ -331,4 +334,43 @@ describe('String function', () => {
             expect(sanitize('boyS')).toBe('boy');
         });
     });
+
+    describe('cleanTextByListText', () => {
+        it('must remove all exact terms from the list in the text', () => {
+            expect(cleanTextByListText(['Study', 'Meeting'], 'Technology Study Group Meeting')).toBe('Technology Group');
+        });
+
+        it('does not change when no term is present', () => {
+            expect(cleanTextByListText(['Financial'], 'User registration')).toBe('User registration');
+        });
+
+        it('removes case sensitive.', () => {
+            expect(cleanTextByListText(['ADMIN', 'Beta'], 'user admin BETA extra')).toBe('user extra');
+        });
+
+        it('remove larger compound words first.', () => {
+            expect(cleanTextByListText(['the Cultural', 'Center'], 'Event at the Cultural Center')).toBe('Event at');
+        });
+
+        it('removes only whole words.', () => {
+            expect(cleanTextByListText(['ana'], 'focus ana Ana ANA aNA')).toBe('focus');
+        });
+
+        it('clean extra spaces after removal.', () => {
+            expect(cleanTextByListText(['foo', 'bar'], ' foo  bar baz   ')).toBe('baz');
+        });
+
+        it('returns empty string if delete all.', () => {
+            expect(cleanTextByListText(['foo', 'bar'], 'foo bar')).toBe('');
+        });
+
+        it('works with empty list.', () => {
+            expect(cleanTextByListText([], 'any text')).toBe('any text');
+        });
+
+        it('works with empty text.', () => {
+            expect(cleanTextByListText(['something'], '')).toBe('');
+        });
+    });
+
 });

@@ -3,7 +3,8 @@ import type { FinanceConstructorParams, FinanceEntity } from './types';
 export default class Finance implements FinanceEntity {
     id!: FinanceEntity['id'];
     user!: FinanceEntity['user'];
-    bills!: FinanceEntity['bills'];
+    bills?: FinanceEntity['bills'];
+    groups?: FinanceEntity['groups'];
     created_at!: FinanceEntity['created_at'];
     updated_at!: FinanceEntity['updated_at'];
     deleted_at?: FinanceEntity['deleted_at'];

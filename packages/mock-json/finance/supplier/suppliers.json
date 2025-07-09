@@ -1233,7 +1233,7 @@
   },
   {
     "id": "0a840bac-f752-42cb-8279-9a5bcdbe76aa",
-    "name": "Credit Card Previous Invoice Balance",
+    "name": "Previous Invoice Balance",
     "type": {
       "id": "afdb7bc2-78ad-459c-9d1f-27b99e38f954",
       "name": "Bills",
@@ -1242,7 +1242,7 @@
       "updated_at": "2025-02-07T19:00:18.688Z",
       "deleted_at": null
     },
-    "name_code": "credit_card_previous_invoice_balance",
+    "name_code": "previous_invoice_balance",
     "created_at": "2025-04-02T19:11:59.367Z",
     "updated_at": "2025-04-02T19:11:59.367Z",
     "deleted_at": null
@@ -1280,22 +1280,6 @@
     "deleted_at": null
   },
   {
-    "id": "6faef581-fe94-4654-9679-f48780d8fcec",
-    "name": "Mercado Livre",
-    "type": {
-      "id": "9a8e83c3-8fc0-498d-bb1e-39f7c6d57fd9",
-      "name": "Leisure",
-      "name_code": "leisure",
-      "created_at": "2025-02-05T19:00:18.686Z",
-      "updated_at": "2025-02-05T19:00:18.686Z",
-      "deleted_at": null
-    },
-    "name_code": "mercado_livre",
-    "created_at": "2025-04-02T19:11:59.365Z",
-    "updated_at": "2025-04-02T19:11:59.365Z",
-    "deleted_at": null
-  },
-  {
     "id": "3dcb0787-1771-45c7-99f2-659e92c86c84",
     "name": "Philosophical Masonic Lodge",
     "type": {
@@ -1313,7 +1297,7 @@
   },
   {
     "id": "46785207-d597-4759-bb67-e905fca418d4",
-    "name": "MeliMais Mercado Livre",
+    "name": "MeliMais",
     "type": {
       "id": "9a8e83c3-8fc0-498d-bb1e-39f7c6d57fd9",
       "name": "Leisure",
@@ -1322,7 +1306,7 @@
       "updated_at": "2025-02-05T19:00:18.686Z",
       "deleted_at": null
     },
-    "name_code": "meli_mais_mercado_livre",
+    "name_code": "meli_mais",
     "created_at": "2025-04-02T19:11:59.364Z",
     "updated_at": "2025-04-02T19:11:59.364Z",
     "deleted_at": null
@@ -1345,7 +1329,7 @@
   },
   {
     "id": "9348c467-7359-48c9-9bf4-727d5da261da",
-    "name": "Credit Card Charges",
+    "name": "Charges",
     "type": {
       "id": "afdb7bc2-78ad-459c-9d1f-27b99e38f954",
       "name": "Bills",
@@ -1354,7 +1338,7 @@
       "updated_at": "2025-02-07T19:00:18.688Z",
       "deleted_at": null
     },
-    "name_code": "credit_card_charges",
+    "name_code": "charges",
     "created_at": "2025-04-02T19:11:59.367Z",
     "updated_at": "2025-04-02T19:11:59.367Z",
     "deleted_at": null
@@ -1395,12 +1379,11 @@
     "id": "483b82d0-ddb0-49d9-a5ae-19169500f6c9",
     "name": "Amazon",
     "type": {
-      "id": "9a8e83c3-8fc0-498d-bb1e-39f7c6d57fd9",
-      "name": "Leisure",
-      "name_code": "leisure",
-      "created_at": "2025-02-05T19:00:18.686Z",
-      "updated_at": "2025-02-05T19:00:18.686Z",
-      "deleted_at": null
+      "id": "a21bc731-3b2f-4c5b-a0c8-eae5134855ce",
+      "name": "Shopping",
+      "name_code": "shopping",
+      "created_at": "2025-02-07T19:00:18.688Z",
+      "updated_at": "2025-02-07T19:00:18.688Z"
     },
     "name_code": "amazon",
     "created_at": "2025-04-02T19:11:59.365Z",
@@ -1409,7 +1392,7 @@
   },
   {
     "id": "cb2ecae0-baee-4e0e-9914-f29c3138ff6d",
-    "name": "Credit Card Annual Fee",
+    "name": "Annual Fee",
     "type": {
       "id": "afdb7bc2-78ad-459c-9d1f-27b99e38f954",
       "name": "Bills",
@@ -1418,14 +1401,14 @@
       "updated_at": "2025-02-07T19:00:18.688Z",
       "deleted_at": null
     },
-    "name_code": "credit_card_annual_fee",
+    "name_code": "annual_fee",
     "created_at": "2025-04-02T19:11:59.366Z",
     "updated_at": "2025-04-02T19:11:59.366Z",
     "deleted_at": null
   },
   {
     "id": "1be4359a-b4e1-410b-8899-0c70d3286c32",
-    "name": "Credit Card Loss And Theft Protection Service",
+    "name": "Loss And Theft Protection Service",
     "type": {
       "id": "afdb7bc2-78ad-459c-9d1f-27b99e38f954",
       "name": "Bills",
@@ -1434,14 +1417,14 @@
       "updated_at": "2025-02-07T19:00:18.688Z",
       "deleted_at": null
     },
-    "name_code": "credit_card_loss_and_theft_protection_service",
+    "name_code": "loss_and_theft_protection_service",
     "created_at": "2025-04-02T19:11:59.367Z",
     "updated_at": "2025-04-02T19:11:59.367Z",
     "deleted_at": null
   },
   {
     "id": "90f06a73-259d-4db6-b653-6a28647ff2bb",
-    "name": "Credit Card IOF On Financed Balance",
+    "name": "IOF On Financed Balance",
     "type": {
       "id": "afdb7bc2-78ad-459c-9d1f-27b99e38f954",
       "name": "Bills",
@@ -1450,9 +1433,70 @@
       "updated_at": "2025-02-07T19:00:18.688Z",
       "deleted_at": null
     },
-    "name_code": "credit_card_iof_on_financed_balance",
+    "name_code": "iof_on_financed_balance",
     "created_at": "2025-04-02T19:11:59.367Z",
     "updated_at": "2025-04-02T19:11:59.367Z",
+    "deleted_at": null
+  },
+  {
+    "id": "0bb31bd2-843c-4b8e-9521-4f22607c3a04",
+    "name": "Digital Wallet",
+    "type": {
+      "id": "afdb7bc2-78ad-459c-9d1f-27b99e38f954",
+      "name": "Bills",
+      "name_code": "bills",
+      "created_at": "2025-02-07T19:00:18.688Z",
+      "updated_at": "2025-02-07T19:00:18.688Z",
+      "deleted_at": null
+    },
+    "name_code": "digital_wallet",
+    "created_at": "2025-04-02T19:11:59.357Z",
+    "updated_at": "2025-04-02T19:11:59.357Z",
+    "deleted_at": null
+  },
+  {
+    "id": "3f6fbe27-95f9-483c-abd7-caac9fb8604b",
+    "name": "Streaming",
+    "type": {
+      "id": "9a8e83c3-8fc0-498d-bb1e-39f7c6d57fd9",
+      "name": "Leisure",
+      "name_code": "leisure",
+      "created_at": "2025-02-05T19:00:18.686Z",
+      "updated_at": "2025-02-05T19:00:18.686Z"
+    },
+    "name_code": "streaming",
+    "created_at": "2025-04-02T19:11:59.367Z",
+    "updated_at": "2025-04-02T19:11:59.367Z",
+    "deleted_at": null
+  },
+  {
+    "id": "e4546693-20fd-45bb-89a3-58a521a707c5",
+    "name": "Mercado Livre",
+    "type": {
+      "id": "a21bc731-3b2f-4c5b-a0c8-eae5134855ce",
+      "name": "Shopping",
+      "name_code": "shopping",
+      "created_at": "2025-02-07T19:00:18.688Z",
+      "updated_at": "2025-02-07T19:00:18.688Z"
+    },
+    "name_code": "mercado_livre",
+    "created_at": "2025-04-02T19:11:59.367Z",
+    "updated_at": "2025-04-02T19:11:59.367Z",
+    "deleted_at": null
+  },
+  {
+    "id": "04690997-978a-415c-b8b0-2b09c1343b9e",
+    "name": "Physical",
+    "type": {
+      "id": "a21bc731-3b2f-4c5b-a0c8-eae5134855ce",
+      "name": "Shopping",
+      "name_code": "shopping",
+      "created_at": "2025-02-07T19:00:18.688Z",
+      "updated_at": "2025-02-07T19:00:18.688Z"
+    },
+    "name_code": "physical",
+    "created_at": "2025-04-02T19:11:59.344Z",
+    "updated_at": "2025-04-02T19:11:59.344Z",
     "deleted_at": null
   }
 ]

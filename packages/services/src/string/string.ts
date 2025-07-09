@@ -163,3 +163,15 @@ export function sanitize(value: string): string {
  const regex = /[\WA-Z]/g;
  return value.replace(regex, '');
 }
+
+export function cleanTextByListText(listText: Array<string>, text: string): string {
+ const orderedGroups = [...listText].sort((a, b) => b.length - a.length);
+
+ const result = orderedGroups.reduce((acc, group) => {
+  const regex = new RegExp(`\\b${group.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+  return acc.replace(regex, '').replace(/\s{2,}/g, ' ');
+
+ }, text);
+
+ return result.trim().replace(/\s{2,}/g, ' ');
+}

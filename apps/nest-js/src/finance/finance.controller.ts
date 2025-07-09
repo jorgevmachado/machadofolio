@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Res, UploadedFile, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 
@@ -6,6 +6,8 @@ import { AuthRoleGuard } from '../guards/auth-role/auth-role.guard';
 import { AuthStatusGuard } from '../guards/auth-status/auth-status.guard';
 import { GetUserAuth } from '../decorators/auth-user/auth-user.decorator';
 import { User } from '../auth/entities/user.entity';
+
+import { UseFileUpload } from '../decorators/use-file-upload/use-file-upload.decorator';
 
 import { FinanceService } from './finance.service';
 
@@ -18,11 +20,6 @@ export class FinanceController {
     @Post('/initialize')
     initialize(@GetUserAuth() user: User) {
         return this.service.initialize(user);
-    }
-
-    @Get('/seeds')
-    seeds(@GetUserAuth() user: User) {
-        return this.service.seeds({ user });
     }
 
     @Get('/generate-document')
@@ -38,13 +35,12 @@ export class FinanceController {
         res.send(buffer);
     }
 
-
-    // @Post('/upload')
-    // @UseFileUpload(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
-    // async initializeWithDocument(
-    //     @UploadedFile() file: Express.Multer.File,
-    //     @GetUserAuth() user: User
-    // ) {
-    //   return await this.service.initializeWithDocument(file, user);
-    // }
+    @Post('/upload')
+    @UseFileUpload(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+    async initializeWithDocument(
+        @UploadedFile() file: Express.Multer.File,
+        @GetUserAuth() user: User
+    ) {
+      return await this.service.initializeWithDocument(file, user);
+    }
 }

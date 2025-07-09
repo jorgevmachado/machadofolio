@@ -47,4 +47,15 @@ export class PokemonMoveService extends Service<PokemonMove> {
         }
         return entity;
     }
+
+    async seeds(seedsJson?: Array<unknown>) {
+        return this.seeder.entities({
+            by: 'order',
+            key: 'all',
+            label: 'Pokemon Moves',
+            seedsJson,
+            withReturnSeed: true,
+            createdEntityFn: async (item) => item
+        })
+    }
 }

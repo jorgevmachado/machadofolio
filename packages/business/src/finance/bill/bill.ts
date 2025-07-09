@@ -9,8 +9,8 @@ export default class Bill implements BillEntity {
     bank!: BillEntity['bank'];
     name!: BillEntity['name'];
     total: BillEntity['total'] = 0;
+    group!: BillEntity['group'];
     finance!: BillEntity['finance'];
-    category!: BillEntity['category'];
     expenses?: BillEntity['expenses'];
     all_paid: BillEntity['all_paid'] = false;
     name_code!: BillEntity['name_code'];
@@ -27,8 +27,8 @@ export default class Bill implements BillEntity {
             this.bank = params.bank;
             this.name = params.name;
             this.total = params?.total ?? this.total;
+            this.group = params.group;
             this.finance = params.finance;
-            this.category = params.category;
             this.expenses = params?.expenses ?? this.expenses;
             this.name_code = toSnakeCase(normalize(this.name));
             this.total_paid = params?.total_paid ?? this.total_paid;

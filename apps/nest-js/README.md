@@ -139,6 +139,11 @@ yarn test
 ```bash
   yarn run test -- --findRelatedTests src/decorators/auth-user/auth-user.decorator.spec.ts                                 
 ```
+#### **IsNameDependingOnParent**: Irá validar se o campo name pode ou não ser preenchido a depender se o campo parent estiver presente.
+##### Comando para testes unitários exclusivo para esté sub-módulo.
+```bash
+  yarn run test -- --findRelatedTests src/decorators/name-depending-parent.decorator/name-depending-parent.decorator.spec.ts                                 
+```
 
 ### **auth**: Conjunto de serviços e endpoints relacionados a autenticação.
 #### **users**: Conjunto de serviços relacionados a usuários que só podem ser acessados pelo auth.

@@ -1,11 +1,13 @@
 import { ConflictException } from '@nestjs/common';
 import { type Repository } from 'typeorm';
 
+import { transformObjectDateAndNulls } from '@repo/services/object/object';
+
 import type { BasicEntity } from '../types';
 import { Queries } from '../queries';
 import { Validate } from '../validate';
 
-import type { ExecuteSeedParams, GetRelationParams, SeedEntitiesParams, SeedEntityParams } from './types';
+import type { CurrentSeedsParams, ExecuteSeedParams, GetRelationParams, SeedEntitiesParams, SeedEntityParams } from './types';
 
 
 export class Seeder<T extends BasicEntity> {
@@ -26,17 +28,19 @@ export class Seeder<T extends BasicEntity> {
                        key,
                        seeds,
                        label,
+                       seedsJson,
                        withReturnSeed = true,
                        createdEntityFn,
                    }: SeedEntitiesParams<T>) {
-        this.validate.listMock<T>({ key, list: seeds, label });
+        const list = this.currentSeeds<T>({ seeds, seedsJson });
+        this.validate.listMock<T>({ key, list, label });
         console.info(`# => Start ${label.toLowerCase()} seeding`);
-        const existingEntities = await this.repository.find({ withDeleted: true });
+        const existingEntities = await this.repository.find({ withDeleted: true, relations: this.relations });
         const existingEntitiesBy = new Set(
             existingEntities.map((entity) => entity[by]),
         );
 
-        const entitiesToCreate = seeds.filter(
+        const entitiesToCreate = list.filter(
             (entity) => !existingEntitiesBy.has(entity[by]),
         );
 
@@ -48,6 +52,9 @@ export class Seeder<T extends BasicEntity> {
             await Promise.all(
                 entitiesToCreate.map(async (entity) => {
                     const newEntity = await createdEntityFn(entity);
+                    if(!newEntity) {
+                        return ;
+                    }
                     return this.repository
                         .save(newEntity)
                         .then((entity) => entity)
@@ -108,5 +115,18 @@ export class Seeder<T extends BasicEntity> {
             );
         }
         return item;
+    }
+
+    currentSeeds<T>({ seeds, seedsJson }: CurrentSeedsParams<T> ) {
+        if(!seeds && !seedsJson) {
+            return [];
+        }
+
+        const currentSeeds = seeds ?? [];
+        const currentSeedsJson = seedsJson ?
+            seedsJson.map((item) => transformObjectDateAndNulls<T, unknown>(item))
+            : seedsJson;
+
+        return currentSeedsJson ?? currentSeeds;
     }
 }

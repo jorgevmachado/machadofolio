@@ -8,6 +8,7 @@ const createJestConfig = nextJest({
 
 const config = {
     ...baseConfig,
+    testEnvironment: 'jsdom',
     moduleFileExtensions: [...baseConfig.moduleFileExtensions, 'jsx', 'tsx'],
 } as const satisfies Config;
 

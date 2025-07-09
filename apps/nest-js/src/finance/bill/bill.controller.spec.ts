@@ -75,7 +75,7 @@ describe('BillController', () => {
                 type: mockEntity.type,
                 year: mockEntity.year,
                 bank: mockEntity.bank.name,
-                category: mockEntity.category.name,
+                group: mockEntity.group.name,
             };
             jest.spyOn(service, 'create').mockResolvedValue(mockEntity);
 
@@ -90,7 +90,7 @@ describe('BillController', () => {
             const updateBill: UpdateBillDto = {
                 type: mockEntity.type,
                 bank: mockEntity.bank.name,
-                category: mockEntity.category.name,
+                group: mockEntity.group.name,
                 expenses: mockEntity.expenses,
             };
             jest.spyOn(service, 'update').mockResolvedValue(mockEntity);

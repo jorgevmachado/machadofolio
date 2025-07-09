@@ -49,13 +49,20 @@ export type IExpenseBase = IFinanceBase & {
     instalment_number: number;
 };
 
-export type IExpense = IFinanceBase & IExpenseMonthsWithPaid & IExpenseBase;
+export type IExpense = IFinanceBase & IExpenseMonthsWithPaid & IExpenseBase & {
+    parent?: IExpense;
+    children?: Array<IExpense>;
+    is_aggregate?: boolean;
+    aggregate_name?: string;
+};
 
 export type ICreateExpenseParams = {
     type: EExpenseType;
     paid?: boolean;
+    name?: string;
     value?: number;
     month?: EMonth;
+    parent?: string | IExpense['parent'];
     supplier: string | IExpense['supplier'];
     description?: string;
     instalment_number?: number;

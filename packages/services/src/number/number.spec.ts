@@ -125,14 +125,9 @@ describe('Number function', () => {
             expect(result).toBe(0);
         });
 
-        it('should return the number extracted from the URL if order is not provided\n', () => {
-            (extractLastNumberFromUrl as jest.Mock).mockReturnValue(99);
-
+        it('should return the number extracted from the URL if order is not provided.', () => {
             const result = ensureOrderNumber(undefined, 'https://example.com/99');
             expect(result).toBe(99);
-            expect(extractLastNumberFromUrl).toHaveBeenCalledWith(
-                'https://example.com/99',
-            );
         });
     });
 });

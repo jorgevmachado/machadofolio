@@ -55,6 +55,13 @@ yarn lint
   yarn run test -- --findRelatedTests src/address/address.spec.ts               
 ```
 
+### **Array**: Utilitários ou manipuladores de arrays.
+- **chunk**: Responsável por separar itens de um array em outro array.
+#### Comando para testes unitários exclusivo para esté módulo.
+```bash
+  yarn run test -- --findRelatedTests src/array/array.spec.ts               
+```
+
 ### **Contact**: Utilitários relacionados a manipulação ou validação de formas de contato (telefone, e-mail e etc).
 - **emailValidator**: Valida se o valor é um e-mail valido.
 - **phoneValidator**: Valida se o valor é um telefone valido.
@@ -91,6 +98,7 @@ yarn lint
   - **getMonthByIndex**: Responsável por transformar um índice em um enum de mês.
   - **monthValidator**: Valida se o valor do mês passado é válido.
   - **parseMonth**: Garante que o mes fornecido esta dentro dos limites 0 e 12.
+  - **totalByMonth**: Calcula o valor total de um array por mes que conter méses vãlidos.
 - **year**: Subutilitários relacionados a manipulação ou validação de anos de uma data.
   - **yearValidator**: Valida se o valor do ano passado é válido.
   - **parseYear**: Garante que o ano fornecido esta dentro dos limites 1000 e 9999.
@@ -173,6 +181,27 @@ yarn lint
   yarn run test -- --findRelatedTests src/personal-data/personal-data.spec.ts               
 ```
 
+### **Spreadsheet**: Utilitários relacionados a manipulação de planilhas no formato xlsx.
+- **workBook**: Utilitário responsável por manipular a planilha geral caso seja necessário algo mais personalizado.
+- **createWorkSheet**: Utilitário responsável por criar uma aba dentro de uma planilha (worksheet).
+- **addTables**: Utilitário responsável por facilitar a criação de multiplas tabelas.
+- **addTable**: Utilitário responsável pela criação de uma tabela.
+- **generateSheetBuffer**: Utilitário responsável por gerar uma planilha no formato Buffer para download.
+- **calculateTableHeight**: Utilitário responsável por calcular a quantidade de linhas que tem uma tabela.
+- **calculateTablesParamsNextRow**: Utilitário responsável por calcular a proxima linha na a partir de uma lista de tabelas.
+- **cell**: Subutilitário responsável por manipular as celulas de uma planilha.
+  - **add**: Responsável por adicionar uma célula a planilha.
+  - **reference**: Responsável por retornar a célula a ser criada na planilha.
+  - **merge**: Responsável mesclar um grupo de células numa planilha.
+  - **column**: Responsável retornar ou manipular uma coluna numa planilha.
+- **table**: Subutilitários responsável por manipular os parameters de criação de uma tabela. 
+#### Comando para testes unitários exclusivo para esté módulo.
+```bash
+  yarn run test -- --findRelatedTests src/spreadsheet/spreadsheet.spec.ts               
+  yarn run test -- --findRelatedTests src/spreadsheet/cell/cell.spec.ts               
+  yarn run test -- --findRelatedTests src/spreadsheet/table/table.spec.ts                         
+```
+
 ### **String**: Utilitários relacionados a manipulação ou validação de 'strings'.
 - **initials**: Retorna as iniciais de uma 'string' com um número específico de letras.
 - **Normalize**: Remove acentos e espaços extras e Normaliza espaços múltiplos para um único espaço.
@@ -188,6 +217,7 @@ yarn lint
 - **extractLastItemFromUrl**: Extrai o último segmento de uma URL.
 - **cleanFormatter**: Responsável por limpar a formatação do texto.
 - **sanitize**: Responsável por realizar a higienização do texto.
+- **cleanTextByListText**: Responsável por remover do texto os textos que estiverem na lista de textos.
 #### Comando para testes unitários exclusivo para esté módulo.
 ```bash
   yarn run test -- --findRelatedTests src/string/string.spec.ts               

@@ -5,8 +5,9 @@ import { BadRequestException, Injectable, UnprocessableEntityException } from '@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { transformObjectDateAndNulls } from '@repo/services/object/object';
+
 import { ERole, EStatus } from '@repo/business/enum';
-import { USER_ENTITY_MOCK, USER_PASSWORD } from '@repo/business/auth/mock/mock';
 import UserConstructor from '@repo/business/auth/user/user';
 
 import { Service, type TBy } from '../../shared';
@@ -15,9 +16,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { CredentialsUserDto } from './dto/credentials-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '../entities/user.entity';
-
-
-
 
 @Injectable()
 export class UsersService extends Service<User>{
@@ -140,9 +138,16 @@ export class UsersService extends Service<User>{
         return await this.save(currentUser);
     }
 
-    async seed() {
-        console.info('# => Start seeding User');
-        const item = USER_ENTITY_MOCK;
+    async me(id: string) {
+        const currentUser = await this.findOne({
+            value: id,
+        }) as User;
+        return new UserConstructor({...currentUser, clean: true });
+    }
+
+    async seed(user: User, password: string) {
+        console.info(`# => Start seeding ${user.name} User`);
+        const item = user;
 
         const currentSeed = await this.queries.findBy({
             searchParams: {
@@ -164,9 +169,9 @@ export class UsersService extends Service<User>{
             email: item.email,
             gender: item.gender,
             whatsapp: item.whatsapp,
-            password: USER_PASSWORD,
+            password: password,
             date_of_birth: item.date_of_birth,
-            password_confirmation: USER_PASSWORD,
+            password_confirmation: password,
         });
         const promotedUser = await this.promote(currentUser as User);
         console.info(`# => Seeded 1 new user`);
@@ -177,10 +182,8 @@ export class UsersService extends Service<User>{
         return new UserConstructor({...currentUserSeed, clean: true });
     }
 
-    async me(id: string) {
-        const currentUser = await this.findOne({
-            value: id,
-        }) as User;
-        return new UserConstructor({...currentUser, clean: true });
+    async seeds(listJson: Array<unknown>, password: string) {
+        const seeds = listJson.map((item) => transformObjectDateAndNulls<User, unknown>(item));
+        return await Promise.all(seeds.map( async (item) => await this.seed(item, password)));
     }
 }

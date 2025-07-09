@@ -38,7 +38,7 @@ export class BillController {
       param: 'finance',
       condition: '='
     }]
-    return this.service.findAll({ parameters, filters });
+    return this.service.findAll({ parameters, filters, withRelations: Boolean(parameters?.withRelations) });
   }
 
   @Post()

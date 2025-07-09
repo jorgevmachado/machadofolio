@@ -47,10 +47,17 @@ describe('Finance Service', () => {
 
     describe('initialize', () => {
         it('should initialize the finance', async () => {
-            mockNest.finance.initialize.mockResolvedValue(mockEntity);
+            mockNest.finance.initialize.mockResolvedValue({
+                ...mockEntity,
+                bills: undefined,
+                groups: undefined,
+            });
             const result = await service.initialize();
             expect(mockNest.finance.initialize).toHaveBeenCalled();
-            expect(result).toEqual(mockEntity);
+            expect(result.id).toEqual(mockEntity.id);
+            expect(result.user.id).toEqual(mockEntity.user.id);
+            expect(result.bills).toBeUndefined();
+            expect(result.groups).toBeUndefined();
         });
     });
 });

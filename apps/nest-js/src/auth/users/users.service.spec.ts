@@ -28,6 +28,9 @@ describe('UsersService', () => {
     let service: UsersService;
     let repository: Repository<User>;
 
+    const mockEntity: User = USER_MOCK;
+    const mockPassword: string = USER_PASSWORD;
+
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
@@ -368,7 +371,7 @@ describe('UsersService', () => {
                 getOne: jest.fn().mockReturnValueOnce(seedEntityUser),
             } as any);
 
-            expect(await service.seed()).toEqual(seedEntityUser);
+            expect(await service.seed(seedEntityUser, mockPassword)).toEqual(seedEntityUser);
         });
 
         it('should seed the database when not exist in database', async () => {
@@ -413,10 +416,32 @@ describe('UsersService', () => {
                 .spyOn(repository, 'save')
                 .mockResolvedValueOnce({ ...seedEntityUser, role: ERole.ADMIN });
 
-            expect(await service.seed()).toEqual({
+            expect(await service.seed({
+                ...seedEntityUser,
+                role: ERole.ADMIN,
+            }, mockPassword)).toEqual({
                 ...seedEntityUser,
                 role: ERole.ADMIN,
             });
+        });
+    });
+
+    describe('seeds', () => {
+        it('should seeds the database when exist in database', async () => {
+            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
+                leftJoinAndSelect: jest.fn(),
+                andWhere: jest.fn(),
+                withDeleted: jest.fn(),
+                getOne: jest.fn().mockReturnValueOnce(mockEntity),
+            } as any);
+
+            expect(await service.seeds([mockEntity], mockPassword)).toEqual([{
+                ...mockEntity,
+                salt: undefined,
+                password: undefined,
+                deleted_at: undefined,
+                confirmation_token: undefined,
+            }]);
         });
     });
 

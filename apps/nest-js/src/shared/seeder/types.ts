@@ -6,12 +6,13 @@ export type SeedEntityParams<T> = {
     seed: T;
     label: string;
     withReturnSeed?: boolean;
-    createdEntityFn: (entity: T) => Promise<T>;
+    createdEntityFn: (entity: T) => Promise<T | undefined>;
 }
 
 export type SeedEntitiesParams<T> = Omit<SeedEntityParams<T>, 'seed'> & {
     key: ValidateKey;
-    seeds: Array<T>;
+    seeds?: Array<T>;
+    seedsJson?: Array<unknown>;
 }
 
 export type ExecuteSeedParams<T> = {
@@ -24,4 +25,9 @@ export interface GetRelationParams<T> {
     list: Array<T>;
     param: string;
     relation: string;
+}
+
+export type CurrentSeedsParams<T> = {
+    seeds?: Array<T>;
+    seedsJson?: Array<unknown>;
 }

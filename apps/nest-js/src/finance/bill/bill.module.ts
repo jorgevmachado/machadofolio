@@ -4,14 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import BillBusiness from '@repo/business/finance/bill/business/business';
 
+import { BankModule } from '../bank/bank.module';
 import { Bill } from '../entities/bill.entity';
 
 import { BillController } from './bill.controller';
 import { BillService } from './bill.service';
-
-import { BankModule } from './bank/bank.module';
-import { CategoryModule } from './category/category.module';
 import { ExpenseModule } from './expense/expense.module';
+import { GroupModule } from '../group/group.module';
 
 @Module({
   controllers: [BillController],
@@ -20,7 +19,7 @@ import { ExpenseModule } from './expense/expense.module';
     TypeOrmModule.forFeature([Bill]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
       BankModule,
-      CategoryModule,
+      GroupModule,
       ExpenseModule,
   ],
   exports: [BillService]

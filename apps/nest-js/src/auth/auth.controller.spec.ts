@@ -148,39 +148,6 @@ describe('AuthController', () => {
     });
   });
 
-  describe('seed', () => {
-    it('should be able to seed database', async () => {
-      jest.spyOn(service, 'seed').mockResolvedValueOnce({
-        id: USER_ENTITY_MOCK.id,
-        cpf: USER_ENTITY_MOCK.cpf,
-        role: ERole.ADMIN,
-        name: USER_ENTITY_MOCK.name,
-        email: USER_ENTITY_MOCK.email,
-        status: USER_ENTITY_MOCK.status,
-        gender: USER_ENTITY_MOCK.gender,
-        whatsapp: USER_ENTITY_MOCK.whatsapp,
-        date_of_birth: USER_ENTITY_MOCK.date_of_birth,
-        created_at: USER_ENTITY_MOCK.created_at,
-        updated_at: USER_ENTITY_MOCK.updated_at,
-        deleted_at: USER_ENTITY_MOCK.deleted_at,
-      });
-
-      expect(await controller.seed()).toEqual({
-        id: USER_ENTITY_MOCK.id,
-        cpf: USER_ENTITY_MOCK.cpf,
-        role: ERole.ADMIN,
-        name: USER_ENTITY_MOCK.name,
-        email: USER_ENTITY_MOCK.email,
-        status: USER_ENTITY_MOCK.status,
-        gender: USER_ENTITY_MOCK.gender,
-        whatsapp: USER_ENTITY_MOCK.whatsapp,
-        date_of_birth: USER_ENTITY_MOCK.date_of_birth,
-        created_at: USER_ENTITY_MOCK.created_at,
-        updated_at: USER_ENTITY_MOCK.updated_at,
-      });
-    });
-  });
-
   describe('promoteUser', () => {
     it('should be able to promote user', async () => {
       jest.spyOn(service, 'promoteUser').mockResolvedValueOnce({

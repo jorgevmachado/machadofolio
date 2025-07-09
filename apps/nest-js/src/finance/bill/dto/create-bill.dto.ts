@@ -4,7 +4,7 @@ import { CreateBillParams } from '@repo/business/finance/bill/types';
 import { EBillType } from '@repo/business/finance/bill/enum';
 
 import { Bank } from '../../entities/bank.entity';
-import { BillCategory } from '../../entities/category.entity';
+import { Group } from '../../entities/group.entity';
 
 
 export class CreateBillDto implements CreateBillParams {
@@ -21,5 +21,5 @@ export class CreateBillDto implements CreateBillParams {
 
     @IsNotEmpty()
     @MaxLength(200)
-    category!: string | BillCategory;
+    group!: string | Group;
 }

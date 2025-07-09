@@ -10,8 +10,12 @@ import { PokeApiService } from '@repo/business/pokemon/poke-api/service/service'
 import { type FindOneByParams, ListParams, Service } from '../shared';
 
 import { Pokemon } from './entities/pokemon.entity';
+import { PokemonAbility } from './entities/ability.entity';
 import { PokemonAbilityService } from './ability/ability.service';
+import { PokemonMove } from './entities/move.entity';
 import { PokemonMoveService } from './move/move.service';
+import type { PokemonSeederParams } from './types';
+import { PokemonType } from './entities/type.entity';
 import { PokemonTypeService } from './type/type.service';
 
 @Injectable()
@@ -80,6 +84,76 @@ export class PokemonService extends Service<Pokemon> {
         }
 
         return this.completingPokemonData(result as Pokemon);
+    }
+
+    async seeds(pokemonSeederParams: PokemonSeederParams) {
+        const moves: Array<PokemonMove> = await this.seeder.executeSeed<PokemonMove>({
+            label: 'Moves',
+            seedMethod: async () => {
+                const result = await this.pokemonMoveService.seeds(pokemonSeederParams?.moveListJson);
+                return Array.isArray(result) ? result : [];
+            }
+        });
+
+        const types: Array<PokemonType> = await this.seeder.executeSeed<PokemonType>({
+            label: 'Types',
+            seedMethod: async () => {
+                const result = await this.pokemonTypeService.seeds(pokemonSeederParams?.typeListJson);
+                return Array.isArray(result) ? result : [];
+            }
+        });
+
+        const abilities: Array<PokemonAbility> = await this.seeder.executeSeed<PokemonAbility>({
+            label: 'Abilities',
+            seedMethod: async () => {
+                const result = await this.pokemonAbilityService.seeds(pokemonSeederParams?.abilityListJson);
+                return Array.isArray(result) ? result : [];
+            }
+        });
+
+        const list = await this.seeder.entities({
+            by: 'name',
+            key: 'all',
+            label: 'Pokemon',
+            seedsJson: pokemonSeederParams?.listJson,
+            withReturnSeed: true,
+            createdEntityFn: async (entity) => {
+                if(entity.moves) {
+                    entity.moves = moves?.filter((move) => entity?.moves?.find(item => item.id === move.id));
+                }
+                if(entity.types) {
+                    entity.types = types?.filter((type) => entity?.types?.find(item => item.id === type.id));
+                }
+                if(entity.abilities) {
+                    entity.abilities = abilities?.filter((ability) => entity?.abilities?.find(item => item.id === ability.id));
+                }
+                entity.evolutions = undefined;
+                return entity;
+            }
+        }) as Array<Pokemon>;
+
+        const seeds = this.seeder.currentSeeds<Pokemon>({ seedsJson: pokemonSeederParams?.listJson });
+
+        const pokemons = await Promise.all(
+            list?.map(async (item) => {
+                if (!item?.evolutions) {
+                    const currentPokemon = seeds.find((seed) => seed.name === item.name);
+                    if (!currentPokemon || !currentPokemon?.evolutions) {
+                        return item;
+                    }
+                    const evolutions = list?.filter((pokemon) => currentPokemon?.evolutions?.find((item) => item.name === pokemon.name));
+                    return await this.save({ ...item, evolutions });
+                }
+                return item;
+            })
+        )
+
+        return {
+            moves,
+            types,
+            abilities,
+            pokemons,
+        }
     }
 
     private async completingPokemonData(result: Pokemon){

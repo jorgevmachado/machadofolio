@@ -50,18 +50,21 @@ describe('PokemonService', () => {
                 {
                     provide: PokemonTypeService,
                     useValue: {
+                        seeds: jest.fn(),
                         findList: jest.fn(),
                     },
                 },
                 {
                     provide: PokemonMoveService,
                     useValue: {
+                        seeds: jest.fn(),
                         findList: jest.fn(),
                     },
                 },
                 {
                     provide: PokemonAbilityService,
                     useValue: {
+                        seeds: jest.fn(),
                         findList: jest.fn(),
                     },
                 },
@@ -277,6 +280,97 @@ describe('PokemonService', () => {
             const result = await service.findOne({ value: mockEntity.id });
             expect(result.id).toEqual(expectedEntity.id);
             expect(result.evolutions).toBeUndefined();
+        });
+    });
+
+    describe('seeds', () => {
+        it('Should run all seeds and return list of seeds.', async () => {
+            const currentEntity = {
+                ...mockEntity,
+                moves: [pokemonMoveMockEntity],
+                types: [pokemonTypeMockEntity],
+                abilities: [pokemonAbilityMockEntity],
+                evolutions: [mockEntity]
+            }
+            jest.spyOn(moveService, 'seeds').mockResolvedValueOnce([pokemonMoveMockEntity]);
+
+            jest.spyOn(typeService, 'seeds').mockResolvedValueOnce([pokemonTypeMockEntity]);
+
+            jest.spyOn(abilityService, 'seeds').mockResolvedValueOnce([pokemonAbilityMockEntity]);
+
+            jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
+            jest.spyOn(repository, 'save').mockResolvedValueOnce({ ...currentEntity, evolutions: undefined });
+
+            jest.spyOn(repository, 'save').mockResolvedValueOnce(currentEntity);
+
+            const result = await service.seeds({
+                users: [],
+                listJson: [currentEntity],
+                moveListJson: [pokemonMoveMockEntity],
+                typeListJson: [pokemonTypeMockEntity],
+                abilityListJson: [pokemonAbilityMockEntity],
+            });
+
+            expect(result.moves.length).toEqual(1);
+            expect(result.types.length).toEqual(1);
+            expect(result.abilities.length).toEqual(1);
+            expect(result.pokemons.length).toEqual(1);
+        });
+
+        it('Should run all seeds and return list of seeds with has evolutions.', async () => {
+            const currentEntity = {
+                ...mockEntity,
+                moves: [pokemonMoveMockEntity],
+                types: [pokemonTypeMockEntity],
+                abilities: [pokemonAbilityMockEntity],
+                evolutions: [mockEntity]
+            }
+            jest.spyOn(moveService, 'seeds').mockResolvedValueOnce([pokemonMoveMockEntity]);
+
+            jest.spyOn(typeService, 'seeds').mockResolvedValueOnce([pokemonTypeMockEntity]);
+
+            jest.spyOn(abilityService, 'seeds').mockResolvedValueOnce([pokemonAbilityMockEntity]);
+
+            jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
+            jest.spyOn(repository, 'save').mockResolvedValueOnce(currentEntity);
+
+            jest.spyOn(repository, 'save').mockResolvedValueOnce(currentEntity);
+
+            const result = await service.seeds({
+                users: [],
+                listJson: [currentEntity],
+                moveListJson: [pokemonMoveMockEntity],
+                typeListJson: [pokemonTypeMockEntity],
+                abilityListJson: [pokemonAbilityMockEntity],
+            });
+
+            expect(result.moves.length).toEqual(1);
+            expect(result.types.length).toEqual(1);
+            expect(result.abilities.length).toEqual(1);
+            expect(result.pokemons.length).toEqual(1);
+        });
+
+        it('should run all seeds and return list of total seeds with some seeds empty', async () => {
+            jest.spyOn(moveService, 'seeds').mockResolvedValueOnce({ message: 'Successfully'});
+
+            jest.spyOn(typeService, 'seeds').mockResolvedValueOnce({ message: 'Successfully'});
+
+            jest.spyOn(abilityService, 'seeds').mockResolvedValueOnce({ message: 'Successfully'});
+
+            jest.spyOn(repository, 'find').mockResolvedValueOnce([mockEntity]);
+
+            const result = await service.seeds({
+                users: [],
+                listJson: [mockEntity],
+                moveListJson: [pokemonMoveMockEntity],
+                typeListJson: [pokemonTypeMockEntity],
+                abilityListJson: [pokemonAbilityMockEntity],
+            });
+
+            expect(result.moves.length).toEqual(0);
+            expect(result.types.length).toEqual(0);
+            expect(result.abilities.length).toEqual(0);
+            expect(result.pokemons.length).toEqual(1);
         });
     });
 });
