@@ -13,7 +13,6 @@ import { EXPENSE_MOCK } from '../mock';
 import type Expense from '../expense';
 
 import ExpenseBusiness from './business';
-import BillBusiness from '../../bill/business/business';
 
 jest.mock('@repo/services/spreadsheet/spreadsheet');
 

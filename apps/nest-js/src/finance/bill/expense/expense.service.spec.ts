@@ -33,6 +33,7 @@ jest.mock('@repo/services/spreadsheet/spreadsheet');
 
 describe('ExpenseService', () => {
   let service: ExpenseService;
+  let expenseBusiness: ExpenseBusiness;
   let supplierService: SupplierService;
   let repository: Repository<Expense>;
   let spreadsheetMock: jest.Mocked<Spreadsheet>;
@@ -49,6 +50,15 @@ describe('ExpenseService', () => {
       providers: [
           ExpenseService,
           ExpenseBusiness,
+        {
+          provide: ExpenseBusiness,
+          useValue: {
+            initialize: jest.fn(),
+            reinitialize: jest.fn(),
+            calculate: jest.fn(),
+            parseToDetailsTable: jest.fn(),
+          }
+        },
         { provide: getRepositoryToken(Expense), useClass: Repository },
         {
           provide: SupplierService,
@@ -64,6 +74,7 @@ describe('ExpenseService', () => {
     service = module.get<ExpenseService>(ExpenseService);
     supplierService = module.get<SupplierService>(SupplierService);
     repository = module.get<Repository<Expense>>(getRepositoryToken(Expense));
+    expenseBusiness = module.get<ExpenseBusiness>(ExpenseBusiness);
     spreadsheetMock = {
       loadFile: jest.fn(),
       addTable: jest.fn().mockImplementation(() => {
@@ -95,6 +106,12 @@ describe('ExpenseService', () => {
     expect(service).toBeDefined();
     expect(supplierService).toBeDefined();
     expect(repository).toBeDefined();
+  });
+
+  describe('business', () => {
+    it('should return expense business module', () => {
+      expect(service.business).toBe(expenseBusiness);
+    });
   });
 
   describe('buildForCreation', () => {
@@ -203,7 +220,18 @@ describe('ExpenseService', () => {
       monthsForCurrentYear.forEach((month) => {
         expenseForCurrentYear[month] = 100;
         expenseForCurrentYear[`${month}_paid`] = mockEntity.paid;
-      })
+      });
+
+      jest.spyOn(expenseBusiness, 'initialize').mockReturnValue({
+        nextYear: expenseForCurrentYear.year + 1,
+        monthsForNextYear: [],
+        expenseForNextYear: undefined,
+        expenseForCurrentYear,
+        monthsForCurrentYear,
+        requiresNewBill: false
+      });
+
+      jest.spyOn(expenseBusiness, 'calculate').mockReturnValue(expenseForCurrentYear);
 
       jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
         andWhere: jest.fn(),
@@ -240,6 +268,17 @@ describe('ExpenseService', () => {
         expenseForCurrentYear[month] = 100;
         expenseForCurrentYear[`${month}_paid`] = mockEntity.paid;
       })
+
+      jest.spyOn(expenseBusiness, 'initialize').mockReturnValue({
+        nextYear: expenseForCurrentYear.year + 1,
+        monthsForNextYear: [],
+        expenseForNextYear: undefined,
+        expenseForCurrentYear,
+        monthsForCurrentYear,
+        requiresNewBill: false
+      });
+
+      jest.spyOn(expenseBusiness, 'calculate').mockReturnValue(expenseForCurrentYear);
 
       jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
         andWhere: jest.fn(),
@@ -284,6 +323,17 @@ describe('ExpenseService', () => {
         expenseForCurrentYear[`${month}_paid`] = mockEntity.paid;
       })
 
+      jest.spyOn(expenseBusiness, 'initialize').mockReturnValue({
+        nextYear: expenseForCurrentYear.year + 1,
+        monthsForNextYear: [],
+        expenseForNextYear: undefined,
+        expenseForCurrentYear,
+        monthsForCurrentYear,
+        requiresNewBill: false
+      });
+
+      jest.spyOn(expenseBusiness, 'calculate').mockReturnValue(expenseForCurrentYear);
+
       jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
         andWhere: jest.fn(),
         withDeleted: jest.fn(),
@@ -325,7 +375,18 @@ describe('ExpenseService', () => {
       monthsForCurrentYear.forEach((month) => {
         expenseForCurrentYear[month] = 100;
         expenseForCurrentYear[`${month}_paid`] = mockEntity.paid;
-      })
+      });
+
+      jest.spyOn(expenseBusiness, 'initialize').mockReturnValue({
+        nextYear: expenseForCurrentYear.year + 1,
+        monthsForNextYear: [],
+        expenseForNextYear: undefined,
+        expenseForCurrentYear,
+        monthsForCurrentYear,
+        requiresNewBill: false
+      });
+
+      jest.spyOn(expenseBusiness, 'calculate').mockReturnValue(expenseForCurrentYear);
 
       jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
         andWhere: jest.fn(),
@@ -370,6 +431,17 @@ describe('ExpenseService', () => {
         expenseForCurrentYear[`${month}_paid`] = mockEntity.paid;
       })
 
+      jest.spyOn(expenseBusiness, 'initialize').mockReturnValue({
+        nextYear: expenseForCurrentYear.year + 1,
+        monthsForNextYear: [],
+        expenseForNextYear: undefined,
+        expenseForCurrentYear,
+        monthsForCurrentYear,
+        requiresNewBill: false
+      });
+
+      jest.spyOn(expenseBusiness, 'calculate').mockReturnValue(expenseForCurrentYear);
+
       jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
         andWhere: jest.fn(),
         withDeleted: jest.fn(),
@@ -401,6 +473,17 @@ describe('ExpenseService', () => {
         expenseForCurrentYear[`${month}_paid`] = mockEntity.paid;
       })
 
+      jest.spyOn(expenseBusiness, 'initialize').mockReturnValue({
+        nextYear: expenseForCurrentYear.year + 1,
+        monthsForNextYear: [],
+        expenseForNextYear: undefined,
+        expenseForCurrentYear,
+        monthsForCurrentYear,
+        requiresNewBill: false
+      });
+
+      jest.spyOn(expenseBusiness, 'calculate').mockReturnValue(expenseForCurrentYear);
+
       jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
         andWhere: jest.fn(),
         withDeleted: jest.fn(),
@@ -418,6 +501,9 @@ describe('ExpenseService', () => {
 
   describe('addExpenseForNextYear', () => {
     it('should add a new expense for the next year', async () => {
+      jest.spyOn(expenseBusiness, 'reinitialize').mockReturnValue(mockEntity);
+
+      jest.spyOn(expenseBusiness, 'calculate').mockReturnValue(mockEntity);
       jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
       const result = await service.addExpenseForNextYear(mockEntity.bill, ['january'], mockEntity)
       expect(result).toEqual(mockEntity)
@@ -465,6 +551,7 @@ describe('ExpenseService', () => {
 
   describe('customSave', () => {
     it('should save a expense successfully', async () => {
+      jest.spyOn(expenseBusiness, 'calculate').mockReturnValue(mockEntity);
       jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
       const result = await service.customSave(mockEntity);
       expect(result).toEqual(mockEntity);
@@ -533,6 +620,7 @@ describe('ExpenseService', () => {
   describe('getExpensesFromSheet', () => {
     it('Should return empty list of expense when received an empty list.', async () => {
 
+      jest.spyOn(expenseBusiness, 'parseToDetailsTable').mockReturnValue([]);
 
       const result = await service['getExpensesFromSheet'](
           2025,
@@ -541,6 +629,24 @@ describe('ExpenseService', () => {
           'Personal',
           22
       );
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('Should return list of expense with successfully.', async () => {
+
+      jest.spyOn(expenseBusiness, 'parseToDetailsTable').mockReturnValue([mockEntity as any]);
+      jest.spyOn(service, 'createToSheet' as any).mockResolvedValueOnce(mockEntity);
+
+      const result = await service['getExpensesFromSheet'](
+          2025,
+          spreadsheetMock,
+          [mockEntity.bill],
+          'Personal',
+          22
+      );
+
+      expect(result).toHaveLength(1);
     });
   });
 
@@ -624,7 +730,7 @@ describe('ExpenseService', () => {
 
       it('A new expense must persist in the database without children.', async () => {
         jest.spyOn(service, 'findOne').mockResolvedValue(null);
-
+        jest.spyOn(expenseBusiness, 'calculate').mockReturnValue(mockEntity);
         jest.spyOn(supplierService, 'createToSheet').mockResolvedValue(mockEntity.supplier);
         jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
         const result = await service['createToSheet'](createToSheetParams);
