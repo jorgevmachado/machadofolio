@@ -1,6 +1,9 @@
 {
   "color": {
     "$type": "color",
+    "focus": { "$value": "#70a5ff" },
+    "black": { "$value": "#000000" },
+    "white": { "$value": "#ffffff" },
     "info": {
       "40": { "$value": "#B3E5FC" },
       "60": { "$value": "#4FC3F7" },

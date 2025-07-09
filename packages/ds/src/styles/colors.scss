@@ -1,0 +1,51 @@
+$colors: (
+        'primary-40': var(--color-primary-40),
+        'primary-60': var(--color-primary-60),
+        'primary-80': var(--color-primary-80),
+        'primary-100': var(--color-primary-100),
+        'secondary-40': var(--color-secondary-40),
+        'secondary-60': var(--color-secondary-60),
+        'secondary-80': var(--color-secondary-80),
+        'secondary-100': var(--color-secondary-100),
+        "info-40": var(--color-info-40),
+        "info-60": var(--color-info-60),
+        "info-80": var(--color-info-80),
+        "info-100": var(--color-info-100),
+        "error-40": var(--color-error-40),
+        "error-60": var(--color-error-60),
+        "error-80": var(--color-error-80),
+        "error-100": var(--color-error-100),
+        "neutral-40": var(--color-neutral-40),
+        "neutral-60": var(--color-neutral-60),
+        "neutral-80": var(--color-neutral-80),
+        "neutral-100": var(--color-neutral-100),
+        "success-40": var(--color-success-40),
+        "success-60": var(--color-success-60),
+        "success-80": var(--color-success-80),
+        "success-100": var(--color-success-100),
+        "attention-40": var(--color-attention-40),
+        "attention-60": var(--color-attention-60),
+        "attention-80": var(--color-attention-80),
+        "attention-100": var(--color-attention-100),
+        'social-google-80': var(--color-social-google-80),
+        'social-google-90': var(--color-social-google-90),
+        'social-google-100': var(--color-social-google-100),
+        'social-facebook-80': var(--color-social-facebook-80),
+        'social-facebook-90': var(--color-social-facebook-90),
+        'social-facebook-100': var(--color-social-facebook-100),
+        'social-whatsapp-80': var(--color-social-whatsapp-80),
+        'social-whatsapp-90': var(--color-social-whatsapp-90),
+        'social-whatsapp-100': var(--color-social-whatsapp-100),
+        'social-github-80': var(--color-social-github-80),
+        'social-github-90': var(--color-social-github-90),
+        'social-github-100': var(--color-social-github-100),
+);
+
+@each $name, $value in $colors {
+  .ds-color-#{$name} {
+    color: $value;
+  }
+  .ds-bg-#{$name} {
+    background-color: $value;
+  }
+}

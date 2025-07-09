@@ -1,0 +1,1 @@
+export type TSimplySIze = 'tiny' | 'small' | 'medium' | 'large' | 'big';

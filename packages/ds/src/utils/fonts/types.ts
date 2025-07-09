@@ -1,0 +1,1 @@
+export type TWeight = 'bold' | 'regular' | 'medium' | 'semibold';

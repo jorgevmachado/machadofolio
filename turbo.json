@@ -1,6 +1,6 @@
 {
   "$schema": "https://turborepo.com/schema.json",
-  "globalEnv": ["ENV", "API", "PORT"],
+  "globalEnv": ["ENV", "API", "PORT", "BRAND", "VITE_BRAND"],
   "globalDependencies": [
     "**/.env.*local",
     "**/.env.*mock",
