@@ -80,7 +80,7 @@ import {
   IoMdTv,
 } from 'react-icons/io';
 
-import type { TIconGroupIcons } from '../interface';
+import type { TIconGroupIcons } from '../types';
 
 export const ioGroup: TIconGroupIcons = {
   tv: <IoMdTv />,

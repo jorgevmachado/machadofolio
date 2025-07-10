@@ -1,6 +1,6 @@
 import { VscEdit, VscError, VscTrash } from 'react-icons/vsc';
 
-import type { TIconGroupIcons } from '../interface';
+import type { TIconGroupIcons } from '../types';
 
 export const vscGroup: TIconGroupIcons = {
   tv: undefined,

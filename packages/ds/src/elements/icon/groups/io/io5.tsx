@@ -77,7 +77,7 @@ import {
   IoWarning,
 } from 'react-icons/io5';
 
-import type { TIconGroupIcons } from '../interface';
+import type { TIconGroupIcons } from '../types';
 
 import React from 'react';
 

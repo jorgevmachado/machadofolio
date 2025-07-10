@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   CiCalendar,
   CiCamera,
@@ -10,7 +11,7 @@ import {
   CiWarning,
 } from 'react-icons/ci';
 
-import type { TIconGroupIcons } from '../interface';
+import type { TIconGroupIcons } from '../types';
 
 export const ciGroup: TIconGroupIcons = {
   tv: undefined,

@@ -100,7 +100,7 @@ import {
   FaWarehouse,
 } from 'react-icons/fa6';
 
-import type { TIconGroupIcons } from '../interface';
+import type { TIconGroupIcons } from '../types';
 
 export const fa6Group: TIconGroupIcons = {
   tv: <FaTv />,

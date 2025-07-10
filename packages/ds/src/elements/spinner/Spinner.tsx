@@ -26,7 +26,7 @@ export default function Spinner({
             {...props}
             role="spinner"
             aria-label="spinner..."
-            data-testid="spinner"
+            data-testid="ds-spinner"
             className={classNameList}
         >
             <svg

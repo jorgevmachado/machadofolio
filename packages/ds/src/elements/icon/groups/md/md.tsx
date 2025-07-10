@@ -93,7 +93,7 @@ import {
   MdWallet,
 } from 'react-icons/md';
 
-import type { TIconGroupIcons } from '../interface';
+import type { TIconGroupIcons } from '../types';
 
 export const mdGroup: TIconGroupIcons = {
   tv: <MdTv />,

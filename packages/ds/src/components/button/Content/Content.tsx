@@ -39,15 +39,15 @@ export default function Content({
     notification
 }: ContentProps) {
     return (
-        <div className="ds-button__content">
+        <div className="ds-button__content" data-testid="ds-button-content">
             { Boolean(icon) && icon?.position === 'left' && (
                 <Icon {...icon}/>
             )}
             <>
                 <div>{children}</div>
                 { (Boolean(notification) && notification?.counter) && (
-                    <div className="ds-button__content--notification">
-                        <div className={notification?.className}>
+                    <div className="ds-button__content--notification" data-testid="ds-button-content-notification">
+                        <div className={notification?.className} data-testid="ds-button-content-notification-counter">
                             {notification?.counter > 9 ? '9+' : notification?.counter}
                         </div>
                     </div>

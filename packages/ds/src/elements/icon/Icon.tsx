@@ -42,7 +42,7 @@ export default function Icon({
             };
 
     return (
-        <span {...props} className={classNameList} aria-label={ariaLabel} data-group={currentData.group}>
+        <span {...props} data-testid="ds-icon" className={classNameList} aria-label={ariaLabel} data-group={currentData.group}>
       {currentData.icon}
     </span>
     );

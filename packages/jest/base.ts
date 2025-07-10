@@ -21,7 +21,7 @@ export const config = {
     },
     setupFilesAfterEnv: [require.resolve('./jest.setup.ts')],
     collectCoverageFrom: [
-        '**/*.(t|j)s',
+        '**/*.{ts,tsx,js,jsx}',
         '!**/node_modules/**',
         '!**/dist/**',
         '!**/.next/**',
@@ -39,5 +39,6 @@ export const config = {
         'enum.ts',
         'interface.ts',
         'types.ts',
+        'options.ts',
     ],
 } as const satisfies Config;

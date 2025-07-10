@@ -23,6 +23,7 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     selected?: boolean;
     children?: React.ReactNode;
     disabled?: boolean;
+    className?: string;
     appearance?: TAppearance;
     notification?: NotificationProps;
 }
@@ -79,6 +80,7 @@ export function Button({
             disabled={disabled || loading?.value}
             className={classNameList}
             aria-busy={loading?.value ? 'true' : undefined}
+            data-testid="ds-button"
             aria-disabled={disabled || loading?.value ? 'true' : undefined}
         >
             {isAppearanceIconButton && icon
