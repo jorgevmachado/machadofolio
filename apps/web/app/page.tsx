@@ -1,11 +1,13 @@
 'use client';
 import { useState } from 'react';
 
+import { Button } from '@repo/ds';
+
 import { normalize } from "@repo/services";
 
 import styles from "./page.module.css";
 
-
+import './page.scss';
 
 export default function Home() {
   const name = 'João';
@@ -52,17 +54,20 @@ export default function Home() {
 
 
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
+    <div className="page">
+      <main className="page__main">
         <h1>name: ${name}</h1>
         <h1>normalize: ${normalize(name)}</h1>
-        <button
-            onClick={handleDownload}
-            disabled={isLoading}
-            className={styles.downloadButton}
-        >
+        <Button onClick={handleDownload} context="secondary" disabled={isLoading} className={styles.downloadButton}>
           {isLoading ? 'Baixando...' : 'Baixar Modelo de Planilha'}
-        </button>
+        </Button>
+        {/*<button*/}
+        {/*    onClick={handleDownload}*/}
+        {/*    disabled={isLoading}*/}
+        {/*    className={styles.downloadButton}*/}
+        {/*>*/}
+        {/*  {isLoading ? 'Baixando...' : 'Baixar Modelo de Planilha'}*/}
+        {/*</button>*/}
 
       </main>
     </div>

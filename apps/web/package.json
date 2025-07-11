@@ -11,6 +11,8 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@repo/ds": "*",
+    "@repo/tokens": "*",
     "@repo/ui": "*",
     "next": "^15.3.0",
     "react": "^19.1.0",
@@ -18,12 +20,14 @@
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
-    "@repo/typescript": "*",
     "@repo/services": "*",
+    "@repo/typescript": "*",
     "@types/node": "^22.15.3",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
     "eslint": "^9.25.0",
+    "sass": "^1.89.2",
+    "sass-loader": "^16.0.5",
     "typescript": "5.8.2"
   }
 }
