@@ -45,7 +45,7 @@ $colors: (
   .ds-color-#{$name} {
     color: $value;
   }
-  .ds-bg-#{$name} {
+  .ds-background-color-#{$name} {
     background-color: $value;
   }
 }

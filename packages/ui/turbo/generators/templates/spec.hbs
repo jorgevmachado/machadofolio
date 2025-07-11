@@ -1,0 +1,27 @@
+import React from 'react';
+
+import '@testing-library/jest-dom'
+import { cleanup, render, screen } from '@testing-library/react';
+
+import {{ pascalCase name }} from './{{ pascalCase name }}';
+
+describe('<{{ pascalCase name }}/>', () => {
+    const defaultProps = {};
+
+    const renderComponent = (props: any = {}) => {
+        return render(<{{ pascalCase name }} {...defaultProps} {...props}/>);
+    }
+
+    afterEach(() => {
+        cleanup();
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
+    });
+
+    it('should render component with props default.', () => {
+        renderComponent();
+        const component = screen.getByTestId('ui-{{ kebabCase name }}');
+        expect(component).toBeInTheDocument();
+        expect(component).toHaveClass('ui-{{ kebabCase name }}');
+    });
+});

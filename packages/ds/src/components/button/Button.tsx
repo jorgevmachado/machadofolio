@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 
-import { type TContext, type TSimplySIze, type TWeight, joinClass } from '../../utils';
+import { type TContext, type TSimplySIze, type TWeight } from '../../utils';
+import joinClass from '../../utils/join-class';
 
 import { Icon } from '../../elements';
 
@@ -11,7 +12,7 @@ import './Button.scss';
 type TAppearance = 'icon' | 'outline' | 'standard' | 'borderless';
 
 
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>  {
     icon?: IconProps;
     size?: TSimplySIze;
     fluid?: boolean;
@@ -53,7 +54,7 @@ export function Button({
         if (!hasLabel && !props['aria-label']) {
             console.warn('You must define the aria-label if the button has no label');
         }
-    }, [hasLabel, props['aria-label']]);
+    }, [hasLabel, props]);
 
     const parentClassName = 'ds-button';
 

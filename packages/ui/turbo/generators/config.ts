@@ -1,29 +1,63 @@
 import type { PlopTypes } from "@turbo/gen";
 
-// Learn more about Turborepo Generators at https://turborepo.com/docs/guides/generating-code
-
 export default function generator(plop: PlopTypes.NodePlopAPI): void {
-  // A simple generator to add a new React component to the internal UI library
-  plop.setGenerator("react-component", {
-    description: "Adds a new react component",
+  plop.setGenerator("ui", {
+    description: "Adds a new user interface component",
     prompts: [
+      {
+        type: 'list',
+        name: 'type',
+        message: 'What type of file should be created ?',
+        choices: ['layout', 'components'],
+      },
       {
         type: "input",
         name: "name",
-        message: "What is the name of the component?",
+        message: "What is the name of the user interface item ?",
+        validate: (input: string) => {
+          if (input.includes('.')) {
+            return 'file name cannot include an extension';
+          }
+          if (input.match(' ')) {
+            return 'file name cannot include spaces';
+          }
+          if (!input) {
+            return 'file name is required';
+          }
+          return true;
+        },
       },
     ],
     actions: [
       {
-        type: "add",
-        path: "src/{{kebabCase name}}.tsx",
-        templateFile: "templates/component.hbs",
+        type: 'add',
+        path: 'src/{{ type }}/{{ kebabCase name }}/{{ pascalCase name }}.tsx',
+        templateFile: 'templates/ui.hbs',
       },
       {
-        type: "append",
-        path: "package.json",
-        pattern: /"exports": {(?<insertion>)/g,
-        template: '    "./{{kebabCase name}}": "./src/{{kebabCase name}}.tsx",',
+        type: 'add',
+        path: 'src/{{ type }}/{{ kebabCase name }}/{{ pascalCase name }}.spec.tsx',
+        templateFile: 'templates/spec.hbs',
+      },
+      {
+        type: 'add',
+        path: 'src/{{ type }}/{{ kebabCase name }}/{{ pascalCase name }}.stories.tsx',
+        templateFile: 'templates/stories.hbs',
+      },
+      {
+        type: 'add',
+        path: 'src/{{ type }}/{{ kebabCase name }}/{{ pascalCase name }}.scss',
+        templateFile: 'templates/stylesheet.hbs',
+      },
+      {
+        type: 'add',
+        path: 'src/{{ type }}/{{ kebabCase name }}/index.ts',
+        templateFile: 'templates/ui-index.hbs',
+      },
+      {
+        type: 'append',
+        path: 'src/{{ type }}/index.ts',
+        templateFile: 'templates/index.hbs',
       },
     ],
   });

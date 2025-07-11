@@ -21,31 +21,31 @@
     &--tiny {
       height: var(--size-large);
       padding: 0 var(--size-medium);
-      line-height: var(--font-line-height-small);
+      line-height: var(--font-line-height-tight);
     }
 
     &--small {
       height: var(--size-xxx-large);
       padding: 0 var(--size-medium);
-      line-height: var(--font-line-height-small);
+      line-height: var(--font-line-height-tight);
     }
 
     &--medium {
       height: var(--size-big);
       padding: 0 var(--size-medium);
-      line-height: var(--font-line-height-small);
+      line-height: var(--font-line-height-normal);
     }
 
     &--large {
       height: var(--size-xx-big);
       padding: 0 var(--size-medium);
-      line-height: var(--font-line-height-small);
+      line-height: var(--font-line-height-relaxed);
     }
 
     &--big {
       height: var(--size-xxx-big);
       padding: 0 var(--size-medium);
-      line-height: var(--font-line-height-small);
+      line-height: var(--font-line-height-relaxed);
     }
   }
 
@@ -59,7 +59,7 @@
 
   &__weight {
     &--regular {
-      font-weight: var(--font-weight-regularl);
+      font-weight: var(--font-weight-regular);
     }
 
     &--medium {
