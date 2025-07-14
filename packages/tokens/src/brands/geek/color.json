@@ -1,6 +1,17 @@
 {
   "color": {
     "$type": "color",
+    "menu": {
+      "$value": "#f0eff4"
+    },
+    "strong": {
+      "$value": "#009688"
+    },
+    "navbar": {
+      "background": {
+        "$value": "#232946"
+      }
+    },
     "primary": {
       "40": {
         "$value": "#AB8CFF"
