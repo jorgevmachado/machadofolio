@@ -1,0 +1,53 @@
+.ui-header {
+  height: var(--dimensions-fixed-56);
+  display: flex;
+  padding: var(--size-x-tiny) var(--size-x-small);
+  align-items: center;
+  border-bottom: 1px solid var(--color-neutral-50);
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: var(--color-white);
+  &__brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--button {
+      margin-right: var(--size-large);
+    }
+    &--logo {
+      cursor: pointer;
+      width: var(--size-large);
+      height: var(--size-large);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  &__nav {
+    display: none;
+    &--list {
+      gap: var(--size-large);
+      height: 100%;
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      justify-content: center;
+      &-item {
+        display: inherit;
+      }
+    }
+  }
+
+  @media screen and (min-width: 720px) {
+    height: var(--dimensions-fixed-68);
+    &__brand {
+      &--button {
+        display: none;
+      }
+    }
+    &__nav {
+      display: block;
+    }
+  }
+}

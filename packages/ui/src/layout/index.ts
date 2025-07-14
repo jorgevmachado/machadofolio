@@ -1,1 +1,1 @@
-export { default as Header } from './header';
+export { default as ProgressIndicator } from './progress-indicator';

@@ -10,17 +10,21 @@ export const config = {
     },
     testEnvironment: 'jsdom',
     moduleNameMapper: {
-        '^@repo/(.*)$': '<rootDir>/packages/$1/src',
+        '^@repo/(.*)$': [
+            '<rootDir>/../../$1/src',
+            '<rootDir>/../../$1/dist'
+        ],
         '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
     },
     coverageDirectory: '../coverage',
+    moduleDirectories: ['node_modules', '<rootDir>/../../packages'],
     setupFilesAfterEnv: [
         ...baseConfig.setupFilesAfterEnv || [],
         require.resolve('@testing-library/jest-dom'),
     ],
     collectCoverageFrom: [
         ...baseConfig.collectCoverageFrom || [],
-        'packages/ds/src/**/*.{js,jsx,ts,tsx}',
+        'packages/**/src/**/*.{js,jsx,ts,tsx}',
         '!elements/icon/groups/**',
         '!**/*.stories.tsx',
         '!src/**/*.d.ts'
