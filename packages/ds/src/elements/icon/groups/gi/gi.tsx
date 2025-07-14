@@ -159,6 +159,7 @@ export const giGroup: TIconGroupIcons = {
   download: <GiCloudDownload />,
   keyboard: <GiKeyboard />,
   umbrella: <GiUmbrella />,
+  'sign-in': undefined,
   'sign-out': undefined,
   warehouse: <GiHomeGarage />,
   lightbulb: <GiLightBulb />,

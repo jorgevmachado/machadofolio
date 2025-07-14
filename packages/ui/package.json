@@ -50,6 +50,7 @@
     "@chromatic-com/storybook": "^4.0.1",
     "@repo/eslint-config": "*",
     "@repo/jest": "*",
+    "@repo/services": "*",
     "@repo/ds": "*",
     "@repo/tokens": "*",
     "@repo/typescript": "*",

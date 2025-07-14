@@ -132,6 +132,29 @@ export function formatUrl(url: string, path: string, params = {}): string {
  return `${filteredUrl}${query ? `?${query}` : ''}`;
 }
 
+export function validatePath(path: string): string {
+ if (!path.startsWith('/')) {
+  return `/${path}`;
+ }
+ return path;
+}
+
+export type FormatPathParams = {
+ childPath: string;
+ parentPath: string;
+ grandParentPath?: string;
+}
+
+export function formatPath({ childPath, parentPath, grandParentPath }: FormatPathParams): string {
+ const formatParentPath = validatePath(parentPath);
+ const formatChildPath = validatePath(childPath);
+ if(!grandParentPath) {
+  return `${formatParentPath}${formatChildPath}`;
+ }
+ const formatGrandParentPath = validatePath(grandParentPath);
+ return `${formatGrandParentPath}${formatParentPath}${formatChildPath}`;
+}
+
 export type ConvertSubPathUrlParams = {
  by?: string;
  pathUrl: string;

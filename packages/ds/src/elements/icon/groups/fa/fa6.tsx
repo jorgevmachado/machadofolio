@@ -186,6 +186,7 @@ export const fa6Group: TIconGroupIcons = {
   download: <FaDownload />,
   keyboard: <FaKeyboard />,
   umbrella: <FaUmbrella />,
+  'sign-in': undefined,
   'sign-out': undefined,
   warehouse: <FaWarehouse />,
   lightbulb: <FaLightbulb />,

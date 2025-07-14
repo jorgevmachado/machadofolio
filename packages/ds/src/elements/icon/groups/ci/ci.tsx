@@ -97,6 +97,7 @@ export const ciGroup: TIconGroupIcons = {
   download: undefined,
   keyboard: undefined,
   umbrella: undefined,
+  'sign-in': undefined,
   'sign-out': undefined,
   warehouse: undefined,
   lightbulb: undefined,

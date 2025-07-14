@@ -85,6 +85,7 @@ export const OIcon: Array<TIcon> = [
      'download',
      'keyboard',
      'umbrella',
+     'sign-in',
      'sign-out',
      'warehouse',
      'lightbulb',

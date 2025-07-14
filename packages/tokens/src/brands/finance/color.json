@@ -12,6 +12,17 @@
         "$value": "#1d3557"
       }
     },
+    "sidebar": {
+      "hover": {
+        "$value": "rgba(255, 255, 255, 0.1)"
+      },
+      "button": {
+        "$value": "white"
+      },
+      "background": {
+        "$value": "linear-gradient(to bottom, #1d3557, #457b9d)"
+      }
+    },
     "primary": {
       "40": {
         "$value": "#92E3F5"

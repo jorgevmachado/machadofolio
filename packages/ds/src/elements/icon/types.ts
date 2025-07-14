@@ -82,6 +82,7 @@ export type TIcon =
     | 'download'
     | 'keyboard'
     | 'umbrella'
+    | 'sign-in'
     | 'sign-out'
     | 'warehouse'
     | 'lightbulb'

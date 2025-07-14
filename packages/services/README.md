@@ -218,6 +218,8 @@ yarn lint
 - **cleanFormatter**: Responsável por limpar a formatação do texto.
 - **sanitize**: Responsável por realizar a higienização do texto.
 - **cleanTextByListText**: Responsável por remover do texto os textos que estiverem na lista de textos.
+- **validatePath**: Responsável por validar se o path passado começa com o / caso não ele adiciona uma / antes.
+- **formatPath**: Responsável por formatar o path, conforme recebe os parametros necessários para criação.
 #### Comando para testes unitários exclusivo para esté módulo.
 ```bash
   yarn run test -- --findRelatedTests src/string/string.spec.ts               

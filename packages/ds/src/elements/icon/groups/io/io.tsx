@@ -166,6 +166,7 @@ export const ioGroup: TIconGroupIcons = {
   download: <IoMdCloudDownload />,
   keyboard: undefined,
   umbrella: <IoIosUmbrella />,
+  'sign-in': undefined,
   'sign-out': undefined,
   warehouse: undefined,
   lightbulb: <IoIosBulb />,

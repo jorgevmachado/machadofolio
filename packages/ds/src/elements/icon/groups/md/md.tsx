@@ -179,6 +179,7 @@ export const mdGroup: TIconGroupIcons = {
   download: <MdCloudDownload />,
   keyboard: <MdKeyboard />,
   umbrella: <MdOutlineUmbrella />,
+  'sign-in': undefined,
   'sign-out': undefined,
   warehouse: <MdOutlineWarehouse />,
   lightbulb: <MdLightbulbOutline />,

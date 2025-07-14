@@ -8,6 +8,7 @@ import {
     convertSubPathUrl,
     extractLastItemFromUrl,
     findRepeated,
+    formatPath,
     formatUrl,
     initials,
     normalize,
@@ -16,7 +17,7 @@ import {
     snakeCaseToNormal,
     toCamelCase,
     toSnakeCase,
-    truncateString,
+    truncateString, validatePath,
 } from './string';
 
 jest.mock('uuid');
@@ -96,6 +97,48 @@ describe('String function', () => {
         });
     });
 
+    describe('formatPath', () => {
+        it('should return parentPath + childPath when there is NO grandParentPath.', () => {
+            const result = formatPath({
+                childPath: 'child',
+                parentPath: 'parent',
+            });
+            expect(result).toBe('/parent/child');
+        });
+
+        it('should return grandParentPath + parentPath + childPath when grandParentPath exists.', () => {
+            const result = formatPath({
+                childPath: '/child',
+                parentPath: 'parent',
+                grandParentPath: 'grandparent',
+            });
+            expect(result).toBe('/grandparent/parent/child');
+        });
+
+        it('should work when paths already have "/".', () => {
+            const result = formatPath({
+                childPath: '/c',
+                parentPath: '/p',
+                grandParentPath: '/gp',
+            });
+            expect(result).toBe('/gp/p/c');
+        });
+
+        it('should work correctly if grandParentPath is empty string, behaving like "no grandParent".', () => {
+            const result = formatPath({
+                childPath: 'filho',
+                parentPath: 'pai',
+                grandParentPath: '',
+            });
+            expect(result).toBe('/pai/filho');
+        });
+
+        it('should work if paths are empty strings.', () => {
+            const result = formatPath({ childPath: '', parentPath: '', grandParentPath: '' });
+            expect(result).toBe('//');
+        });
+    });
+
     describe('capitalize', () => {
         it('Must capitalize the first letter of the string', () => {
             expect(capitalize('hello')).toEqual('Hello');
@@ -158,6 +201,16 @@ describe('String function', () => {
             expect(findRepeated([...listObjectId, firstObject], 'name')).toEqual(
                 firstObject.name,
             );
+        });
+    });
+
+    describe('validatePath', () => {
+        it('Should validate path when path start with /', () => {
+            expect(validatePath('/path')).toEqual('/path');
+        });
+
+        it('Should validate path when path not start with /', () => {
+            expect(validatePath('path')).toEqual('/path');
         });
     });
 
