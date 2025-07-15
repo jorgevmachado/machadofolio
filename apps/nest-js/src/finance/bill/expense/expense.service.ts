@@ -133,7 +133,7 @@ export class ExpenseService extends Service<Expense> {
         const seeds = this.seeder.currentSeeds<Expense>({ seedsJson: expenseListJson });
         const billListSeed = this.seeder.currentSeeds<Bill>({ seedsJson: billListJson });
 
-        const financeBillExpenseListSeed = billListSeed.flatMap((bill) => bill.expenses ?? []);
+        const financeBillExpenseListSeed = billListSeed.flatMap((bill) => bill?.expenses ?? []);
         const financeExpenseListSeed = filterByCommonKeys<Expense>('id', seeds, financeBillExpenseListSeed);
 
         const currentSeeds = this.flattenParentsAndChildren(financeExpenseListSeed);

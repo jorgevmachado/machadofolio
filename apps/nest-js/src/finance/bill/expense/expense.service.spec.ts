@@ -149,9 +149,15 @@ describe('ExpenseService', () => {
         mockExpenseBuildCreation[`${month}_paid`] = true;
       });
 
-      expect(await service.buildForCreation(mockEntity.bill, createDto)).toEqual(
-          mockExpenseBuildCreation,
-      );
+      const result = await service.buildForCreation(mockEntity.bill, createDto);
+
+      expect(result.id).toBeUndefined();
+      expect(result.bill).toEqual(mockEntity.bill);
+      expect(result.paid).toEqual(mockEntity.paid);
+      expect(result.type).toEqual(createDto.type);
+      expect(result.name).toEqual(mockEntity.name);
+      expect(result.total).toEqual(0);
+      expect(result.supplier).toEqual(mockEntity.supplier);
     });
 
     it('should build a creation expense with parent.', async () => {
@@ -203,9 +209,14 @@ describe('ExpenseService', () => {
         mockExpenseBuildCreation[`${month}_paid`] = true;
       });
 
-      expect(await service.buildForCreation(mockEntity.bill, createDto)).toEqual(
-          mockExpenseBuildCreation,
-      );
+      const result = await service.buildForCreation(mockEntity.bill, createDto);
+
+      expect(result.id).toBeUndefined();
+      expect(result.bill).toEqual(mockExpenseBuildCreation.bill);
+      expect(result.paid).toEqual(mockExpenseBuildCreation.paid);
+      expect(result.type).toEqual(mockExpenseBuildCreation.type);
+      expect(result.total).toEqual(mockExpenseBuildCreation.total);
+      expect(result.supplier).toEqual(mockExpenseBuildCreation.supplier);
     });
   });
 
@@ -581,7 +592,7 @@ describe('ExpenseService', () => {
       expect(await service.seeds({
         bills: [{...mockEntity.bill, expenses: [mockEntity]}],
         suppliers: [mockEntity.supplier],
-        expenseListJson: [mockEntity],
+        expenseListJson: [{...mockEntity.bill, expenses: [mockEntity]}],
         billListJson: [{...mockEntity.bill, expenses: [mockEntity]}]
       })).toEqual([mockEntity])
     });

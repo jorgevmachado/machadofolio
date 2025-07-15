@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { PokeApiService } from '@repo/business/pokemon/poke-api/service/service';
+import { PokeApiService } from '@repo/business';
 
 import { POKEMON_MOVE_MOCK } from '../mocks/move.mock';
 import { PokemonMove } from '../entities/move.entity';

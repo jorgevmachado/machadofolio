@@ -1,4 +1,4 @@
-import { EBillType } from '@repo/business/finance/bill/enum';
+import { EBillType } from '@repo/business';
 
 import { type Bill } from '../finance/entities/bill.entity';
 

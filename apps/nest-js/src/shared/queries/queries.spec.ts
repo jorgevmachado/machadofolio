@@ -1,14 +1,18 @@
 import { NotFoundException } from '@nestjs/common';
 import { type Repository } from 'typeorm';
 
-import * as UUIDService from '@repo/services/UUID/UUID';
+import * as Services from '@repo/services';
 
-import { Paginate } from '@repo/business/paginate/paginate';
+import { Paginate } from '@repo/business';
 
 import { type FindByParams } from './types';
 import { Queries } from './queries';
 
-jest.mock('@repo/business/paginate/paginate');
+jest.mock('@repo/business');
+jest.mock('@repo/services', () => ({
+    ...jest.requireActual('@repo/services'),
+    isUUID: jest.fn(),
+}));
 
 type TestEntity = {
     id: string;
@@ -116,7 +120,7 @@ describe('Queries', () => {
     describe('findOne', () => {
         it('should search by id if value is a valid UUID', async () => {
             const uuid = '550e8400-e29b-41d4-a716-446655440000';
-            jest.spyOn(UUIDService, 'isUUID').mockReturnValueOnce(true);
+            (Services.isUUID as jest.Mock).mockReturnValueOnce(true);
 
             mockQueryBuilder.getOne.mockResolvedValueOnce(mockEntity);
 
@@ -128,7 +132,7 @@ describe('Queries', () => {
 
         it('should search by name if value is not a valid UUID', async () => {
             const name = 'Test Name';
-            jest.spyOn(UUIDService, 'isUUID').mockReturnValueOnce(false);
+            (Services.isUUID as jest.Mock).mockReturnValueOnce(false);
 
             mockQueryBuilder.getOne.mockResolvedValueOnce(mockEntity);
 
@@ -139,7 +143,7 @@ describe('Queries', () => {
         });
 
         it('should throw NotFoundException if withThrow is true and no result is found', async () => {
-            jest.spyOn(UUIDService, 'isUUID').mockReturnValueOnce(false);
+            (Services.isUUID as jest.Mock).mockReturnValueOnce(false);
 
             mockQueryBuilder.getOne.mockResolvedValueOnce(null);
 
