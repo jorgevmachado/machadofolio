@@ -7,7 +7,7 @@ import {
     jest,
 } from '@jest/globals';
 
-import { EMonth } from '@repo/services/date/month/enum';
+import { EMonth } from '@repo/services';
 
 import { type Nest } from '../../../api';
 

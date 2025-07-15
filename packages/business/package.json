@@ -13,7 +13,7 @@
     "gen": "turbo gen business",
     "gen:module:nest": "turbo gen business-module-nest",
     "dev": "echo 'Add dev script here'",
-    "build": "rimraf dist && tsc -b -v",
+    "build": "rimraf dist && rollup -c",
     "test": "jest",
     "test:ci": "jest  --clearCache --coverage",
     "test:watch": "jest --watch",

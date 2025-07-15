@@ -1,14 +1,15 @@
 import {
     type CycleOfMonths,
+    DEFAULT_TABLES_PARAMS,
     MONTHS,
+    type TablesParams,
+    cleanTextByListText,
     getCurrentMonth,
     getMonthByIndex,
     getMonthIndex,
-    isMonthValid
-} from '@repo/services/date/month/month';
-import { cleanTextByListText, snakeCaseToNormal } from '@repo/services/string/string';
-import { DEFAULT_TABLES_PARAMS } from '@repo/services/spreadsheet/table/constants';
-import type { TablesParams } from '@repo/services/spreadsheet/table/types';
+    isMonthValid,
+    snakeCaseToNormal
+} from '@repo/services';
 
 import { EBillType, EExpenseType } from '../../../api';
 
@@ -28,7 +29,9 @@ import {
     type GenerateCreditCardTable,
     type GenerateCreditCardTableParams,
     type GenerateDetailsTable,
-    type GenerateDetailsTableParams, type ParseToDetailsTable, type ParseToDetailsTableParams
+    type GenerateDetailsTableParams,
+    type ParseToDetailsTable,
+    type ParseToDetailsTableParams
 } from './types';
 
 import type Bill from '../../bill';
@@ -206,11 +209,11 @@ export default class ExpenseBusiness {
     }
 
     public parseToDetailsTable({
-        bills,
-        startRow,
-        groupName,
-        workSheet
-    }: ParseToDetailsTableParams): ParseToDetailsTable {
+                                   bills,
+                                   startRow,
+                                   groupName,
+                                   workSheet
+                               }: ParseToDetailsTableParams): ParseToDetailsTable {
         const secondaryBillList = bills.filter((bill) => bill.type !== EBillType.CREDIT_CARD);
         const creditCardBillList = bills.filter((bill) => bill.type === EBillType.CREDIT_CARD);
         const expensesData: ParseToDetailsTable = [];
@@ -240,10 +243,13 @@ export default class ExpenseBusiness {
 
     }
 
-    private generateDetailsTable({ bills, startRow, workSheet }:GenerateDetailsTableParams): GenerateDetailsTable {
+    private generateDetailsTable({ bills, startRow, workSheet }: GenerateDetailsTableParams): GenerateDetailsTable {
         const billTypeMap = new Map(bills.map(bill => [bill.type, bill]));
-        const collectGroupsRecursively = (row: number, acc: DataAccumulator): { data: DataAccumulator; nextRow: number } => {
-            const cell =  workSheet.cell(row, 3);
+        const collectGroupsRecursively = (row: number, acc: DataAccumulator): {
+            data: DataAccumulator;
+            nextRow: number
+        } => {
+            const cell = workSheet.cell(row, 3);
             const type = cell?.value ? cell?.value?.toString()?.trim() : '';
 
             if (!type) {
@@ -283,7 +289,7 @@ export default class ExpenseBusiness {
             workSheet,
         });
         const updatedAcc = [...acc, ...constructedGroupTable.data];
-        if(constructedGroupTable.hasNext) {
+        if (constructedGroupTable.hasNext) {
             return this.accumulateGroupTables({
                 acc: updatedAcc,
                 bill,
@@ -293,11 +299,11 @@ export default class ExpenseBusiness {
         }
         return { acc: updatedAcc, lastRow: constructedGroupTable.nextRow };
     }
-    
+
 
     private buildGroupTable({ row, bill, workSheet }: BuildGroupTableParams): BuildGroupTable {
-        const tableCell1 =  workSheet.cell(row, 3);
-        if(tableCell1.isMerged && tableCell1['_mergeCount'] === 2) {
+        const tableCell1 = workSheet.cell(row, 3);
+        if (tableCell1.isMerged && tableCell1['_mergeCount'] === 2) {
             const groupTableData: Array<Record<string, string | number | boolean | object | Bill>> = [];
             const groupTableRow = row + 2;
             const groupTable1Data1 = this.buildDetailData({
@@ -307,7 +313,7 @@ export default class ExpenseBusiness {
                 column: 4,
                 workSheet,
             });
-            if(groupTable1Data1) {
+            if (groupTable1Data1) {
                 groupTableData.push(groupTable1Data1);
             }
             const tableCell2 = workSheet.cell(row, 8);
@@ -318,7 +324,7 @@ export default class ExpenseBusiness {
                 column: 9,
                 workSheet,
             });
-            if(groupTable1Data2) {
+            if (groupTable1Data2) {
                 groupTableData.push(groupTable1Data2);
             }
 
@@ -330,7 +336,7 @@ export default class ExpenseBusiness {
                 column: 14,
                 workSheet,
             });
-            if(groupTable1Data3) {
+            if (groupTable1Data3) {
                 groupTableData.push(groupTable1Data3);
             }
             return { data: groupTableData, nextRow: row + 12 + 1 + 1 + 1, hasNext: true };
@@ -349,7 +355,7 @@ export default class ExpenseBusiness {
                                 workSheet,
                             }: BuildDetailDataParams): BuildDetailData | undefined {
         const title = cell.value ? cell.value.toString().trim() : '';
-        if(title === '') {
+        if (title === '') {
             return;
         }
 

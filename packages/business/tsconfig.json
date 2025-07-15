@@ -5,6 +5,12 @@
   "compilerOptions": {
     "outDir": "dist",
     "baseUrl": "src",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "paths": {
+      "@repo/services": ["../services"],
+      "@repo/services/*": ["../services/*"]
+    },
     "allowJs": true,
     "incremental": false,
     "esModuleInterop": true

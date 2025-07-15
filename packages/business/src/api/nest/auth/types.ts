@@ -1,4 +1,4 @@
-import { type EGender } from '@repo/services/personal-data/enum';
+import { type EGender } from '@repo/services';
 
 import { type ERole, type EStatus } from '../../enum';
 

@@ -7,14 +7,14 @@ import {
     jest,
 } from '@jest/globals';
 
-import { Http } from '@repo/services/http/http';
+import { Http } from '@repo/services';
 
 import { Evolution } from './evolution';
 import { Move } from './move';
 import { PokeApi } from './poke-api';
 import { Specie } from './specie';
 
-jest.mock('@repo/services/http/http');
+jest.mock('@repo/services');
 jest.mock('./specie');
 jest.mock('./move');
 jest.mock('./evolution');

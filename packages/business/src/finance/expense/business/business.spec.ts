@@ -1,12 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
-import * as stringUtils from '@repo/services/string/string';
-import { type CycleOfMonths, MONTHS, type TMonth } from '@repo/services/date/month/month';
-import { EMonth } from '@repo/services/date/month/enum';
-import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
+import * as services from '@repo/services';
+import { type CycleOfMonths, EMonth, MONTHS, type Spreadsheet, type TMonth } from '@repo/services';
 
 import { BILL_MOCK, EBillType } from '../../bill';
 import type Bill from '../../bill';
+
 
 import { EExpenseType } from '../enum';
 import { EXPENSE_MOCK } from '../mock';
@@ -14,12 +13,22 @@ import type Expense from '../expense';
 
 import ExpenseBusiness from './business';
 
-jest.mock('@repo/services/spreadsheet/spreadsheet');
+jest.mock('@repo/services', () => {
+    const originalModule = jest.requireActual('@repo/services');
+    return {
+        ...((typeof originalModule === 'object' && originalModule !== null) ? originalModule : {}),
+        Spreadsheet: jest.fn(),
+        getCurrentMonth: jest.fn(),
+        cleanTextByListText: jest.fn(),
+    };
+});
+
 
 describe('Expense Business', () => {
     let business: ExpenseBusiness;
     const mockEntity: Expense = EXPENSE_MOCK;
     const mockBillEntity: Bill = BILL_MOCK;
+
     let spreadsheetMock: jest.Mocked<Spreadsheet>;
     
     beforeEach(() => {
@@ -40,7 +49,7 @@ describe('Expense Business', () => {
                 startRow + (totalTables * (linesPerTable + 1))
             )),
         } as unknown as jest.Mocked<Spreadsheet>;
-        (Spreadsheet as unknown as jest.Mock).mockImplementation(() => spreadsheetMock);
+        jest.spyOn(services, 'Spreadsheet').mockReturnValue(spreadsheetMock);
         jest.clearAllMocks();
         jest.restoreAllMocks();
         business = new ExpenseBusiness();
@@ -124,8 +133,8 @@ describe('Expense Business', () => {
         });
 
         it('should initialize a variable expense correctly with instalment_number equal 2', () => {
-            const mockDate = new Date(2023, 0, 1);
-            jest.spyOn(global, 'Date').mockImplementation(() => mockDate as unknown as Date);
+            jest.spyOn(services, 'getCurrentMonth').mockReturnValue(EMonth.JANUARY);
+
             const year = 2025;
             const type = EExpenseType.VARIABLE;
             const value = 50;
@@ -141,6 +150,8 @@ describe('Expense Business', () => {
                 total: 0,
                 supplier: mockEntity.supplier,
                 total_paid: 0,
+                january: 50,
+                february: 50,
                 created_at: undefined,
                 updated_at: undefined,
                 description: undefined,
@@ -218,7 +229,7 @@ describe('Expense Business', () => {
                 name: `${mockEntity.bill.name} ${mockEntity.supplier.name}`,
                 type: EExpenseType.VARIABLE,
                 paid: false,
-                total: 0,
+                total: 100,
                 supplier: mockEntity.supplier,
                 total_paid: 0,
                 created_at: undefined,
@@ -246,7 +257,7 @@ describe('Expense Business', () => {
             expect(result.expenseForCurrentYear.bill).toEqual(expenseVariableWithNextYear.bill);
             expect(result.expenseForCurrentYear.type).toEqual(EExpenseType.VARIABLE);
             expect(result.expenseForCurrentYear.paid).toBeFalsy();
-            expect(result.expenseForCurrentYear.total).toEqual(0);
+            expect(result.expenseForCurrentYear.total).toEqual(100);
             expect(result.expenseForCurrentYear.supplier).toEqual(
                 expenseVariableWithNextYear.supplier,
             );
@@ -289,7 +300,7 @@ describe('Expense Business', () => {
             expect(result.expenseForNextYear?.year).toEqual(2026);
             expect(result.expenseForNextYear?.type).toEqual(EExpenseType.VARIABLE);
             expect(result.expenseForNextYear?.paid).toBeFalsy();
-            expect(result.expenseForNextYear?.total).toEqual(0);
+            expect(result.expenseForNextYear?.total).toEqual(100);
             expect(result.expenseForNextYear?.supplier).toEqual(
                 expenseVariableWithNextYear.supplier,
             );
@@ -479,7 +490,6 @@ describe('Expense Business', () => {
             const sumMarch = business.totalByMonth('march', [mockEntity]);
             expect(sumMarch).toBe(0);
         });
-
     });
 
     describe('allHaveBeenPaid', () => {
@@ -649,7 +659,6 @@ describe('Expense Business', () => {
 
             expect(result).toEqual([]);
         });
-
     });
 
 
@@ -737,7 +746,7 @@ describe('Expense Business', () => {
                 const bills = [billTypeBankSlipMock, billTypeAccountDebitMock];
 
                 const accumulateSpy = jest.spyOn(business as any, 'accumulateGroupTables')
-                    .mockImplementation(({ acc }) => {
+                    .mockImplementation(({ acc }: any) => {
                         if (acc.length === 0) {
                             return { acc: ['A'], lastRow: 11 };
                         }
@@ -859,7 +868,7 @@ describe('Expense Business', () => {
             it('should return correct object when cell is merged (_mergeCount === 2).', () => {
 
                 const buildDetailDataMock = jest.spyOn(business, 'buildDetailData' as any)
-                    .mockImplementation(({ column }) => ({ column, key: `mock${column}` }));
+                    .mockImplementation(({ column }: any) => ({ column, key: `mock${column}` }));
 
                 spreadsheetMock.workSheet.cell
                     .mockReturnValueOnce({ isMerged: true, _mergeCount: 2 } as any)
@@ -1074,6 +1083,7 @@ describe('Expense Business', () => {
             }
 
             it('should correctly generate the object for the default case (isParent = true).', () => {
+                jest.spyOn(services, 'cleanTextByListText').mockImplementationOnce(() => 'Physical');
                 const cells = [
                     'Credit Card Nubank Physical',
                     '100',
@@ -1121,6 +1131,9 @@ describe('Expense Business', () => {
             });
 
             it('should generate correctly with isParent = false and supplierList populated.', () => {
+                jest.spyOn(services, 'cleanTextByListText')
+                    .mockImplementationOnce(() => 'Apache')
+                    .mockImplementationOnce(() => 'Physical');
                 const supplierList = ['Ifood', 'Physical'];
                 const cells = [
                     'Credit Card Nubank Physical Apache', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', 'NO', '66'
@@ -1151,6 +1164,7 @@ describe('Expense Business', () => {
             });
 
             it('must handle missing values (empty or non-numeric cells).', () => {
+                jest.spyOn(services, 'cleanTextByListText').mockImplementationOnce(() => 'string');
                 const cells = [
                     '', 'A', null, undefined, '', '1', '2', '3', '4', '5', null, '', // meses
                     '', '',
@@ -1188,6 +1202,7 @@ describe('Expense Business', () => {
             });
 
             it('should work if supplierList is not passed.', () => {
+                jest.spyOn(services, 'cleanTextByListText').mockImplementationOnce(() => '');
                 const cells = [
                     'SupplierX', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'NO', '12'
                 ];
@@ -1208,6 +1223,7 @@ describe('Expense Business', () => {
             });
 
             it('should work with all default values and supplier not found.', () => {
+                jest.spyOn(services, 'cleanTextByListText').mockImplementationOnce(() => '');
                 const cells = new Array(15).fill(undefined);
                 buildMockWorksheet(cells);
 
@@ -1228,7 +1244,7 @@ describe('Expense Business', () => {
 
             it('should return aggregate_name as empty string when cleanTextByListText returns undefined.', () => {
 
-                jest.spyOn(stringUtils, 'cleanTextByListText')
+                jest.spyOn(services, 'cleanTextByListText')
                     .mockImplementationOnce(() => 'SupplierX')
                     .mockImplementationOnce(() => undefined);
 
@@ -1354,6 +1370,8 @@ describe('Expense Business', () => {
             }
 
             it('should correctly return a simple case (no parent/children).', () => {
+                jest.spyOn(services, 'cleanTextByListText')
+                    .mockImplementationOnce(() => 'Personal Expense 1');
                 buildMockWorksheet([
                     {},
                     {},

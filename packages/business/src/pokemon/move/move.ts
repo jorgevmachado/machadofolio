@@ -1,4 +1,4 @@
-import { ensureOrderNumber } from '@repo/services/number/number';
+import { ensureOrderNumber } from '@repo/services';
 
 import { type MoveConstructorParams, type PokemonMoveEntity } from './types';
 

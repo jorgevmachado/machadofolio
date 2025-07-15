@@ -1,4 +1,4 @@
-import { EGender } from '@repo/services/personal-data/enum';
+import { EGender } from '@repo/services';
 
 import { ERole, EStatus } from '../../api';
 

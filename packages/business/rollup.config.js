@@ -4,7 +4,7 @@ import commonjs from '@rollup/plugin-commonjs';
 
 export default [
     {
-        input: 'src/index.ts', // Ajuste se necessário
+        input: 'src/index.ts',
         output: [
             {
                 file: 'dist/index.js',

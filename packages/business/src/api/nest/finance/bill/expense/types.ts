@@ -1,4 +1,4 @@
-import { type EMonth } from '@repo/services/date/month/enum';
+import { type EMonth } from '@repo/services';
 
 import type { IFinanceBase } from '../../types';
 

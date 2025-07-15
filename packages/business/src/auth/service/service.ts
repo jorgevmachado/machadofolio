@@ -1,4 +1,4 @@
-import { transformDateStringInDate } from '@repo/services/object/object';
+import { transformDateStringInDate } from '@repo/services';
 
 import { type Nest } from '../../api';
 

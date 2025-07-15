@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
-import { MONTHS } from '@repo/services/date/month/month';
+import { MONTHS } from '@repo/services';
 
 import { EXPENSE_MOCK } from './mock';
 import Expense from './expense';

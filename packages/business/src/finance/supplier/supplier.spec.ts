@@ -7,7 +7,7 @@ import {
     jest,
 } from '@jest/globals';
 
-import { ERROR_STATUS_CODE, Error } from '@repo/services/error/error';
+import { ERROR_STATUS_CODE, Error } from '@repo/services';
 
 import type { SupplierConstructorParams, SupplierEntity } from './types';
 import { SUPPLIER_MOCK } from './mock';

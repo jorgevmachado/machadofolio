@@ -1,5 +1,5 @@
-import { cleanFormatter } from '@repo/services/string/string';
-import { mobileValidator } from '@repo/services/contact/contact';
+import { cleanFormatter } from '@repo/services';
+import { mobileValidator } from '@repo/services';
 
 import { ERole, EStatus } from '../../api';
 

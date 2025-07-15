@@ -1,5 +1,4 @@
-import { normalize, toSnakeCase } from '@repo/services/string/string';
-import { MONTHS } from '@repo/services/date/month/month';
+import { MONTHS, normalize, toSnakeCase } from '@repo/services';
 
 import type { ExpenseConstructorParams, ExpenseEntity } from './types';
 

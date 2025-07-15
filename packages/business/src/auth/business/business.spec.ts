@@ -7,7 +7,7 @@ import {
     jest,
 } from '@jest/globals';
 
-import { Error } from '@repo/services/error/error';
+import { Error } from '@repo/services';
 
 import { ERole, EStatus } from '../../api';
 
