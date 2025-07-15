@@ -7,7 +7,6 @@ import { PokemonAbility } from '../entities/ability.entity';
 import { AbilityController } from './ability.controller';
 import { PokemonAbilityService } from './ability.service';
 
-
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),

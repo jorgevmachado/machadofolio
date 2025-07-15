@@ -5,10 +5,9 @@ import { Spreadsheet } from '@repo/services';
 import type { TablesParams } from '@repo/services';
 import { snakeCaseToNormal } from '@repo/services';
 
-import { EXPENSE_PARENT_MOCK } from '../../expense';
-import type Expense from '../../expense';
+import { BILL_MOCK, EXPENSE_PARENT_MOCK } from '../../mock';
+import type { Expense } from '../../expense';
 
-import { BILL_MOCK } from '../mock';
 import type Bill from '../bill';
 import { EBillType } from '../enum';
 import type { SpreadsheetProcessingParams } from './types';

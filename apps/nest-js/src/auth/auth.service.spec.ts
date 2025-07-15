@@ -4,10 +4,9 @@ import { Test, type TestingModule } from '@nestjs/testing';
 import { describe, expect, it, jest } from '@jest/globals';
 import { JwtService } from '@nestjs/jwt';
 
-import { EGender } from '@repo/services/personal-data/enum';
+import { EGender } from '@repo/services';
 
-import AuthBusiness from '@repo/business/auth/business/business';
-import { ERole } from '@repo/business/enum';
+import { AuthBusiness, ERole } from '@repo/business';
 
 import { USER_MOCK, USER_PASSWORD } from '../mocks/user.mock';
 

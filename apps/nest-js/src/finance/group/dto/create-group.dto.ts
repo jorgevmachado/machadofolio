@@ -1,6 +1,6 @@
 import { IsNotEmpty, MaxLength } from 'class-validator';
 
-import { CreateGroupParams } from '@repo/business/finance/group/types';
+import { type CreateGroupParams } from '@repo/business';
 
 export class CreateGroupDto implements Pick<CreateGroupParams, 'name'>{
     @IsNotEmpty()

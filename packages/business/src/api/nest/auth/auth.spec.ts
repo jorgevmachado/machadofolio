@@ -8,7 +8,7 @@ import {
 } from '@jest/globals';
 import { EGender } from '@repo/services';
 
-import { ERole, EStatus } from '../../enum';
+import { ERole, EStatus } from '../../../enum';
 
 import { NestModuleAbstract } from '../abstract';
 

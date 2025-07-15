@@ -3,12 +3,11 @@ import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/global
 import * as services from '@repo/services';
 import { type CycleOfMonths, EMonth, MONTHS, type Spreadsheet, type TMonth } from '@repo/services';
 
-import { BILL_MOCK, EBillType } from '../../bill';
-import type Bill from '../../bill';
-
+import { BILL_MOCK, EXPENSE_MOCK } from '../../mock';
+import type { Bill } from '../../bill';
+import { EBillType } from '../../bill';
 
 import { EExpenseType } from '../enum';
-import { EXPENSE_MOCK } from '../mock';
 import type Expense from '../expense';
 
 import ExpenseBusiness from './business';

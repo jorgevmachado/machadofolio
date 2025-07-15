@@ -11,7 +11,6 @@ import { BankService } from './bank.service';
 import { type CreateBankDto } from './dto/create-bank.dto';
 import { type UpdateBankDto } from './dto/update-bank.dto';
 
-
 describe('BankService', () => {
   let service: BankService;
   let repository: Repository<Bank>;

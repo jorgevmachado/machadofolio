@@ -23,11 +23,13 @@ export default function Sidebar({ menu, onToggle, onLinkClick, isSidebarOpen }: 
     }, [isSidebarOpen]);
 
     const handleOnClick = (path: string) => {
-        onLinkClick
-            ? onLinkClick(path)
-            : window !== undefined
-                ? (window.location.href = path)
-                : null;
+        if(onLinkClick) {
+            onLinkClick(path);
+            return;
+        }
+        if(window !== undefined) {
+            window.location.href = path;
+        }
     };
 
     const toggleSidebar = () => {

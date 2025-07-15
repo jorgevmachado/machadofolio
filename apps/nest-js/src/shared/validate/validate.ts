@@ -1,6 +1,6 @@
 import { ConflictException } from '@nestjs/common';
 
-import { findRepeated } from '@repo/services/string/string';
+import { findRepeated } from '@repo/services';
 
 import { type BasicEntity } from '../types';
 

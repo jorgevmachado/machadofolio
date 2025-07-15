@@ -47,6 +47,13 @@ const meta = {
                         path: '',
                         type: 'private',
                         title: 'Supplier',
+                        children: [{
+                            key: 'supplier-son',
+                            icon: 'user-tie',
+                            path: '',
+                            type: 'private',
+                            title: 'Supplier Son',
+                        }]
                     },
                     {
                         key: 'supplier-type',
@@ -59,7 +66,7 @@ const meta = {
             },
         ],
     },
-    title: 'Layout/Sidebar',
+    title: 'Components/Sidebar',
     argTypes: {},
     component: Sidebar,
     parameters: {},

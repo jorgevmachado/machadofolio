@@ -34,7 +34,7 @@ import {
     type ParseToDetailsTableParams
 } from './types';
 
-import type Bill from '../../bill';
+import type { Bill } from '../../bill';
 
 export default class ExpenseBusiness {
     initialize(expense: Expense, value: number, month?: ExpenseEntity['month']): InitializedExpense {

@@ -2,7 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import SupplierTypeConstructor from '@repo/business/finance/supplier-type/supplier-type';
+import { SupplierType as SupplierTypeConstructor } from '@repo/business';
 
 import { Service } from '../../../shared';
 

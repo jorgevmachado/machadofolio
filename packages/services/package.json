@@ -1,6 +1,7 @@
 {
   "name": "@repo/services",
   "main": "./dist/index.js",
+  "module": "dist/index.esm.js",
   "types": "./dist/index.d.ts",
   "files": [
     "./dist/**"
@@ -10,9 +11,10 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf dist",
+    "prebuild": "tsc --project tsconfig.json",
     "gen": "turbo gen service",
     "dev": "echo 'Add dev script here'",
-    "build": "rimraf dist && rollup -c",
+    "build": "rimraf dist && yarn prebuild && rollup -c",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -20,21 +22,12 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
+      "import": "./dist/index.esm.js",
       "require": "./dist/index.js"
     },
     "./*": {
-      "types": "./dist/*/index.d.ts",
       "import": "./dist/*.js",
       "require": "./dist/*.js"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "src/*"
-      ]
     }
   },
   "publishConfig": {

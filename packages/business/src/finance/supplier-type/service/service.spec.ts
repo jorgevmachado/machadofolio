@@ -9,7 +9,7 @@ import {
 
 import { type Nest } from '../../../api';
 
-import { SUPPLIER_TYPE_MOCK } from '../mock';
+import { SUPPLIER_TYPE_MOCK } from '../../mock';
 
 import { SupplierTypeService } from './service';
 

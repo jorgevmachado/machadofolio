@@ -4,9 +4,9 @@
   "compilerOptions": {
     "outDir": "./dist",
     "target": "ES2023",
-    "module": "commonjs",
+    "module": "CommonJS",
     "baseUrl": "./",
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "sourceMap": true,
     "incremental": true,
     "noImplicitAny": false,

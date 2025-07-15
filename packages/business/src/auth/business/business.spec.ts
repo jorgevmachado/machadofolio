@@ -9,7 +9,7 @@ import {
 
 import { Error } from '@repo/services';
 
-import { ERole, EStatus } from '../../api';
+import { ERole, EStatus } from '../../enum';
 
 import { type UserConstructorParams, type UserEntity } from '../types';
 import { USER_ENTITY_MOCK } from '../mock';

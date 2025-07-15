@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { QueryParameters } from '@repo/business/types';
+import { type QueryParameters } from '@repo/business';
 
 import { AuthRoleGuard } from '../../guards/auth-role/auth-role.guard';
 import { AuthStatusGuard } from '../../guards/auth-status/auth-status.guard';

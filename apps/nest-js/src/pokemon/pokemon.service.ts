@@ -2,10 +2,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { EStatus } from '@repo/business/enum';
+import { EStatus } from '@repo/business';
 
-import { PaginateParameters } from '@repo/business/paginate/types';
-import { PokeApiService } from '@repo/business/pokemon/poke-api/service/service';
+import { type PaginateParameters, PokeApiService } from '@repo/business';
 
 import { type FindOneByParams, ListParams, Service } from '../shared';
 

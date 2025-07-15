@@ -9,8 +9,10 @@ import {
 
 import { ERROR_STATUS_CODE, Error } from '@repo/services';
 
+import { SUPPLIER_MOCK } from '../mock';
+
 import type { SupplierConstructorParams, SupplierEntity } from './types';
-import { SUPPLIER_MOCK } from './mock';
+
 import Supplier from './supplier';
 
 describe('Supplier', () => {

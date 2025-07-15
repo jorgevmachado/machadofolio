@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 
+import { formatPath } from '@repo/services';
+
 import { Icon } from '@repo/ds';
 
 import { type TRoute } from '../../../utils';
-import { formatPath } from '@repo/services';
 
+import './Dropdown.scss';
 
 type DropdownProps = {
     menu: TRoute;
@@ -19,8 +21,15 @@ export default function Dropdown({ menu, isOpen, onLinkClick, grandParentPath }:
     const toggleExpand = (item: string) => {
         setExpandedItem(expandedItem === item ? null : item);
     };
+
+    const abbrTitle = (title: string) =>
+        title
+            .split('-')
+            .map((part) => part.charAt(0).toUpperCase())
+            .join('');
+
     return (
-        <div className="ui-dropdown">
+        <div className="ui-dropdown" data-testid="ui-dropdown">
             <div className="ui-dropdown__menu" onClick={() => toggleExpand(menu.title)}>
                 <Icon icon={menu.icon}/>
                 {isOpen && (
@@ -46,17 +55,26 @@ export default function Dropdown({ menu, isOpen, onLinkClick, grandParentPath }:
                             ) : (
                                 <div
                                     key={child.title}
+                                    onClick={() => onLinkClick(formatPath({ parentPath: menu.path, childPath: child.path, grandParentPath }))}
+                                    data-testid="ui-dropdown-submenu-link"
                                     className="ui-dropdown__submenu--link"
-                                    onClick={() => onLinkClick(formatPath({ parentPath: menu.path, childPath: child.path, grandParentPath }))
-                                }>
-
+                                    >
+                                    {isOpen ? (
+                                        <>
+                                            <Icon icon={child.icon} />
+                                            <span className="ui-dropdown__submenu--link-title">{child.title}</span>
+                                        </>
+                                    ) : (
+                                        <span className="ui-dropdown__submenu--link-abbr" data-testid="ui-dropdown-submenu-link">
+                                            { child.icon ? <Icon icon={child.icon} /> : abbrTitle(child.title)}
+                                        </span>
+                                    )}
                                 </div>
                             )}
                         </div>
                     ))}
                 </div>
             )}
-
         </div>
     )
 }

@@ -20,8 +20,6 @@ import { SupplierService } from './supplier.service';
 import { SupplierTypeService } from './type/type.service';
 import { type UpdateSupplierDto } from './dto/update-supplier.dto';
 
-
-
 describe('SupplierService', () => {
   let repository: Repository<Supplier>;
   let service: SupplierService;

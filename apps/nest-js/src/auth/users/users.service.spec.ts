@@ -8,15 +8,16 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { EGender } from '@repo/services/personal-data/enum';
+import { EGender } from '@repo/services';
 
-import { ERole, EStatus } from '@repo/business/enum';
+import { ERole, EStatus } from '@repo/business';
 
 import { USER_MOCK, USER_PASSWORD } from '../../mocks/user.mock';
 import { User } from '../entities/user.entity';
 
 import { type UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
+
 
 
 jest.mock('fs');

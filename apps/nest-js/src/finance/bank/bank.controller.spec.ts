@@ -1,7 +1,7 @@
 import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import { ERole } from '@repo/business/enum';
+import { ERole } from '@repo/business';
 
 import { BANK_MOCK } from '../../mocks/bank.mock';
 import { type Bank } from '../entities/bank.entity';
@@ -11,7 +11,6 @@ import { type UpdateBankDto } from './dto/update-bank.dto';
 
 import { BankController } from './bank.controller';
 import { BankService } from './bank.service';
-
 
 describe('BankController', () => {
   let service: BankService;

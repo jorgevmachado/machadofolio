@@ -1,4 +1,3 @@
-export {  default } from './supplier';
-export {  SupplierService } from './service';
+export { default as Supplier } from './supplier';
+export { SupplierService } from './service';
 export * from './types';
-export * from './mock';

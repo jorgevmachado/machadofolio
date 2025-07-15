@@ -9,7 +9,6 @@ import { SupplierController } from './supplier.controller';
 import { SupplierService } from './supplier.service';
 import { type UpdateSupplierDto } from './dto/update-supplier.dto';
 
-
 describe('SupplierController', () => {
   let controller: SupplierController;
   let service: SupplierService;

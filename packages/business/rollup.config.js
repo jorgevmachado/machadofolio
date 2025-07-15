@@ -18,13 +18,19 @@ export default [
                 sourcemap: true,
             }
         ],
+        external: [
+            '@repo/services'
+        ],
         plugins: [
             nodeResolve({ extensions: ['.js', '.ts'] }),
             commonjs(),
-            typescript({ tsconfig: './tsconfig.json', declaration: true, declarationDir: 'dist', outDir: 'dist' })
+            typescript({
+                tsconfig: './tsconfig.json',
+                declaration: true,
+                declarationDir: 'dist',
+                outDir: 'dist',
+                rootDir: 'src'
+            })
         ],
-        external: [
-            '@repo/services'
-        ]
     }
 ];

@@ -1,6 +1,6 @@
 import { EGender } from '@repo/services';
 
-import { ERole, EStatus } from '../../api';
+import { ERole, EStatus } from '../../enum';
 
 import type { UserEntity } from '../types';
 

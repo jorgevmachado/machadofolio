@@ -1,4 +1,4 @@
-import { type ERole, type EStatus } from './enum';
+import { type ERole, type EStatus } from '../enum';
 
 export type IResponsePaginate<T> = {
     next: string;

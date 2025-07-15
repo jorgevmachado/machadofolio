@@ -6,7 +6,6 @@ import { Service } from '../../shared';
 
 import { PokemonType } from '../entities/type.entity';
 
-
 @Injectable()
 export class PokemonTypeService extends Service<PokemonType> {
     constructor(

@@ -56,8 +56,8 @@ export default function Home() {
   return (
     <div className="page">
       <main className="page__main">
-        <h1>name: ${name}</h1>
-        <h1>normalize: ${normalize(name)}</h1>
+        <h1>name: {name}</h1>
+        <h1>normalize: {normalize(name)}</h1>
         <Button onClick={handleDownload} context="secondary" disabled={isLoading} className={styles.downloadButton}>
           {isLoading ? 'Baixando...' : 'Baixar Modelo de Planilha'}
         </Button>

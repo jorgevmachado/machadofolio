@@ -1,6 +1,6 @@
-import { EGender } from '@repo/services/personal-data/enum';
+import { EGender } from '@repo/services';
 
-import { ERole, EStatus } from '@repo/business/enum';
+import { ERole, EStatus } from '@repo/business';
 
 import { type User } from '../auth/entities/user.entity';
 

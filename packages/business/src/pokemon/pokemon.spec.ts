@@ -7,7 +7,7 @@ import {
     jest,
 } from '@jest/globals';
 
-import { EStatus } from '../api';
+import { EStatus } from '../enum';
 
 import { POKEMON_MOCK } from './mock';
 import Pokemon from './pokemon';

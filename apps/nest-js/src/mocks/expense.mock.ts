@@ -1,6 +1,6 @@
 import { type Expense } from '../finance/entities/expense.entity';
 
-import { EExpenseType } from '@repo/business/finance/expense/enum';
+import { EExpenseType } from '@repo/business';
 
 import { BILL_MOCK } from './bill.mock';
 import { SUPPLIER_MOCK } from './supplier.mock';

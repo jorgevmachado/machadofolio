@@ -46,7 +46,7 @@ const meta: Meta<typeof Header> = {
         context: 'primary',
         handleToggleMenu: fn(),
     },
-    title: 'Layout/Header',
+    title: 'Components/Header',
     argTypes: {},
     component: Header,
     decorators: [

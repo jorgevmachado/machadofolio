@@ -1,7 +1,7 @@
 import { cleanFormatter } from '@repo/services';
 import { mobileValidator } from '@repo/services';
 
-import { ERole, EStatus } from '../../api';
+import { ERole, EStatus } from '../../enum';
 
 import type { UserConstructorParams, UserEntity } from '../types';
 

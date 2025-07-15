@@ -7,7 +7,7 @@ import {
     jest,
 } from '@jest/globals';
 
-import { BANK_MOCK } from './mock';
+import { BANK_MOCK } from '../mock';
 import Bank from './bank';
 import { type BankEntity } from './types';
 

@@ -13,6 +13,8 @@
   "dependencies": {
     "@repo/ds": "*",
     "@repo/tokens": "*",
+    "@repo/services": "*",
+    "@repo/business": "*",
     "@repo/ui": "*",
     "next": "^15.3.0",
     "react": "^19.1.0",
@@ -20,7 +22,7 @@
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
-    "@repo/services": "*",
+
     "@repo/typescript": "*",
     "@types/node": "^22.15.3",
     "@types/react": "19.1.0",

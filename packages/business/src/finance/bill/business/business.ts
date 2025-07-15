@@ -4,7 +4,7 @@ import { cleanTextByListText, snakeCaseToNormal } from '@repo/services';
 import { ECellType } from '@repo/services';
 import type { TableParams } from '@repo/services';
 
-import type Expense from '../../expense';
+import type { Expense } from '../../expense';
 
 import type Bill from '../bill';
 

@@ -1,9 +1,8 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { ERole } from '@repo/business/enum';
+import { ERole } from '@repo/business';
 
 import { AuthRoles } from './auth-roles.decorator';
-
 
 describe('AuthRoles Decorator', () => {
     it('should set metadata with the correct roles', () => {

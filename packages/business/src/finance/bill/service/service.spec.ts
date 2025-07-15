@@ -9,7 +9,7 @@ import {
 
 import { EBillType, type Nest } from '../../../api';
 
-import { BILL_MOCK } from '../mock';
+import { BILL_MOCK } from '../../mock';
 
 import { BillService } from './service';
 
@@ -36,7 +36,7 @@ describe('Bill Service', () => {
     const params = {
         type: EBillType.BANK_SLIP,
         bank: mockEntity.bank,
-        category: mockEntity.category,
+        group: mockEntity.group,
     };
 
     beforeEach(() => {

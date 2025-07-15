@@ -11,13 +11,9 @@ import { ConflictException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { type CycleOfMonths, MONTHS } from '@repo/services/date/month/month';
-import { normalize, toSnakeCase } from '@repo/services/string/string';
-import { EMonth } from '@repo/services/date/month/enum';
-import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
+import { type CycleOfMonths, EMonth, MONTHS, Spreadsheet, normalize, toSnakeCase } from '@repo/services';
 
-import { EExpenseType } from '@repo/business/finance/expense/enum';
-import ExpenseBusiness from '@repo/business/finance/expense/business/business';
+import { EExpenseType, ExpenseBusiness } from '@repo/business';
 
 import { EXPENSE_MOCK } from '../../../mocks/expense.mock';
 
@@ -29,7 +25,7 @@ import { type CreateExpenseDto } from './dto/create-expense.dto';
 import { ExpenseService } from './expense.service';
 import { type UpdateExpenseDto } from './dto/update-expense.dto';
 
-jest.mock('@repo/services/spreadsheet/spreadsheet');
+jest.mock('@repo/services');
 
 describe('ExpenseService', () => {
   let service: ExpenseService;

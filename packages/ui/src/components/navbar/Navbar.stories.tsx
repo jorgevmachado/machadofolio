@@ -7,7 +7,7 @@ const meta = {
     args: {
         title: 'My App',
     },
-    title: 'Layout/Navbar',
+    title: 'Components/Navbar',
     argTypes: {},
     component: Navbar,
     parameters: {},

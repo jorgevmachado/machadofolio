@@ -1,6 +1,6 @@
 import { type EGender } from '@repo/services';
 
-import { type ERole, type EStatus } from '../../enum';
+import { type ERole, type EStatus } from '../../../enum';
 
 import { type IFinance } from '../finance';
 import { type INestBaseEntity } from '../types';

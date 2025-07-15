@@ -1,8 +1,7 @@
 import { IsBoolean, IsEmpty, IsEnum, IsNumber, IsPositive, MaxLength } from 'class-validator';
 
-import { type UpdateExpenseParams } from '@repo/business/finance/expense/types';
+import { EExpenseType, type UpdateExpenseParams } from '@repo/business';
 
-import { EExpenseType } from '@repo/business/finance/expense/enum';
 import { Supplier } from '../../../entities/supplier.entity';
 
 export class UpdateExpenseDto implements UpdateExpenseParams{

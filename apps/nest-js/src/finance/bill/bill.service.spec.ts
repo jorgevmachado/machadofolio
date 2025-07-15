@@ -3,11 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/global
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { type CycleOfMonths, MONTHS } from '@repo/services/date/month/month';
-import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
+import { type CycleOfMonths, MONTHS, Spreadsheet } from '@repo/services';
 
-import BillBusiness from '@repo/business/finance/bill/business/business';
-import { EExpenseType } from '@repo/business/finance/expense/enum';
+import { BillBusiness, EExpenseType } from '@repo/business';
 
 import { BILL_MOCK } from '../../mocks/bill.mock';
 import { Bill } from '../entities/bill.entity';
@@ -28,7 +26,7 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { type UpdateBillDto } from './dto/update-bill.dto';
 import { type UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
-jest.mock('@repo/services/spreadsheet/spreadsheet');
+jest.mock('@repo/services');
 
 describe('BillService', () => {
     let service: BillService;

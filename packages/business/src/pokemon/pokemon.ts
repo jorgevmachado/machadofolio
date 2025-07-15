@@ -1,6 +1,6 @@
 import { ensureOrderNumber } from '@repo/services';
 
-import { EStatus } from '../api';
+import { EStatus } from '../enum';
 
 import type { PokemonConstructorParams, PokemonEntity } from './types';
 

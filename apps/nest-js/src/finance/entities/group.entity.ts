@@ -9,7 +9,7 @@ import {
     UpdateDateColumn
 } from 'typeorm';
 
-import type { GroupEntity } from '@repo/business/finance/group/types';
+import type { GroupEntity } from '@repo/business';
 
 import { Bill } from './bill.entity';
 import { Finance } from './finance.entity';

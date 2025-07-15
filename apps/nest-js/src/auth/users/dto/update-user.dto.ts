@@ -1,10 +1,9 @@
 import { IsDate, IsEmpty, IsEnum, MaxDate, MaxLength } from 'class-validator';
 import { Transform } from 'class-transformer';
 
-import { EGender } from '@repo/services/personal-data/enum';
+import { EGender } from '@repo/services';
 
-import { ERole, EStatus } from '@repo/business/enum';
-import { UpdateParams } from '@repo/business/auth/types';
+import { ERole, EStatus, UpdateParams } from '@repo/business';
 
 export class UpdateUserDto implements UpdateParams {
     @IsEmpty()

@@ -1,7 +1,7 @@
 import { CreateDateColumn,
     DeleteDateColumn, Entity, JoinTable, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-import { FinanceEntity } from '@repo/business/finance/types';
+import { FinanceEntity } from '@repo/business';
 
 import { User } from '../../auth/entities/user.entity';
 

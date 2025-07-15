@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import BillBusiness from '@repo/business/finance/bill/business/business';
+import { BillBusiness } from '@repo/business';
 
 import { BankModule } from '../bank/bank.module';
 import { Bill } from '../entities/bill.entity';

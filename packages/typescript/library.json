@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "./base.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "Node10",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "noEmit": false,
     "sourceMap": true,
     "skipLibCheck": true,

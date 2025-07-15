@@ -1,8 +1,7 @@
 import { Test, type TestingModule } from '@nestjs/testing';
 import { Readable } from 'stream';
 
-import { USER_ENTITY_MOCK, USER_PASSWORD } from '@repo/business/auth/mock/mock';
-import { ERole } from '@repo/business/enum';
+import { ERole, USER_ENTITY_MOCK, USER_PASSWORD } from '@repo/business';
 
 import { type SignUpAuthDto } from './dto/sign-up-auth.dto';
 

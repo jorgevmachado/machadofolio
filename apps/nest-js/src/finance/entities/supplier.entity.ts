@@ -10,7 +10,7 @@ import {
     UpdateDateColumn,
 } from 'typeorm';
 
-import { SupplierEntity } from '@repo/business/finance/supplier/types';
+import { SupplierEntity } from '@repo/business';
 
 import { Expense } from './expense.entity';
 

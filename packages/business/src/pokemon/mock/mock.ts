@@ -1,4 +1,4 @@
-import { EStatus } from '../../api';
+import { EStatus } from '../../enum';
 
 import type { PokemonEntity } from '../types';
 

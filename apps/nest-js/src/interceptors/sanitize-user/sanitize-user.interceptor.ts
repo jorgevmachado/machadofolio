@@ -1,7 +1,7 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable, map } from 'rxjs';
 
-import UserConstructor from '@repo/business/auth/user/user';
+import { User as UserConstructor } from '@repo/business';
 
 import { User } from '../../auth/entities/user.entity'
 

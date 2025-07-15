@@ -1,8 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { ERole } from '@repo/business/enum';
-import { QueryParameters } from '@repo/business/types';
+import { ERole, type QueryParameters } from '@repo/business';
 
 import { ListParams } from '../../shared';
 

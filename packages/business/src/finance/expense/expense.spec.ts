@@ -2,7 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/global
 
 import { MONTHS } from '@repo/services';
 
-import { EXPENSE_MOCK } from './mock';
+import { EXPENSE_MOCK } from '../mock';
+
 import Expense from './expense';
 import type { ExpenseEntity } from './types';
 

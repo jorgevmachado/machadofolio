@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Res, UploadedFile, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Response } from 'express';
+import { type Response } from 'express';
 
 import { AuthRoleGuard } from '../guards/auth-role/auth-role.guard';
 import { AuthStatusGuard } from '../guards/auth-status/auth-status.guard';

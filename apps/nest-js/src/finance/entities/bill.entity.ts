@@ -10,8 +10,7 @@ import {
     UpdateDateColumn
 } from 'typeorm';
 
-import type { BillEntity } from '@repo/business/finance/bill/types';
-import { EBillType } from '@repo/business/finance/bill/enum';
+import { type BillEntity, EBillType } from '@repo/business';
 
 import { DecimalTransformer } from '../../transforms/decimal';
 
