@@ -5,10 +5,26 @@ import * as Services from '@repo/services';
 
 import { Paginate } from '@repo/business';
 
+jest.mock('@repo/business');
+
+const mockQueryBuilder = {
+    getMany: jest.fn(),
+    skip: jest.fn().mockReturnThis(),
+    take: jest.fn().mockReturnThis(),
+    getManyAndCount: jest.fn(),
+    getOne: jest.fn(),
+};
+
+// jest.mock('../query', () => {
+//     class QueryMock {
+//         initialize = jest.fn().mockImplementation(() => mockQueryBuilder);
+//     }
+//     return { Query: QueryMock };
+// });
+
+
 import { type FindByParams } from './types';
 import { Queries } from './queries';
-
-jest.mock('@repo/business');
 
 type TestEntity = {
     id: string;
@@ -21,16 +37,6 @@ describe('Queries', () => {
     let repository: jest.Mocked<Repository<TestEntity>>;
 
     const mockEntity: TestEntity = { id: '1', name: 'Test', order: 1 };
-
-    const mockQueryBuilder: any = {
-        skip: jest.fn(),
-        take: jest.fn(),
-        getMany: jest.fn(),
-        getOne: jest.fn(),
-        getManyAndCount: jest.fn(),
-        andWhere: jest.fn().mockReturnThis(),
-    };
-
 
     beforeEach(() => {
         repository = {
@@ -51,8 +57,8 @@ describe('Queries', () => {
                 filters: [],
             };
             mockQueryBuilder.getManyAndCount.mockResolvedValueOnce([[mockEntity], 1]);
-            mockQueryBuilder.skip.mockReturnThis(0);
-            mockQueryBuilder.take.mockReturnThis(2);
+            mockQueryBuilder.skip.mockReturnThis();
+            mockQueryBuilder.take.mockReturnThis();
 
             const result = await queries.list(params);
 
