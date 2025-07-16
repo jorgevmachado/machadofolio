@@ -18,8 +18,6 @@ import { User } from '../entities/user.entity';
 import { type UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
-
-
 jest.mock('fs');
 jest.mock('fs/promises', () => ({
     writeFile: jest.fn(),
@@ -42,6 +40,13 @@ describe('UsersService', () => {
 
         service = module.get<UsersService>(UsersService);
         repository = module.get<Repository<User>>(getRepositoryToken(User));
+
+        jest.spyOn(service, 'file', 'get').mockReturnValue({
+            upload: jest.fn().mockReturnValue('mocked/path/file.txt'),
+            getPath: jest.fn().mockReturnValue('mocked/path/file.txt'),
+        } as unknown as any);
+
+
     });
 
     it('should be defined', () => {
