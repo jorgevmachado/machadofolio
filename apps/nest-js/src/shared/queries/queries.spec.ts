@@ -15,12 +15,12 @@ const mockQueryBuilder = {
     getOne: jest.fn(),
 };
 
-// jest.mock('../query', () => {
-//     class QueryMock {
-//         initialize = jest.fn().mockImplementation(() => mockQueryBuilder);
-//     }
-//     return { Query: QueryMock };
-// });
+jest.mock('../query', () => {
+    class QueryMock {
+        initialize = jest.fn().mockImplementation(() => mockQueryBuilder);
+    }
+    return { Query: QueryMock };
+});
 
 
 import { type FindByParams } from './types';
