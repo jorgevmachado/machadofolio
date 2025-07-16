@@ -11,7 +11,7 @@ import { ConflictException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { type CycleOfMonths, EMonth, MONTHS, Spreadsheet, normalize, toSnakeCase } from '@repo/services';
+import { type CycleOfMonths, EMonth, MONTHS, filterByCommonKeys, normalize, toSnakeCase } from '@repo/services';
 
 import { EExpenseType, ExpenseBusiness } from '@repo/business';
 
@@ -25,14 +25,13 @@ import { type CreateExpenseDto } from './dto/create-expense.dto';
 import { ExpenseService } from './expense.service';
 import { type UpdateExpenseDto } from './dto/update-expense.dto';
 
-jest.mock('@repo/services');
+import { spreadsheetMock } from '../../../../jest.setup';
 
 describe('ExpenseService', () => {
   let service: ExpenseService;
   let expenseBusiness: ExpenseBusiness;
   let supplierService: SupplierService;
   let repository: Repository<Expense>;
-  let spreadsheetMock: jest.Mocked<Spreadsheet>;
 
   const mockEntity: Expense = EXPENSE_MOCK;
   const monthsObj = MONTHS.reduce((acc, month) => {
@@ -71,27 +70,6 @@ describe('ExpenseService', () => {
     supplierService = module.get<SupplierService>(SupplierService);
     repository = module.get<Repository<Expense>>(getRepositoryToken(Expense));
     expenseBusiness = module.get<ExpenseBusiness>(ExpenseBusiness);
-    spreadsheetMock = {
-      loadFile: jest.fn(),
-      addTable: jest.fn().mockImplementation(() => {
-        return { nextRow: 1 };
-      }),
-      addTables: jest.fn().mockImplementation(() => {
-        return { nextRow: 1 };
-      }),
-      workSheet: {
-        cell: jest.fn(),
-        addCell: jest.fn(),
-      },
-      createWorkSheet: jest.fn(),
-      updateWorkSheet: jest.fn(),
-      calculateTableHeight: jest.fn(({ total }) => total || 0),
-      calculateTablesParamsNextRow: jest.fn(({ startRow = 0, totalTables = 0, linesPerTable = 0 }) => (
-          startRow + (totalTables * (linesPerTable + 1))
-      )),
-      parseExcelRowsToObjectList: jest.fn(),
-    } as unknown as jest.Mocked<Spreadsheet>;
-    (Spreadsheet as unknown as jest.Mock).mockImplementation(() => spreadsheetMock);
   });
 
   afterEach(() => {
@@ -581,6 +559,10 @@ describe('ExpenseService', () => {
         is_aggregate: false,
         aggregate_name: undefined,
       }
+
+      jest.spyOn(service.seeder, 'currentSeeds').mockReturnValueOnce([mock]);
+      jest.spyOn(service.seeder, 'currentSeeds').mockReturnValueOnce([{...mockEntity.bill, expenses: [mockEntity]}]);
+
       jest
           .spyOn(repository, 'find')
           .mockResolvedValueOnce([mock]);
@@ -589,10 +571,12 @@ describe('ExpenseService', () => {
           .spyOn(repository, 'find')
           .mockResolvedValueOnce([mockEntity]);
 
+      jest.spyOn(service.seeder, 'getRelation').mockReturnValueOnce(mockEntity.supplier);
+
       expect(await service.seeds({
         bills: [{...mockEntity.bill, expenses: [mockEntity]}],
         suppliers: [mockEntity.supplier],
-        expenseListJson: [{...mockEntity.bill, expenses: [mockEntity]}],
+        expenseListJson: [mock],
         billListJson: [{...mockEntity.bill, expenses: [mockEntity]}]
       })).toEqual([mockEntity])
     });
@@ -606,6 +590,9 @@ describe('ExpenseService', () => {
         aggregate_name: undefined,
       }
 
+      jest.spyOn(service.seeder, 'currentSeeds').mockReturnValueOnce([mock]);
+      jest.spyOn(service.seeder, 'currentSeeds').mockReturnValueOnce([{...mock.bill, expenses: [mockEntity]}]);
+      (filterByCommonKeys as jest.Mock).mockReturnValue([mock]);
       jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
 
       jest.spyOn(repository, 'find').mockResolvedValueOnce([]);

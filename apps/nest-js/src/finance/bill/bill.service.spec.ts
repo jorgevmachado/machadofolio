@@ -3,9 +3,11 @@ import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/global
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { type CycleOfMonths, MONTHS, Spreadsheet } from '@repo/services';
+import { type CycleOfMonths, MONTHS, filterByCommonKeys } from '@repo/services';
 
 import { BillBusiness, EExpenseType } from '@repo/business';
+
+import { spreadsheetMock } from '../../../jest.setup';
 
 import { BILL_MOCK } from '../../mocks/bill.mock';
 import { Bill } from '../entities/bill.entity';
@@ -26,8 +28,6 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { type UpdateBillDto } from './dto/update-bill.dto';
 import { type UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
-jest.mock('@repo/services');
-
 describe('BillService', () => {
     let service: BillService;
     let business: BillBusiness;
@@ -35,7 +35,6 @@ describe('BillService', () => {
     let groupService: GroupService;
     let expenseService: ExpenseService;
     let repository: Repository<Bill>;
-    let spreadsheetMock: jest.Mocked<Spreadsheet>;
 
     const mockEntity: Bill = BILL_MOCK;
     const expenseMockEntity: Expense = EXPENSE_MOCK;
@@ -105,27 +104,6 @@ describe('BillService', () => {
         groupService = module.get<GroupService>(GroupService);
         expenseService = module.get<ExpenseService>(ExpenseService);
         repository = module.get<Repository<Bill>>(getRepositoryToken(Bill));
-        spreadsheetMock = {
-            loadFile: jest.fn(),
-            addTable: jest.fn().mockImplementation(() => {
-                return { nextRow: 1 };
-            }),
-            addTables: jest.fn().mockImplementation(() => {
-                return { nextRow: 1 };
-            }),
-            workSheet: {
-                cell: jest.fn(),
-                addCell: jest.fn(),
-            },
-            createWorkSheet: jest.fn(),
-            updateWorkSheet: jest.fn(),
-            calculateTableHeight: jest.fn(({ total }) => total || 0),
-            calculateTablesParamsNextRow: jest.fn(({ startRow = 0, totalTables = 0, linesPerTable = 0 }) => (
-                startRow + (totalTables * (linesPerTable + 1))
-            )),
-            parseExcelRowsToObjectList: jest.fn(),
-        } as unknown as jest.Mocked<Spreadsheet>;
-        (Spreadsheet as unknown as jest.Mock).mockImplementation(() => spreadsheetMock);
     });
 
     afterEach(() => {
@@ -579,6 +557,11 @@ describe('BillService', () => {
                 ...financeMockEntity,
                 bills: [mockEntity]
             }
+
+            jest.spyOn(service.seeder, 'currentSeeds').mockReturnValueOnce([mockEntity]);
+
+            (filterByCommonKeys as jest.Mock).mockReturnValue([mockEntity]);
+
             jest.spyOn(bankService, 'seeds').mockResolvedValueOnce([mockEntity.bank]);
 
             jest.spyOn(groupService, 'seeds').mockResolvedValueOnce([mockEntity.group]);

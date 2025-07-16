@@ -10,13 +10,14 @@ import { type Repository } from 'typeorm';
 
 import { ConflictException } from '@nestjs/common';
 
+import * as Services from '@repo/services';
+
 import { File } from '../file';
 import { Queries } from '../queries';
 import { Seeder } from '../seeder';
 import { Validate } from '../validate';
 
 import { Service } from './service';
-
 
 jest.mock('../file');
 jest.mock('../queries');
@@ -229,10 +230,13 @@ describe('service', () => {
 
     describe('findOneByList', () => {
         it('should return one entity by list and name', () => {
+            (Services.isUUID as jest.Mock).mockReturnValueOnce(false);
             const result = service.findOneByList(entity.name, entities);
             expect(result).toEqual(entity);
         });
+
         it('should return one entity by list and uuid', () => {
+            (Services.isUUID as jest.Mock).mockReturnValueOnce(true);
             const result = service.findOneByList(entity.id, entities);
             expect(result).toEqual(entity);
         });

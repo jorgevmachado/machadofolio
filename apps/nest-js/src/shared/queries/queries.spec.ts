@@ -9,10 +9,6 @@ import { type FindByParams } from './types';
 import { Queries } from './queries';
 
 jest.mock('@repo/business');
-jest.mock('@repo/services', () => ({
-    ...jest.requireActual('@repo/services'),
-    isUUID: jest.fn(),
-}));
 
 type TestEntity = {
     id: string;
