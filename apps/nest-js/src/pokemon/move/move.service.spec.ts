@@ -1,3 +1,20 @@
+import { InternalServerErrorException } from '@nestjs/common';
+
+jest.mock('../../shared', () => {
+    class ServiceMock {
+        save = jest.fn();
+        error = jest.fn();
+        seeder = {
+            entities: jest.fn(),
+        };
+        queries ={
+            findOneByOrder: jest.fn(),
+        };
+        findOne = jest.fn();
+    }
+    return { Service: ServiceMock }
+});
+
 import { Test, type TestingModule } from '@nestjs/testing';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Repository } from 'typeorm';
@@ -46,29 +63,19 @@ describe('MoveService', () => {
         });
 
         it('Should return an list of moves from the database', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service.queries, 'findOneByOrder').mockImplementation( async () => mockEntity);
 
             const result = await service.findList([mockEntity]);
             expect(result).toEqual([mockEntity]);
         });
 
         it('must save a list of pokemon moves in the database when none exist', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
+            jest.spyOn(service, 'completingData' as any).mockResolvedValueOnce(mockEntity);
 
-            jest.spyOn(pokeApiService.move, 'getOne').mockResolvedValueOnce(mockEntity);
-
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
-
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service.queries, 'findOneByOrder').mockImplementation( async ({ response, completingData }: any) => {
+                completingData(mockEntity, response);
+                return mockEntity;
+            });
 
             const result = await service.findList([mockEntity]);
             expect(result).toEqual([mockEntity]);
@@ -77,19 +84,31 @@ describe('MoveService', () => {
 
     describe('seeds', () => {
         it('should seed the database when exist in database', async () => {
-            jest
-                .spyOn(repository, 'find')
-                .mockResolvedValueOnce([mockEntity]);
+            jest.spyOn(service.seeder, 'entities').mockImplementation( async ( { createdEntityFn }: any) => {
+                createdEntityFn(mockEntity);
+                return [mockEntity];
+            });
 
             expect(await service.seeds([mockEntity])).toEqual([mockEntity]);
         });
+    });
 
-        it('should seed the database when not exist in database', async () => {
-            jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
+    describe('completingData', () => {
+        it('should return entity when exist in database', async () => {
+            expect(await service['completingData'](mockEntity, mockEntity)).toEqual(mockEntity);
+        });
 
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+        it('should save entity when not exist in database', async () => {
+            jest.spyOn(pokeApiService.move, 'getOne').mockResolvedValueOnce(mockEntity);
+            jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
+            jest.spyOn(service.queries, 'findOneByOrder').mockResolvedValueOnce(mockEntity);
+            expect(await service['completingData'](mockEntity)).toEqual(mockEntity);
+        });
 
-            expect(await service.seeds( [mockEntity])).toEqual([mockEntity]);
+        it('should throw erro when service failed', async () => {
+            jest.spyOn(pokeApiService.move, 'getOne').mockImplementation(() => { throw new InternalServerErrorException() });
+            jest.spyOn(service, 'error').mockImplementation(() => { throw new InternalServerErrorException() });
+            await expect(service['completingData'](mockEntity)).rejects.toThrowError(InternalServerErrorException);
         });
     });
 });

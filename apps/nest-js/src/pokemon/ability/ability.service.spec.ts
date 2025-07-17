@@ -1,3 +1,16 @@
+jest.mock('../../shared', () => {
+  class ServiceMock {
+    save = jest.fn();
+    seeder = {
+      entities: jest.fn(),
+    };
+    queries ={
+      findOneByOrder: jest.fn(),
+    };
+    findOne = jest.fn();
+  }
+  return { Service: ServiceMock }
+});
 import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Repository } from 'typeorm';
@@ -42,27 +55,20 @@ describe('AbilityService', () => {
     });
 
     it('Should return an list of moves from the database', async () => {
-      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-        andWhere: jest.fn(),
-        getOne: jest.fn().mockReturnValueOnce(mockEntity),
-      } as any);
+      jest.spyOn(service.queries, 'findOneByOrder').mockImplementation( async () => mockEntity);
 
       const result = await service.findList([mockEntity]);
       expect(result).toEqual([mockEntity]);
     });
 
     it('must save a list of pokemon moves in the database when none exist', async () => {
-      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-        andWhere: jest.fn(),
-        getOne: jest.fn().mockReturnValueOnce(null),
-      } as any);
+      jest.spyOn(service, 'completingData' as any).mockResolvedValueOnce(mockEntity);
 
-      jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+      jest.spyOn(service.queries, 'findOneByOrder').mockImplementation( async ({ response, completingData }: any) => {
+        completingData(mockEntity, response);
+        return mockEntity;
+      });
 
-      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-        andWhere: jest.fn(),
-        getOne: jest.fn().mockReturnValueOnce(mockEntity),
-      } as any);
 
       const result = await service.findList([mockEntity]);
       expect(result).toEqual([mockEntity]);
@@ -71,19 +77,24 @@ describe('AbilityService', () => {
 
   describe('seeds', () => {
     it('should seed the database when exist in database', async () => {
-      jest
-          .spyOn(repository, 'find')
-          .mockResolvedValueOnce([mockEntity]);
+      jest.spyOn(service.seeder, 'entities').mockImplementation( async ( { createdEntityFn }: any) => {
+        createdEntityFn(mockEntity);
+        return [mockEntity];
+      });
 
       expect(await service.seeds([mockEntity])).toEqual([mockEntity]);
     });
+  });
 
-    it('should seed the database when not exist in database', async () => {
-      jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
+  describe('completingData', () => {
+    it('should return entity when exist in database', async () => {
+      expect(await service['completingData'](mockEntity, mockEntity)).toEqual(mockEntity);
+    });
 
-      jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
-
-      expect(await service.seeds( [mockEntity])).toEqual([mockEntity]);
+    it('should save entity when not exist in database', async () => {
+      jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
+      jest.spyOn(service.queries, 'findOneByOrder').mockResolvedValueOnce(mockEntity)
+      expect(await service['completingData'](mockEntity)).toEqual(mockEntity);
     });
   });
 });

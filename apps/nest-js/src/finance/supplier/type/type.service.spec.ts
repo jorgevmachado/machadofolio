@@ -1,6 +1,18 @@
+jest.mock('../../../shared', () => {
+    class ServiceMock {
+        save = jest.fn();
+        error = jest.fn();
+        seeder = {
+            entities: jest.fn(),
+        };
+        findOne = jest.fn();
+    }
+    return { Service: ServiceMock }
+});
+
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
-import { ConflictException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
@@ -50,6 +62,7 @@ describe('TypeService', () => {
             jest
                 .spyOn(repository, 'save')
                 .mockResolvedValueOnce(mockEntity);
+            jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
 
             expect(await service.create(createDto)).toEqual(
                 mockEntity,
@@ -68,13 +81,9 @@ describe('TypeService', () => {
                 ...updateDto,
             };
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
 
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(expected);
+            jest.spyOn(service, 'save').mockResolvedValueOnce(expected);
 
             expect(
                 await service.update(mockEntity.id, updateDto),
@@ -89,12 +98,7 @@ describe('TypeService', () => {
                 suppliers: [],
             };
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(expected),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(expected);
 
             jest.spyOn(repository, 'softRemove').mockResolvedValueOnce({
                 ...expected,
@@ -112,12 +116,8 @@ describe('TypeService', () => {
                 suppliers: [SUPPLIER_MOCK],
             };
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(expected),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(expected);
+            jest.spyOn(service, 'error').mockImplementationOnce(() => { throw new ConflictException(); });
 
             await expect(
                 service.remove(mockEntity.id),
@@ -126,25 +126,34 @@ describe('TypeService', () => {
     });
 
     describe('seeds', () => {
-        it('should seed the database when exist in database', async () => {
-            jest
-                .spyOn(repository, 'find')
-                .mockResolvedValueOnce([mockEntity]);
+        it('should seed.', async () => {
+            jest.spyOn(service.seeder, 'entities').mockImplementation( async ({ createdEntityFn }: any) => {
+                createdEntityFn(mockEntity);
+                return [mockEntity];
+            });
 
             expect(await service.seeds({ supplierTypeListJson: [mockEntity] })).toEqual([mockEntity]);
         });
+    });
 
-        it('should seed the database when not exist in database', async () => {
-            jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
-
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
-
-            expect(await service.seeds({ supplierTypeListJson: [mockEntity] })).toEqual([mockEntity]);
+    describe('createToSheet', () => {
+        it('should return NotFoundException when value is undefined.', async () => {
+            await expect(service.createToSheet(undefined)).rejects.toThrowError(NotFoundException);
         });
 
-        it('Should return a seed empty when received a empty list', async () => {
-            jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
-            expect(await service.seeds({})).toEqual([]);
+        it('should return NotFoundException when value is "".', async () => {
+            await expect(service.createToSheet('')).rejects.toThrowError(NotFoundException);
         });
+
+        it('should return when bank exist in database.', async () => {
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
+            expect(await service.createToSheet(mockEntity.name)).toEqual(mockEntity);
+        });
+
+        it('should return when bank not exist in database.', async () => {
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(null);
+            jest.spyOn(service, 'create').mockResolvedValueOnce(mockEntity);
+            expect(await service.createToSheet(mockEntity.name)).toEqual(mockEntity);
+        })
     });
 });

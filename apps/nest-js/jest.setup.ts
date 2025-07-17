@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-import { Spreadsheet } from '@repo/services';
+import { Spreadsheet, filterByCommonKeys } from '@repo/services';
 
 export const spreadsheetMock: jest.Mocked<Spreadsheet> = {
     loadFile: jest.fn(),
@@ -28,11 +28,23 @@ jest.mock('@repo/services', () => {
     return {
         ...originalModule,
         isUUID: jest.fn(),
-        Spreadsheet: jest.fn().mockImplementation(() => spreadsheetMock),
-        filterByCommonKeys: jest.fn().mockImplementation((key, seeds) => seeds),
+        Spreadsheet: jest.fn(),
+        filterByCommonKeys: jest.fn(),
     }
 });
 
 beforeEach(() => {
+    (filterByCommonKeys as unknown as jest.Mock).mockImplementation((key, seeds) => seeds);
     (Spreadsheet as unknown as jest.Mock).mockImplementation(() => spreadsheetMock);
 });
+
+export const saveMock = jest.fn();
+export const errorMock = jest.fn();
+export const findOneMock = jest.fn();
+export const findAllMock = jest.fn();
+
+export const seederMock = {
+    entities: jest.fn(),
+    getRelation: jest.fn(),
+    currentSeeds: jest.fn(),
+}

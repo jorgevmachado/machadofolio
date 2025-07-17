@@ -26,15 +26,15 @@ export class PokemonTypeService extends Service<PokemonType> {
                     response,
                     withThrow: false,
                     completingData: (result, response) =>
-                        this.completingData(result, response),
+                        this.completingData(response, result),
                 }),
             ),
         );
     }
 
     async completingData(
-        entity: PokemonType,
         responseType: PokemonType,
+        entity?: PokemonType,
     ): Promise<PokemonType> {
         if (!entity) {
             await this.save(responseType);

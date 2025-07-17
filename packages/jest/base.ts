@@ -19,12 +19,14 @@ export const config = {
             statements: 80
         }
     },
+    setupFiles: [require.resolve('./jest.setup-globals.ts')],
     setupFilesAfterEnv: [require.resolve('./jest.setup.ts')],
     collectCoverageFrom: [
-        '**/*.{ts,tsx,js,jsx}',
+        '**/*.{ts,js}',
+        '!src/**/*.d.ts',
+        '!**/*.stories.tsx',
         '!**/node_modules/**',
         '!**/dist/**',
-        '!**/.next/**',
         '!index.ts',
         '!**/*.{enum,types,interface}.ts',
         '!**/path/to/excluded/files/**'
@@ -41,4 +43,8 @@ export const config = {
         'types.ts',
         'options.ts',
     ],
+    testPathIgnorePatterns: [
+        '<rootDir>/e2e/',
+        '<rootDir>/test/',
+    ]
 } as const satisfies Config;

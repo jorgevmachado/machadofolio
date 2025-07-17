@@ -24,10 +24,10 @@ export const config = {
     ],
     collectCoverageFrom: [
         ...baseConfig.collectCoverageFrom || [],
+        '**/*.{ts,tsx,js,jsx}',
         'packages/**/src/**/*.{js,jsx,ts,tsx}',
+        '!**/.next/**',
         '!elements/icon/groups/**',
-        '!**/*.stories.tsx',
-        '!src/**/*.d.ts'
     ],
     moduleFileExtensions: [...baseConfig.moduleFileExtensions, 'tsx', 'jsx'],
 } as const satisfies Config;
