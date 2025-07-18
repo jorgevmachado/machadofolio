@@ -1,3 +1,14 @@
+jest.mock('./bank.service', () => {
+  class BankServiceMock {
+    create = jest.fn();
+    update = jest.fn();
+    remove = jest.fn();
+    findOne = jest.fn();
+    findAll = jest.fn();
+  }
+  return { BankService: BankServiceMock }
+});
+
 import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 

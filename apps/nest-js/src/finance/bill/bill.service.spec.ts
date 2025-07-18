@@ -13,6 +13,48 @@ jest.mock('../../shared', () => {
     return { Service: ServiceMock }
 });
 
+jest.mock('../bank/bank.service', () => {
+    class BankServiceMock {
+        seeds = jest.fn();
+        createToSheet = jest.fn();
+        treatEntityParam = jest.fn();
+    }
+    return { BankService: BankServiceMock }
+});
+
+jest.mock('./expense/expense.service', () => {
+    class ExpenseServiceMock {
+        initialize =  jest.fn();
+        customSave =  jest.fn();
+        findOne =  jest.fn();
+        buildForCreation =  jest.fn();
+        buildForUpdate =  jest.fn();
+        addExpenseForNextYear =  jest.fn();
+        treatEntitiesParams =  jest.fn();
+        findAll =  jest.fn();
+        seeds =  jest.fn();
+        softRemove =  jest.fn();
+        supplierSeeds =  jest.fn();
+        getExpensesFromSheet =  jest.fn();
+        business = {
+            allHaveBeenPaid: jest.fn(),
+            buildTablesParams: jest.fn()
+        }
+    }
+    return { ExpenseService: ExpenseServiceMock }
+});
+
+jest.mock('../group/group.service', () => {
+    class GroupServiceMock {
+        seeds = jest.fn();
+        createToSheet = jest.fn();
+        treatEntityParam = jest.fn();
+    }
+    return { GroupService: GroupServiceMock }
+});
+
+jest.mock('', () => {});
+
 import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 import { Repository } from 'typeorm';

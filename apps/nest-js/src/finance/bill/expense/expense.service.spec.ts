@@ -15,6 +15,16 @@ jest.mock('../../../shared', () => {
   return { Service: ServiceMock }
 });
 
+jest.mock('../../supplier/supplier.service', () => {
+  class SupplierServiceMock {
+    findOne =  jest.fn();
+    createToSheet =  jest.fn();
+    treatEntityParam =  jest.fn();
+  }
+
+  return { SupplierService: SupplierServiceMock };
+});
+
 import { Test, type TestingModule } from '@nestjs/testing';
 import {
   afterEach,

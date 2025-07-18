@@ -1,3 +1,18 @@
+jest.mock('./users/users.service', () => {
+  class UserServiceMock {
+    me =  jest.fn();
+    seed =  jest.fn();
+    seeds =  jest.fn();
+    create =  jest.fn();
+    update =  jest.fn();
+    upload =  jest.fn();
+    findOne =  jest.fn();
+    promote =  jest.fn();
+    checkCredentials =  jest.fn();
+  }
+  return { UsersService: UserServiceMock };
+});
+
 import { Readable } from 'stream';
 
 import { Test, type TestingModule } from '@nestjs/testing';

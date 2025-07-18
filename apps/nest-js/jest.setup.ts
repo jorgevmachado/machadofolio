@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-import { Spreadsheet, filterByCommonKeys } from '@repo/services';
+import { Spreadsheet, filterByCommonKeys, transformObjectDateAndNulls } from '@repo/services';
 
 export const spreadsheetMock: jest.Mocked<Spreadsheet> = {
     loadFile: jest.fn(),
@@ -14,6 +14,7 @@ export const spreadsheetMock: jest.Mocked<Spreadsheet> = {
         cell: jest.fn(),
         addCell: jest.fn(),
     },
+    generateSheetBuffer: jest.fn(),
     createWorkSheet: jest.fn(),
     updateWorkSheet: jest.fn(),
     calculateTableHeight: jest.fn(({ total }) => total || 0),
@@ -30,21 +31,12 @@ jest.mock('@repo/services', () => {
         isUUID: jest.fn(),
         Spreadsheet: jest.fn(),
         filterByCommonKeys: jest.fn(),
+        transformObjectDateAndNulls: jest.fn(),
     }
 });
 
 beforeEach(() => {
-    (filterByCommonKeys as unknown as jest.Mock).mockImplementation((key, seeds) => seeds);
     (Spreadsheet as unknown as jest.Mock).mockImplementation(() => spreadsheetMock);
+    (filterByCommonKeys as unknown as jest.Mock).mockImplementation((key, seeds) => seeds);
+    (transformObjectDateAndNulls as unknown as jest.Mock).mockImplementation((obj) => obj);
 });
-
-export const saveMock = jest.fn();
-export const errorMock = jest.fn();
-export const findOneMock = jest.fn();
-export const findAllMock = jest.fn();
-
-export const seederMock = {
-    entities: jest.fn(),
-    getRelation: jest.fn(),
-    currentSeeds: jest.fn(),
-}

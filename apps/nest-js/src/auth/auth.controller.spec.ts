@@ -1,3 +1,16 @@
+jest.mock('./auth.service', () => {
+  class AuthServiceMock {
+    me =  jest.fn();
+    seed =  jest.fn();
+    signUp =  jest.fn();
+    signIn =  jest.fn();
+    update =  jest.fn();
+    upload =  jest.fn();
+    findOne =  jest.fn();
+    promoteUser =  jest.fn();
+  }
+  return { AuthService: AuthServiceMock };
+});
 import { Test, type TestingModule } from '@nestjs/testing';
 import { Readable } from 'stream';
 

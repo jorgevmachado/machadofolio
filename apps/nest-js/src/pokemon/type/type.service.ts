@@ -32,7 +32,7 @@ export class PokemonTypeService extends Service<PokemonType> {
         );
     }
 
-    async completingData(
+    private async completingData(
         responseType: PokemonType,
         entity?: PokemonType,
     ): Promise<PokemonType> {

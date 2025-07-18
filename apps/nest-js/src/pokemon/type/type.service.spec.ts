@@ -1,3 +1,16 @@
+jest.mock('../../shared', () => {
+  class ServiceMock {
+    save = jest.fn();
+    seeder = {
+      entities: jest.fn(),
+    };
+    queries ={
+      findOneByOrder: jest.fn(),
+    };
+  }
+  return { Service: ServiceMock }
+});
+
 import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Repository } from 'typeorm';
@@ -42,20 +55,11 @@ describe('PokemonTypeService', () => {
     });
 
     it('Should return an list of moves from the database', async () => {
-      jest.spyOn(service.queries, 'findOneByOrder').mockImplementation( async () => mockEntity);
-
-      const result = await service.findList([mockEntity]);
-      expect(result).toEqual([mockEntity]);
-    });
-
-    it('must save a list of pokemon moves in the database when none exist', async () => {
       jest.spyOn(service, 'completingData' as any).mockResolvedValueOnce(mockEntity);
-
-      jest.spyOn(service.queries, 'findOneByOrder').mockImplementation( async ({ response, completingData }: any) => {
-        completingData(mockEntity, response);
+      jest.spyOn(service.queries, 'findOneByOrder').mockImplementation( async ({ completingData }: any) => {
+        completingData(mockEntity);
         return mockEntity;
       });
-
 
       const result = await service.findList([mockEntity]);
       expect(result).toEqual([mockEntity]);
@@ -73,15 +77,17 @@ describe('PokemonTypeService', () => {
     });
   });
 
-  describe('completingData', () => {
-    it('should return entity when exist in database', async () => {
-      expect(await service['completingData'](mockEntity, mockEntity)).toEqual(mockEntity);
-    });
+  describe('privates', () => {
+    describe('completingData', () => {
+      it('should return entity when exist in database', async () => {
+        expect(await service['completingData'](mockEntity, mockEntity)).toEqual(mockEntity);
+      });
 
-    it('should save entity when not exist in database', async () => {
-      jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
-      jest.spyOn(service.queries, 'findOneByOrder').mockResolvedValueOnce(mockEntity)
-      expect(await service['completingData'](mockEntity)).toEqual(mockEntity);
+      it('should save entity when not exist in database', async () => {
+        jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
+        jest.spyOn(service.queries, 'findOneByOrder').mockResolvedValueOnce(mockEntity)
+        expect(await service['completingData'](mockEntity)).toEqual(mockEntity);
+      });
     });
   });
 });

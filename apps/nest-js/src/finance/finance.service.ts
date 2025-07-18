@@ -191,7 +191,7 @@ export class FinanceService extends Service<Finance> {
             seedsJson,
             withReturnSeed: true,
             createdEntityFn: async (entity) => {
-                const user = users.find((item) => item.cpf === entity.user.cpf);
+                const user = users?.find((item) => item.cpf === entity.user.cpf);
                 if (!user) {
                     return;
                 }

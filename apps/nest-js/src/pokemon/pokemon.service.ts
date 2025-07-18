@@ -54,7 +54,8 @@ export class PokemonService extends Service<Pokemon> {
                 });
 
             if (total === 0) {
-                return this.createList(externalPokemonList);
+                await this.createList(externalPokemonList);
+                return;
             }
 
             const entities = (await this.repository.find()) ?? [];
@@ -63,7 +64,7 @@ export class PokemonService extends Service<Pokemon> {
                 (item) => !entities.find((database) => database.name === item.name),
             );
 
-            return this.createList(saveList);
+            await this.createList(saveList);
         }
     }
 
@@ -71,7 +72,7 @@ export class PokemonService extends Service<Pokemon> {
         return await this.validateEntity(findOneByParams.value);
     }
 
-    async validateEntity(value: string, complete: boolean = true){
+    private async validateEntity(value: string, complete: boolean = true){
         const result = await this.queries.findOne({ value, withRelations: true });
 
         if(result?.status === EStatus.COMPLETE) {
