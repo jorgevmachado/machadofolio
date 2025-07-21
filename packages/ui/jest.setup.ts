@@ -1,8 +1,15 @@
 import * as React from 'react';
+import { jest } from '@jest/globals';
+
+export const useBreakpointMock = jest.fn();
 
 jest.mock('@repo/ds', () => {
+    const originalModule = jest.requireActual('@repo/ds') as Record<string, any>;
     return {
+        ...originalModule,
+        Icon: (props: any) => React.createElement('span', { ...props, 'data-testid': 'mocked-ds-icon' }),
         Link: (props: any) => React.createElement('a', { ...props, 'data-testid': 'mocked-ds-link' }),
+        Text: (props: any) => React.createElement('h1', { ...props, 'data-testid': 'mocked-ds-text' }),
         Image: (props: any) => React.createElement('img', { ...props, 'data-testid': 'mocked-ds-image' }),
         Button: (props: any) => React.createElement('button', { ...props, 'data-testid': 'mocked-ds-button' }),
         Dropdown: (props: any) => {
@@ -22,5 +29,6 @@ jest.mock('@repo/ds', () => {
                 isOpen && props?.children,
             )
         },
+        useBreakpoint: useBreakpointMock,
     }
 });

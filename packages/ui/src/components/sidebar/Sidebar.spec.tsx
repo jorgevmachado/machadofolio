@@ -16,12 +16,6 @@ jest.mock('./dropdown', () => ({
     ),
 }));
 
-jest.mock('@repo/ds', () => ({
-    __esModule: true,
-    Icon: ({ icon }: any) => <span data-testid="mock-icon">{icon}</span>,
-    joinClass: (arr: Array<string>) => arr.filter(Boolean).join(' '),
-}));
-
 
 describe('<Sidebar/>', () => {
     const menuMock: Array<TRoute> = [

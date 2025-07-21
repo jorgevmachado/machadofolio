@@ -2,25 +2,30 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { menuMock } from '../../mocks';
 
-import Sidebar from './Sidebar';
+import Page from './Page';
 
 const meta = {
     tags: ['autodocs'],
     args: {
         menu: menuMock,
+        title: 'My App',
+        children: 'Hello, World!',
+        userName: 'Jorge Machado',
+        navbarTitle: 'Finance App',
+        isAuthenticated: false,
     },
-    title: 'Components/Sidebar',
+    title: 'Layout/Page',
     argTypes: {},
-    component: Sidebar,
+    component: Page,
     parameters: {},
     decorators: [
         (Story) => (
-            <div style={{ height: '50vh', width: '100%' }}>
+            <div style={{ height: '45vh', width: '100%' }}>
                 <Story />
             </div>
         ),
     ],
-} satisfies Meta<typeof Sidebar>;
+} satisfies Meta<typeof Page>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
