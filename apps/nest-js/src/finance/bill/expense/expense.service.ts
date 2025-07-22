@@ -2,14 +2,9 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { type CycleOfMonths, MONTHS } from '@repo/services/date/month/month';
-import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
-import { filterByCommonKeys } from '@repo/services/array/array';
+import { type CycleOfMonths, MONTHS, Spreadsheet, filterByCommonKeys } from '@repo/services';
 
-import { EExpenseType } from '@repo/business/finance/expense/enum';
-import ExpenseBusiness from '@repo/business/finance/expense/business/business';
-import ExpenseConstructor from '@repo/business/finance/expense/expense';
-import type { ExpenseEntity } from '@repo/business/finance/expense/types';
+import { EExpenseType, ExpenseBusiness, Expense as ExpenseConstructor, type ExpenseEntity } from '@repo/business';
 
 import { FilterParams, Service } from '../../../shared';
 
@@ -138,7 +133,7 @@ export class ExpenseService extends Service<Expense> {
         const seeds = this.seeder.currentSeeds<Expense>({ seedsJson: expenseListJson });
         const billListSeed = this.seeder.currentSeeds<Bill>({ seedsJson: billListJson });
 
-        const financeBillExpenseListSeed = billListSeed.flatMap((bill) => bill.expenses ?? []);
+        const financeBillExpenseListSeed = billListSeed.flatMap((bill) => bill?.expenses ?? []);
         const financeExpenseListSeed = filterByCommonKeys<Expense>('id', seeds, financeBillExpenseListSeed);
 
         const currentSeeds = this.flattenParentsAndChildren(financeExpenseListSeed);

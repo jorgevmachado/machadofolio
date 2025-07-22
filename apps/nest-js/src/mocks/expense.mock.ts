@@ -1,13 +1,13 @@
 import { type Expense } from '../finance/entities/expense.entity';
 
-import { EExpenseType } from '@repo/business/finance/expense/enum';
+import { EExpenseType } from '@repo/business';
 
 import { BILL_MOCK } from './bill.mock';
 import { SUPPLIER_MOCK } from './supplier.mock';
 
 export const EXPENSE_MOCK: Expense = {
     id: 'e8ff59cb-6702-43f3-9a08-1f1c68324eac',
-    name: 'bill Bank Slip Supplier',
+    name: 'Bill Bank Slip Supplier',
     year: 2025,
     bill: BILL_MOCK,
     type: EExpenseType.VARIABLE,

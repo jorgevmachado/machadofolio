@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { QueryParameters } from '@repo/business/types';
+import { type QueryParameters } from '@repo/business';
 
 import { PokemonService } from './pokemon.service';
 

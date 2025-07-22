@@ -1,4 +1,4 @@
-import { ensureOrderNumber } from '@repo/services/number/number';
+import { ensureOrderNumber } from '@repo/services';
 
 import type { AbilityConstructorParams, PokemonAbilityEntity } from './types';
 

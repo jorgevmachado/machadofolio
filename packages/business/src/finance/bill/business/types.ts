@@ -1,8 +1,6 @@
-import type { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
-import type { TablesParams } from '@repo/services/spreadsheet/table/types';
-import type { WorkSheet } from '@repo/services/spreadsheet/worksheet/worksheet';
+import { type Spreadsheet, type TablesParams, type WorkSheet } from '@repo/services';
 
-import type Expense from '../../expense';
+import type { Expense } from '../../expense';
 
 import type Bill from '../bill';
 

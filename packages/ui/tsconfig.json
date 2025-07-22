@@ -5,7 +5,11 @@
     "target": "ES2022",
     "module": "ESNext",
     "baseUrl": ".",
-    "moduleResolution": "Bundler"
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@repo/services": ["../../packages/services/dist"],
+      "@repo/services/*": ["../../packages/services/dist/*"],
+    }
   },
   "include": ["src/"],
   "exclude": ["node_modules", "dist"]

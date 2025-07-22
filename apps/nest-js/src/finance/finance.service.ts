@@ -4,9 +4,9 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
+import { Spreadsheet } from '@repo/services';
 
-import FinanceConstructor from '@repo/business/finance/finance';
+import { Finance as FinanceConstructor } from '@repo/business';
 
 import { Service } from '../shared';
 
@@ -191,7 +191,7 @@ export class FinanceService extends Service<Finance> {
             seedsJson,
             withReturnSeed: true,
             createdEntityFn: async (entity) => {
-                const user = users.find((item) => item.cpf === entity.user.cpf);
+                const user = users?.find((item) => item.cpf === entity.user.cpf);
                 if (!user) {
                     return;
                 }

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import { transformDateStringInDate } from '@repo/services/object/object';
+import { transformDateStringInDate } from '@repo/services';
 
 import { type Nest } from '../../api';
 

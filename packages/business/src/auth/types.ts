@@ -2,7 +2,7 @@ import type { IPartialNestBaseEntity, ISignInParams, ISignUpParams, IUpdateUserP
 
 export type UserEntity = IUser;
 
-export type User = Omit<IUser, 'salt' | 'recover_token' | 'confirmation_token'>;
+export type TUser = Omit<IUser, 'salt' | 'recover_token' | 'confirmation_token'>;
 
 export type SignUpParams = ISignUpParams;
 

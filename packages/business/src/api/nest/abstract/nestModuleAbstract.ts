@@ -1,5 +1,4 @@
-import { Http } from '@repo/services/http/http';
-import { convertSubPathUrl } from '@repo/services/string/string';
+import { Http, convertSubPathUrl } from '@repo/services';
 
 import { type Paginate } from '../../../paginate';
 

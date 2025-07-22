@@ -9,7 +9,7 @@ import {
 
 import { type Nest } from '../../../api';
 
-import { SUPPLIER_MOCK } from '../mock';
+import { SUPPLIER_MOCK } from '../../mock';
 import { SupplierService } from './service';
 
 jest.mock('../../../api');

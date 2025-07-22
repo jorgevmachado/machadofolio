@@ -1,3 +1,17 @@
+jest.mock('../../shared', () => {
+  class ServiceMock {
+    save = jest.fn();
+    error = jest.fn();
+    seeder = {
+      entities: jest.fn(),
+      getRelation: jest.fn(),
+    };
+    findOne = jest.fn();
+  }
+  return { Service: ServiceMock }
+});
+
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 import {
   afterEach,
@@ -7,7 +21,6 @@ import {
   it,
   jest,
 } from '@jest/globals';
-import { ConflictException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
@@ -19,8 +32,6 @@ import { type CreateSupplierDto } from './dto/create-supplier.dto';
 import { SupplierService } from './supplier.service';
 import { SupplierTypeService } from './type/type.service';
 import { type UpdateSupplierDto } from './dto/update-supplier.dto';
-
-
 
 describe('SupplierService', () => {
   let repository: Repository<Supplier>;
@@ -39,6 +50,7 @@ describe('SupplierService', () => {
           useValue: {
             seeds: jest.fn(),
             findOne: jest.fn(),
+            createToSheet: jest.fn(),
             treatEntityParam: jest.fn(),
           },
         },
@@ -75,6 +87,8 @@ describe('SupplierService', () => {
           .spyOn(repository, 'save')
           .mockResolvedValueOnce(mockEntity);
 
+      jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
+
       expect(await service.create(createDto)).toEqual(
           mockEntity,
       );
@@ -90,9 +104,7 @@ describe('SupplierService', () => {
           .spyOn(supplierTypeService, 'treatEntityParam')
           .mockResolvedValueOnce(mockEntity.type);
 
-      jest
-          .spyOn(repository, 'save')
-          .mockResolvedValueOnce(mockEntity);
+      jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
 
       expect(await service.create(createDto)).toEqual(
           mockEntity,
@@ -117,31 +129,24 @@ describe('SupplierService', () => {
         deleted_at: mockEntity.deleted_at,
       };
 
-      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-        andWhere: jest.fn(),
-        withDeleted: jest.fn(),
-        leftJoinAndSelect: jest.fn(),
-        getOne: jest.fn().mockReturnValueOnce(mockEntity),
-      } as any);
+      jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
 
       jest
           .spyOn(supplierTypeService, 'treatEntityParam')
           .mockResolvedValueOnce(mockEntity.type);
 
-      jest.spyOn(repository, 'save').mockResolvedValueOnce(expected);
+      jest.spyOn(service, 'save').mockResolvedValueOnce(expected);
 
       expect(
           await service.update(mockEntity.id, updateDto),
       ).toEqual(expected);
     });
-    it('should update a supplier without type in request', async () => {
-      const updateDto: UpdateSupplierDto = {
-        name: `${mockEntity.name}2`,
-      };
+
+    it('should update a supplier without type and name in request', async () => {
 
       const expected: Supplier = {
         id: mockEntity.id,
-        name: `${mockEntity.name}2`,
+        name: `${mockEntity.name}`,
         type: mockEntity.type,
         name_code: `${mockEntity.name.toLowerCase()}_2`,
         created_at: mockEntity.created_at,
@@ -149,17 +154,12 @@ describe('SupplierService', () => {
         deleted_at: mockEntity.deleted_at,
       };
 
-      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-        andWhere: jest.fn(),
-        withDeleted: jest.fn(),
-        leftJoinAndSelect: jest.fn(),
-        getOne: jest.fn().mockReturnValueOnce(mockEntity),
-      } as any);
+      jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
 
-      jest.spyOn(repository, 'save').mockResolvedValueOnce(expected);
+      jest.spyOn(service, 'save').mockResolvedValueOnce(expected);
 
       expect(
-          await service.update(mockEntity.id, updateDto),
+          await service.update(mockEntity.id, {}),
       ).toEqual(expected);
     });
   });
@@ -171,12 +171,7 @@ describe('SupplierService', () => {
         expenses: [],
       };
 
-      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-        andWhere: jest.fn(),
-        withDeleted: jest.fn(),
-        leftJoinAndSelect: jest.fn(),
-        getOne: jest.fn().mockReturnValueOnce(expected),
-      } as any);
+      jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
 
       jest.spyOn(repository, 'softRemove').mockResolvedValueOnce({
         ...expected,
@@ -193,12 +188,9 @@ describe('SupplierService', () => {
         ...mockEntity,
         expenses: [EXPENSE_MOCK],
       };
-      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-        andWhere: jest.fn(),
-        withDeleted: jest.fn(),
-        leftJoinAndSelect: jest.fn(),
-        getOne: jest.fn().mockReturnValueOnce(expected),
-      } as any);
+
+      jest.spyOn(service, 'findOne').mockResolvedValueOnce(expected);
+      jest.spyOn(service, 'error').mockImplementationOnce(() => { throw new ConflictException(); });
 
       await expect(
           service.remove(mockEntity.type.id),
@@ -207,10 +199,16 @@ describe('SupplierService', () => {
   });
 
   describe('seeds', () => {
-    it('should seed the database when exist in database', async () => {
+    it('should seed', async () => {
       jest.spyOn(supplierTypeService, 'seeds').mockResolvedValueOnce([mockEntity.type]);
 
-      jest.spyOn(repository, 'find').mockResolvedValueOnce([mockEntity]);
+      jest.spyOn(service.seeder, 'getRelation').mockReturnValueOnce(mockEntity.type);
+
+
+      jest.spyOn(service.seeder, 'entities').mockImplementation( async ({ createdEntityFn }: any) => {
+        createdEntityFn(mockEntity);
+        return [mockEntity];
+      });
 
       expect(await service.seeds({
         supplierListJson: [mockEntity],
@@ -220,39 +218,27 @@ describe('SupplierService', () => {
         supplierTypeList: [mockEntity.type]
       });
     });
+  });
 
-    it('should seed the database when not exist in database', async () => {
-      jest.spyOn(supplierTypeService, 'seeds').mockResolvedValueOnce([mockEntity.type]);
-
-      jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
-
-      jest.spyOn(supplierTypeService, 'treatEntityParam').mockResolvedValueOnce(mockEntity.type);
-      jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
-      expect(await service.seeds({
-        supplierListJson: [mockEntity],
-        supplierTypeListJson: [mockEntity.type],
-      })).toEqual({
-        supplierList: [mockEntity],
-        supplierTypeList: [mockEntity.type]
-      });
+  describe('createToSheet', () => {
+    it('should return NotFoundException when value is undefined.', async () => {
+      await expect(service.createToSheet(undefined)).rejects.toThrowError(NotFoundException);
     });
 
-    it('should return conflict Exception because dont exist one SupplierType in dataBase', async () => {
-      jest
-          .spyOn(supplierTypeService, 'seeds')
-          .mockResolvedValueOnce(
-              [{
-                ...mockEntity.type,
-                name: 'Not Exist'
-              }]
-          );
-
-      jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
-
-      await expect(service.seeds({
-        supplierListJson: [mockEntity],
-        supplierTypeListJson: [mockEntity.type],
-      })).rejects.toThrowError(ConflictException);
+    it('should return NotFoundException when value is "".', async () => {
+      await expect(service.createToSheet('')).rejects.toThrowError(NotFoundException);
     });
+
+    it('should return when supplier exist in database.', async () => {
+      jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
+      expect(await service.createToSheet(mockEntity.name)).toEqual(mockEntity);
+    });
+
+    it('should return when supplier not exist in database.', async () => {
+      jest.spyOn(service, 'findOne').mockResolvedValueOnce(null);
+      jest.spyOn(supplierTypeService, 'createToSheet').mockResolvedValueOnce(mockEntity.type);
+      jest.spyOn(service, 'create').mockResolvedValueOnce(mockEntity);
+      expect(await service.createToSheet(mockEntity.name)).toEqual(mockEntity);
+    })
   });
 });

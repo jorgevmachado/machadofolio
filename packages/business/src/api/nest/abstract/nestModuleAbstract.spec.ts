@@ -15,10 +15,6 @@ import { type INestModuleConfig } from '../types';
 
 import { NestModuleAbstract } from './nestModuleAbstract';
 
-
-
-jest.mock('@repo/services/http/http');
-
 type MockEntity = {
     id: string;
     name: string;

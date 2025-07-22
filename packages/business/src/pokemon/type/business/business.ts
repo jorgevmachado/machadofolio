@@ -1,4 +1,4 @@
-import { extractLastNumberFromUrl } from '@repo/services/number/number';
+import { extractLastNumberFromUrl } from '@repo/services';
 
 import type { PokemonByNameResponse } from '../../poke-api';
 

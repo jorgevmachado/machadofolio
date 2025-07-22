@@ -1,4 +1,4 @@
-import { type EStatus } from '../../enum';
+import { type EStatus } from '../../../enum';
 import type { IBaseEntity } from '../../types';
 
 import { type IAbility } from './ability';

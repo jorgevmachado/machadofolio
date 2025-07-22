@@ -1,5 +1,4 @@
-import { cleanFormatter } from '@repo/services/string/string';
-import { mobileValidator } from '@repo/services/contact/contact';
+import { cleanFormatter, mobileValidator } from '@repo/services';
 
 export function validateMobile(value?: string, cleanAllFormatter: boolean = true): string {
     const valueToValidate = cleanFormatter(value);

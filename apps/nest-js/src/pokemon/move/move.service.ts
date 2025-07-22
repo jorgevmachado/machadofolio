@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { PokeApiService } from '@repo/business/pokemon/poke-api/service/service';
+import { PokeApiService } from '@repo/business';
 
 import { Service } from '../../shared';
 
@@ -28,12 +28,12 @@ export class PokemonMoveService extends Service<PokemonMove> {
                 order: move.order,
                 response: move,
                 withThrow: false,
-                completingData: (result, response) => this.completingData(result, response)
+                completingData: (result, response) => this.completingData(response, result)
             }))
         );
     }
 
-    private async completingData(entity: PokemonMove, response: PokemonMove) {
+    private async completingData(response: PokemonMove, entity?: PokemonMove) {
         if(!entity) {
             const move = await this
                 .pokeApiService

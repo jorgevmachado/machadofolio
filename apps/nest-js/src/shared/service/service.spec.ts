@@ -10,14 +10,24 @@ import { type Repository } from 'typeorm';
 
 import { ConflictException } from '@nestjs/common';
 
+import * as Services from '@repo/services';
+
 import { File } from '../file';
 import { Queries } from '../queries';
 import { Seeder } from '../seeder';
 import { Validate } from '../validate';
 
+
 import { Service } from './service';
 
+const errorMock = jest.fn();
 
+jest.mock('../base', () => {
+    class BaseMock {
+        error = errorMock;
+    }
+    return { Base: BaseMock };
+});
 jest.mock('../file');
 jest.mock('../queries');
 jest.mock('../seeder');
@@ -89,6 +99,12 @@ describe('service', () => {
     });
 
     describe('fileModule', () => {
+        it('should initialize fileModule module.', () => {
+            expect(File).toBeCalledTimes(1);
+        });
+    });
+
+    describe('seederModule', () => {
         it('should initialize seederModule module.', () => {
             expect(Seeder).toBeCalledTimes(1);
             expect(Seeder).toBeCalledWith(
@@ -97,12 +113,7 @@ describe('service', () => {
                 mockRepository,
             );
         });
-    });
 
-    describe('seederModule', () => {
-        it('should initialize seederModule module.', () => {
-            expect(File).toBeCalledTimes(1);
-        });
     });
 
     describe('queriesModule', () => {
@@ -136,7 +147,11 @@ describe('service', () => {
         it('should return conflict Exception when try to save.', async () => {
             jest.spyOn(mockRepository, 'save').mockRejectedValueOnce(new ConflictException());
 
+            errorMock.mockImplementationOnce(() => { throw new ConflictException(); });
+
             await expect(service.save(entity)).rejects.toThrow(ConflictException);
+
+            expect(errorMock).toBeCalled();
         });
     });
 
@@ -153,6 +168,8 @@ describe('service', () => {
 
         it('should return conflict Exception when try to execute soft remove.', async () => {
             jest.spyOn(mockRepository, 'softRemove').mockRejectedValueOnce(new ConflictException());
+
+            errorMock.mockImplementationOnce(() => { throw new ConflictException(); });
 
             await expect(service.softRemove(entity)).rejects.toThrow(ConflictException);
         });
@@ -229,10 +246,13 @@ describe('service', () => {
 
     describe('findOneByList', () => {
         it('should return one entity by list and name', () => {
+            (Services.isUUID as jest.Mock).mockReturnValueOnce(false);
             const result = service.findOneByList(entity.name, entities);
             expect(result).toEqual(entity);
         });
+
         it('should return one entity by list and uuid', () => {
+            (Services.isUUID as jest.Mock).mockReturnValueOnce(true);
             const result = service.findOneByList(entity.id, entities);
             expect(result).toEqual(entity);
         });

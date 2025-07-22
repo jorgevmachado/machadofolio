@@ -1,8 +1,8 @@
 import { type Repository } from 'typeorm';
 
-import { isUUID } from '@repo/services/UUID/UUID';
+import { isUUID } from '@repo/services';
 
-import type { PaginateParameters } from '@repo/business/paginate/types';
+import type { PaginateParameters } from '@repo/business';
 
 import type { BasicEntity } from '../types';
 

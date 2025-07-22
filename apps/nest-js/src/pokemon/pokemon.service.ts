@@ -2,10 +2,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { EStatus } from '@repo/business/enum';
+import { EStatus } from '@repo/business';
 
-import { PaginateParameters } from '@repo/business/paginate/types';
-import { PokeApiService } from '@repo/business/pokemon/poke-api/service/service';
+import { type PaginateParameters, PokeApiService } from '@repo/business';
 
 import { type FindOneByParams, ListParams, Service } from '../shared';
 
@@ -55,7 +54,8 @@ export class PokemonService extends Service<Pokemon> {
                 });
 
             if (total === 0) {
-                return this.createList(externalPokemonList);
+                await this.createList(externalPokemonList);
+                return;
             }
 
             const entities = (await this.repository.find()) ?? [];
@@ -64,7 +64,7 @@ export class PokemonService extends Service<Pokemon> {
                 (item) => !entities.find((database) => database.name === item.name),
             );
 
-            return this.createList(saveList);
+            await this.createList(saveList);
         }
     }
 
@@ -72,7 +72,7 @@ export class PokemonService extends Service<Pokemon> {
         return await this.validateEntity(findOneByParams.value);
     }
 
-    async validateEntity(value: string, complete: boolean = true){
+    private async validateEntity(value: string, complete: boolean = true){
         const result = await this.queries.findOne({ value, withRelations: true });
 
         if(result?.status === EStatus.COMPLETE) {

@@ -109,5 +109,19 @@ describe('Array function', () => {
                 { id: '6', name: 'name 6' },
             ]);
         });
+
+        it('Should return array search in array source by key with arrSearch empty', () => {
+            const arrSource = [
+                { id: '1', name: 'name 1' },
+                { id: '2', name: 'name 2' },
+                { id: '3', name: 'name 3' },
+                { id: '4', name: 'name 4' },
+                { id: '5', name: 'name 5' },
+                { id: '6', name: 'name 6' },
+            ];
+
+            const arrSearch = [];
+            expect(filterByCommonKeys( 'id', arrSource, arrSearch)).toEqual([]);
+        });
     });
 });

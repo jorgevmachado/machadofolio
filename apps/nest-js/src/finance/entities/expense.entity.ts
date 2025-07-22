@@ -10,8 +10,7 @@ import {
     UpdateDateColumn,
 } from 'typeorm';
 
-import { EExpenseType } from '@repo/business/finance/expense/enum';
-import type { ExpenseEntity } from '@repo/business/finance/expense/types';
+import { EExpenseType, type ExpenseEntity } from '@repo/business';
 
 import { DecimalTransformer } from '../../transforms/decimal';
 

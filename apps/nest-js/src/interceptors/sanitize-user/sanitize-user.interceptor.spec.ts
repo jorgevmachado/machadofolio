@@ -11,8 +11,7 @@ import { type CallHandler, type ExecutionContext } from '@nestjs/common';
 
 import { of } from 'rxjs';
 
-import { USER_ENTITY_MOCK } from '@repo/business/auth/mock/mock';
-import UserBusiness from '@repo/business/auth/user/user';
+import { USER_ENTITY_MOCK, User as UserConstructor } from '@repo/business';
 
 import { SanitizeUserInterceptor } from './sanitize-user.interceptor';
 import { type User } from '../../auth/entities/user.entity';
@@ -54,9 +53,9 @@ describe('SanitizeUserInterceptor', () => {
           .intercept({} as ExecutionContext, mockCallHandler)
           .subscribe((result) => {
             expect(mockCallHandler.handle).toBeCalled();
-            expect(result).toBeInstanceOf(UserBusiness);
+            expect(result).toBeInstanceOf(UserConstructor);
             expect(result).toEqual(
-                new UserBusiness({ ...mockUser, clean: true }),
+                new UserConstructor({ ...mockUser, clean: true }),
             );
             done();
           });
@@ -64,7 +63,7 @@ describe('SanitizeUserInterceptor', () => {
 
     it('should sanitize a list of objects containing users', (done) => {
       const mockUsers: Array<User> = [mockUser, mockUser];
-      const mockUsersConverted: Array<User> = mockUsers.map((mock) => new UserBusiness({ ...mock, clean: true }))
+      const mockUsersConverted: Array<User> = mockUsers.map((mock) => new UserConstructor({ ...mock, clean: true }))
       const mockCallHandler: CallHandler = {
         handle: jest.fn(() => of(mockUsers)),
       };
@@ -95,7 +94,7 @@ describe('SanitizeUserInterceptor', () => {
             expect(result).toEqual({
               id: 123,
               description: 'Some data',
-              user: new UserBusiness({ ...mockObjectWithUser.user, clean: true }),
+              user: new UserConstructor({ ...mockObjectWithUser.user, clean: true }),
             });
             done();
           });
@@ -135,7 +134,7 @@ describe('SanitizeUserInterceptor', () => {
     it('should sanitize a User object in the sanitizeData method', () => {
       const result = interceptor['sanitizeData'](mockUser);
 
-      expect(result).toEqual(new UserBusiness({ ...mockUser, clean: true }));
+      expect(result).toEqual(new UserConstructor({ ...mockUser, clean: true }));
     });
 
     it('should sanitize an object containing the `user` property in the sanitizeData method', () => {
@@ -149,7 +148,7 @@ describe('SanitizeUserInterceptor', () => {
       expect(result).toEqual({
         id: 123,
         description: 'Some data',
-        user: new UserBusiness({
+        user: new UserConstructor({
           ...mockObjectWithUser.user,
           clean: true,
         }),

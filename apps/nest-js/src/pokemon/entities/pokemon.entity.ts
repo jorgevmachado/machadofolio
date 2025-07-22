@@ -8,8 +8,7 @@ import {
     UpdateDateColumn
 } from "typeorm";
 
-import { EStatus } from '@repo/business/enum';
-import type { PokemonEntity } from '@repo/business/pokemon/types';
+import { EStatus, type PokemonEntity } from '@repo/business';
 
 import { PokemonAbility } from './ability.entity';
 import { PokemonMove } from './move.entity';

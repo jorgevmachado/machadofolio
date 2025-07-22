@@ -38,7 +38,8 @@ export type TColors =
     | 'social-whatsapp-100'
     | 'social-github-80'
     | 'social-github-90'
-    | 'social-github-100';
+    | 'social-github-100'
+    | 'navbar-background';
 
 export type TContext =
     | 'info'

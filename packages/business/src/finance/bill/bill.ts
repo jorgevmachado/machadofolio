@@ -1,4 +1,4 @@
-import { normalize, toSnakeCase } from '@repo/services/string/string';
+import { normalize, toSnakeCase } from '@repo/services';
 
 import type { BillConstructorParams, BillEntity } from './types';
 

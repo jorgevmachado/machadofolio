@@ -1,11 +1,16 @@
 {
   "extends": "@repo/typescript/library.json",
-  "include": ["src"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"],
   "compilerOptions": {
     "outDir": "dist",
     "baseUrl": "src",
-    "allowJs": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "paths": {
+      "@repo/services": ["../services"],
+      "@repo/services/*": ["../services/*"]
+    },
     "incremental": false,
     "esModuleInterop": true
   }

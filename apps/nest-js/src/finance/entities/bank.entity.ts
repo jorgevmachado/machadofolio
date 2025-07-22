@@ -9,7 +9,7 @@ import {
     UpdateDateColumn
 } from 'typeorm';
 
-import type { BankEntity } from '@repo/business/finance/bank/types';
+import type { BankEntity } from '@repo/business';
 
 import { Bill } from './bill.entity';
 

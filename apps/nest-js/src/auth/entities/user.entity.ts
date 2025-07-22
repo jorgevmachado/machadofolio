@@ -9,10 +9,9 @@ import {
     UpdateDateColumn
 } from "typeorm";
 
-import { EGender } from "@repo/services/personal-data/enum";
+import { EGender } from "@repo/services";
 
-import { ERole, EStatus } from "@repo/business/enum";
-import { UserEntity } from '@repo/business/auth/types';
+import { ERole, EStatus, UserEntity } from '@repo/business';
 
 import { Finance } from '../../finance/entities/finance.entity';
 

@@ -2,7 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import SupplierConstructor from '@repo/business/finance/supplier/supplier';
+import { Supplier as SupplierConstructor } from '@repo/business';
 
 import { ListParams, Service } from '../../shared';
 
@@ -14,7 +14,6 @@ import { SupplierType } from '../entities/type.entity';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { SupplierTypeService } from './type/type.service';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
-
 
 @Injectable()
 export class SupplierService extends Service<Supplier> {

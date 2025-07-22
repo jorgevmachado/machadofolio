@@ -4,7 +4,7 @@ import { type Repository } from 'typeorm';
 import { UnauthorizedException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { USER_ENTITY_MOCK } from '@repo/business/auth/mock/mock';
+import { USER_ENTITY_MOCK } from '@repo/business';
 
 import { User } from '../../auth/entities/user.entity';
 

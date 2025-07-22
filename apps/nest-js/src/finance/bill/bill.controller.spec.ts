@@ -1,7 +1,7 @@
 import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
-import { EMonth } from '@repo/services/date/month/enum';
+import { EMonth } from '@repo/services';
 
 import { BILL_MOCK } from '../../mocks/bill.mock';
 import { type Bill } from '../entities/bill.entity';

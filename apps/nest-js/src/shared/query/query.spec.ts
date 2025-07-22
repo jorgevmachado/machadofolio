@@ -1,7 +1,7 @@
 import { type Repository, type SelectQueryBuilder } from 'typeorm';
 import { ConflictException } from '@nestjs/common';
 
-import { ERole, EStatus } from '@repo/business/enum';
+import { ERole, EStatus } from '@repo/business';
 
 import { Query } from './query';
 

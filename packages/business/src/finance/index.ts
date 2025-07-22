@@ -1,4 +1,4 @@
-export {  default } from './finance';
+export {  default as Finance } from './finance';
 export {  FinanceService } from './service';
 export * from './types';
 export * from './bank';

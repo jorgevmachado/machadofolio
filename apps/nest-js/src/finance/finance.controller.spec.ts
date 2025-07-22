@@ -14,7 +14,6 @@ import { type Finance } from './entities/finance.entity';
 import { FinanceController } from './finance.controller';
 import { FinanceService } from './finance.service';
 
-
 describe('FinanceController', () => {
   let service: FinanceService;
   let controller: FinanceController;

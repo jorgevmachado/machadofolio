@@ -2,14 +2,9 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { snakeCaseToNormal, toSnakeCase } from '@repo/services/string/string';
-import { MONTHS } from '@repo/services/date/month/month';
-import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
-import { filterByCommonKeys } from '@repo/services/array/array';
+import { MONTHS, Spreadsheet, filterByCommonKeys, snakeCaseToNormal, toSnakeCase } from '@repo/services';
 
-import BillBusiness from '@repo/business/finance/bill/business/business';
-import BillConstructor from '@repo/business/finance/bill/bill';
-import { EBillType } from '@repo/business/finance/bill/enum';
+import { BillBusiness, Bill as BillConstructor, EBillType } from '@repo/business';
 
 import { FilterParams, ListParams, Service } from '../../shared';
 

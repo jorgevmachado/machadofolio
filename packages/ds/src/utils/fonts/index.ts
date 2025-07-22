@@ -1,2 +1,2 @@
-export type { TWeight } from './types';
+export type { TWeight, TVariant } from './types';
 export { OWeight } from './options';

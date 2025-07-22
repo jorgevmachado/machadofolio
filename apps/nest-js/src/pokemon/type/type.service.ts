@@ -6,7 +6,6 @@ import { Service } from '../../shared';
 
 import { PokemonType } from '../entities/type.entity';
 
-
 @Injectable()
 export class PokemonTypeService extends Service<PokemonType> {
     constructor(
@@ -27,15 +26,15 @@ export class PokemonTypeService extends Service<PokemonType> {
                     response,
                     withThrow: false,
                     completingData: (result, response) =>
-                        this.completingData(result, response),
+                        this.completingData(response, result),
                 }),
             ),
         );
     }
 
-    async completingData(
-        entity: PokemonType,
+    private async completingData(
         responseType: PokemonType,
+        entity?: PokemonType,
     ): Promise<PokemonType> {
         if (!entity) {
             await this.save(responseType);

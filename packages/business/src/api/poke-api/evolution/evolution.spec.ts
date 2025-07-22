@@ -7,11 +7,11 @@ import {
     jest,
 } from '@jest/globals';
 
-import { Http } from '@repo/services/http/http';
+import { Http } from '@repo/services';
 
 import { Evolution } from './evolution';
 
-jest.mock('@repo/services/http/http');
+jest.mock('@repo/services');
 
 describe('PokeApi Evolution', () => {
     const mockBaseUrl = 'http://mock-base-url.com';

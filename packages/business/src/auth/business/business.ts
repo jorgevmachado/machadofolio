@@ -1,6 +1,6 @@
-import { ERROR_STATUS_CODE, Error } from '@repo/services/error/error';
+import { ERROR_STATUS_CODE, Error } from '@repo/services';
 
-import { ERole } from '../../api';
+import { ERole } from '../../enum';
 
 import type { UserConstructorParams, UserEntity, ValidateCurrentUserParams } from '../types';
 import { User } from '../user';

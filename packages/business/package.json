@@ -1,7 +1,8 @@
 {
   "name": "@repo/business",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "files": [
     "./dist/**"
   ],
@@ -10,10 +11,11 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf dist",
+    "prebuild": "tsc --project tsconfig.json",
     "gen": "turbo gen business",
     "gen:module:nest": "turbo gen business-module-nest",
     "dev": "echo 'Add dev script here'",
-    "build": "rimraf dist && tsc -b -v",
+    "build": "rimraf dist && yarn prebuild && rollup -c",
     "test": "jest",
     "test:ci": "jest  --clearCache --coverage",
     "test:watch": "jest --watch",
@@ -22,30 +24,23 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
+      "import": "./dist/index.esm.js",
       "require": "./dist/index.js"
     },
     "./*": {
-      "types": "./dist/*/index.d.ts",
       "import": "./dist/*.js",
       "require": "./dist/*.js"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "src/*"
-      ]
     }
   },
   "publishConfig": {
     "access": "public"
   },
+  "dependencies": {
+    "@repo/services": "*"
+  },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@repo/jest": "*",
-    "@repo/services": "*",
     "@repo/typescript": "*",
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-node-resolve": "^16.0.1",

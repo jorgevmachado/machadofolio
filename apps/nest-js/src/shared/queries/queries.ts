@@ -1,10 +1,9 @@
 import { NotFoundException } from '@nestjs/common';
 import { type Repository } from 'typeorm';
 
-import { isUUID } from '@repo/services/UUID/UUID';
+import { isUUID } from '@repo/services';
 
-import { Paginate } from '@repo/business/paginate/paginate';
-import type { PaginateParameters } from '@repo/business/paginate/types';
+import { Paginate, type PaginateParameters } from '@repo/business';
 
 import { Query } from '../query';
 

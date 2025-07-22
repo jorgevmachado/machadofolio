@@ -1,4 +1,4 @@
-import { type ERole, type EStatus } from './api';
+import { type ERole, type EStatus } from './enum';
 
 export interface QueryParameters {
     all?: boolean;

@@ -19,9 +19,15 @@ export default [
             }
         ],
         plugins: [
-            nodeResolve({ extensions: ['.js', '.ts'] }),
+            nodeResolve({ extensions: ['.js', '.ts'], preferBuiltins: false }),
             commonjs(),
-            typescript({ tsconfig: './tsconfig.json', declaration: true, declarationDir: 'dist', outDir: 'dist' })
+            typescript({
+                tsconfig: './tsconfig.json',
+                declaration: true,
+                declarationDir: 'dist',
+                outDir: 'dist',
+                rootDir: 'src'
+            })
         ],
         external: [
             "exceljs",

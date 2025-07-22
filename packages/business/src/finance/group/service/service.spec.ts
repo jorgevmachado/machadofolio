@@ -9,7 +9,8 @@ import {
 
 import { type Nest } from '../../../api';
 
-import { GROUP_MOCK } from '../mock';
+import { GROUP_MOCK } from '../../mock';
+
 import { GroupService } from './service';
 
 jest.mock('../../../api');

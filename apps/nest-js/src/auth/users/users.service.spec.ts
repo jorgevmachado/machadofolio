@@ -1,3 +1,18 @@
+jest.mock('../../shared', () => {
+    class ServiceMock {
+        save = jest.fn();
+        file = {
+            upload: jest.fn(),
+            getPath: jest.fn(),
+        };
+        findOne = jest.fn();
+        queries ={
+            findBy: jest.fn(),
+        };
+    }
+    return { Service: ServiceMock }
+});
+
 import { Readable } from 'stream';
 import fs from 'fs';
 import { writeFile } from 'fs/promises';
@@ -8,16 +23,15 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { EGender } from '@repo/services/personal-data/enum';
+import { EGender } from '@repo/services';
 
-import { ERole, EStatus } from '@repo/business/enum';
+import { ERole, EStatus } from '@repo/business';
 
 import { USER_MOCK, USER_PASSWORD } from '../../mocks/user.mock';
 import { User } from '../entities/user.entity';
 
 import { type UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
-
 
 jest.mock('fs');
 jest.mock('fs/promises', () => ({
@@ -41,6 +55,7 @@ describe('UsersService', () => {
 
         service = module.get<UsersService>(UsersService);
         repository = module.get<Repository<User>>(getRepositoryToken(User));
+
     });
 
     it('should be defined', () => {
@@ -50,28 +65,10 @@ describe('UsersService', () => {
 
     describe('create', () => {
         it('should create a user ', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
-
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
-
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
+            jest.spyOn(service, 'hasInactiveUser' as any).mockImplementation(async () => false);
 
             jest.spyOn(repository, 'save').mockResolvedValueOnce(USER_MOCK);
+            jest.spyOn(service, 'save').mockResolvedValueOnce(USER_MOCK);
 
             expect(
                 await service.create({
@@ -88,26 +85,12 @@ describe('UsersService', () => {
         });
 
         it('should return error a user already exist ', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
-
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
-
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(USER_MOCK),
-            } as any);
+            jest.spyOn(service, 'hasInactiveUser' as any).mockImplementation(async (by) => {
+                if(by === 'whatsapp') {
+                    throw new BadRequestException();
+                }
+                return false;
+            });
 
             await expect(
                 service.create({
@@ -126,12 +109,7 @@ describe('UsersService', () => {
 
     describe('update', () => {
         it('should update user with name and role fields', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(USER_MOCK),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(USER_MOCK);
 
             const updateAuthDto: UpdateUserDto = {
                 name: 'Demi Moore',
@@ -146,7 +124,7 @@ describe('UsersService', () => {
                 ...updateAuthDto,
             };
 
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(expected);
+            jest.spyOn(service, 'save').mockResolvedValueOnce(expected);
 
             expect(await service.update(USER_MOCK.id, updateAuthDto)).toEqual(
                 expected,
@@ -154,12 +132,7 @@ describe('UsersService', () => {
         });
 
         it('should update user with gender, status, and date_of_birth fields', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(USER_MOCK),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(USER_MOCK);
 
             const updateAuthDto: UpdateUserDto = {
                 name: undefined,
@@ -174,7 +147,7 @@ describe('UsersService', () => {
                 ...updateAuthDto,
             };
 
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(expected);
+            jest.spyOn(service, 'save').mockResolvedValueOnce(expected);
 
             expect(await service.update(USER_MOCK.id, updateAuthDto)).toEqual(
                 expected,
@@ -182,12 +155,7 @@ describe('UsersService', () => {
         });
 
         it('It should return the user without changes.', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(USER_MOCK),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(USER_MOCK);
 
             expect(
                 await service.update(USER_MOCK.id, {
@@ -203,12 +171,7 @@ describe('UsersService', () => {
 
     describe('checkCredentials', () => {
         it('should return true', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                leftJoinAndSelect: jest.fn().mockReturnThis(),
-                andWhere: jest.fn().mockReturnThis(),
-                withDeleted: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(USER_MOCK),
-            } as any);
+            jest.spyOn(service.queries, 'findBy').mockResolvedValueOnce(USER_MOCK);
 
             expect(
                 await service.checkCredentials({
@@ -219,15 +182,10 @@ describe('UsersService', () => {
         });
 
         it('should return false because the user is inactive', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                leftJoinAndSelect: jest.fn().mockReturnThis(),
-                andWhere: jest.fn().mockReturnThis(),
-                withDeleted: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce({
-                    ...USER_MOCK,
-                    status: EStatus.INACTIVE,
-                }),
-            } as any);
+            jest.spyOn(service.queries, 'findBy').mockResolvedValueOnce({
+                ...USER_MOCK,
+                status: EStatus.INACTIVE,
+            });
 
             await expect(
                 service.checkCredentials({
@@ -238,12 +196,7 @@ describe('UsersService', () => {
         });
 
         it('should return false because the credentials is incorrectly', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                leftJoinAndSelect: jest.fn().mockReturnThis(),
-                andWhere: jest.fn().mockReturnThis(),
-                withDeleted: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(USER_MOCK),
-            } as any);
+            jest.spyOn(service.queries, 'findBy').mockResolvedValueOnce(USER_MOCK);
 
             await expect(
                 service.checkCredentials({
@@ -258,7 +211,7 @@ describe('UsersService', () => {
         const promoteEntityUser = USER_MOCK;
         it('should promote user', async () => {
             jest
-                .spyOn(repository, 'save')
+                .spyOn(service, 'save')
                 .mockResolvedValueOnce({ ...promoteEntityUser, role: ERole.ADMIN });
 
             expect(
@@ -287,12 +240,6 @@ describe('UsersService', () => {
                 ...promoteEntityUser,
                 role: ERole.ADMIN,
             }
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(adminEntityUser),
-            } as any);
 
             expect(await service.promote(adminEntityUser)).toEqual({
                 user: adminEntityUser,
@@ -319,18 +266,15 @@ describe('UsersService', () => {
             stream: mockedStream,
         };
         it('should return the path of the file with default file structure', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(USER_MOCK),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(USER_MOCK);
 
             jest.spyOn(fs, 'existsSync').mockReturnValue(false);
 
             (writeFile as jest.MockedFunction<typeof writeFile>).mockResolvedValue();
 
-            jest.spyOn(service as any, 'save').mockResolvedValue({
+            jest.spyOn(service.file, 'upload').mockResolvedValueOnce('mocked/path/file.txt');
+
+            jest.spyOn(service, 'save').mockResolvedValue({
                 ...USER_MOCK,
                 avatar: `http://localhost:3001/uploads/${USER_MOCK.email}.jpeg`,
             });
@@ -339,109 +283,6 @@ describe('UsersService', () => {
                 ...USER_MOCK,
                 avatar: `http://localhost:3001/uploads/${USER_MOCK.email}.jpeg`,
             });
-        });
-    });
-
-    describe('seed', () => {
-        const seedEntityUser: User = {
-            id: USER_MOCK.id,
-            cpf: USER_MOCK.cpf,
-            salt: undefined,
-            role: USER_MOCK.role,
-            name: USER_MOCK.name,
-            email: USER_MOCK.email,
-            status: USER_MOCK.status,
-            avatar: USER_MOCK.avatar,
-            gender: USER_MOCK.gender,
-            password: undefined,
-            whatsapp: USER_MOCK.whatsapp,
-            created_at: USER_MOCK.created_at,
-            updated_at: USER_MOCK.updated_at,
-            deleted_at: undefined,
-            recover_token: undefined,
-            date_of_birth: USER_MOCK.date_of_birth,
-            confirmation_token: undefined,
-        };
-
-        it('should seed the database when exist in database', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                leftJoinAndSelect: jest.fn(),
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(seedEntityUser),
-            } as any);
-
-            expect(await service.seed(seedEntityUser, mockPassword)).toEqual(seedEntityUser);
-        });
-
-        it('should seed the database when not exist in database', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
-
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
-
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
-
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
-
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(seedEntityUser);
-
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(seedEntityUser),
-            } as any);
-
-            jest
-                .spyOn(repository, 'save')
-                .mockResolvedValueOnce({ ...seedEntityUser, role: ERole.ADMIN });
-
-            expect(await service.seed({
-                ...seedEntityUser,
-                role: ERole.ADMIN,
-            }, mockPassword)).toEqual({
-                ...seedEntityUser,
-                role: ERole.ADMIN,
-            });
-        });
-    });
-
-    describe('seeds', () => {
-        it('should seeds the database when exist in database', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                leftJoinAndSelect: jest.fn(),
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
-
-            expect(await service.seeds([mockEntity], mockPassword)).toEqual([{
-                ...mockEntity,
-                salt: undefined,
-                password: undefined,
-                deleted_at: undefined,
-                confirmation_token: undefined,
-            }]);
         });
     });
 
@@ -472,5 +313,74 @@ describe('UsersService', () => {
                 confirmation_token: undefined,
             });
         });
+    });
+
+    describe('seed', () => {
+        const seedEntityUser: User = {
+            id: USER_MOCK.id,
+            cpf: USER_MOCK.cpf,
+            salt: undefined,
+            role: USER_MOCK.role,
+            name: USER_MOCK.name,
+            email: USER_MOCK.email,
+            status: USER_MOCK.status,
+            avatar: USER_MOCK.avatar,
+            gender: USER_MOCK.gender,
+            password: undefined,
+            whatsapp: USER_MOCK.whatsapp,
+            created_at: USER_MOCK.created_at,
+            updated_at: USER_MOCK.updated_at,
+            deleted_at: undefined,
+            recover_token: undefined,
+            date_of_birth: USER_MOCK.date_of_birth,
+            confirmation_token: undefined,
+        };
+
+        it('should seed the database when exist in database', async () => {
+            jest.spyOn(service.queries, 'findBy').mockResolvedValueOnce(seedEntityUser);
+
+            expect(await service.seed(seedEntityUser, mockPassword)).toEqual(seedEntityUser);
+        });
+
+        it('should seed the database when not exist in database', async () => {
+            jest.spyOn(service.queries, 'findBy').mockResolvedValueOnce(null);
+
+            jest.spyOn(service, 'create').mockResolvedValueOnce(seedEntityUser);
+
+            jest.spyOn(service, 'promote' as any).mockResolvedValueOnce({ user: {...seedEntityUser, role: ERole.ADMIN }});
+
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce({...seedEntityUser, role: ERole.ADMIN });
+
+            expect(await service.seed({
+                ...seedEntityUser,
+                role: ERole.ADMIN,
+            }, mockPassword)).toEqual({
+                ...seedEntityUser,
+                role: ERole.ADMIN,
+            });
+        });
+    });
+
+    describe('seeds', () => {
+        it('should seeds the database when exist in database', async () => {
+            jest.spyOn(service.queries, 'findBy').mockResolvedValueOnce(mockEntity);
+
+            expect(await service.seeds([mockEntity], mockPassword)).toEqual([{
+                ...mockEntity,
+                salt: undefined,
+                password: undefined,
+                deleted_at: undefined,
+                confirmation_token: undefined,
+            }]);
+        });
+    });
+
+    describe('privates', () => {
+        describe('hasInactiveUser', () => {
+            it('should return throw error  because the user is inactive', async () => {
+                jest.spyOn(service.queries, 'findBy').mockResolvedValueOnce(mockEntity);
+                await expect(service['hasInactiveUser']( 'email', mockEntity.email)).rejects.toThrow(BadRequestException);
+            })
+        })
     });
 });

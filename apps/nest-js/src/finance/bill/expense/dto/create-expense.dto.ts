@@ -1,9 +1,8 @@
 import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, MaxLength } from 'class-validator';
 
-import { EMonth } from '@repo/services/date/month/enum';
+import { EMonth } from '@repo/services';
 
-import type { CreateExpenseParams } from '@repo/business/finance/expense/types';
-import { EExpenseType } from '@repo/business/finance/expense/enum';
+import  { type CreateExpenseParams, EExpenseType } from '@repo/business';
 
 import { IsNameDependingOnParent } from '../../../../decorators/name-depending-parent/name-depending-parent.decorator';
 

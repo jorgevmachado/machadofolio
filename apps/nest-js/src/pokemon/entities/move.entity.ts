@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-import type { PokemonMoveEntity } from '@repo/business/pokemon/move/types';
+import type { PokemonMoveEntity } from '@repo/business';
 
 @Entity({ name: 'pokemon_moves' })
 export class PokemonMove implements PokemonMoveEntity {

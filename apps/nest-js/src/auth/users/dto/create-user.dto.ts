@@ -9,9 +9,9 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 
-import { EGender } from '@repo/services/personal-data/enum';
+import { EGender } from '@repo/services';
 
-import { SignUpParams } from '@repo/business/auth/types';
+import { type SignUpParams } from '@repo/business';
 
 import { CPF } from '../../../decorators/cpf/cpf.decorator';
 import { Match } from '../../../decorators/match/match.decorator';

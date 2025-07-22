@@ -6,7 +6,7 @@ import {
     it,
     jest,
 } from '@jest/globals';
-import { GROUP_MOCK } from './mock';
+import { GROUP_MOCK } from '../mock';
 import Group from './group';
 import type { GroupConstructorParams } from './types';
 

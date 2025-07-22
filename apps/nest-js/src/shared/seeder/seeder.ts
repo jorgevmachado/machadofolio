@@ -1,7 +1,7 @@
 import { ConflictException } from '@nestjs/common';
 import { type Repository } from 'typeorm';
 
-import { transformObjectDateAndNulls } from '@repo/services/object/object';
+import { transformObjectDateAndNulls } from '@repo/services';
 
 import type { BasicEntity } from '../types';
 import { Queries } from '../queries';

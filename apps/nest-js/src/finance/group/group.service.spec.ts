@@ -1,3 +1,14 @@
+jest.mock('../../shared', () => {
+  class ServiceMock {
+    save = jest.fn();
+    error = jest.fn();
+    seeder = {
+      entities: jest.fn(),
+    };
+    findOne = jest.fn();
+  }
+  return { Service: ServiceMock }
+});
 import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ConflictException } from '@nestjs/common';
@@ -48,7 +59,7 @@ describe('GroupService', () => {
       };
 
       jest
-          .spyOn(repository, 'save')
+          .spyOn(service, 'save')
           .mockResolvedValueOnce(mockEntity);
 
       expect(await service.create(mockEntity.finance, createDto)).toEqual(
@@ -68,15 +79,9 @@ describe('GroupService', () => {
         ...updateDto,
       };
 
-      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-        andWhere: jest.fn(),
-        withDeleted: jest.fn(),
-        getOne: jest
-            .fn()
-            .mockReturnValueOnce(mockEntity),
-      } as any);
+      jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
 
-      jest.spyOn(repository, 'save').mockResolvedValueOnce(expected);
+      jest.spyOn(service, 'save').mockResolvedValueOnce(expected);
 
       expect(
           await service.update(
@@ -95,12 +100,7 @@ describe('GroupService', () => {
         bills: [],
       };
 
-      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-        andWhere: jest.fn(),
-        withDeleted: jest.fn(),
-        leftJoinAndSelect: jest.fn(),
-        getOne: jest.fn().mockReturnValueOnce(expected),
-      } as any);
+      jest.spyOn(service, 'findOne').mockResolvedValueOnce(expected);
 
       jest.spyOn(repository, 'softRemove').mockResolvedValueOnce({
         ...expected,
@@ -120,12 +120,9 @@ describe('GroupService', () => {
         bills: [BILL_MOCK],
       };
 
-      jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-        andWhere: jest.fn(),
-        withDeleted: jest.fn(),
-        leftJoinAndSelect: jest.fn(),
-        getOne: jest.fn().mockReturnValueOnce(expected),
-      } as any);
+      jest.spyOn(service, 'findOne').mockResolvedValueOnce(expected);
+      jest.spyOn(service, 'error').mockImplementationOnce(() => { throw new ConflictException(); });
+
 
       await expect(
           service.remove(mockEntity.id),
@@ -136,23 +133,35 @@ describe('GroupService', () => {
   describe('seeds', () => {
     it('should seed the database when exist in database', async () => {
       jest
-          .spyOn(repository, 'find')
-          .mockResolvedValueOnce([mockEntity]);
+          .spyOn(service.seeder, 'entities').mockImplementation(async ({ createdEntityFn }: any) => {
+            createdEntityFn(mockEntity);
+            return [mockEntity];
+      })
 
       expect(await service.seeds({ finances: [mockEntity.finance], groupListJson: [mockEntity]})).toEqual([mockEntity]);
     });
 
-    it('should seed the database when not exist in database', async () => {
-      jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
+    it('should not seed when finances is not found in list of finances', async () => {
+      jest
+          .spyOn(service.seeder, 'entities').mockImplementation(async ({ createdEntityFn }: any) => {
+        createdEntityFn(mockEntity);
+        return [];
+      })
 
-      jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+      expect(await service.seeds({ finances: [{ ...mockEntity.finance, id: '1234' }], groupListJson: [mockEntity]})).toEqual([]);
+    });
+  });
 
-      expect(await service.seeds({ finances: [mockEntity.finance], groupListJson: [mockEntity]})).toEqual([mockEntity]);
+  describe('createToSheet', () => {
+    it('should create group when not found in database', async () => {
+      jest.spyOn(service, 'findOne').mockResolvedValueOnce(null);
+      jest.spyOn(service, 'create').mockResolvedValueOnce(mockEntity);
+      expect(await service.createToSheet(mockEntity.finance, mockEntity.name)).toEqual(mockEntity);
     });
 
-    it('Should return a seed empty when received a empty list', async () => {
-      jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
-      expect(await service.seeds({ finances: [mockEntity.finance] })).toEqual([]);
-    });
+    it('should return when group exist in database', async () => {
+      jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
+      expect(await service.createToSheet(mockEntity.finance, mockEntity.name)).toEqual(mockEntity);
+    })
   });
 });

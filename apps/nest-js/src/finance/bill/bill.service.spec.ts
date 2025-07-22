@@ -1,13 +1,70 @@
+jest.mock('../../shared', () => {
+    class ServiceMock {
+        save = jest.fn();
+        error = jest.fn();
+        seeder = {
+            entities: jest.fn(),
+            getRelation: jest.fn(),
+            currentSeeds: jest.fn(),
+        };
+        findAll = jest.fn();
+        findOne = jest.fn();
+    }
+    return { Service: ServiceMock }
+});
+
+jest.mock('../bank/bank.service', () => {
+    class BankServiceMock {
+        seeds = jest.fn();
+        createToSheet = jest.fn();
+        treatEntityParam = jest.fn();
+    }
+    return { BankService: BankServiceMock }
+});
+
+jest.mock('./expense/expense.service', () => {
+    class ExpenseServiceMock {
+        initialize =  jest.fn();
+        customSave =  jest.fn();
+        findOne =  jest.fn();
+        buildForCreation =  jest.fn();
+        buildForUpdate =  jest.fn();
+        addExpenseForNextYear =  jest.fn();
+        treatEntitiesParams =  jest.fn();
+        findAll =  jest.fn();
+        seeds =  jest.fn();
+        softRemove =  jest.fn();
+        supplierSeeds =  jest.fn();
+        getExpensesFromSheet =  jest.fn();
+        business = {
+            allHaveBeenPaid: jest.fn(),
+            buildTablesParams: jest.fn()
+        }
+    }
+    return { ExpenseService: ExpenseServiceMock }
+});
+
+jest.mock('../group/group.service', () => {
+    class GroupServiceMock {
+        seeds = jest.fn();
+        createToSheet = jest.fn();
+        treatEntityParam = jest.fn();
+    }
+    return { GroupService: GroupServiceMock }
+});
+
+jest.mock('', () => {});
+
 import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { type CycleOfMonths, MONTHS } from '@repo/services/date/month/month';
-import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
+import { type CycleOfMonths, MONTHS, filterByCommonKeys } from '@repo/services';
 
-import BillBusiness from '@repo/business/finance/bill/business/business';
-import { EExpenseType } from '@repo/business/finance/expense/enum';
+import { BillBusiness, EBillType, EExpenseType } from '@repo/business';
+
+import { spreadsheetMock } from '../../../jest.setup';
 
 import { BILL_MOCK } from '../../mocks/bill.mock';
 import { Bill } from '../entities/bill.entity';
@@ -28,8 +85,6 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { type UpdateBillDto } from './dto/update-bill.dto';
 import { type UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
-jest.mock('@repo/services/spreadsheet/spreadsheet');
-
 describe('BillService', () => {
     let service: BillService;
     let business: BillBusiness;
@@ -37,7 +92,6 @@ describe('BillService', () => {
     let groupService: GroupService;
     let expenseService: ExpenseService;
     let repository: Repository<Bill>;
-    let spreadsheetMock: jest.Mocked<Spreadsheet>;
 
     const mockEntity: Bill = BILL_MOCK;
     const expenseMockEntity: Expense = EXPENSE_MOCK;
@@ -107,27 +161,6 @@ describe('BillService', () => {
         groupService = module.get<GroupService>(GroupService);
         expenseService = module.get<ExpenseService>(ExpenseService);
         repository = module.get<Repository<Bill>>(getRepositoryToken(Bill));
-        spreadsheetMock = {
-            loadFile: jest.fn(),
-            addTable: jest.fn().mockImplementation(() => {
-                return { nextRow: 1 };
-            }),
-            addTables: jest.fn().mockImplementation(() => {
-                return { nextRow: 1 };
-            }),
-            workSheet: {
-                cell: jest.fn(),
-                addCell: jest.fn(),
-            },
-            createWorkSheet: jest.fn(),
-            updateWorkSheet: jest.fn(),
-            calculateTableHeight: jest.fn(({ total }) => total || 0),
-            calculateTablesParamsNextRow: jest.fn(({ startRow = 0, totalTables = 0, linesPerTable = 0 }) => (
-                startRow + (totalTables * (linesPerTable + 1))
-            )),
-            parseExcelRowsToObjectList: jest.fn(),
-        } as unknown as jest.Mocked<Spreadsheet>;
-        (Spreadsheet as unknown as jest.Mock).mockImplementation(() => spreadsheetMock);
     });
 
     afterEach(() => {
@@ -159,16 +192,33 @@ describe('BillService', () => {
                 .spyOn(groupService, 'treatEntityParam')
                 .mockResolvedValueOnce(mockEntity.group);
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(null);
 
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+            jest.spyOn(service, 'customSave' as any).mockResolvedValueOnce(mockEntity);
 
             expect(await service.create(financeMockEntity, createBill)).toEqual(mockEntity);
+        });
+
+        it('should create a bill successfully with type credit card', async () => {
+            const createBill: CreateBillDto = {
+                type: EBillType.CREDIT_CARD,
+                year: mockEntity.year,
+                bank: mockEntity.bank.name,
+                group: mockEntity.group.name,
+            };
+            jest
+                .spyOn(bankService, 'treatEntityParam')
+                .mockResolvedValueOnce(mockEntity.bank);
+
+            jest
+                .spyOn(groupService, 'treatEntityParam')
+                .mockResolvedValueOnce(mockEntity.group);
+
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(null);
+
+            jest.spyOn(service, 'customSave' as any).mockResolvedValueOnce({...mockEntity, type: EBillType.CREDIT_CARD});
+
+            expect(await service.create(financeMockEntity, createBill)).toEqual({...mockEntity, type: EBillType.CREDIT_CARD});
         });
 
         it('should return error when exist one bill with this name', async () => {
@@ -186,14 +236,9 @@ describe('BillService', () => {
                 .spyOn(groupService, 'treatEntityParam')
                 .mockResolvedValueOnce(mockEntity.group);
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
 
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+            jest.spyOn(service, 'error').mockImplementationOnce(() => { throw new ConflictException(); });
 
             await expect(
                 service.create(financeMockEntity, createBill),
@@ -210,12 +255,7 @@ describe('BillService', () => {
                 expenses: mockEntity.expenses,
             };
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
 
             jest
                 .spyOn(bankService, 'treatEntityParam')
@@ -231,18 +271,46 @@ describe('BillService', () => {
                     .mockResolvedValueOnce(mockEntity.expenses);
             }
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(null);
 
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+            jest.spyOn(service, 'customSave' as any).mockResolvedValueOnce(mockEntity);
 
             expect(
                 await service.update(financeMockEntity, mockEntity.id, updateBill),
             ).toEqual(mockEntity);
+        });
+
+        it('should update a bill successfully with type credit card', async () => {
+            const updateBill: UpdateBillDto = {
+                type: EBillType.CREDIT_CARD,
+                bank: mockEntity.bank.name,
+                group: mockEntity.group.name,
+                expenses: mockEntity.expenses,
+            };
+
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
+
+            jest
+                .spyOn(bankService, 'treatEntityParam')
+                .mockResolvedValueOnce(mockEntity.bank);
+
+            jest
+                .spyOn(groupService, 'treatEntityParam')
+                .mockResolvedValueOnce(mockEntity.group);
+
+            if (mockEntity.expenses) {
+                jest
+                    .spyOn(expenseService, 'treatEntitiesParams')
+                    .mockResolvedValueOnce(mockEntity.expenses);
+            }
+
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(null);
+
+            jest.spyOn(service, 'customSave' as any).mockResolvedValueOnce({ ...mockEntity, type: EBillType.CREDIT_CARD});
+
+            expect(
+                await service.update(financeMockEntity, mockEntity.id, updateBill),
+            ).toEqual({ ...mockEntity, type: EBillType.CREDIT_CARD});
         });
 
         it('should update a bill successfully with only year', async () => {
@@ -251,21 +319,11 @@ describe('BillService', () => {
                 year: mockEntity.year,
             };
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(null);
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
 
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+            jest.spyOn(service, 'customSave' as any).mockResolvedValueOnce(mockEntity);
 
             expect(
                 await service.update(financeMockEntity, mockEntity.id, updateBill),
@@ -279,12 +337,9 @@ describe('BillService', () => {
                 ...mockEntity,
                 expenses: [],
             };
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(expected),
-            } as any);
+
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(expected);
+
             jest.spyOn(repository, 'softRemove').mockResolvedValueOnce({
                 ...expected,
                 deleted_at: mockEntity.created_at,
@@ -295,12 +350,9 @@ describe('BillService', () => {
         });
 
         it('should throw a ConflictException when bill is in use', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
+
+            jest.spyOn(service, 'error').mockImplementationOnce(() => { throw new ConflictException(); });
 
             await expect(
                 service.remove(mockEntity.id),
@@ -325,22 +377,13 @@ describe('BillService', () => {
             expenseForNextYear[`${month}_paid`] = true;
         });
         const expenseForCurrentYear = { ...expenseMockEntity };
+
         it('should create a expense successfully with expense type fixed and set bill id', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
 
             jest.spyOn(expenseService, 'buildForCreation').mockResolvedValueOnce(expenseForCurrentYear);
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getMany: jest.fn().mockReturnValueOnce([]),
-            } as any);
+            jest.spyOn(service, 'existExpenseInBill' as any).mockResolvedValueOnce(undefined);
 
             jest.spyOn(expenseService, 'initialize').mockResolvedValueOnce({
                 nextYear,
@@ -355,21 +398,11 @@ describe('BillService', () => {
         });
 
         it('should create a expense successfully with expense type variable and set bill id', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
 
             jest.spyOn(expenseService, 'buildForCreation').mockResolvedValueOnce(expenseForCurrentYear);
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getMany: jest.fn().mockReturnValueOnce([]),
-            } as any);
+            jest.spyOn(service, 'existExpenseInBill' as any).mockResolvedValueOnce([]);
 
             jest.spyOn(expenseService, 'initialize').mockResolvedValueOnce({
                 nextYear,
@@ -379,21 +412,9 @@ describe('BillService', () => {
                 expenseForCurrentYear,
             });
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(null),
-            } as any);
+            jest.spyOn(service, 'createNewBillForNextYear' as any).mockResolvedValueOnce(mockEntity);
 
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
-
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getMany: jest.fn().mockReturnValueOnce([]),
-            } as any);
+            jest.spyOn(service, 'existExpenseInBill' as any).mockResolvedValueOnce([]);
 
             jest.spyOn(expenseService, 'addExpenseForNextYear').mockResolvedValueOnce(expenseForNextYear);
 
@@ -402,21 +423,11 @@ describe('BillService', () => {
         });
 
         it('should create a expense successfully with expense type variable and get bill existent', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
 
             jest.spyOn(expenseService, 'buildForCreation').mockResolvedValueOnce(expenseForCurrentYear);
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getMany: jest.fn().mockReturnValueOnce([mockEntity]),
-            } as any);
+            jest.spyOn(service, 'existExpenseInBill' as any).mockResolvedValueOnce([mockEntity]);
 
             jest.spyOn(expenseService, 'initialize').mockResolvedValueOnce({
                 nextYear,
@@ -426,21 +437,9 @@ describe('BillService', () => {
                 expenseForCurrentYear,
             });
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'createNewBillForNextYear' as any).mockResolvedValueOnce(mockEntity);
 
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
-
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getMany: jest.fn().mockReturnValueOnce([]),
-            } as any);
+            jest.spyOn(service, 'existExpenseInBill' as any).mockResolvedValueOnce([]);
 
             jest.spyOn(expenseService, 'addExpenseForNextYear').mockResolvedValueOnce(expenseForNextYear);
 
@@ -451,12 +450,7 @@ describe('BillService', () => {
 
     describe('findOneExpense', () => {
         it('should return an expense successfully', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
 
             jest.spyOn(expenseService, 'findOne').mockResolvedValueOnce(expenseMockEntity);
 
@@ -466,12 +460,7 @@ describe('BillService', () => {
 
     describe('findAllExpense', () => {
         it('should return an expense successfully', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
 
             jest.spyOn(expenseService, 'findAll').mockResolvedValueOnce([expenseMockEntity]);
 
@@ -481,12 +470,7 @@ describe('BillService', () => {
 
     describe('removeExpense', () => {
         it('should remove an expense successfully', async () => {
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
 
             jest.spyOn(expenseService, 'findOne').mockResolvedValueOnce(expenseMockEntity);
             jest.spyOn(expenseService, 'softRemove').mockResolvedValueOnce(expenseMockEntity);
@@ -504,14 +488,8 @@ describe('BillService', () => {
             };
             const expectedExpense: Expense = {...expenseMockEntity, january: 100 };
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'findOneExpense').mockResolvedValueOnce(expenseMockEntity);
 
-            jest.spyOn(expenseService, 'findOne').mockResolvedValueOnce(expenseMockEntity);
             jest.spyOn(expenseService, 'buildForUpdate').mockResolvedValueOnce(expectedExpense);
             jest.spyOn(expenseService, 'customSave').mockResolvedValueOnce(expectedExpense);
 
@@ -536,25 +514,11 @@ describe('BillService', () => {
                 name_code: `${mockEntity.name_code}_${newSupplier.name_code}`,
             };
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getOne: jest.fn().mockReturnValueOnce(mockEntity),
-            } as any);
+            jest.spyOn(service, 'findOneExpense').mockResolvedValueOnce(expenseMockEntity);
 
-            jest.spyOn(expenseService, 'findOne').mockResolvedValueOnce(expenseMockEntity);
             jest.spyOn(expenseService, 'buildForUpdate').mockResolvedValueOnce(expectedExpense);
 
-            jest.spyOn(repository, 'createQueryBuilder').mockReturnValueOnce({
-                andWhere: jest.fn(),
-                withDeleted: jest.fn(),
-                leftJoinAndSelect: jest.fn(),
-                getMany: jest.fn().mockReturnValueOnce([{
-                    ...mockEntity,
-                    expenses: [expectedExpense]
-                }]),
-            } as any);
+            jest.spyOn(service, 'existExpenseInBill' as any).mockImplementationOnce(() => { throw new ConflictException(); });
 
             await expect(service.updateExpense(mockEntity.id, expenseMockEntity.id, updateExpenseParams)).rejects.toThrowError(ConflictException);
         });
@@ -566,7 +530,7 @@ describe('BillService', () => {
 
             jest.spyOn(groupService, 'seeds').mockResolvedValueOnce([mockEntity.group]);
 
-            jest.spyOn(repository, 'find').mockResolvedValueOnce([mockEntity]);
+            jest.spyOn(service.seeder, 'entities').mockResolvedValueOnce([mockEntity]);
 
             expect(await service.seeds({
                 banks: [mockEntity.bank],
@@ -581,13 +545,19 @@ describe('BillService', () => {
                 ...financeMockEntity,
                 bills: [mockEntity]
             }
+
+            jest.spyOn(service.seeder, 'currentSeeds').mockReturnValueOnce([mockEntity]);
+
+            (filterByCommonKeys as jest.Mock).mockReturnValue([mockEntity]);
+
             jest.spyOn(bankService, 'seeds').mockResolvedValueOnce([mockEntity.bank]);
 
             jest.spyOn(groupService, 'seeds').mockResolvedValueOnce([mockEntity.group]);
 
-            jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
-
-            jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+            jest.spyOn(service.seeder, 'entities').mockImplementation(async ({ createdEntityFn }: any) => {
+                createdEntityFn(mockEntity)
+                return [mockEntity];
+            });
             expect(await service.seeds({
                 banks: [mockEntity.bank],
                 groups: [mockEntity.group],
@@ -597,7 +567,7 @@ describe('BillService', () => {
         });
 
         it('Should return a seed empty when received a empty list', async () => {
-            jest.spyOn(repository, 'find').mockResolvedValueOnce([]);
+            jest.spyOn(service.seeder, 'entities').mockResolvedValueOnce([]);
             expect(await service.seeds({
                 banks: [mockEntity.bank],
                 groups: [mockEntity.group],
@@ -685,6 +655,25 @@ describe('BillService', () => {
     });
 
     describe('privates', () => {
+        describe('customSave', () => {
+            it('should return error when exist bill and flag withThrow is true.', async () => {
+                jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
+                await expect(service['customSave'](mockEntity, true)).rejects.toThrow(ConflictException);
+            });
+
+            it('should return exist bill when flag withThrow is false.', async () => {
+                jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
+                expect(await service['customSave'](mockEntity, false)).toEqual(mockEntity);
+            });
+
+            it('should save bill when not exist in database.', async () => {
+                jest.spyOn(service, 'findOne').mockResolvedValueOnce(null);
+                jest.spyOn(business, 'calculate').mockReturnValue(mockEntity);
+                jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
+                expect(await service['customSave'](mockEntity)).toEqual(mockEntity);
+            });
+        });
+
         describe('findAllByGroupYear', () => {
             it('should return the found bills (array).', async () => {
                 const billsMock = [mockEntity, mockEntity];
@@ -748,7 +737,7 @@ describe('BillService', () => {
 
                 jest.spyOn(bankService, 'createToSheet').mockResolvedValue(mockEntity.bank);
                 jest.spyOn(groupService, 'createToSheet').mockResolvedValue(mockEntity.group);
-                jest.spyOn(repository, 'save').mockResolvedValueOnce(mockEntity);
+                jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
                 const result = await service['createToSheet']({...params, type: 'CREDIT_CARD'});
 
                 expect(result).toEqual(mockEntity);
@@ -868,5 +857,44 @@ describe('BillService', () => {
                 });
             });
         });
+
+        describe('existExpenseInBill', () => {
+            it('should return error when exist expense in bill.', async () => {
+                jest.spyOn(service, 'findAll').mockResolvedValueOnce([mockEntity]);
+                jest.spyOn(service,'error').mockReturnValueOnce(new ConflictException());
+                await expect(service['existExpenseInBill']({
+                    year: 2025,
+                    nameCode: 'name_code'
+                })).rejects.toThrow(ConflictException);
+            });
+
+            it('should return undefined when not exist expense in bill.', async () => {
+                jest.spyOn(service, 'findAll').mockResolvedValueOnce([]);
+                expect(await service['existExpenseInBill']({
+                    year: 2025,
+                    nameCode: 'name_code',
+                    withThrow: false
+                })).toBeUndefined();
+            });
+
+            it('should return a list of expense when exist in bill.', async () => {
+                const expectedMock = { ...mockEntity, expenses: [expenseMockEntity] };
+                jest.spyOn(service, 'findAll').mockResolvedValueOnce([expectedMock]);
+                const result = await service['existExpenseInBill']({
+                    year: 2025,
+                    nameCode: 'name_code',
+                    withThrow: false
+                })
+                expect(result).toEqual(expenseMockEntity);
+            });
+        });
+
+        describe('createNewBillForNextYear', () => {
+            it('should create bill for next year with successfully.', async () => {
+                jest.spyOn(service, 'customSave' as any).mockResolvedValueOnce(mockEntity);
+                const result = await service['createNewBillForNextYear'](2025,mockEntity);
+                expect(result).toEqual(mockEntity);
+            });
+        })
     });
 });

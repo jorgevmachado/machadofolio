@@ -7,9 +7,11 @@ import {
     jest,
 } from '@jest/globals';
 
-import { BILL_MOCK } from './mock';
+import { BILL_MOCK } from '../mock';
+
+import type { BillConstructorParams, BillEntity } from './types';
+
 import Bill from './bill';
-import type { BillEntity } from './types';
 
 describe('Bill', () => {
     const billMock: BillEntity = BILL_MOCK;
@@ -30,19 +32,18 @@ describe('Bill', () => {
             expect(bill.name).toBe(billMock.name);
             expect(bill.bank).toBe(billMock.bank);
             expect(bill.type).toBe(billMock.type);
-            expect(bill.category).toBe(billMock.category);
             expect(bill.created_at).toEqual(billMock.created_at);
             expect(bill.updated_at).toEqual(billMock.updated_at);
             expect(bill.deleted_at).toBe(billMock.deleted_at);
         });
 
         it('should create an instance with minimal valid data', () => {
-            const params = {
+            const params: BillConstructorParams = {
                 bank: billMock.bank,
                 name: billMock.name,
                 type: billMock.type,
-                finance: billMock.finance,
-                category: billMock.category,
+                group: billMock.group,
+                finance: billMock.finance
             };
 
             const bill = new Bill(params);
@@ -51,7 +52,7 @@ describe('Bill', () => {
             expect(bill.bank).toBe(params.bank);
             expect(bill.name).toBe(params.name);
             expect(bill.type).toBe(params.type);
-            expect(bill.category).toBe(params.category);
+            expect(bill.group).toBe(params.group);
             expect(bill.created_at).toBeUndefined();
             expect(bill.updated_at).toBeUndefined();
             expect(bill.deleted_at).toBeUndefined();

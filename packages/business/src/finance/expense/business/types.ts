@@ -1,9 +1,8 @@
 import type * as ExcelJS from 'exceljs';
 
-import type { CycleOfMonths } from '@repo/services/date/month/month';
-import type { WorkSheet } from '@repo/services/spreadsheet/worksheet/worksheet';
+import type { CycleOfMonths, WorkSheet } from '@repo/services';
 
-import type Bill from '../../bill';
+import type { Bill } from '../../bill';
 
 export type BuildCreditCardBodyDataParams = {
     bill: Bill;

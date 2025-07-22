@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import BankConstructor from '@repo/business/finance/bank/bank';
+import { Bank as BankConstructor } from '@repo/business';
 
 import { Service } from '../../shared';
 
@@ -12,7 +12,6 @@ import { Bank } from '../entities/bank.entity';
 
 import { CreateBankDto } from './dto/create-bank.dto';
 import { UpdateBankDto } from './dto/update-bank.dto';
-
 
 @Injectable()
 export class BankService extends Service<Bank> {
@@ -50,7 +49,7 @@ export class BankService extends Service<Bank> {
   }
 
     async createToSheet(value?: string) {
-      if(!value || value === '') {
+      if(!value) {
         throw new NotFoundException(`${this.alias} not found`);
       }
 

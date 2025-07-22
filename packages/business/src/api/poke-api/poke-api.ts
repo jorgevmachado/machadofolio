@@ -1,4 +1,4 @@
-import { Http } from '@repo/services/http/http';
+import { Http } from '@repo/services';
 
 import type { IPokeApiConfig, IPokemonByNameResponse, IPokemonPaginateResponse, IPokemonResponse } from './types';
 

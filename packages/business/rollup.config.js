@@ -4,7 +4,7 @@ import commonjs from '@rollup/plugin-commonjs';
 
 export default [
     {
-        input: 'src/index.ts', // Ajuste se necessário
+        input: 'src/index.ts',
         output: [
             {
                 file: 'dist/index.js',
@@ -18,13 +18,19 @@ export default [
                 sourcemap: true,
             }
         ],
+        external: [
+            '@repo/services'
+        ],
         plugins: [
             nodeResolve({ extensions: ['.js', '.ts'] }),
             commonjs(),
-            typescript({ tsconfig: './tsconfig.json', declaration: true, declarationDir: 'dist', outDir: 'dist' })
+            typescript({
+                tsconfig: './tsconfig.json',
+                declaration: true,
+                declarationDir: 'dist',
+                outDir: 'dist',
+                rootDir: 'src'
+            })
         ],
-        external: [
-            '@repo/services'
-        ]
     }
 ];

@@ -1,7 +1,6 @@
 import { IsEnum, IsNotEmpty, IsNumber, MaxLength } from 'class-validator';
 
-import { CreateBillParams } from '@repo/business/finance/bill/types';
-import { EBillType } from '@repo/business/finance/bill/enum';
+import { CreateBillParams, EBillType } from '@repo/business';
 
 import { Bank } from '../../entities/bank.entity';
 import { Group } from '../../entities/group.entity';

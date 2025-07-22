@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import GroupConstructor from '@repo/business/finance/group/group';
+import { Group as GroupConstructor } from '@repo/business';
 
 import { ListParams, Service } from '../../shared';
 

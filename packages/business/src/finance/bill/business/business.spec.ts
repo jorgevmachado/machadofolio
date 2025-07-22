@@ -1,21 +1,20 @@
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
-import { type CycleOfMonths, MONTHS, totalByMonth } from '@repo/services/date/month/month';
-import { Spreadsheet } from '@repo/services/spreadsheet/spreadsheet';
-import type { TablesParams } from '@repo/services/spreadsheet/table/types';
-import { snakeCaseToNormal } from '@repo/services/string/string';
+import { type CycleOfMonths, MONTHS, totalByMonth } from '@repo/services';
+import { Spreadsheet } from '@repo/services';
+import type { TablesParams } from '@repo/services';
+import { snakeCaseToNormal } from '@repo/services';
 
-import { EXPENSE_PARENT_MOCK } from '../../expense';
-import type Expense from '../../expense';
+import { BILL_MOCK, EXPENSE_PARENT_MOCK } from '../../mock';
+import type { Expense } from '../../expense';
 
-import { BILL_MOCK } from '../mock';
 import type Bill from '../bill';
 import { EBillType } from '../enum';
 import type { SpreadsheetProcessingParams } from './types';
 
 import BillBusiness from './business';
 
-jest.mock('@repo/services/spreadsheet/spreadsheet');
+jest.mock('@repo/services');
 
 const buildExpensesTablesParams: jest.MockedFunction<(expenses: Array<Expense>, tableWidth: number) => TablesParams> = jest.fn();
 

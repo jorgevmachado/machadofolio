@@ -1,4 +1,4 @@
-import { EStatus } from '@repo/business/enum';
+import { EStatus } from '@repo/business';
 
 import type { Pokemon } from '../entities/pokemon.entity';
 

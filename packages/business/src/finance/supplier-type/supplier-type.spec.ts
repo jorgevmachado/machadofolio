@@ -7,7 +7,8 @@ import {
     jest,
 } from '@jest/globals';
 
-import { SUPPLIER_TYPE_MOCK } from './mock';
+import { SUPPLIER_TYPE_MOCK } from '../mock';
+
 import SupplierType from './supplier-type';
 
 describe('SupplierType', () => {
