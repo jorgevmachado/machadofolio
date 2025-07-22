@@ -1,5 +1,4 @@
-import { AuthService } from '@repo/business/auth/service';
-import { Nest } from '@repo/business/api/nest';
+import { AuthService ,Nest } from '@repo/business';
 
 import { getAccessToken } from '../cookies';
 

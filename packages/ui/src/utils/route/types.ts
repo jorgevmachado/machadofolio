@@ -2,7 +2,7 @@ import type React from 'react';
 
 import type { TIcon } from '@repo/ds';
 
-export interface TRoute {
+export type TRoute = {
     key: string;
     icon?: TIcon;
     path: string;

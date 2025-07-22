@@ -1,14 +1,9 @@
 import React, { type ComponentProps } from 'react';
 
+import { Icon, type TIconPosition } from '../../elements';
+import { type TColors, type TContext, type TSimplySIze, type TWeight, joinClass} from '../../utils';
+
 import './Link.scss';
-
-import type { TColors, TContext, TSimplySIze, TWeight} from '../../utils';
-import { Icon } from '../../elements';
-import type { TIconPosition } from '../../elements/icon';
-
-
-import joinClass from '../../utils/join-class';
-
 
 type IconProps = ComponentProps<typeof Icon> & {
     position?: TIconPosition;

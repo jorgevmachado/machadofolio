@@ -24,4 +24,4 @@ class Cookies {
  }
 }
 
-export default new Cookies();
+export const cookies = new Cookies();

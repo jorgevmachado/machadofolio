@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { jest } from '@jest/globals';
 
-export const useBreakpointMock = jest.fn();
+const useBreakpointMock = jest.fn() as jest.MockedFunction<() => { isMobile: boolean }>;
 
 jest.mock('@repo/ds', () => {
     const originalModule = jest.requireActual('@repo/ds') as Record<string, any>;
@@ -32,3 +32,5 @@ jest.mock('@repo/ds', () => {
         useBreakpoint: useBreakpointMock,
     }
 });
+
+(global as any).useBreakpointMock = useBreakpointMock;

@@ -7,7 +7,7 @@ import {
     jest,
 } from '@jest/globals';
 
-import cookies from './cookies';
+import { cookies } from './cookies';
 
 describe('Cookies function', () => {
     const documentMock = {

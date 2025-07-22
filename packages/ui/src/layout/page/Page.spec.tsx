@@ -13,8 +13,6 @@ jest.mock('../../components', () => {
     }
 });
 
-import { useBreakpointMock } from '../../../jest.setup';
-
 import React from 'react';
 
 import '@testing-library/jest-dom'
@@ -26,7 +24,7 @@ import Page from './Page';
 
 describe('<Page/>', () => {
     beforeEach(() => {
-        useBreakpointMock.mockImplementation(() => ({ isMobile: false }));
+        (global as any).useBreakpointMock.mockImplementation(() => ({ isMobile: false }));
     });
 
     afterEach(() => {
@@ -80,7 +78,7 @@ describe('<Page/>', () => {
     });
 
     it('does not render Sidebar if menu is missing, even if authenticated', () => {
-        useBreakpointMock.mockImplementation(() => ({ isMobile: true }));
+        (global as any).useBreakpointMock.mockImplementation(() => ({ isMobile: true }));
         renderComponent({ isAuthenticated: true });
         expect(screen.getByTestId('mocked-ui-navbar')).toBeInTheDocument();
         expect(screen.queryByTestId('mocked-ui-sidebar')).not.toBeInTheDocument();

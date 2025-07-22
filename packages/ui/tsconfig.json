@@ -9,6 +9,8 @@
     "paths": {
       "@repo/services": ["../../packages/services/dist"],
       "@repo/services/*": ["../../packages/services/dist/*"],
+      "@repo/business": ["../../packages/business/dist"],
+      "@repo/business/*": ["../../packages/business/dist/*"]
     }
   },
   "include": ["src/"],

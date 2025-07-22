@@ -1,0 +1,11 @@
+@use "../../styles/colors" as *;
+
+.ds-label {
+  margin:  0 0 var(--size-xx-tiny) 0;
+
+  &__text {
+    color: var(--colors-neutral-80);
+    font-size: var(--size-regular);
+    line-height: var(--size-regular);
+  }
+}

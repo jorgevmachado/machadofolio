@@ -3,9 +3,7 @@ import { useState } from 'react';
 
 import { Button } from '@repo/ds';
 
-import { normalize } from "@repo/services";
-
-import styles from "./page.module.css";
+import { normalize } from "@repo/services/index";
 
 import './page.scss';
 
@@ -58,7 +56,7 @@ export default function Home() {
       <main className="page__main">
         <h1>name: {name}</h1>
         <h1>normalize: {normalize(name)}</h1>
-        <Button onClick={handleDownload} context="secondary" disabled={isLoading} className={styles.downloadButton}>
+        <Button onClick={handleDownload} context="secondary" disabled={isLoading}>
           {isLoading ? 'Baixando...' : 'Baixar Modelo de Planilha'}
         </Button>
         {/*<button*/}

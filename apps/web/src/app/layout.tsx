@@ -1,4 +1,4 @@
-import '@repo/tokens/dist/finance/css/_variables.css';
+import '../../../../packages/tokens/dist/finance/css/_variables.css';
 import '@repo/ds/dist/index.css';
 
 import type {Metadata} from 'next';

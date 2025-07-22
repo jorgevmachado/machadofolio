@@ -1,0 +1,7 @@
+@use "../../styles/colors" as *;
+
+.ds-feedback {
+  display: flex;
+  gap: var(--size-tiny);
+  align-items: center;
+}
