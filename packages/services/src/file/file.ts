@@ -19,3 +19,23 @@ export function imageTypeValidator({ accept }: ValidatorParams): ValidatorMessag
   message: valid ? 'Valid image type.' : 'Please enter a valid image type.',
  };
 }
+
+export async function urlToBase64(url: string): Promise<string> {
+ const res = await fetch(url);
+ const blob = await res.blob();
+ return await new Promise<string>((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onloadend = () => resolve(reader.result as string);
+  reader.onerror = error => reject(error);
+  reader.readAsDataURL(blob);
+ });
+}
+
+export function fileToBase64(file: File): Promise<string> {
+ return new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onload = ev => resolve(ev.target?.result as string);
+  reader.onerror = error => reject(error);
+  reader.readAsDataURL(file);
+ });
+}

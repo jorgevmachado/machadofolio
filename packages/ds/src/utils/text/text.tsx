@@ -1,5 +1,7 @@
 import React from 'react';
 
+import generateComponentId from '../generate-component-id';
+
 export function isReactNode(value: unknown): boolean {
     return (
         React.isValidElement(value) ||
@@ -56,20 +58,6 @@ function applyFormatting(text: string) {
                 text
             );
     }
-}
-
-function generateComponentId(text: string): string {
-    const uuid = (currentDate: Date = new Date()) => {
-        let date = currentDate.getTime();
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-            const random = (date + Math.random() + 16) % 16 | 0;
-            date = Math.floor(date / 16);
-            return (c == 'x' ? random : (random & 0x3) | 0x8).toString(16);
-        });
-    };
-    const uuidGenerate = uuid();
-    const random = (Math.random() * 10).toFixed(1);
-    return `${text}-${random}-${uuidGenerate}`;
 }
 
 function replaceTextBetween(texts: Array<string | React.JSX.Element>) {

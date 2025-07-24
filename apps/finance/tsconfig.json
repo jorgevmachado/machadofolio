@@ -1,0 +1,26 @@
+{
+  "extends": "@repo/typescript/nextjs.json",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@repo/services": ["../../packages/services/dist"],
+      "@repo/services/*": ["../../packages/services/dist/*"],
+      "@repo/business": ["../../packages/business/dist"],
+      "@repo/business/*": ["../../packages/business/dist/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "next-env.d.ts",
+    "next.config.js",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

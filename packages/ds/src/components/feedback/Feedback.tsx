@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { joinClass } from '../../utils';
+import { generateComponentId, joinClass } from '../../utils';
 
 import { Text } from '../../elements';
 
@@ -14,11 +14,12 @@ type FeedbackProps = {
 }
 
 export default function Feedback({ id, context, children, className = '' }: FeedbackProps) {
+    const componentId = id ? id : generateComponentId('ds-feedback');
     const classNameList = joinClass(['ds-feedback', className]);
 
     return (
         <Text
-            id={id}
+            id={componentId}
             role={context === 'error' ? 'alert' : 'status'}
             color={`${context}-80`}
             variant="regular"

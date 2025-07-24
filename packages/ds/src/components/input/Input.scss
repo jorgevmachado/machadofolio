@@ -1,0 +1,17 @@
+@use "../../styles/colors" as *;
+@use "../../styles/focus" as *;
+
+.ds-input {
+  gap: var(--dimensions-relative-8);
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  &__label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+  }
+  &__feedback, &__helper-text {
+    margin-top: 0;
+  }
+
+}

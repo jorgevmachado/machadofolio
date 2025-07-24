@@ -1,0 +1,1 @@
+export type TInputType = 'text' | 'file' | 'number' | 'email' | 'phone' | 'textarea' | 'password';

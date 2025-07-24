@@ -1,0 +1,17 @@
+.page {
+  gap: 64px;
+  display: grid;
+  padding: 80px;
+  min-height: 100svh;
+  align-items: center;
+  justify-items: center;
+  font-synthesis: none;
+  background-color: var(--color-primary-100);
+  grid-template-rows: 20px 1fr 20px;
+  &__main {
+    gap: 32px;
+    display: flex;
+    flex-direction: column;
+    grid-row-start: 2;
+  }
+}

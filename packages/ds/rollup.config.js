@@ -7,7 +7,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 
 export default {
-    input: 'src/index.ts', // ajuste conforme seu entry point
+    input: 'src/index.ts',
     output: [
         {
             file: pkg.main,
@@ -21,7 +21,7 @@ export default {
             sourcemap: true
         }
     ],
-    external: ['react', 'react-dom'],
+    external: ['react', 'react-dom', '@repo/services'],
     plugins: [
         resolve(),
         commonjs(),

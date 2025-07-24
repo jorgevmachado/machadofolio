@@ -8,7 +8,6 @@ const meta = {
         tag: 'label',
         tip: '(Tip)',
         label: 'Label',
-        componentId: 'label',
     },
     title: 'Components/Label',
     argTypes: {},

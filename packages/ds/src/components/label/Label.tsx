@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { type TColors, joinClass } from '../../utils';
+import { type TColors, generateComponentId, joinClass } from '../../utils';
 
 import { Text } from '../../elements';
 
@@ -11,26 +11,27 @@ interface LabelProps extends React.HTMLAttributes<HTMLDivElement> {
     tag?: 'label' | 'legend';
     color?: TColors;
     label?: string;
-    componentId?: string;
 }
 
-export default function Label({ 
+export default function Label({
+    id,    
     tip,
     tag = 'label',
     color = 'neutral-80',
     label,
     className,
-    componentId,
     ...props
 }: LabelProps) {
-    const tipId = componentId ? `${componentId}-tip` : undefined;
+    const componentId = id ? id : generateComponentId('ds-label');
+    const tipId = `${componentId}-tip`;
 
     const classNameList = joinClass(['ds-label', className]);
     
     return (
-        <div {...props} className={classNameList} data-testid="ds-label">
+        <div {...props} id={componentId} className={classNameList} data-testid="ds-label">
             { label && (
                 <Text
+                    id={componentId}
                     tag={tag}
                     color={color}
                     htmlFor={tag === 'label' ? componentId : undefined}

@@ -1,6 +1,16 @@
 import React from 'react';
 
-import { type TColors, type TVariant, type TWeight, formattedText, isReactNode, joinClass } from '../../utils';
+import { isObject } from '@repo/services';
+
+import {
+    type TColors,
+    type TVariant,
+    type TWeight,
+    formattedText,
+    generateComponentId,
+    isReactNode,
+    joinClass
+} from '../../utils';
 
 import './Text.scss';
 
@@ -14,6 +24,7 @@ interface TextProps extends React.HTMLProps<Element> {
 }
 
 export default function Text({
+    id,
     tag = 'p',
     color = 'neutral-80',
     weight = 'regular',
@@ -25,9 +36,9 @@ export default function Text({
 }: TextProps) {
     const CustomTag = tag as React.ElementType;
 
-    const tagProps = CustomTag === 'label' ? { htmlFor } : {};
+    const componentId = id ? id : generateComponentId('ds-text');
 
-    const isObject = (value: unknown) => value instanceof Object && !Array.isArray(value);
+    const tagProps = CustomTag === 'label' ? { htmlFor } : {};
 
     const text =
         isReactNode(children) || isObject(children)
@@ -36,6 +47,7 @@ export default function Text({
 
     return (
         <CustomTag
+            id={componentId}
             data-testid="ds-text"
             className={joinClass([
                 'ds-text',

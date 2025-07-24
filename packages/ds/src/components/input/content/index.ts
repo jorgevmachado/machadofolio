@@ -1,0 +1,1 @@
+export { default as Content, type IconProps, type TextProps } from './Content';

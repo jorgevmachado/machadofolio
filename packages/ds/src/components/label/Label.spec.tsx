@@ -31,7 +31,7 @@ describe('<Label/>', () => {
     });
 
     it('Should render the component with component id.', () => {
-        renderComponent({ componentId: 'label', });
+        renderComponent({ id: 'label', });
         const component = screen.getByTestId('ds-label');
         expect(component).toBeInTheDocument();
         expect(component).toHaveClass('ds-label');

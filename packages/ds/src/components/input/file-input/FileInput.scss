@@ -1,0 +1,59 @@
+.ds-file-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-family: inherit;
+
+  &__field {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--color-neutral-40);
+    padding: var(--size-x-small) 1rem;
+    border: 1.5px solid var(--color-neutral-60);
+    position: relative;
+    transition: all 0.3s ease-in-out;
+    border-radius: var(--border-radius-large);
+
+    &:focus-within {
+      border-color: var(--color-primary, #2563eb);
+    }
+    &--error{
+      border-color: var(--color-error-80);
+    }
+  }
+
+  &__filename {
+    color: var(--color-text-secondary, #6b7280);
+    font-size: 0.97rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 220px;
+  }
+
+  &__preview {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--dimensions-relative-32);
+    flex-direction: column;
+    justify-content: center;
+    img {
+      max-width: 100%;
+      object-fit: cover;
+    }
+    &--image {
+      width: 140px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid #e6e9ec;
+      transition: transform 0.3s, border-color 0.3s;
+      &:hover {
+        transform: scale(1.05);
+        border-color: #3498db;
+      }
+    }
+  }
+}

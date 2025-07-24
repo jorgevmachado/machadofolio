@@ -29,6 +29,7 @@ export const config = {
         '!**/.next/**',
         '!elements/icon/groups/**',
         '!**/*.stories.{js,jsx,ts,tsx}',
+        '!**/@types/**'
     ],
     moduleFileExtensions: [...baseConfig.moduleFileExtensions, 'tsx', 'jsx'],
 } as const satisfies Config;
