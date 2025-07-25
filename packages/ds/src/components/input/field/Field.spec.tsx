@@ -28,7 +28,7 @@ jest.mock('../../../utils', () => {
     }
 });
 
-import Content from './Content';
+import Field from './Field';
 
 const createChild = (dataType: string, label?: string) => (
     <div data-type={dataType} data-testid={dataType + '-child'}>
@@ -44,7 +44,7 @@ describe('<Content/>', () => {
     };
 
     const renderComponent = (props: any = {}) => {
-        return render(<Content {...defaultProps} {...props}/>);
+        return render(<Field {...defaultProps} {...props}/>);
     }
     beforeEach(() => {
         jest.clearAllMocks();
@@ -199,13 +199,13 @@ describe('<Content/>', () => {
 
     it('Should call ref correctly for input', () => {
         const inputRef = React.createRef<HTMLInputElement>();
-        render(<Content {...defaultProps} ref={inputRef} />);
+        render(<Field {...defaultProps} ref={inputRef} />);
         expect(inputRef.current).toBeInstanceOf(HTMLInputElement);
     });
 
     it('Should call ref correctly for textarea', () => {
         const taRef = React.createRef<HTMLTextAreaElement>();
-        render(<Content {...defaultProps} type="textarea" ref={taRef} />);
+        render(<Field {...defaultProps} type="textarea" ref={taRef} />);
         expect(taRef.current).toBeInstanceOf(HTMLTextAreaElement);
     });
 });

@@ -1,3 +1,6 @@
+import type React from 'react';
+import type { TColors } from '../../utils';
+
 export type TIcon =
     | 'tv'
     | 'box'
@@ -128,3 +131,16 @@ export type TIconGroup =
     | 'vsc';
 
 export type TIconPosition = 'left' | 'right';
+
+export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
+    icon: React.ReactNode | TIcon;
+    size?: string | number;
+    color?: TColors;
+    group?: TIconGroup;
+    withDefault?: boolean;
+}
+
+export type TGenericIconProps = IconProps & {
+    noBorder?: boolean;
+    position?: TIconPosition;
+};

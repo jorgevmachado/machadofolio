@@ -1,19 +1,17 @@
 import React, { useEffect } from 'react';
 
-import { type TContext, type TSimplySIze, type TWeight } from '../../utils';
-import joinClass from '../../utils/join-class';
+import { type TContext, type TSimplySIze, type TWeight, joinClass } from '../../utils';
 
-import { Icon } from '../../elements';
+import { Icon, type TGenericIconProps } from '../../elements';
 
-import { Content, type IconProps, type LoadingProps, type NotificationProps } from './Content';
+import { Content, type LoadingProps, type NotificationProps } from './Content';
 
 import './Button.scss';
 
 type TAppearance = 'icon' | 'outline' | 'standard' | 'borderless';
 
-
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>  {
-    icon?: IconProps;
+    icon?: TGenericIconProps;
     size?: TSimplySIze;
     fluid?: boolean;
     focus?: boolean;

@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react';
 
-import { type TInputType, generateComponentId, joinClass } from '../../utils';
+import {
+    EInputContentChildren,
+    type TInputType,
+    type ValidatorProps,
+    generateComponentId,
+    joinClass,
+    useChildrenElements
+} from '../../utils';
 
-import { Text } from '../../elements';
+import { type TGenericIconProps, Text } from '../../elements';
 
 import Feedback from '../feedback';
 import Label from '../label';
 
-import FileInput from './file-input';
-
-import { Content, type IconProps, type TextProps } from './content';
+import { Field } from './field';
 
 import './Input.scss';
+import Addon from './addon';
+import Inside from './inside';
 
 type InputPropsItem = Pick<
     React.HTMLProps<Element>,
@@ -25,20 +32,19 @@ type InputPropsItem = Pick<
 
 type HostProps = Omit<React.HTMLProps<HTMLDivElement>, keyof InputPropsItem>;
 
-type ValidatorProps = {
-    invalid: boolean;
-    message?: string;
-}
+type TextProps = React.ComponentProps<typeof Text>;
 
 interface InputProps extends InputPropsItem, HostProps {
     tip?: string;
     type: TInputType;
-    icon?: IconProps;
+    icon?: TGenericIconProps;
     fluid?: boolean;
     addon?: TextProps;
     value?: string;
     label?: string;
+    inline?: boolean;
     counter?: TextProps;
+    showIcon?: boolean;
     validator?: ValidatorProps;
     helperText?: TextProps;
     withPreview?: boolean;
@@ -81,18 +87,21 @@ export default function Input({
     const [inputValidator, setInputValidator] = useState<ValidatorProps>({ invalid: false, message: undefined });
     const [isInputMouseFocused, setIsInputMouseFocused] = useState<boolean>(false);
     const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
+    const [typeInput, setTypeInput] = useState<TInputType | undefined>(type);
+
+    const { getChildrenElement, childrenElements } = useChildrenElements(children);
 
     const componentId = id ?? generateComponentId('ds-input');
 
     const classNameList = joinClass(['ds-input', className]);
 
-    const classNameInputList = joinClass([
-        'ds-input__field',
-        isInputFocused && 'ds-input-content__field--focused',
-        isInputMouseFocused && 'ds-input-content__field--mouse-focused',
-    ]);
+    const isFile = typeInput === 'file';
+    const isDate = typeInput === 'date';
 
-    const isFile = type === 'file';
+    const isPassword = typeInput === 'password';
+    const toggleShowPassword = () => {
+        setTypeInput((prev) => (prev === 'password' ? 'text' : 'password'));
+    };
 
     const ariaAttributes = {
         'aria-invalid': inputValidator.invalid || undefined,
@@ -142,6 +151,39 @@ export default function Input({
         onInput && onInput(e);
     };
 
+    const isPrepend = Boolean(childrenElements[EInputContentChildren.PREPEND]);
+
+    const hasIconLeft = Boolean(
+        (icon && (!icon.position || icon.position === 'left')) ||
+        getChildrenElement(EInputContentChildren.ICON_LEFT)
+    );
+
+    const hasIconRight = Boolean(
+        (icon && icon.position === 'right') ||
+        getChildrenElement(EInputContentChildren.ICON_RIGHT)
+    );
+
+    const hasCounter = Boolean(counter ?? getChildrenElement(EInputContentChildren.COUNTER));
+
+    const isAppend = Boolean(childrenElements[EInputContentChildren.APPEND]);
+
+    const hasAddon = Boolean(addon ?? getChildrenElement(EInputContentChildren.ADDON));
+
+    const classNameInputList = joinClass([
+        'ds-input__field',
+        fluid && 'ds-input__field--fluid',
+        isPrepend && 'ds-input__field--prepend',
+        hasIconLeft && 'ds-input__field--icon-left',
+        hasIconRight && 'ds-input__field--icon-right',
+        isAppend && 'ds-input__field--append',
+        hasAddon && !isAppend && 'ds-input__field--addon',
+        hasCounter && !hasIconRight && 'ds-input__field--counter',
+        disabled && 'ds-input__field--disabled',
+        inputValidator.invalid && 'ds-input__field--error',
+        isInputFocused && 'ds-input-content__field--focused',
+        isInputMouseFocused && 'ds-input-content__field--mouse-focused',
+    ]);
+
     useEffect(() => {
         setCurrentInputValue(value || '');
     }, [value]);
@@ -170,46 +212,97 @@ export default function Input({
                 />
             )}
 
-            {isFile && (
-                <FileInput
-                    id={`${componentId}-file-input`}
-                    accept={accept}
-                    disabled={disabled}
-                    isInvalid={inputValidator.invalid}
-                    withPreview={withPreview}
-                    onChange={createEventHandler(setIsInputMouseFocused, handleOnChange)}
-                />
-            )}
+            {/*{isFile && (*/}
+            {/*    <FileInput*/}
+            {/*        id={`${componentId}-file-input`}*/}
+            {/*        accept={accept}*/}
+            {/*        disabled={disabled}*/}
+            {/*        isInvalid={inputValidator.invalid}*/}
+            {/*        withPreview={withPreview}*/}
+            {/*        onChange={createEventHandler(setIsInputMouseFocused, handleOnChange)}*/}
+            {/*    />*/}
+            {/*)}*/}
 
-            {!isFile && (
-                <Content
-                    icon={icon}
-                    type={type}
-                    rows={rows}
-                    name={name}
-                    value={currentInputValue}
-                    addon={addon}
-                    fluid={fluid}
-                    onBlur={handleBlur}
-                    counter={counter}
-                    onInput={handleInput}
-                    onFocus={createEventHandler(setIsInputFocused, onFocus)}
-                    onChange={createEventHandler(setIsInputMouseFocused, onChange)}
-                    disabled={disabled}
-                    onKeyDown={createEventHandler(setIsInputMouseFocused, onKeyDown)}
-                    className={classNameInputList}
-                    isInvalid={inputValidator.invalid}
-                    maxLength={maxLength}
-                    minLength={minLength}
-                    autoFocus={autoFocus}
-                    placeholder={placeholder}
-                    onMouseDown={createEventHandler(setIsInputMouseFocused, onMouseDown)}
-                    autoComplete={autoComplete}
-                    {...ariaAttributes}
-                >
-                    {children}
-                </Content>
-            )}
+            {/*{isDate && (*/}
+            {/*    <DatePicker*/}
+            {/*        id={`${componentId}-date-picker-input`}*/}
+            {/*        icon={icon}*/}
+            {/*        value={value}*/}
+            {/*        inline={inline}*/}
+            {/*        showIcon={showIcon}*/}
+            {/*        isInvalid={inputValidator.invalid}*/}
+            {/*        handleInputValidator={setInputValidator}*/}
+            {/*    />*/}
+            {/*)}*/}
+            <div className="ds-input__content" data-testid="ds-input-content">
+                <Addon position="left">{children}</Addon>
+                <div className="ds-input__content--wrapper">
+                    <Inside icon={icon} position="left">
+                        {children}
+                    </Inside>
+                    <Field
+                        type={type}
+                        rows={rows}
+                        name={name}
+                        value={currentInputValue}
+                        onBlur={handleBlur}
+                        onInput={handleInput}
+                        onFocus={createEventHandler(setIsInputFocused, onFocus)}
+                        onChange={createEventHandler(setIsInputMouseFocused, onChange)}
+                        disabled={disabled}
+                        onKeyDown={createEventHandler(setIsInputMouseFocused, onKeyDown)}
+                        className={classNameInputList}
+                        maxLength={maxLength}
+                        minLength={minLength}
+                        autoFocus={autoFocus}
+                        placeholder={placeholder}
+                        onMouseDown={createEventHandler(setIsInputMouseFocused, onMouseDown)}
+                        autoComplete={autoComplete}
+                        {...ariaAttributes}
+                    />
+                    <Inside
+                        icon={icon}
+                        counter={counter}
+                        position="right"
+                        isPassword={isPassword}
+                        toggleShowPassword={toggleShowPassword}>
+                        {children}
+                    </Inside>
+                </div>
+                <Addon position="right">{children}</Addon>
+            </div>
+
+
+
+            {/*{(!isFile) && (*/}
+            {/*    <Content*/}
+            {/*        icon={icon}*/}
+            {/*        type={type}*/}
+            {/*        rows={rows}*/}
+            {/*        name={name}*/}
+            {/*        value={currentInputValue}*/}
+            {/*        addon={addon}*/}
+            {/*        fluid={fluid}*/}
+            {/*        onBlur={handleBlur}*/}
+            {/*        counter={counter}*/}
+            {/*        onInput={handleInput}*/}
+            {/*        onFocus={createEventHandler(setIsInputFocused, onFocus)}*/}
+            {/*        onChange={createEventHandler(setIsInputMouseFocused, onChange)}*/}
+            {/*        disabled={disabled}*/}
+            {/*        onKeyDown={createEventHandler(setIsInputMouseFocused, onKeyDown)}*/}
+            {/*        className={classNameInputList}*/}
+            {/*        isInvalid={inputValidator.invalid}*/}
+            {/*        maxLength={maxLength}*/}
+            {/*        minLength={minLength}*/}
+            {/*        autoFocus={autoFocus}*/}
+            {/*        placeholder={placeholder}*/}
+            {/*        onMouseDown={createEventHandler(setIsInputMouseFocused, onMouseDown)}*/}
+            {/*        autoComplete={autoComplete}*/}
+            {/*        {...ariaAttributes}*/}
+            {/*    >*/}
+            {/*        {children}*/}
+            {/*    </Content>    */}
+            {/*)}*/}
 
             {(inputValidator.invalid && inputValidator.message) && (
                 <Feedback id={`${componentId}-feedback`} context="error" className="ds-input__feedback" >
@@ -225,7 +318,7 @@ export default function Input({
                     variant={ helperText?.variant ?? 'small'}
                     className={joinClass(['ds-input__helper-text', helperText?.className ?? ''])}
                 >
-                    {helperText.value}
+                    {helperText.children}
                 </Text>
             )}
 

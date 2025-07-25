@@ -11,7 +11,7 @@ const meta = {
         type: 'text',
         label: 'Label',
         helperText: {
-            value: 'Helper Text'
+            children: 'Helper Text'
         },
         placeholder: 'Placeholder',
     },
@@ -42,7 +42,7 @@ export const InputError: Story = {
             message: 'Field is required',
         },
         helperText: {
-            value: 'Input Error Helper Text'
+            children: 'Input Error Helper Text'
         },
         placeholder: 'Input Error Placeholder',
     }
@@ -81,6 +81,17 @@ export const InputPhone: Story = {
         placeholder: 'Input Phone'
     }
 };
+
+export const InputDatePicker: Story = {
+    args: {
+        type: 'date',
+        label: 'Date',
+        inline: false,
+        value: '01-01-1990',
+        showIcon: true,
+        placeholder: 'Input Date'
+    }
+}
 
 export const InputTextArea: Story = {
     args: {
@@ -140,8 +151,8 @@ export const InputCounter: Story = {
     args: {
         label: 'Input Counter',
         counter: {
-            value: '9+',
-            color: 'primary-80'
+            color: 'primary-80',
+            children: '9+',
         },
         children: <div data-children="counter">8</div>,
         placeholder: 'Input Counter Placeholder'
@@ -151,8 +162,8 @@ export const InputCounter: Story = {
 export const InputAddon: Story = {
     args: {
         addon: {
-            value: '0,00',
-            color: 'primary-80'
+            color: 'primary-80',
+            children: '0,00',
         },
         label: 'Input Addon',
         children: <div data-children="addon">0,00</div>,

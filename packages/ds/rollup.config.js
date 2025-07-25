@@ -21,7 +21,7 @@ export default {
             sourcemap: true
         }
     ],
-    external: ['react', 'react-dom', '@repo/services'],
+    external: ['react', 'react-dom', '@repo/services', /react-icons(\/.*)?/],
     plugins: [
         resolve(),
         commonjs(),

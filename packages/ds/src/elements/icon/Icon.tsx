@@ -1,20 +1,11 @@
 import React from 'react';
 
-import type { TColors } from '../../utils';
 import joinClass from '../../utils/join-class';
 
-import type { TIcon, TIconGroup } from './types';
+import type { IconProps, TIcon } from './types';
 import { getIcon } from './service';
 
 import './Icon.scss';
-
-interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
-    icon: React.ReactNode | TIcon;
-    size?: string | number;
-    color?: TColors;
-    group?: TIconGroup;
-    withDefault?: boolean;
-}
 
 export default function Icon({
                                  icon,

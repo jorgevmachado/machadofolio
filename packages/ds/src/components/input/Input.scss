@@ -13,5 +13,110 @@
   &__feedback, &__helper-text {
     margin-top: 0;
   }
+  &__content {
+    display: flex;
+    position: relative;
+    align-items: stretch;
+    &--wrapper {
+      display: flex;
+      position: relative;
+      align-items: center;
+    }
+  }
+  &__field {
+    color: var(--color-neutral-100);
+    border: 1.5px solid var(--color-neutral-60);
+    outline: none;
+    padding: var(--size-x-small) 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
+    border-radius: var(--border-radius-large);
+    position: relative;
+    background-color: transparent;
+    &::placeholder {
+      color: var(--color-neutral-80);
+    }
+    &:hover {
+      border-color: var(--color-neutral-100);
+    }
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.2);
+      border-color: var(--color-neutral-100);
+    }
+    &:active {
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.16);
+    }
+    &#{&}-focused:focus {
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      border-color: var(--color-neutral-100);
+    }
+    &[type="button"],
+    &[type="submit"] {
+      cursor: pointer;
+    }
+    @include focus(
+            $default-transition: (
+                    border 0.2s ease-in-out,
+                    box-shadow 0.2s ease-in-out,
+            ),
+            $overflow-border: true
+    );
+
+    &--fluid {
+      width: 100%;
+    }
+
+    &--append,
+    &--prepend {
+      height: 2.5rem;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    &--prepend {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    &--icon {
+      &-left {
+        padding-left: 2.5rem;
+      }
+      &-right {
+        padding-right: 2rem;
+      }
+      &-password {
+        padding-right: 2rem;
+      }
+    }
+
+    &--counter {
+      padding-right: 2rem;
+    }
+
+    &--addon {
+      border-right: none;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &--append {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &--disabled {
+      color: var(--color-neutral-60);
+      border-color: var(--color-neutral-40);
+      background-color: var(--color-neutral-40);
+      &:hover {
+        border-color: var(--color-neutral-40);
+      }
+    }
+
+    &--error{
+      border-color: var(--color-error-80);
+    }
+  }
 
 }

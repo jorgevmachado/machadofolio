@@ -1,14 +1,7 @@
-import React, { type ComponentProps } from 'react';
+import React from 'react';
 
-import { Icon, Spinner } from '../../../elements';
+import { Icon, Spinner, type TGenericIconProps } from '../../../elements';
 import type { TColors, TContext } from '../../../utils';
-import type { TIconPosition } from '../../../elements/icon';
-
-
-export type IconProps = ComponentProps<typeof Icon> & {
-    noBorder?: boolean;
-    position?: TIconPosition;
-};
 
 export type NotificationProps = {
     color?: TColors;
@@ -23,13 +16,12 @@ export type LoadingProps = {
 }
 
 type ContentProps = {
-    icon?: IconProps;
+    icon?: TGenericIconProps;
     context: TContext;
     loading?: LoadingProps;
     children?: React.ReactNode;
     notification?: NotificationProps;
 };
-
 
 export default function Content({
     icon,

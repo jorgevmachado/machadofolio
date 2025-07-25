@@ -1,0 +1,13 @@
+@use "../../../styles/colors" as *;
+@use "../../../styles/focus" as *;
+
+.ds-input-content {
+  &__field {
+    &--textarea {
+      height: auto;
+      resize: vertical;
+      min-height: 120px;
+      max-width: 100%;
+    }
+  }
+}
