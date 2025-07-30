@@ -1,0 +1,28 @@
+.ds-date-input {
+  .react-datepicker__view-calendar-icon input {
+    padding: var(--size-x-small) 1rem;
+  }
+  &__field{
+    &--icon {
+      &-left {
+        padding-left: 2.5rem !important;
+      }
+      &-right {
+        padding-right: 2rem !important;
+      }
+    }
+  }
+  &__icon {
+    cursor: pointer;
+    display: flex;
+    position: absolute;
+    font-size: 1.25rem;
+    margin-top: .2rem;
+    align-items: center;
+    justify-content: center;
+    &--right {
+      left: auto;
+      right: 0.75rem;
+    }
+  }
+}

@@ -3,6 +3,7 @@ export const EInputContentChildren = {
     APPEND: 'append',
     COUNTER: 'counter',
     PREPEND: 'prepend',
+    CALENDAR: 'calendar',
     ICON_LEFT: 'icon-left',
     ICON_RIGHT: 'icon-right',
 } as const

@@ -2,50 +2,44 @@ import React, { useRef, useState } from 'react';
 
 import { fileToBase64, imageTypeValidator, urlToBase64 } from '@repo/services';
 
-import { type TContext, generateComponentId, joinClass } from '../../../utils';
-import { Image } from '../../../elements';
+import DOC_IMAGE from '../../../../assets/doc.png';
+import PDF_IMAGE from '../../../../assets/pdf.png';
+import XLSX_IMAGE from '../../../../assets/xlsx.png';
 
-import Button from '../../button';
+import { type TContext, joinClass } from '../../../../utils';
 
-import DOC_IMAGE from '../../../assets/doc.png';
-import PDF_IMAGE from '../../../assets/pdf.png';
-import XLSX_IMAGE from '../../../assets/xlsx.png';
+import { Image } from '../../../../elements'
 
+import { Button } from '../../../../components'
 
-import './FileInput.scss';
+import './File.scss';
 
 interface FileInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange'> {
-    accept?: string;
-    context?: TContext;
+    context: TContext;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>, value?: string) => void;
-    isInvalid?: boolean;
     withPreview?: boolean;
 }
 
-const FileInput: React.FC<FileInputProps> = ({
-    id,
-    accept = '',
-    context = 'neutral',
-    onChange,
+export default function FileInput({
+    accept,
+    context,
     disabled,
-    isInvalid,
+    onChange,
     className,
-    withPreview = false,
+    withPreview,
     ...props
-}) => {
+}: FileInputProps) {
     const inputRef = useRef<HTMLInputElement>(null);
     const [fileName, setFileName] = useState<string>('');
     const [preview, setPreview] = useState<string | null>(null);
 
-    const componentId = id ?? generateComponentId('ds-file-input');
     const classNameList = joinClass([
         'ds-file-input',
-        className
     ]);
 
     const inputFieldClassName = joinClass([
         'ds-file-input__field',
-        isInvalid ? 'ds-file-input__field--error' : ''
+        className,
     ]);
 
     const buildFilePreview = async (file: File) => {
@@ -91,9 +85,10 @@ const FileInput: React.FC<FileInputProps> = ({
         }
     };
 
+
     return (
-        <div className={classNameList} id={componentId} data-testid="ds-file-input">
-            {( withPreview && preview) && (
+        <div className={classNameList} data-testid="ds-file-input">
+            { (withPreview && preview) && (
                 <div className="ds-file-input__preview">
                     <Image src={preview} alt="Preview" className="ds-file-input__preview--image"/>
                 </div>
@@ -109,7 +104,6 @@ const FileInput: React.FC<FileInputProps> = ({
                 </Button>
                 <input
                     ref={inputRef}
-                    id={`${componentId}-input`}
                     type="file"
                     accept={accept}
                     style={{ display: 'none' }}
@@ -120,7 +114,5 @@ const FileInput: React.FC<FileInputProps> = ({
                 <span className="ds-file-input__filename">{fileName || 'No files selected'}</span>
             </div>
         </div>
-    );
-};
-
-export default FileInput;
+    )
+}

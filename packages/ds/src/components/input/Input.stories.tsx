@@ -54,7 +54,11 @@ export const InputFile: Story = {
         label: 'File',
         accept: '.pdf, .xlsx, image/*',
         placeholder: 'Select file',
-        withPreview: true
+        withPreview: true,
+        validator: {
+            invalid: true,
+            message: 'Field is required',
+        },
     }
 };
 
@@ -84,18 +88,33 @@ export const InputPhone: Story = {
 
 export const InputDatePicker: Story = {
     args: {
+        min: '1990-01-01',
+        max: '1990-12-31',
         type: 'date',
         label: 'Date',
-        inline: false,
         value: '01-01-1990',
-        showIcon: true,
-        placeholder: 'Input Date'
+        calendar: {
+            inline: false,
+            todayButton: 'Today',
+        },
+        children: (<div style={{ color: "red" }} data-children="calendar">Don&#39;t forget to check the weather!</div>),
+        placeholder: 'Input Date',
     }
 }
 
 export const InputTextArea: Story = {
     args: {
         rows: 10,
+        value: `
+            Mussum Ipsum, cacilds vidis litro abertis. Mauris nec dolor in eros commodo tempor.
+            Aenean aliquam molestie leo,vitae iaculis nisl. Diuretics paradis num copo é motivis de denguis.
+            Pellentesque nec nulla ligula.
+            Donec gravida turpis a vulputate ultricies. Eu nunca mais boto a boca num copo de cachaça,
+            agora eu só uso canudis! Interagi no mé, cursus quis, vehicula ac nisi.
+            In elementis mé pra quem é amistosis quis leo.
+            A ordem dos tratores não altera o pão duris. Praesent malesuada urna nisi, quis volutpat erat hendrerit non.
+            Nam vulputate dapibus.
+        `,
         type: 'textarea',
         fluid: true,
         label: 'Text Area',
@@ -127,7 +146,7 @@ export const InputPrepend: Story = {
 export const InputIconLeft: Story = {
     args: {
         icon: {
-            icon: 'react',
+            icon: 'arrow-left',
         },
         type: 'text',
         label: 'Input Icon Left',
@@ -138,7 +157,7 @@ export const InputIconLeft: Story = {
 export const InputIconRight: Story = {
     args: {
         icon: {
-            icon: 'react',
+            icon: 'arrow-right',
             position: 'right'
         },
         type: 'text',

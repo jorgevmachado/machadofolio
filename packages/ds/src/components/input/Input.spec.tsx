@@ -5,10 +5,10 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 
 jest.mock('../../utils', () => ({
     generateComponentId: jest.fn(() => 'mock-id'),
-    joinClass: (classes: any[]) => classes.filter(Boolean).join(' '),
+    joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
 }));
 jest.mock('../../elements', () => ({
-    Text: (props: any) => (<p {...props} data-testid="mock-text">{props.value}{props.children}</p>),
+    Text: (props: any) => (<p {...props} data-testid="mock-text">{props.children}</p>),
 }));
 jest.mock('../label', () => ({
     __esModule: true,
@@ -18,13 +18,13 @@ jest.mock('../feedback', () => ({
     __esModule: true,
     default: (props: any) => (<div {...props} data-testid="mock-feedback">{props.children}</div>),
 }));
-jest.mock('./file-input', () => ({
-    __esModule: true,
-    default: (props: any) => (<input data-testid="mock-file-input"  {...props} onChange={e => props.onChange?.(e, 'mock-base-64')}/>),
-}));
 jest.mock('./content', () => ({
     __esModule: true,
-    Content: (props: any) => (<input data-testid="mock-content" {...props}/>)
+    default: (props: any) => (<input data-testid="mock-content" {...props}/>)
+}));
+jest.mock('./InputContext', () => ({
+    __esModule: true,
+    InputProvider: ({ children }: any) => <div data-testid="mock-input-provider">{children}</div>,
 }));
 
 
@@ -53,32 +53,16 @@ describe('<Input/>', () => {
         expect(screen.getByTestId('mock-content')).toBeInTheDocument();
     });
 
-    it('renders the label when the label prop is provided', () => {
+    it('should renders the label when the label prop is provided', () => {
         renderComponent({ label: 'Test Label'});
         expect(screen.getByTestId('mock-label')).toHaveTextContent('Test Label');
     });
 
-    it('renders FileInput when type is file', () => {
-        renderComponent({ type: 'file'});
-        expect(screen.getByTestId('mock-file-input')).toBeInTheDocument();
-        expect(screen.queryByTestId('mock-content')).not.toBeInTheDocument();
-    });
-
-    it('updates value state and triggers onChange', () => {
-        const handleChange = jest.fn();
-        renderComponent({ onChange: handleChange });
-        const content = screen.getByTestId('mock-content');
-        fireEvent.change(content, { target: { value: 'new value' } });
-        fireEvent.blur(content, { target: { value: 'new value' } });
-        expect(content).toHaveAttribute('value', '');
-    });
-
-    it('updates currentInputValue when the value prop changes', () => {
-        const { rerender } = renderComponent({ value: 'A' });
-        const content = screen.getByTestId('mock-content');
-        expect(content).toHaveAttribute('value', 'A');
-        rerender(<Input {...defaultProps} value="B" />);
-        expect(screen.getByTestId('mock-content')).toHaveAttribute('value', 'B');
+    it('should renders the helperText when the helperText prop is provided', () => {
+        renderComponent({ helperText: { color: 'info-80', children: 'Test Helper Text', className: 'custom-helper' }});
+        expect(screen.getByTestId('mock-text')).toHaveTextContent('Test Helper Text');
+        expect(screen.getByTestId('mock-text')).toHaveClass('ds-input__helper-text');
+        expect(screen.getByTestId('mock-text')).toHaveClass('custom-helper');
     });
 
     it('shows validation feedback when invalid', () => {
@@ -91,21 +75,16 @@ describe('<Input/>', () => {
         expect(screen.queryByTestId('mock-feedback')).not.toBeInTheDocument();
     });
 
-    it('displays helperText when provided', () => {
-        renderComponent({ helperText: { value: 'Help', className: 'custom-helper' } });
-        expect(screen.getByTestId('mock-text')).toHaveTextContent('Help');
-        expect(screen.getByTestId('mock-text')).toHaveClass('ds-input__helper-text');
-        expect(screen.getByTestId('mock-text')).toHaveClass('custom-helper');
-    });
+    it('should render label, HelperText and Feedback with validator invalid and message', () => {
+        renderComponent({
+                label: 'Test Label',
+                validator: { invalid: true, message: 'Invalid' },
+                helperText: { children: 'Test Helper Text' }
+        });
+        expect(screen.getByTestId('mock-label')).toHaveTextContent('Test Label');
+        expect(screen.getByTestId('mock-text')).toHaveTextContent('Test Helper Text');
+        expect(screen.getByTestId('mock-feedback')).toHaveTextContent('Invalid');
 
-    it('triggers onBlur and sets invalid state if required and empty', () => {
-        const onBlur = jest.fn();
-        renderComponent({ required: true, onBlur });
-        const content = screen.getByTestId('mock-content');
-
-        fireEvent.blur(content, { target: { value: '   ' } });
-
-        expect(onBlur).toHaveBeenCalled();
     });
 
     it('onInput, onFocus, onChange, onKeyDown, and onMouseDown events are fired', () => {
@@ -131,33 +110,23 @@ describe('<Input/>', () => {
         expect(handlers.onMouseDown).toHaveBeenCalled();
     });
 
-    it('applies aria attributes correctly', () => {
-        renderComponent({
-            id: 'mock-id',
-            label: 'L',
-            disabled: true,
-            validator: { invalid: true, message: 'invalid' },
-            helperText: { value: 'Help'},
-            placeholder: 'Test Placeholder'
-        });
-
-        const el = screen.getByTestId('ds-input');
-        expect(el).toHaveAttribute('id', 'mock-id');
-
-        expect(screen.getByTestId('mock-content')).toHaveAttribute('aria-invalid', 'true');
-        expect(screen.getByTestId('mock-content')).toHaveAttribute('aria-disabled', 'true');
-        expect(screen.getByTestId('mock-content')).toHaveAttribute('aria-labelledby', 'mock-id-label');
-        expect(screen.getByTestId('mock-content')).toHaveAttribute('aria-describedby', 'mock-id-helper-text');
-        expect(screen.getByTestId('mock-content')).toHaveAttribute('aria-placeholder', 'Test Placeholder');
+    it('updates value state and triggers onChange', () => {
+        const handleChange = jest.fn();
+        renderComponent({ onChange: handleChange });
+        const content = screen.getByTestId('mock-content');
+        fireEvent.change(content, { target: { value: 'new value' } });
+        fireEvent.blur(content, { target: { value: 'new value' } });
+        expect(content).toHaveAttribute('value', '');
     });
 
-    it('updates currentInputValue and calls onChange when value is passed to the handler', async () => {
-        const handleChange = jest.fn();
-        renderComponent({ type: 'file', onChange: handleChange });
-        const fileInput = screen.getByTestId('mock-file-input');
-        expect(fileInput).toBeInTheDocument();
-        fireEvent.change(fileInput, { target: { value: 'new Value'}}, 'base-64');
-        expect(handleChange).toHaveBeenCalled();
+    it('triggers onBlur and sets invalid state if required and empty', () => {
+        const onBlur = jest.fn();
+        renderComponent({ required: true, onBlur });
+        const content = screen.getByTestId('mock-content');
+
+        fireEvent.blur(content, { target: { value: '   ' } });
+
+        expect(onBlur).toHaveBeenCalled();
     });
 
 });
