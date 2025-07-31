@@ -12,6 +12,7 @@ const meta = {
         tip: '(tip)',
         type: 'text',
         label: 'Label',
+        required: true,
         helperText: { children: 'Helper Text' },
         placeholder: 'Placeholder',
         defaultFormatter: true,
@@ -28,7 +29,7 @@ const meta = {
         fluid: { control: 'boolean' },
         disabled: { control: 'boolean' },
         calendar: { control: 'object' },
-        validator: { control: 'object' },
+        validated: { control: 'object' },
         helperText: { control: 'object' },
         placeholder: { control: 'text' },
         withPreview: { control: 'boolean' },
@@ -54,7 +55,7 @@ export const Disabled: Story = {
 export const Error: Story = {
     args: {
         label: 'Error',
-        validator: {
+        validated: {
             invalid: true,
             message: 'Field is required',
         },
@@ -70,7 +71,7 @@ export const File: Story = {
         accept: '.pdf, .xlsx, image/*',
         placeholder: 'Select file',
         withPreview: true,
-        validator: {
+        validated: {
             invalid: true,
             message: 'Field is required',
         },
@@ -81,6 +82,10 @@ export const CPF: Story = {
     args: {
         type: 'cpf',
         label: 'CPF',
+        validated: {
+            invalid: false,
+            message: 'Please enter a valid cpf number.',
+        },
         placeholder: 'Insert CPF',
     }
 }

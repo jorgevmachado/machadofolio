@@ -3,6 +3,22 @@ import React from 'react';
 import '@testing-library/jest-dom'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 
+const mockCpfValidator = jest.fn(({ value }: any) => ({ valid: true, value, message: 'Valid CPF.' }));
+const mockEmailValidator = jest.fn(({ value }: any) => ({ valid: true, value, message: 'Valid Email.' }));
+const mockPasswordValidator = jest.fn(({ value }: any) => ({ valid: true, value, message: 'Valid password.' }));
+const mockPhoneValidator = jest.fn(({ value }: any) => ({ valid: true, value, message: 'Valid phone number.' }));
+
+jest.mock('@repo/services', () => {
+    const originalModule = jest.requireActual('@repo/services');
+    return {
+        ...originalModule,
+        cpfValidator: mockCpfValidator,
+        emailValidator: mockEmailValidator,
+        passwordValidator: mockPasswordValidator,
+        phoneValidator: mockPhoneValidator,
+    }
+});
+
 jest.mock('../../utils', () => ({
     generateComponentId: jest.fn(() => 'mock-id'),
     joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
@@ -26,7 +42,6 @@ jest.mock('./InputContext', () => ({
     __esModule: true,
     InputProvider: ({ children }: any) => <div data-testid="mock-input-provider">{children}</div>,
 }));
-
 
 import Input from './Input';
 
@@ -66,19 +81,19 @@ describe('<Input/>', () => {
     });
 
     it('shows validation feedback when invalid', () => {
-        renderComponent({ validator: { invalid: true, message: 'Error!' } });
+        renderComponent({ validated: { invalid: true, message: 'Error!' } });
         expect(screen.getByTestId('mock-feedback')).toHaveTextContent('Error!');
     });
 
     it('does not show feedback if invalid is true without a message', () => {
-        renderComponent({ validator: { invalid: true } });
+        renderComponent({ validated: { invalid: true } });
         expect(screen.queryByTestId('mock-feedback')).not.toBeInTheDocument();
     });
 
     it('should render label, HelperText and Feedback with validator invalid and message', () => {
         renderComponent({
                 label: 'Test Label',
-                validator: { invalid: true, message: 'Invalid' },
+                validated: { invalid: true, message: 'Invalid' },
                 helperText: { children: 'Test Helper Text' }
         });
         expect(screen.getByTestId('mock-label')).toHaveTextContent('Test Label');
@@ -124,9 +139,156 @@ describe('<Input/>', () => {
         renderComponent({ required: true, onBlur });
         const content = screen.getByTestId('mock-content');
 
-        fireEvent.blur(content, { target: { value: '   ' } });
+        fireEvent.blur(content, { target: { value: '' } });
 
         expect(onBlur).toHaveBeenCalled();
+        expect(screen.getByTestId('mock-feedback')).toHaveTextContent('This field is required.');
+    });
+
+    it('Should trigger onBlur and set invalid state if required and empty with custom message.', () => {
+        const onBlur = jest.fn();
+        renderComponent({ required: true, onBlur, validated: { invalid: true, message: 'Custom Message Error.' } });
+        const content = screen.getByTestId('mock-content');
+
+        fireEvent.blur(content, { target: { value: '' } });
+
+        expect(onBlur).toHaveBeenCalled();
+        expect(screen.getByTestId('mock-feedback')).toHaveTextContent('Custom Message Error.');
+    });
+
+    it('Should trigger onBlur and set invalid state when input type cpf is not valid by default validator.', () => {
+        const value = '12345678901';
+        mockCpfValidator.mockReturnValue({ valid: false, value, message: 'Invalid CPF.' });
+        const onBlur = jest.fn();
+        renderComponent({ type: 'cpf', onBlur });
+        const content = screen.getByTestId('mock-content');
+
+        fireEvent.blur(content, { target: { value } });
+
+        expect(onBlur).toHaveBeenCalled();
+        expect(screen.getByTestId('mock-feedback')).toHaveTextContent('Invalid CPF.');
+    });
+
+    it('Should trigger onBlur and set valid state when input type cpf dont have default validator and custom validator.', () => {
+        const value = '12345678901';
+        const onBlur = jest.fn();
+        renderComponent({ type: 'cpf', onBlur, defaultValidator: false });
+        const content = screen.getByTestId('mock-content');
+
+        fireEvent.blur(content, { target: { value } });
+
+        expect(onBlur).toHaveBeenCalled();
+    });
+
+    it('Should trigger onBlur and set valid state when input type cpf dont have default validator and have custom validator.', () => {
+        const value = '12345678901';
+        const onBlur = jest.fn();
+        renderComponent({ type: 'cpf', onBlur, defaultValidator: false, validator: () => ({ valid: false, value, message: 'Custom Invalid CPF.' }) });
+        const content = screen.getByTestId('mock-content');
+
+        fireEvent.blur(content, { target: { value } });
+
+        expect(onBlur).toHaveBeenCalled();
+        expect(screen.getByTestId('mock-feedback')).toHaveTextContent('Custom Invalid CPF.');
+    });
+
+    it('Should trigger onBlur and set invalid state when input type cpf is not valid by custom validator.', () => {
+        const value = '12345678901';
+        const onBlur = jest.fn();
+        renderComponent({ type: 'cpf', onBlur, validator: () => ({ valid: false, value, message: 'Custom Invalid CPF.' }) });
+        const content = screen.getByTestId('mock-content');
+
+        fireEvent.blur(content, { target: { value } });
+
+        expect(onBlur).toHaveBeenCalled();
+        expect(screen.getByTestId('mock-feedback')).toHaveTextContent('Custom Invalid CPF.');
+    });
+
+    it('Should trigger onBlur and set invalid state when input type phone is not valid by default validator.', () => {
+        const value = '11223456789';
+        mockPhoneValidator.mockReturnValue({ valid: false, value, message: 'Please enter a valid phone number.' });
+        const onBlur = jest.fn();
+        renderComponent({ type: 'phone', onBlur });
+        const content = screen.getByTestId('mock-content');
+
+        fireEvent.blur(content, { target: { value } });
+
+        expect(onBlur).toHaveBeenCalled();
+        expect(screen.getByTestId('mock-feedback')).toHaveTextContent('Please enter a valid phone number.');
+    });
+
+    it('Should trigger onBlur and set invalid state when input type phone is not valid by custom validator.', () => {
+        const value = '11223456789';
+        const onBlur = jest.fn();
+        renderComponent({ type: 'phone', onBlur, validator: () => ({ valid: false, value, message: 'Custom Invalid Phone.' }) });
+        const content = screen.getByTestId('mock-content');
+
+        fireEvent.blur(content, { target: { value } });
+
+        expect(onBlur).toHaveBeenCalled();
+        expect(screen.getByTestId('mock-feedback')).toHaveTextContent('Custom Invalid Phone.');
+    });
+
+    it('Should trigger onBlur and set invalid state when input type email is not valid by default validator.', () => {
+        const value = 'invalid@mail.com';
+        mockEmailValidator.mockReturnValue({ valid: false, value, message: 'Please enter a valid email.' });
+        const onBlur = jest.fn();
+        renderComponent({ type: 'email', onBlur });
+        const content = screen.getByTestId('mock-content');
+
+        fireEvent.blur(content, { target: { value } });
+
+        expect(onBlur).toHaveBeenCalled();
+        expect(screen.getByTestId('mock-feedback')).toHaveTextContent('Please enter a valid email.');
+    });
+
+    it('Should trigger onBlur and set invalid state when input type email is not valid by custom validator.', () => {
+        const value = '11223456789';
+        const onBlur = jest.fn();
+        renderComponent({ type: 'email', onBlur, validator: () => ({ valid: false, value, message: 'Custom Invalid Email.' }) });
+        const content = screen.getByTestId('mock-content');
+
+        fireEvent.blur(content, { target: { value } });
+
+        expect(onBlur).toHaveBeenCalled();
+        expect(screen.getByTestId('mock-feedback')).toHaveTextContent('Custom Invalid Email.');
+    });
+
+    it('Should trigger onBlur and set invalid state when input type password is not valid by default validator.', () => {
+        const value = 'invalidPassword';
+        mockPasswordValidator.mockReturnValue({ valid: false, value, message: 'Please enter a valid password.' });
+        const onBlur = jest.fn();
+        renderComponent({ type: 'password', onBlur });
+        const content = screen.getByTestId('mock-content');
+
+        fireEvent.blur(content, { target: { value } });
+
+        expect(onBlur).toHaveBeenCalled();
+        expect(screen.getByTestId('mock-feedback')).toHaveTextContent('Please enter a valid password.');
+    });
+
+    it('Should trigger onBlur and set invalid state when input type password is not valid by custom validator.', () => {
+        const value = 'invalidPassword';
+        const onBlur = jest.fn();
+        renderComponent({ type: 'password', onBlur, validator: () => ({ valid: false, value, message: 'Custom Invalid Password.' }) });
+        const content = screen.getByTestId('mock-content');
+
+        fireEvent.blur(content, { target: { value } });
+
+        expect(onBlur).toHaveBeenCalled();
+        expect(screen.getByTestId('mock-feedback')).toHaveTextContent('Custom Invalid Password.');
+    });
+
+    it('Should trigger onBlur and set invalid state when input type text is not valid by custom validator.', () => {
+        const value = 'textInvalid';
+        const onBlur = jest.fn();
+        renderComponent({ onBlur, validator: () => ({ valid: false, value, message: 'Custom Invalid Text.' }) });
+        const content = screen.getByTestId('mock-content');
+
+        fireEvent.blur(content, { target: { value } });
+
+        expect(onBlur).toHaveBeenCalled();
+        expect(screen.getByTestId('mock-feedback')).toHaveTextContent('Custom Invalid Text.');
     });
 
 });

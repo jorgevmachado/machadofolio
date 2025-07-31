@@ -2,7 +2,7 @@ import React, { forwardRef, useEffect, useState } from 'react';
 
 import type DatePicker from 'react-datepicker';
 
-import { cpfFormatter, phoneFormatter } from '@repo/services';
+import { cleanFormatter, cpfFormatter, phoneFormatter } from '@repo/services';
 
 import { type TContext, generateComponentId, joinClass } from '../../../utils';
 
@@ -44,6 +44,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         accept,
         onInput,
         onOpen,
+        onBlur,
         context,
         onClose,
         invalid = false,
@@ -153,6 +154,20 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         }
     }
 
+    const handleOnBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        switch (type) {
+            case 'cpf':
+            case 'phone':
+                e.target.value = cleanFormatter(e.target.value);
+                break;
+            default:
+                break;
+        }
+        if(onBlur) {
+            onBlur(e);
+        }
+    }
+
     const defaultClassNameInputList: Array<string> = [
         'ds-input-content__field',
         fluid ? 'ds-input-content__field--fluid' : '',
@@ -183,6 +198,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         ref={ref as React.Ref<HTMLTextAreaElement>}
                         rows={rows}
                         value={currentInputValue}
+                        onBlur={handleOnBlur}
                         onInput={handleInput}
                         disabled={disabled}
                         className={classNameInputList}
@@ -209,6 +225,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         max={props?.max}
                         icon={currentIcon}
                         value={currentInputValue}
+                        onBlur={handleOnBlur}
                         onOpen={onOpen}
                         invalid={invalid}
                         onClose={onClose}
@@ -224,6 +241,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         ref={ref as React.Ref<HTMLInputElement>}
                         type={typeInput}
                         value={treatValue(currentInputValue)}
+                        onBlur={handleOnBlur}
                         onInput={handleInput}
                         onChange={handleOnChange}
                         disabled={disabled}

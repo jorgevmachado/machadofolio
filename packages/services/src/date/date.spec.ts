@@ -4,7 +4,7 @@ import { INVALID_TYPE, REQUIRED_FIELD } from '../shared';
 
 import {
     calculateMaxDate,
-    createDateFromYearMonthDay, dateOfBirthValidator, isDateString,
+    createDateFromYearMonthDay, dateOfBirthValidator, dateValidator, isDateString,
     isUnderMinimumAge, parseDateFromString,
     parseDateFromStringWithSeparator,
     parseStartDate
@@ -202,6 +202,23 @@ describe('Date function', () => {
         });
     });
 
+    describe('dateValidator', () => {
+        it('should return invalid when received undefined dateValidator', () => {
+            expect(dateValidator({})).toEqual(REQUIRED_FIELD);
+        });
+
+        it('should return invalid when received dateValidator type', () => {
+            expect(dateValidator({ value: 100 })).toEqual(INVALID_TYPE);
+        });
+
+        it('should return invalid when received invalid date string', () => {
+            expect(dateValidator({ value: '20/07/1990' })).toEqual({
+                valid: false,
+                message: 'Please enter a valid date.',
+            });
+        });
+    });
+
     describe('dateOfBirthValidator', () => {
         it('should return invalid when received undefined dateOfBirth', () => {
             expect(dateOfBirthValidator({})).toEqual(REQUIRED_FIELD);
@@ -214,7 +231,7 @@ describe('Date function', () => {
         it('should return invalid when received invalid date string', () => {
             expect(dateOfBirthValidator({ value: '20/07/1990' })).toEqual({
                 valid: false,
-                message: 'Invalid date.',
+                message: 'Please enter a valid date.',
             });
         });
 
@@ -223,6 +240,7 @@ describe('Date function', () => {
             date.setFullYear(date.getFullYear() - 17);
             expect(dateOfBirthValidator({ value: date })).toEqual({
                 valid: false,
+                value: date,
                 message: 'You must be over 18 years old.',
             });
         });
@@ -230,11 +248,11 @@ describe('Date function', () => {
         it('should return valid when received date string over 18 year old.', () => {
             const date = new Date();
             date.setFullYear(date.getFullYear() - 20);
-            const value = date.toISOString();
+            const value = date;
             expect(dateOfBirthValidator({ value })).toEqual({
                 valid: true,
-                value,
-                message: 'valid date.',
+                value: date,
+                message: 'Valid date.',
             });
         });
     });

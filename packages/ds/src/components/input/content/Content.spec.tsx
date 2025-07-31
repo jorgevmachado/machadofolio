@@ -3,6 +3,16 @@ import React from 'react';
 import '@testing-library/jest-dom';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 
+const mockCpfFormatter = jest.fn((v?: string) => (v ?? ''));
+const mockPhoneFormatter = jest.fn((v?: string) => (v ?? ''));
+
+jest.mock('@repo/services', () => ({
+    cleanFormatter: jest.fn((v?: string) => v ?? ''),
+    cpfFormatter: mockCpfFormatter,
+    phoneFormatter: mockPhoneFormatter,
+}));
+
+
 jest.mock('../../../utils', () => ({
     generateComponentId: jest.fn((id?: string) => id || 'mocked-id'),
     joinClass: (classes: any[]) => classes.filter(Boolean).join(' '),
@@ -154,6 +164,14 @@ describe('<Content />', () => {
             expect(input).toBeInTheDocument();
             expect(input).toHaveAttribute('value', 'home');
         });
+
+        it('should trigger onBlur when input loses focus.', () => {
+            const onBlur = jest.fn();
+            renderComponent({ onBlur });
+            const input = screen.getByTestId('ds-input-content-field');
+            fireEvent.blur(input);
+            expect(onBlur).toHaveBeenCalled();
+        });
     });
 
     describe('type="textarea"', () => {
@@ -167,6 +185,7 @@ describe('<Content />', () => {
 
     describe('type="cpf"', () => {
         it('should render input when type="cpf" with defaultFormatter.', () => {
+            mockCpfFormatter.mockReturnValue('111.222.333-44');
             renderComponent({ type: 'cpf', value: '11122233344' });
             const input = screen.getByTestId('ds-input-content-field');
             expect(input).toBeInTheDocument();
@@ -193,10 +212,19 @@ describe('<Content />', () => {
             expect(input).toBeInTheDocument();
             expect(input).toHaveAttribute('value', '11122233344');
         });
+
+        it('should trigger onBlur when input loses focus.', () => {
+            const onBlur = jest.fn();
+            renderComponent({ onBlur, type: 'cpf', value: '11122233344' });
+            const input = screen.getByTestId('ds-input-content-field');
+            fireEvent.blur(input);
+            expect(onBlur).toHaveBeenCalled();
+        });
     });
 
     describe('type="phone"', () => {
         it('should render input when type="phone" with defaultFormatter.', () => {
+            mockPhoneFormatter.mockReturnValue('(11) 22345-6789');
             renderComponent({ type: 'phone', value: '11223456789' });
             const input = screen.getByTestId('ds-input-content-field');
             expect(input).toBeInTheDocument();
@@ -222,6 +250,14 @@ describe('<Content />', () => {
             const input = screen.getByTestId('ds-input-content-field');
             expect(input).toBeInTheDocument();
             expect(input).toHaveAttribute('value', '11223456789');
+        });
+
+        it('should trigger onBlur when input loses focus.', () => {
+            const onBlur = jest.fn();
+            renderComponent({ onBlur, type: 'phone', value: '11223456789' });
+            const input = screen.getByTestId('ds-input-content-field');
+            fireEvent.blur(input);
+            expect(onBlur).toHaveBeenCalled();
         });
     });
 

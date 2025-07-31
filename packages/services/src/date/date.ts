@@ -1,6 +1,12 @@
 import { INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams } from '../shared';
 
-import { type CreateDateFromYearMonthDayParams, type ParseDate, type ParseStartDateParams, type TDateSeparator, type YearMonthDay } from './types';
+import {
+ type CreateDateFromYearMonthDayParams,
+ type ParseDate,
+ type ParseStartDateParams,
+ type TDateSeparator,
+ type YearMonthDay
+} from './types';
 
 import { parseDay } from './day';
 import { parseMonth } from './month';
@@ -138,7 +144,7 @@ function parseInitialDate(initialDate?: ParseDate): Date | undefined {
  );
 }
 
-export function dateOfBirthValidator({ value }: ValidatorParams): ValidatorMessage {
+export function dateValidator({ value }: ValidatorParams): ValidatorMessage {
  if (!value) {
   return REQUIRED_FIELD;
  }
@@ -149,23 +155,32 @@ export function dateOfBirthValidator({ value }: ValidatorParams): ValidatorMessa
 
  const date = typeof value !== 'string' ? value : new Date(value);
 
- if (date.toString() === 'Invalid Date') {
-  return {
-   valid: false,
-   message: 'Invalid date.',
-  };
+ const invalid = date.toString() === 'Invalid Date';
+
+ return {
+  value: !invalid ? date : undefined,
+  valid: !invalid,
+  message: !invalid ? 'Valid date.' : 'Please enter a valid date.',
+ };
+}
+
+export function dateOfBirthValidator({ value }: ValidatorParams): ValidatorMessage {
+
+ const validatorMessage = dateValidator({ value });
+
+ if (!validatorMessage.valid) {
+  return validatorMessage;
  }
 
- return isUnderMinimumAge(date)
-     ? {
-      valid: false,
-      message: 'You must be over 18 years old.',
-     }
-     : {
-      valid: true,
-      value,
-      message: 'valid date.',
-     };
+ const date = validatorMessage.value as Date;
+
+ const invalid = isUnderMinimumAge(date);
+
+ return {
+  value,
+  valid: !invalid,
+  message: !invalid ? validatorMessage.message : 'You must be over 18 years old.',
+ };
 }
 
 export function isDateString({ value }: ValidatorParams): ValidatorMessage {

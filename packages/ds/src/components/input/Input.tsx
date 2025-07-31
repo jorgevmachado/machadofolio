@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from 'react';
 
+import {
+    type ValidatorMessage,
+    type ValidatorParams,
+    cpfValidator,
+    emailValidator,
+    passwordValidator,
+    phoneValidator
+} from '@repo/services';
+
 import type DatePicker from 'react-datepicker';
 
 import {
     type TContext,
     type TInputType,
-    type ValidatorProps,
+    type ValidatedProps,
     generateComponentId,
     joinClass
 } from '../../utils';
@@ -19,8 +28,6 @@ import Content from './content';
 import { InputProvider } from './InputContext';
 
 import './Input.scss';
-
-
 
 type InputPropsItem = Pick<
     React.HTMLProps<Element>,
@@ -52,9 +59,11 @@ interface InputProps extends InputPropsItem, HostProps {
     context?: TContext;
     calendar?: CalendarProps;
     formatter?: (value?: string) => string;
-    validator?: ValidatorProps;
+    validated?: ValidatedProps;
+    validator?: (validatorParams: ValidatorParams) => ValidatorMessage;
     helperText?: TextProps;
     withPreview?: boolean;
+    defaultValidator?: boolean;
     defaultFormatter?: boolean;
 }
 
@@ -84,6 +93,7 @@ export default function Input({
     children,
     onChange,
     disabled = false,
+    validated,
     validator,
     onKeyDown,
     className,
@@ -95,19 +105,57 @@ export default function Input({
     placeholder = '',
     withPreview = false,
     autoComplete,
+    defaultValidator = true,
     defaultFormatter = true,
     ...props
 }: InputProps) {
-    const [inputValidator, setInputValidator] = useState<ValidatorProps>({ invalid: false, message: undefined });
+    const [inputValidated, setInputValidated] = useState<ValidatedProps>({ invalid: false, message: undefined });
 
     const componentId = id ?? generateComponentId('ds-input');
     const componentLabelId = `${componentId}-label`;
 
-    useEffect(() => {
-        if(validator) {
-            setInputValidator(validator);
+    const handleValidator = (value: string) => {
+        const validatorMessage: ValidatorMessage = { valid: true, message: '' };
+        if(!defaultValidator) {
+            return  validator ? validator({ value }) : validatorMessage;
         }
-    }, [validator]);
+        switch (type) {
+            case 'cpf':
+                return validator ? validator({ value }) : cpfValidator({ value });
+            case 'phone':
+                return validator ? validator({ value }) : phoneValidator({ value });
+            case 'email':
+                return validator ? validator({ value }) : emailValidator({ value });
+            case 'password':
+                return validator ? validator({ value }) : passwordValidator({ value });
+            default:
+                return validator ? validator({ value }) : validatorMessage;
+        }
+    }
+
+    const handleOnBlur = (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if(onBlur) {
+            onBlur(event);
+        }
+        if(required && !event.target?.value) {
+            setInputValidated({
+                invalid: true,
+                message:  validated?.message ?? 'This field is required.'
+            });
+            return;
+        }
+        const validatorMessage = handleValidator(event.target.value);
+        setInputValidated({
+            invalid: !validatorMessage.valid,
+            message: !validatorMessage.valid ? validatorMessage.message : undefined
+        })
+    }
+
+    useEffect(() => {
+        if(validated) {
+            setInputValidated(validated);
+        }
+    }, [validated]);
 
 
     return (
@@ -122,17 +170,12 @@ export default function Input({
                 <Label
                     id={componentLabelId}
                     tip={tip}
-                    color={inputValidator.invalid ? 'error-80' : 'neutral-80'}
+                    color={inputValidated.invalid ? 'error-80' : 'neutral-80'}
                     label={label}
                     className="ds-input__label"
                 />
             )}
 
-            {(inputValidator.invalid && inputValidator.message) && (
-                <Feedback id={`${componentId}-feedback`} context="error" className="ds-input__feedback" >
-                    {inputValidator.message}
-                </Feedback>
-            )}
             <InputProvider value={children} addon={addon} counter={counter}>
                 <Content
                     min={min}
@@ -144,9 +187,9 @@ export default function Input({
                     fluid={fluid}
                     onOpen={onOpen}
                     accept={accept}
-                    onBlur={onBlur}
+                    onBlur={handleOnBlur}
                     onClose={onClose}
-                    invalid={inputValidator.invalid}
+                    invalid={inputValidated.invalid}
                     onInput={onInput}
                     onFocus={onFocus}
                     context={context}
@@ -166,6 +209,12 @@ export default function Input({
                     defaultFormatter={defaultFormatter}
                 />
             </InputProvider>
+
+            {(inputValidated.invalid && inputValidated.message) && (
+                <Feedback id={`${componentId}-feedback`} context="error" className="ds-input__feedback" >
+                    {inputValidated.message}
+                </Feedback>
+            )}
 
             {(helperText) && (
                 <Text
