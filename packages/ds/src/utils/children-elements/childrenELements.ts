@@ -1,5 +1,10 @@
 import React from 'react';
 
+type ChildrenElementProps = {
+    'data-children': string;
+    [key: string]: unknown;
+};
+
 export default function useChildrenElements(children: React.ReactNode) {
     const childrenElements = React.useMemo(() => {
         const elements: { [key: string]: React.JSX.Element } = {};
@@ -16,9 +21,9 @@ export default function useChildrenElements(children: React.ReactNode) {
 
     const getChildrenElement = (elementId: string): React.ReactNode | null => {
         const element = Object.values(childrenElements).find(
-            (child) =>
-                React.isValidElement(child) &&
-                (child.props as any)['data-children'] === elementId,
+            (child): child is React.ReactElement<ChildrenElementProps> =>
+                React.isValidElement<ChildrenElementProps>(child) &&
+                child.props['data-children'] === elementId,
         );
         return element || null;
     };

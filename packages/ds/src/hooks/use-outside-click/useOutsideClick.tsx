@@ -1,9 +1,9 @@
-import { type RefObject, useEffect } from 'react';
+import { type DependencyList, type RefObject, useEffect } from 'react';
 
 export default function useOutsideClick(
     ref: RefObject<HTMLElement | null>,
     callback: () => void,
-    deps: any[] = [],
+    deps: DependencyList = [],
 ) {
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
