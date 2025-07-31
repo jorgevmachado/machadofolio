@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import Button from '../button';
 
 import Input from './Input';
+import { OInputTypes } from '../../utils';
 
 const meta = {
     tags: ['autodocs'],
@@ -16,7 +17,22 @@ const meta = {
         placeholder: 'Placeholder',
     },
     title: 'Components/Input',
-    argTypes: {},
+    argTypes: {
+        icon: { control: 'object' },
+        type: {
+            control: { type: 'select' },
+            options: OInputTypes
+        },
+        label: { control: 'text' },
+        value: { control: 'text' },
+        fluid: { control: 'boolean' },
+        disabled: { control: 'boolean' },
+        calendar: { control: 'object' },
+        validator: { control: 'object' },
+        helperText: { control: 'object' },
+        placeholder: { control: 'text' },
+        withPreview: { control: 'boolean' },
+    },
     component: Input,
     parameters: {},
 } satisfies Meta<typeof Input>;
@@ -26,29 +42,27 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {  args: {} };
 
-export const InputDisabled: Story = {
+export const Disabled: Story = {
     args: {
-        label: 'Input Disabled',
+        label: 'Disabled',
         disabled: true,
-        placeholder: 'Input Disabled Placeholder'
+        placeholder: 'Disabled Placeholder'
     }
 };
 
-export const InputError: Story = {
+export const Error: Story = {
     args: {
-        label: 'Input Error',
+        label: 'Error',
         validator: {
             invalid: true,
             message: 'Field is required',
         },
-        helperText: {
-            children: 'Input Error Helper Text'
-        },
-        placeholder: 'Input Error Placeholder',
+        helperText: { children: 'Helper Text' },
+        placeholder: 'Error Placeholder',
     }
 };
 
-export const InputFile: Story = {
+export const File: Story = {
     args: {
         type: 'file',
         label: 'File',
@@ -62,67 +76,58 @@ export const InputFile: Story = {
     }
 };
 
-export const InputNumber: Story = {
+export const Number: Story = {
     args: {
         type: 'number',
         label: 'Number',
-        placeholder: 'Input Number'
+        placeholder: 'Number'
     }
 };
 
-export const InputEmail: Story = {
+export const Email: Story = {
     args: {
         type: 'email',
         label: 'E-Mail',
-        placeholder: 'Input Email'
+        placeholder: 'Email'
     }
 };
 
-export const InputPhone: Story = {
+export const Phone: Story = {
     args: {
         type: 'phone',
         label: 'Phone',
-        placeholder: 'Input Phone'
+        placeholder: 'Phone'
     }
 };
 
-export const InputDatePicker: Story = {
+export const DatePicker: Story = {
     args: {
-        min: '1990-01-01',
-        max: '1990-12-31',
+        min: '2000-01-01',
+        max: '2030-12-31',
         type: 'date',
         label: 'Date',
-        value: '01-01-1990',
+        value: new Date().toISOString(),
         calendar: {
             inline: false,
             todayButton: 'Today',
         },
         children: (<div style={{ color: "red" }} data-children="calendar">Don&#39;t forget to check the weather!</div>),
-        placeholder: 'Input Date',
+        placeholder: 'Date',
     }
 }
 
-export const InputTextArea: Story = {
+export const TextArea: Story = {
     args: {
         rows: 10,
-        value: `
-            Mussum Ipsum, cacilds vidis litro abertis. Mauris nec dolor in eros commodo tempor.
-            Aenean aliquam molestie leo,vitae iaculis nisl. Diuretics paradis num copo é motivis de denguis.
-            Pellentesque nec nulla ligula.
-            Donec gravida turpis a vulputate ultricies. Eu nunca mais boto a boca num copo de cachaça,
-            agora eu só uso canudis! Interagi no mé, cursus quis, vehicula ac nisi.
-            In elementis mé pra quem é amistosis quis leo.
-            A ordem dos tratores não altera o pão duris. Praesent malesuada urna nisi, quis volutpat erat hendrerit non.
-            Nam vulputate dapibus.
-        `,
+        value: 'Lorem ipsum dolor sit amet.',
         type: 'textarea',
         fluid: true,
         label: 'Text Area',
-        placeholder: 'Input Text Area'
+        placeholder: 'Text Area'
     }
 };
 
-export const InputPassword: Story = {
+export const Password: Story = {
     args: {
         type: 'password',
         label: 'Password',
@@ -130,7 +135,7 @@ export const InputPassword: Story = {
     }
 };
 
-export const InputPrepend: Story = {
+export const WithPrepend: Story = {
     args: {
         type: 'text',
         label: 'Input Prepend',
@@ -143,18 +148,16 @@ export const InputPrepend: Story = {
     }
 };
 
-export const InputIconLeft: Story = {
+export const WithIconLeft: Story = {
     args: {
-        icon: {
-            icon: 'arrow-left',
-        },
+        icon: { icon: 'arrow-left'},
         type: 'text',
         label: 'Input Icon Left',
         placeholder: 'Input Icon Left Placeholder'
     }
 }
 
-export const InputIconRight: Story = {
+export const WithIconRight: Story = {
     args: {
         icon: {
             icon: 'arrow-right',
@@ -166,7 +169,7 @@ export const InputIconRight: Story = {
     }
 }
 
-export const InputCounter: Story = {
+export const WithCounter: Story = {
     args: {
         label: 'Input Counter',
         counter: {
@@ -178,7 +181,7 @@ export const InputCounter: Story = {
     },
 };
 
-export const InputAddon: Story = {
+export const WithAddon: Story = {
     args: {
         addon: {
             color: 'primary-80',
@@ -191,7 +194,7 @@ export const InputAddon: Story = {
 
 };
 
-export const InputAppend: Story = {
+export const WithAppend: Story = {
     args: {
         label: 'Input Append',
         children: (
@@ -203,7 +206,7 @@ export const InputAppend: Story = {
     },
 };
 
-export const InputPrependAppend: Story = {
+export const WithPrependAndAppend: Story = {
     args: {
         label: 'Input Prepend and Append',
         placeholder: 'Input Prepend and Append Placeholder',
