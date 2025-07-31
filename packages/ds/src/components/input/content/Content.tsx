@@ -2,6 +2,8 @@ import React, { forwardRef, useEffect, useState } from 'react';
 
 import type DatePicker from 'react-datepicker';
 
+import { cpfFormatter, phoneFormatter } from '@repo/services';
+
 import { type TContext, generateComponentId, joinClass } from '../../../utils';
 
 import type { TGenericIconProps } from '../../../elements';
@@ -25,9 +27,11 @@ interface ContentProps extends Omit<React.InputHTMLAttributes<HTMLInputElement |
     onOpen?: () => void;
     context: TContext;
     onClose?: () => void;
-    calendar?: CalendarProps;
     invalid?: boolean;
+    calendar?: CalendarProps;
+    formatter?: (value?: string) => string;
     withPreview?: boolean;
+    defaultFormatter?: boolean;
 }
 
 const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>((
@@ -46,7 +50,9 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         calendar,
         onChange,
         disabled = false,
+        formatter,
         withPreview = true,
+        defaultFormatter = true,
         ...props
     },
     ref
@@ -57,9 +63,9 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
     const [currentIcon, setCurrentIcon] = useState<TGenericIconProps | undefined>(icon);
 
     const isPassword = type === 'password';
-    const isTextArea = typeInput === 'textarea';
-    const isFile = typeInput === 'file';
-    const isDate = typeInput === 'date';
+    const isTextArea = type === 'textarea';
+    const isFile = type === 'file';
+    const isDate = type === 'date';
     const isDefault = !isTextArea && !isFile && !isDate;
 
     const componentId = props.id ?? generateComponentId(`ds-input-${type}`);
@@ -121,8 +127,31 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         }
     }, [currentIcon, icon, typeInput]);
 
+    useEffect(() => {
+        if(type === 'cpf') {
+            setTypeInput('text');
+        }
+    }, [type]);
+
     const hasIconLeft = hasIconElement('left', currentIcon);
     const hasIconRight = hasIconElement('right', currentIcon);
+
+    const treatValue = (value?: string) => {
+        if (value === undefined || value === null) {
+            return '';
+        }
+        if(!defaultFormatter) {
+            return formatter ? formatter(value) : value;
+        }
+        switch (type) {
+            case 'cpf':
+                return formatter ? formatter(value) : cpfFormatter(value);
+            case 'phone':
+                return formatter ? formatter(value) : phoneFormatter(value);
+            default:
+                return formatter ? formatter(value) : value;
+        }
+    }
 
     const defaultClassNameInputList: Array<string> = [
         'ds-input-content__field',
@@ -194,11 +223,12 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         id={componentId}
                         ref={ref as React.Ref<HTMLInputElement>}
                         type={typeInput}
-                        value={currentInputValue}
+                        value={treatValue(currentInputValue)}
                         onInput={handleInput}
                         onChange={handleOnChange}
                         disabled={disabled}
                         className={classNameInputList}
+                        data-testid="ds-input-content-field"
                         {...props}
                     />
                 )}

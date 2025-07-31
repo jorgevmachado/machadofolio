@@ -51,10 +51,11 @@ interface InputProps extends InputPropsItem, HostProps {
     counter?: TextProps;
     context?: TContext;
     calendar?: CalendarProps;
-    showIcon?: boolean;
+    formatter?: (value?: string) => string;
     validator?: ValidatorProps;
     helperText?: TextProps;
     withPreview?: boolean;
+    defaultFormatter?: boolean;
 }
 
 export default function Input({
@@ -78,6 +79,7 @@ export default function Input({
     counter,
     context = 'primary',
     calendar,
+    formatter,
     required,
     children,
     onChange,
@@ -93,6 +95,7 @@ export default function Input({
     placeholder = '',
     withPreview = false,
     autoComplete,
+    defaultFormatter = true,
     ...props
 }: InputProps) {
     const [inputValidator, setInputValidator] = useState<ValidatorProps>({ invalid: false, message: undefined });
@@ -142,7 +145,7 @@ export default function Input({
                     onOpen={onOpen}
                     accept={accept}
                     onBlur={onBlur}
-                    onClose={onOpen}
+                    onClose={onClose}
                     invalid={inputValidator.invalid}
                     onInput={onInput}
                     onFocus={onFocus}
@@ -151,6 +154,7 @@ export default function Input({
                     disabled={disabled}
                     onChange={onChange}
                     calendar={calendar}
+                    formatter={formatter}
                     onKeyDown={onKeyDown}
                     autoFocus={autoFocus}
                     maxLength={maxLength}
@@ -159,6 +163,7 @@ export default function Input({
                     placeholder={placeholder}
                     withPreview={withPreview}
                     autoComplete={autoComplete}
+                    defaultFormatter={defaultFormatter}
                 />
             </InputProvider>
 

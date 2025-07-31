@@ -5,16 +5,16 @@ import Button from '../button';
 import Input from './Input';
 import { OInputTypes } from '../../utils';
 
+
 const meta = {
     tags: ['autodocs'],
     args: {
         tip: '(tip)',
         type: 'text',
         label: 'Label',
-        helperText: {
-            children: 'Helper Text'
-        },
+        helperText: { children: 'Helper Text' },
         placeholder: 'Placeholder',
+        defaultFormatter: true,
     },
     title: 'Components/Input',
     argTypes: {
@@ -32,6 +32,7 @@ const meta = {
         helperText: { control: 'object' },
         placeholder: { control: 'text' },
         withPreview: { control: 'boolean' },
+        defaultFormatter: { control: 'boolean' },
     },
     component: Input,
     parameters: {},
@@ -75,6 +76,14 @@ export const File: Story = {
         },
     }
 };
+
+export const CPF: Story = {
+    args: {
+        type: 'cpf',
+        label: 'CPF',
+        placeholder: 'Insert CPF',
+    }
+}
 
 export const Number: Story = {
     args: {
