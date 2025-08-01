@@ -5,16 +5,16 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 
 import DateInput from './Date';
 
-jest.mock('../../../../utils', () => ({
+jest.mock('../../../../../utils', () => ({
     joinClass: (classes: any[]) => classes.filter(Boolean).join(' '),
 }));
 
-jest.mock('../../../../elements', () => ({
+jest.mock('../../../../../elements', () => ({
     Icon: (props: any) => <span data-testid="mock-icon" {...props} />,
 }));
 
 const calendarElementMock = <div data-testid="calendar-element" />;
-jest.mock('../../InputContext', () => ({
+jest.mock('../../../InputContext', () => ({
     useInput: () => ({
         hasCalendar: true,
         calendarElement: calendarElementMock,
@@ -59,16 +59,6 @@ describe('<DateInput>', () => {
     it('should render the icon on the right when specified', () => {
         rendeComponent({ icon: { icon: 'react', position: 'right', className: 'custom-icon-classname' }, placeholder: 'DATA' });
         expect(screen.getByTestId('mock-icon')).toHaveClass('ds-date-input__icon--right', 'custom-icon-classname');
-    });
-
-    it('should apply error class when invalid', () => {
-        rendeComponent({ invalid: true });
-        expect(screen.getByTestId('ds-date-input')).toHaveClass('ds-date-input--error');
-    });
-
-    it('should apply error class when invalid', () => {
-        rendeComponent({ invalid: true });
-        expect(screen.getByTestId('ds-date-input')).toHaveClass('ds-date-input--error');
     });
 
     it('should call onOpen and onClose when opening/closing calendar', () => {

@@ -2,15 +2,15 @@ import React, { useRef, useState } from 'react';
 
 import { fileToBase64, imageTypeValidator, urlToBase64 } from '@repo/services';
 
-import DOC_IMAGE from '../../../../assets/doc.png';
-import PDF_IMAGE from '../../../../assets/pdf.png';
-import XLSX_IMAGE from '../../../../assets/xlsx.png';
+import DOC_IMAGE from '../../../../../assets/doc.png';
+import PDF_IMAGE from '../../../../../assets/pdf.png';
+import XLSX_IMAGE from '../../../../../assets/xlsx.png';
 
-import { type TContext, joinClass } from '../../../../utils';
+import { type TContext, joinClass } from '../../../../../utils';
 
-import { Image } from '../../../../elements'
+import { Image } from '../../../../../elements'
 
-import { Button } from '../../../../components'
+import Button from '../../../../button'
 
 import './File.scss';
 

@@ -9,14 +9,12 @@ import {
     phoneValidator
 } from '@repo/services';
 
-import type DatePicker from 'react-datepicker';
-
 import {
+    type TAppearance,
     type TContext,
     type TInputType,
     type ValidatedProps,
-    generateComponentId,
-    joinClass
+    generateComponentId, joinClass
 } from '../../utils';
 
 import { type TGenericIconProps, Text } from '../../elements';
@@ -43,7 +41,7 @@ type HostProps = Omit<React.HTMLProps<HTMLDivElement>, keyof InputPropsItem>;
 
 type TextProps = React.ComponentProps<typeof Text>;
 
-type CalendarProps = React.ComponentProps<typeof DatePicker>;
+type ContentProps = React.ComponentProps<typeof Content>;
 
 interface InputProps extends InputPropsItem, HostProps {
     tip?: string;
@@ -51,17 +49,19 @@ interface InputProps extends InputPropsItem, HostProps {
     icon?: TGenericIconProps;
     fluid?: boolean;
     addon?: TextProps;
-    value?: string;
+    value?: string | Array<string>;
     label?: string;
     onOpen?: () => void;
     onClose?: () => void;
+    options?: ContentProps['options'];
     counter?: TextProps;
     context?: TContext;
-    calendar?: CalendarProps;
+    calendar?: ContentProps['calendar'];
     formatter?: (value?: string) => string;
     validated?: ValidatedProps;
     validator?: (validatorParams: ValidatorParams) => ValidatorMessage;
     helperText?: TextProps;
+    appearance?: TAppearance;
     withPreview?: boolean;
     defaultValidator?: boolean;
     defaultFormatter?: boolean;
@@ -86,7 +86,9 @@ export default function Input({
     onInput,
     onFocus,
     counter,
+    options,
     context = 'primary',
+    multiple,
     calendar,
     formatter,
     required,
@@ -101,6 +103,7 @@ export default function Input({
     maxLength,
     minLength,
     helperText,
+    appearance = 'standard',
     onMouseDown,
     placeholder = '',
     withPreview = false,
@@ -189,10 +192,12 @@ export default function Input({
                     accept={accept}
                     onBlur={handleOnBlur}
                     onClose={onClose}
+                    options={options}
                     invalid={inputValidated.invalid}
                     onInput={onInput}
                     onFocus={onFocus}
                     context={context}
+                    multiple={multiple}
                     required={required}
                     disabled={disabled}
                     onChange={onChange}
@@ -202,6 +207,7 @@ export default function Input({
                     autoFocus={autoFocus}
                     maxLength={maxLength}
                     minLength={minLength}
+                    appearance={appearance}
                     onMouseDown={onMouseDown}
                     placeholder={placeholder}
                     withPreview={withPreview}

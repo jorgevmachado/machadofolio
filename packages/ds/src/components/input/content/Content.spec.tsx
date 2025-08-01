@@ -13,10 +13,14 @@ jest.mock('@repo/services', () => ({
 }));
 
 
-jest.mock('../../../utils', () => ({
-    generateComponentId: jest.fn((id?: string) => id || 'mocked-id'),
-    joinClass: (classes: any[]) => classes.filter(Boolean).join(' '),
-}));
+jest.mock('../../../utils', () => {
+    const originalUtils = jest.requireActual('../../../utils');
+    return {
+        ...originalUtils,
+        generateComponentId: jest.fn((id?: string) => id || 'mocked-id'),
+        joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
+    }
+});
 
 const mockUseInput = jest.fn();
 jest.mock('../InputContext', () => ({
@@ -29,19 +33,19 @@ jest.mock('./addon', () => ({
     default: (props: any) => <span data-testid={`mock-addon-${props.position}`}></span>,
 }));
 
-jest.mock('./file', () => ({
+jest.mock('./fields', () => ({
     __esModule: true,
-    default: (props: any) => (
+    FileInput: (props: any) => (
         <input data-testid="mock-file-input" value={props.value} onChange={e => props.onChange?.(e, 'mocked-file-value')} />
+    ),
+    DateInput: (props: any) => (
+        <input data-testid="mock-date-input" value={props.value} onChange={e => props.onChange?.(e, '1990-01-01T00:00:00Z')} />
+    ),
+    RadioGroupInput: (props: any) => (
+        <input data-testid="mock-radio-group-input" {...props} onClick={props.onClick} />
     ),
 }));
 
-jest.mock('./date', () => ({
-    __esModule: true,
-    default: (props: any) => (
-        <input data-testid="mock-date-input" value={props.value} onChange={e => props.onChange?.(e, '1990-01-01T00:00:00Z')} />
-    ),
-}));
 jest.mock('./inside', () => ({
     __esModule: true,
     default: (props: any) => (
@@ -52,7 +56,7 @@ jest.mock('./inside', () => ({
     ),
 }));
 
-import type { TContext } from '../../../utils';
+import { EContext, EInputAppearance } from '../../../utils';
 
 import Content from './Content';
 
@@ -73,7 +77,8 @@ describe('<Content />', () => {
 
     const defaultProps = {
         type: 'text',
-        context: 'neutral' as TContext
+        context: EContext.PRIMARY,
+        appearance: EInputAppearance.STANDARD
     }
     const renderComponent = (props: any = {}) => {
         return render(<Content {...defaultProps} {...props}/>)
@@ -186,7 +191,7 @@ describe('<Content />', () => {
     describe('type="cpf"', () => {
         it('should render input when type="cpf" with defaultFormatter.', () => {
             mockCpfFormatter.mockReturnValue('111.222.333-44');
-            renderComponent({ type: 'cpf', value: '11122233344' });
+            renderComponent({ type: 'cpf', value: ['11122233344'] });
             const input = screen.getByTestId('ds-input-content-field');
             expect(input).toBeInTheDocument();
             expect(input).toHaveAttribute('value', '111.222.333-44');
@@ -295,4 +300,25 @@ describe('<Content />', () => {
             expect(screen.getByTestId('mock-date-input')).toBeInTheDocument();
         });
     });
+
+    describe('type="radio-group"', () => {
+        it('should render RadioGroup when type="radio-group".', () => {
+            const onInput = jest.fn();
+            const options = [
+                {
+                    label: 'Option 1',
+                    value: 'option1',
+                },
+                {
+                    label: 'Option 2',
+                    value: 'option2',
+                }
+            ]
+            renderComponent({ type: 'radio-group', value: 'option1', options, onInput });
+            const input = screen.getByTestId('mock-radio-group-input');
+            fireEvent.click(input);
+            expect(input).toBeInTheDocument();
+            expect(onInput).toHaveBeenCalled();
+        });
+    })
 });

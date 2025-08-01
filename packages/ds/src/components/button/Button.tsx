@@ -25,6 +25,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>  {
     className?: string;
     appearance?: TAppearance;
     notification?: NotificationProps;
+    'data-testid'?: string;
 }
 
 export function Button({
@@ -42,6 +43,7 @@ export function Button({
                            className,
                            notification,
                            appearance = 'standard',
+                           'data-testid': dataTestId,
                            ...props
                        }: ButtonProps) {
 
@@ -79,7 +81,7 @@ export function Button({
             disabled={disabled || loading?.value}
             className={classNameList}
             aria-busy={loading?.value ? 'true' : undefined}
-            data-testid="ds-button"
+            data-testid={dataTestId ?? 'ds-button'}
             aria-disabled={disabled || loading?.value ? 'true' : undefined}
         >
             {isAppearanceIconButton && icon

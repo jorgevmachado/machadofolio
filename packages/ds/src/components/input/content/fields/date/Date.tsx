@@ -4,15 +4,16 @@ import DatePicker from 'react-datepicker';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
-import { Icon, type TGenericIconProps } from '../../../../elements';
-import { joinClass } from '../../../../utils';
+import { Icon, type TGenericIconProps } from '../../../../../elements';
+import { joinClass } from '../../../../../utils';
 
-import { useInput } from '../../InputContext';
+import { useInput } from '../../../InputContext';
 
 import './Date.scss';
 
 interface DateProps extends Omit<React.ComponentProps<typeof DatePicker>,
     'icon' |
+    'value' |
     'selected' |
     'onChange' |
     'children' |
@@ -24,10 +25,9 @@ interface DateProps extends Omit<React.ComponentProps<typeof DatePicker>,
     min?: string | number;
     max?: string | number;
     icon?: TGenericIconProps;
-    value?: string;
+    value?: string | Array<string>;
     onOpen?: () => void;
     onClose?: () => void;
-    invalid?: boolean;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>, value?: string) => void;
     placeholder?: string;
 }
@@ -38,7 +38,6 @@ export default function DateInput({
     icon,
     value,
     onOpen,
-    invalid,
     onClose,
     minDate,
     maxDate,
@@ -84,7 +83,6 @@ export default function DateInput({
 
     const classNameList = joinClass([
         'ds-date-input',
-        invalid && 'ds-date-input--error',
     ]);
 
     const classNameInputList = joinClass([

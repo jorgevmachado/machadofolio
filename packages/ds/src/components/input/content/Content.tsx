@@ -1,35 +1,34 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 
-import type DatePicker from 'react-datepicker';
-
 import { cleanFormatter, cpfFormatter, phoneFormatter } from '@repo/services';
 
-import { type TContext, generateComponentId, joinClass } from '../../../utils';
+import { type OptionsProps, type TAppearance, type TContext, generateComponentId, joinClass } from '../../../utils';
 
 import type { TGenericIconProps } from '../../../elements';
 
 import { useInput } from '../InputContext';
 
+import { DateInput, FileInput, RadioGroupInput } from './fields';
 import Addon from './addon';
-import DateInput from './date';
-import FileInput from './file';
 import Inside from './inside';
 
 import './Content.scss';
 
-type CalendarProps = React.ComponentProps<typeof DatePicker>;
+type DateInputProps = React.ComponentProps<typeof DateInput>;
 
 interface ContentProps extends Omit<React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>, 'value'> {
     icon?: TGenericIconProps;
     rows?: number;
     fluid?: boolean;
-    value?: string;
+    value?: string | Array<string>;
     onOpen?: () => void;
     context: TContext;
     onClose?: () => void;
     invalid?: boolean;
-    calendar?: CalendarProps;
+    options?: Array<OptionsProps>;
+    calendar?: DateInputProps;
     formatter?: (value?: string) => string;
+    appearance: TAppearance;
     withPreview?: boolean;
     defaultFormatter?: boolean;
 }
@@ -48,10 +47,12 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         context,
         onClose,
         invalid = false,
+        options = [],
         calendar,
         onChange,
         disabled = false,
         formatter,
+        appearance,
         withPreview = true,
         defaultFormatter = true,
         ...props
@@ -59,7 +60,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
     ref
 ) => {
     const { hasAddon, hasAppend, hasPrepend, hasIconElement } = useInput();
-    const [currentInputValue, setCurrentInputValue] = useState<string>(value);
+    const [currentInputValue, setCurrentInputValue] = useState<string | Array<string>>(value);
     const [typeInput, setTypeInput] = useState<string | undefined>(type);
     const [currentIcon, setCurrentIcon] = useState<TGenericIconProps | undefined>(icon);
 
@@ -67,7 +68,8 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
     const isTextArea = type === 'textarea';
     const isFile = type === 'file';
     const isDate = type === 'date';
-    const isDefault = !isTextArea && !isFile && !isDate;
+    const isRadioGroup = type === 'radio-group';
+    const isDefault = !isTextArea && !isFile && !isDate && !isRadioGroup;
 
     const componentId = props.id ?? generateComponentId(`ds-input-${type}`);
 
@@ -88,7 +90,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         }
     }
 
-    const handleOnClickIcon = (e: React.MouseEvent<HTMLSpanElement>) => {
+    const handleOnClick = (e: React.MouseEvent<HTMLInputElement | HTMLSpanElement>, value?: string | Array<string>) => {
         e.preventDefault();
         e.stopPropagation();
         if(isPassword) {
@@ -105,6 +107,13 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                     icon: 'eye'
                 }
             });
+        }
+        if(isRadioGroup) {
+
+            if(onInput) {
+                onInput(e as React.MouseEvent<HTMLInputElement>);
+            }
+            setCurrentInputValue(value || '');
         }
     }
 
@@ -137,20 +146,21 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
     const hasIconLeft = hasIconElement('left', currentIcon);
     const hasIconRight = hasIconElement('right', currentIcon);
 
-    const treatValue = (value?: string) => {
-        if (value === undefined || value === null) {
+    const treatValue = (value?: string | Array<string>) => {
+        const currentValue = Array.isArray(value) ? value[0] : value;
+        if (currentValue === undefined || currentValue === null) {
             return '';
         }
         if(!defaultFormatter) {
-            return formatter ? formatter(value) : value;
+            return formatter ? formatter(currentValue) : currentValue;
         }
         switch (type) {
             case 'cpf':
-                return formatter ? formatter(value) : cpfFormatter(value);
+                return formatter ? formatter(currentValue) : cpfFormatter(currentValue);
             case 'phone':
-                return formatter ? formatter(value) : phoneFormatter(value);
+                return formatter ? formatter(currentValue) : phoneFormatter(currentValue);
             default:
-                return formatter ? formatter(value) : value;
+                return formatter ? formatter(currentValue) : currentValue;
         }
     }
 
@@ -205,6 +215,18 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         {...props}
                     />
                 )}
+                {isRadioGroup && (
+                    <RadioGroupInput
+                        id={componentId}
+                        value={currentInputValue}
+                        options={options}
+                        onClick={handleOnClick}
+                        context={context}
+                        disabled={disabled}
+                        appearance={appearance}
+                        {...props}
+                    />
+                )}
                 {isFile && (
                     <FileInput
                         id={componentId}
@@ -227,7 +249,6 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         value={currentInputValue}
                         onBlur={handleOnBlur}
                         onOpen={onOpen}
-                        invalid={invalid}
                         onClose={onClose}
                         disabled={disabled}
                         onChange={handleOnChange}
@@ -250,7 +271,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         {...props}
                     />
                 )}
-                <Inside show={isDefault} icon={currentIcon} isPassword={isPassword} onClick={handleOnClickIcon} position="right"/>
+                <Inside show={isDefault} icon={currentIcon} isPassword={isPassword} onClick={handleOnClick} position="right"/>
             </div>
             <Addon show={isDefault} position="right"/>
         </div>

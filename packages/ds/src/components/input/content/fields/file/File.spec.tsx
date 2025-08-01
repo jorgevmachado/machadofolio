@@ -5,9 +5,9 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 
 import FileInput from './File';
 
-jest.mock('../../../../assets/doc.png', () => 'mock-doc.png');
-jest.mock('../../../../assets/pdf.png', () => 'mock-pdf.png');
-jest.mock('../../../../assets/xlsx.png', () => 'mock-xlsx.png');
+jest.mock('../../../../../assets/doc.png', () => 'mock-doc.png');
+jest.mock('../../../../../assets/pdf.png', () => 'mock-pdf.png');
+jest.mock('../../../../../assets/xlsx.png', () => 'mock-xlsx.png');
 
 const mockFileToBase64 = jest.fn();
 const mockImageTypeValidator = jest.fn();
@@ -19,15 +19,16 @@ jest.mock('@repo/services', () => ({
     urlToBase64: (...params: any[]) => mockUrlToBase64(...params),
 }));
 
-jest.mock('../../../../utils', () => ({
+jest.mock('../../../../../utils', () => ({
     joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
 }));
 
-jest.mock('../../../../elements', () => ({
+jest.mock('../../../../../elements', () => ({
     Image: ({ src }: { src: string }) => (<img src={src} alt="Preview" data-testid="mock-image"/>)
 }));
-jest.mock('../../../../components', () => ({
-    Button: (props: any) => (<button {...props} data-testid="mock-button"/>),
+jest.mock('../../../../button', () => ({
+    __esModule: true,
+    default: (props: any) => (<button {...props} data-testid="mock-button"/>),
 }));
 
 function createFile(name: string, type = 'application/pdf') {

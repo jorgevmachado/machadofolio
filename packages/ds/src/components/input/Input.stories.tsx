@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { OInputTypes } from '../../utils';
+
 import Button from '../button';
 
 import Input from './Input';
-import { OInputTypes } from '../../utils';
-
 
 const meta = {
     tags: ['autodocs'],
@@ -12,6 +12,7 @@ const meta = {
         tip: '(tip)',
         type: 'text',
         label: 'Label',
+        context: 'primary',
         required: true,
         helperText: { children: 'Helper Text' },
         placeholder: 'Placeholder',
@@ -78,6 +79,67 @@ export const File: Story = {
     }
 };
 
+export const DatePicker: Story = {
+    args: {
+        min: '2000-01-01',
+        max: '2030-12-31',
+        type: 'date',
+        label: 'Date',
+        value: new Date().toISOString(),
+        calendar: {
+            inline: false,
+            todayButton: 'Today',
+        },
+        children: (<div style={{ color: "red" }} data-children="calendar">Don&#39;t forget to check the weather!</div>),
+        placeholder: 'Date',
+    }
+}
+
+export const RadioGroup: Story = {
+    args: {
+        type: 'radio-group',
+        label: 'Radio Group',
+        value: 'natural-person',
+        options: [
+            { label: 'Natural Person', value: 'natural-person' },
+            { label: 'Legal Entity', value: 'legal-entity' },
+        ],
+    }
+}
+
+export const RadioGroupRange: Story = {
+    args: {
+        type: 'radio-group',
+        label: 'Radio Group Range',
+        value: '1',
+        options: Array.from(new Array(9), (_, i) => ({
+            value: `${i + 1}`,
+            label: `${i + 1}`,
+        })),
+        appearance: 'range',
+    }
+}
+
+export const RadioGroupMultiple: Story = {
+    args: {
+        type: 'radio-group',
+        value: ['option1'],
+        multiple: true,
+        context: 'primary',
+        options: [
+            {
+                label: 'Option 1',
+                value: 'option1',
+            },
+            {
+                label: 'Option 2',
+                value: 'option2',
+            }
+        ],
+        appearance: 'standard',
+    }
+}
+
 export const CPF: Story = {
     args: {
         type: 'cpf',
@@ -113,22 +175,6 @@ export const Phone: Story = {
         placeholder: 'Phone'
     }
 };
-
-export const DatePicker: Story = {
-    args: {
-        min: '2000-01-01',
-        max: '2030-12-31',
-        type: 'date',
-        label: 'Date',
-        value: new Date().toISOString(),
-        calendar: {
-            inline: false,
-            todayButton: 'Today',
-        },
-        children: (<div style={{ color: "red" }} data-children="calendar">Don&#39;t forget to check the weather!</div>),
-        placeholder: 'Date',
-    }
-}
 
 export const TextArea: Story = {
     args: {
