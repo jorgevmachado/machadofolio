@@ -5,6 +5,7 @@ import pkg from './package.json' with { type: 'json' };
 import postcss from 'rollup-plugin-postcss';
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
+import url from '@rollup/plugin-url';
 
 export default {
     input: 'src/index.ts',
@@ -26,6 +27,11 @@ export default {
         resolve(),
         commonjs(),
         json(),
+        url({
+            include: [],
+            limit: 8192,
+            emitFiles: true,
+        }),
         typescript({ tsconfig: './tsconfig.json' }),
         postcss({
             use: [
