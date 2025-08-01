@@ -86,6 +86,12 @@ describe('<Button/>', () => {
         expect(button).toHaveClass('ds-button__appearance--no-icon-border');
     });
 
+    it('should show icon in left position role to `button` when appearance is "icon" with position undefined.', () => {
+        renderComponent({ appearance: 'icon', icon: { icon: 'react', noBorder: true } });
+        const button = screen.getByRole('button');
+        expect(button).toHaveClass('ds-button__appearance--no-icon-border');
+    });
+
     it('must apply class when there are no children.', () => {
         renderComponent({ children: undefined });
         const button = screen.getByRole('button');

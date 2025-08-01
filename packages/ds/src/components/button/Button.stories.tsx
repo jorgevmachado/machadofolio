@@ -24,3 +24,22 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
     args: {},
 };
+
+export const WithIconLeft: Story = {
+    args: {
+        icon: {
+            icon: 'arrow-left',
+        },
+        children: 'With Icon',
+    },
+}
+
+export const WithIconRight: Story = {
+    args: {
+        icon: {
+            icon: 'arrow-right',
+            position: 'right'
+        },
+        children: 'With Icon',
+    },
+}

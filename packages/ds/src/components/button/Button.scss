@@ -106,22 +106,25 @@
     }
   }
 
-  &__icon--position {
-    &-left {
-      margin-top: var(--size-xx-tiny);
-      margin-right: var(--size-tiny);
-    }
-
-    &-right {
-      margin-top: var(--size-xx-tiny);
-      margin-left: var(--size-tiny);
-    }
-  }
-
   &__content {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    &--icon {
+      margin-top: 0.3rem;
+    }
+
+    &--label {
+      &-icon {
+        &__left {
+          padding-left: 0.3rem;
+        }
+        &__right {
+          padding-right: 0.3rem;
+        }
+      }
+    }
 
     &--notification {
       gap: 11rem;

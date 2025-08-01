@@ -28,9 +28,9 @@ export default {
         commonjs(),
         json(),
         url({
-            include: [],
+            include: ['**/*.svg', '**/*.png', '**/*.jpg', '**/*.gif'],
             limit: 8192,
-            emitFiles: true,
+            emitFiles: true
         }),
         typescript({ tsconfig: './tsconfig.json' }),
         postcss({

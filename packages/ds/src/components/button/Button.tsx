@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { type TContext, type TSimplySIze, type TWeight, joinClass } from '../../utils';
 
@@ -46,9 +46,20 @@ export function Button({
                            'data-testid': dataTestId,
                            ...props
                        }: ButtonProps) {
+    const [currentIcon, setCurrentIcon] = useState<TGenericIconProps | undefined>(icon);
 
     const hasLabel = Boolean(children);
-    const isAppearanceIconButton = appearance === 'icon' && Boolean(icon);
+    const isAppearanceIconButton = appearance === 'icon' && Boolean(currentIcon);
+
+    useEffect(() => {
+        if (icon) {
+            setCurrentIcon({
+                ...icon,
+                position: icon?.position || 'left',
+                className: 'ds-button__content--icon'
+            });
+        }
+    }, [icon]);
 
     useEffect(() => {
         if (!hasLabel && !props['aria-label']) {
@@ -68,7 +79,7 @@ export function Button({
         context && `${parentClassName}__context--${context}`,
         selected && `${parentClassName}__selected`,
         !hasLabel && `${parentClassName}__no-label`,
-        isAppearanceIconButton && icon?.noBorder
+        isAppearanceIconButton && currentIcon?.noBorder
             ? `${parentClassName}__appearance--no-icon-border`
             : `${parentClassName}__appearance--${appearance}`,
         className,
@@ -84,13 +95,13 @@ export function Button({
             data-testid={dataTestId ?? 'ds-button'}
             aria-disabled={disabled || loading?.value ? 'true' : undefined}
         >
-            {isAppearanceIconButton && icon
+            {isAppearanceIconButton && currentIcon
                 ? (
-                    <Icon {...icon} />
+                    <Icon {...currentIcon} />
                 )
                 : (
                     <Content
-                        icon={icon}
+                        icon={currentIcon}
                         loading={loading}
                         context={context}
                         notification={notification}>
