@@ -27,6 +27,7 @@ interface DateProps extends Omit<React.ComponentProps<typeof DatePicker>,
     icon?: TGenericIconProps;
     value?: string | Array<string>;
     onOpen?: () => void;
+    onInput?: (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, value?: string) => void;
     onClose?: () => void;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>, value?: string) => void;
     placeholder?: string;
@@ -38,6 +39,7 @@ export default function DateInput({
     icon,
     value,
     onOpen,
+    onInput,
     onClose,
     minDate,
     maxDate,
@@ -60,6 +62,9 @@ export default function DateInput({
 
         if(onChange) {
             onChange(e as unknown as React.ChangeEvent<HTMLInputElement>, date?.toISOString());
+        }
+        if(onInput) {
+            onInput(e as unknown as React.FormEvent<HTMLInputElement>,  date?.toISOString());
         }
     }
 

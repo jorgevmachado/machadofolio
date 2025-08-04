@@ -16,12 +16,13 @@ import './Content.scss';
 
 type DateInputProps = React.ComponentProps<typeof DateInput>;
 
-interface ContentProps extends Omit<React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>, 'value'> {
+interface ContentProps extends Omit<React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>, 'value' | 'onInput'> {
     icon?: TGenericIconProps;
     rows?: number;
     fluid?: boolean;
     value?: string | Array<string>;
     onOpen?: () => void;
+    onInput?: (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, name: string, value: string | Array<string>) => void;
     context: TContext;
     onClose?: () => void;
     invalid?: boolean;
@@ -38,6 +39,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         type,
         icon,
         rows = 10,
+        name,
         fluid = false,
         value = '',
         accept,
@@ -73,11 +75,12 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
 
     const componentId = props.id ?? generateComponentId(`ds-input-${type}`);
 
-    const handleInput = (e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInput = (e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, value?: string | Array<string>) => {
         const target = e.target as HTMLInputElement | HTMLTextAreaElement;
-        setCurrentInputValue(target.value);
+        const currentValue = value || target.value;
+        setCurrentInputValue(currentValue);
         if(onInput) {
-            onInput(e);
+            onInput(e, name || '', currentValue);
         }
     };
 
@@ -111,7 +114,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         if(isRadioGroup) {
 
             if(onInput) {
-                onInput(e as React.MouseEvent<HTMLInputElement>);
+                onInput(e as React.MouseEvent<HTMLInputElement>, name || '', value || '');
             }
             setCurrentInputValue(value || '');
         }
@@ -178,6 +181,11 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         }
     }
 
+    const contentWrapperClassNameList = joinClass([
+        'ds-input-content__wrapper',
+        fluid ? 'ds-input-content__wrapper--fluid': ''
+    ]);
+
     const defaultClassNameInputList: Array<string> = [
         'ds-input-content__field',
         fluid ? 'ds-input-content__field--fluid' : '',
@@ -200,13 +208,14 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
     return (
         <div className="ds-input-content" data-testid="ds-input-content">
             <Addon show={isDefault} position="left"/>
-            <div className="ds-input-content__wrapper">
+            <div className={contentWrapperClassNameList}>
                 <Inside show={isDefault} icon={currentIcon} position="left"/>
                 {isTextArea && (
                     <textarea
                         id={componentId}
                         ref={ref as React.Ref<HTMLTextAreaElement>}
                         rows={rows}
+                        name={name}
                         value={currentInputValue}
                         onBlur={handleOnBlur}
                         onInput={handleInput}
@@ -218,6 +227,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                 {isRadioGroup && (
                     <RadioGroupInput
                         id={componentId}
+                        name={name}
                         value={currentInputValue}
                         options={options}
                         onClick={handleOnClick}
@@ -230,8 +240,10 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                 {isFile && (
                     <FileInput
                         id={componentId}
+                        name={name}
                         value={currentInputValue}
                         accept={accept}
+                        onInput={handleInput}
                         onChange={handleOnChange}
                         disabled={disabled}
                         context={context}
@@ -246,9 +258,11 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         min={props?.min}
                         max={props?.max}
                         icon={currentIcon}
+                        name={name}
                         value={currentInputValue}
                         onBlur={handleOnBlur}
                         onOpen={onOpen}
+                        onInput={handleInput}
                         onClose={onClose}
                         disabled={disabled}
                         onChange={handleOnChange}
@@ -261,6 +275,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         id={componentId}
                         ref={ref as React.Ref<HTMLInputElement>}
                         type={typeInput}
+                        name={name}
                         value={treatValue(currentInputValue)}
                         onBlur={handleOnBlur}
                         onInput={handleInput}

@@ -1,4 +1,4 @@
-import { VscEdit, VscError, VscTrash } from 'react-icons/vsc';
+import { VscEdit, VscError, VscGithub, VscTrash } from 'react-icons/vsc';
 
 import type { TIconGroupIcons } from '../types';
 
@@ -12,7 +12,7 @@ export const vscGroup: TIconGroupIcons = {
   eye: undefined,
   bed: undefined,
   user: undefined,
-  edit: <VscEdit />,
+  edit: <VscEdit/>,
   lamp: undefined,
   star: undefined,
   bolt: undefined,
@@ -28,12 +28,12 @@ export const vscGroup: TIconGroupIcons = {
   sort: undefined,
   stop: undefined,
   home: undefined,
-  trash: <VscTrash />,
+  trash: <VscTrash/>,
   group: undefined,
   brush: undefined,
   chair: undefined,
   check: undefined,
-  close: <VscError />,
+  close: <VscError/>,
   react: undefined,
   phone: undefined,
   cloud: undefined,
@@ -49,6 +49,7 @@ export const vscGroup: TIconGroupIcons = {
   train: undefined,
   route: undefined,
   share: undefined,
+  github: <VscGithub/>,
   config: undefined,
   church: undefined,
   google: undefined,

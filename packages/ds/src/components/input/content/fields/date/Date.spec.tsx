@@ -95,9 +95,10 @@ describe('<DateInput>', () => {
         expect(input).toHaveValue('06/29/2022');
     });
 
-    it('should trigger onChange when the value changes', async () => {
+    it('should trigger onChange when the value changes with onInput', async () => {
         const onChange = jest.fn();
-        rendeComponent({ onChange, placeholder: 'DATA' });
+        const onInput = jest.fn();
+        rendeComponent({ onChange, onInput, placeholder: 'DATA' });
         const input = screen.getByPlaceholderText('DATA');
 
         fireEvent.click(input);
@@ -110,6 +111,10 @@ describe('<DateInput>', () => {
 
         await waitFor(() => {
             expect(onChange).toHaveBeenCalledWith(
+                expect.any(Object),
+                expect.stringMatching(/^202[2,5]-\d{2}-\d{2}T/)
+            );
+            expect(onInput).toHaveBeenCalledWith(
                 expect.any(Object),
                 expect.stringMatching(/^202[2,5]-\d{2}-\d{2}T/)
             );

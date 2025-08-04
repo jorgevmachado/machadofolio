@@ -9,6 +9,9 @@
     display: flex;
     position: relative;
     align-items: center;
+    &--fluid {
+      width: 100%;
+    }
   }
   &__field {
     color: var(--color-neutral-100);

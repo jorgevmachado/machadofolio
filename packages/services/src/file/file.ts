@@ -39,3 +39,12 @@ export function fileToBase64(file: File): Promise<string> {
   reader.readAsDataURL(file);
  });
 }
+
+export function extractExtensionFromBase64(base64: string): string | undefined {
+ const result = base64.match(/data:(.*?);base64,/);
+ if (result && result[1]) {
+  const mimeType = result[1];
+  return mimeType.split('/').pop();
+ }
+ return;
+}

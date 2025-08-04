@@ -23,6 +23,7 @@ export interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement>
     context?: TContext;
     children: React.ReactNode;
     notification?: NotificationProps;
+    'data-testid'?: string;
 }
 
 export default function Link({
@@ -33,6 +34,7 @@ export default function Link({
     children,
     className,
     notification,
+    'data-testid': dataTestId,
     ...props
 }: LinkProps) {
 
@@ -60,7 +62,7 @@ export default function Link({
     ]);
 
     return (
-        <a {...props } className={classNameList} data-testid="ds-link">
+        <a {...props } className={classNameList} data-testid={ dataTestId ?? 'ds-link'}>
             <div className="ds-link__content">
                 {icon && (icon?.position === 'left' || !icon?.position) && (
                     <Icon {...icon} className={iconClassNameList} />

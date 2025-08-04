@@ -48,6 +48,7 @@ export type TIcon =
     | 'train'
     | 'route'
     | 'share'
+    | 'github'
     | 'config'
     | 'church'
     | 'google'

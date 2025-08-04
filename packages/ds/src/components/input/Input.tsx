@@ -43,7 +43,7 @@ type TextProps = React.ComponentProps<typeof Text>;
 
 type ContentProps = React.ComponentProps<typeof Content>;
 
-interface InputProps extends InputPropsItem, HostProps {
+interface InputProps extends Omit<InputPropsItem, 'onInput'>, HostProps {
     tip?: string;
     type: TInputType;
     icon?: TGenericIconProps;
@@ -52,6 +52,7 @@ interface InputProps extends InputPropsItem, HostProps {
     value?: string | Array<string>;
     label?: string;
     onOpen?: () => void;
+    onInput?: ContentProps['onInput'];
     onClose?: () => void;
     options?: ContentProps['options'];
     counter?: TextProps;
@@ -75,6 +76,7 @@ export default function Input({
     type = 'text',
     icon,
     rows = 10,
+    name,
     value = '',
     fluid,
     addon,
@@ -184,6 +186,7 @@ export default function Input({
                     min={min}
                     max={max}
                     icon={icon}
+                    name={name}
                     type={type}
                     rows={rows}
                     value={value}

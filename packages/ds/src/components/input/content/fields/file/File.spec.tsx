@@ -12,11 +12,13 @@ jest.mock('../../../../../assets/xlsx.png', () => 'mock-xlsx.png');
 const mockFileToBase64 = jest.fn();
 const mockImageTypeValidator = jest.fn();
 const mockUrlToBase64 = jest.fn();
+const mockExtractExtensionFromBase64 = jest.fn();
 
 jest.mock('@repo/services', () => ({
     fileToBase64: (...params: any[]) => mockFileToBase64(...params),
     imageTypeValidator: (...params: any[]) => mockImageTypeValidator(...params),
     urlToBase64: (...params: any[]) => mockUrlToBase64(...params),
+    extractExtensionFromBase64: (...params: any[]) => mockExtractExtensionFromBase64(...params),
 }));
 
 jest.mock('../../../../../utils', () => ({
@@ -91,7 +93,8 @@ describe('<File/>', () => {
         mockFileToBase64.mockResolvedValueOnce('base64-image');
 
         const mockOnChange = jest.fn();
-        renderComponent({ onChange: mockOnChange, withPreview: true });
+        const mockOnInput = jest.fn();
+        renderComponent({ onChange: mockOnChange, onInput: mockOnInput, withPreview: true });
 
         const input = document.querySelector('input[type="file"]') as HTMLInputElement;
         const file = createFile('teste.png', 'image/png');
@@ -100,6 +103,7 @@ describe('<File/>', () => {
 
         await waitFor(() => {
             expect(mockOnChange).toHaveBeenCalledWith(expect.any(Object), 'base64-image')
+            expect(mockOnInput).toHaveBeenCalledWith(expect.any(Object), 'base64-image')
         });
 
         expect(screen.getByAltText('Preview')).toBeInTheDocument();
@@ -196,6 +200,16 @@ describe('<File/>', () => {
         renderComponent({ 'data-testid': 'input-file', title: 'my-input' });
         expect(screen.getByTitle('my-input')).toBeInTheDocument();
         expect(screen.getByTestId('input-file')).toBeInTheDocument();
+    });
+
+    it('should preview file wen received by value', async () => {
+        mockUrlToBase64.mockResolvedValueOnce('default-preview-img');
+        mockExtractExtensionFromBase64.mockReturnValueOnce('png');
+        renderComponent({ value: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHN5dygQnJFirBww40JLAsLuZHF0kOdBrzLw&s', withPreview: true });
+        await waitFor(async () => {
+            expect(mockUrlToBase64).toHaveBeenCalledWith('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHN5dygQnJFirBww40JLAsLuZHF0kOdBrzLw&s');
+            expect(await screen.findByAltText('Preview')).toHaveAttribute('src', 'default-preview-img');
+        });
     });
 
 });

@@ -48,6 +48,7 @@ export const OIcon: Array<TIcon> = [
      'train',
      'route',
      'share',
+     'github',
      'config',
      'church',
      'google',

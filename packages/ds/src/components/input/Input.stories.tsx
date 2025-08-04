@@ -1,3 +1,5 @@
+import React from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { OInputTypes } from '../../utils';
@@ -5,6 +7,8 @@ import { OInputTypes } from '../../utils';
 import Button from '../button';
 
 import Input from './Input';
+
+type InputProps = React.ComponentProps<typeof Input>;
 
 const meta = {
     tags: ['autodocs'],
@@ -43,14 +47,33 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {  args: {} };
+const Template = (args: InputProps) => {
+    const [onInput, setOnInput] = React.useState<{ name: string; value: string | Array<string>;} | undefined>(undefined);
+    return (
+        <>
+            <Input {...args} onInput={(_, name, value) =>setOnInput({name, value })} />
+            {onInput && (
+                <div style={{ marginTop: '1rem' }}>
+                    <strong>On Input:</strong>
+                    <pre>{JSON.stringify(onInput, null, 2)}</pre>
+                </div>
+            )}
+        </>
+    );
+}
+
+export const Default: Story = {
+    args: {},
+    render: (args) => <Template {...args} />,
+};
 
 export const Disabled: Story = {
     args: {
         label: 'Disabled',
         disabled: true,
         placeholder: 'Disabled Placeholder'
-    }
+    },
+    render: (args) => <Template {...args} />,
 };
 
 export const Error: Story = {
@@ -62,13 +85,15 @@ export const Error: Story = {
         },
         helperText: { children: 'Helper Text' },
         placeholder: 'Error Placeholder',
-    }
+    },
+    render: (args) => <Template {...args} />,
 };
 
 export const File: Story = {
     args: {
         type: 'file',
         label: 'File',
+        value: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHN5dygQnJFirBww40JLAsLuZHF0kOdBrzLw&s',
         accept: '.pdf, .xlsx, image/*',
         placeholder: 'Select file',
         withPreview: true,
@@ -76,7 +101,8 @@ export const File: Story = {
             invalid: true,
             message: 'Field is required',
         },
-    }
+    },
+    render: (args) => <Template {...args} />,
 };
 
 export const DatePicker: Story = {
@@ -92,7 +118,8 @@ export const DatePicker: Story = {
         },
         children: (<div style={{ color: "red" }} data-children="calendar">Don&#39;t forget to check the weather!</div>),
         placeholder: 'Date',
-    }
+    },
+    render: (args) => <Template {...args} />,
 }
 
 export const RadioGroup: Story = {
@@ -104,7 +131,8 @@ export const RadioGroup: Story = {
             { label: 'Natural Person', value: 'natural-person' },
             { label: 'Legal Entity', value: 'legal-entity' },
         ],
-    }
+    },
+    render: (args) => <Template {...args} />,
 }
 
 export const RadioGroupRange: Story = {
@@ -117,7 +145,8 @@ export const RadioGroupRange: Story = {
             label: `${i + 1}`,
         })),
         appearance: 'range',
-    }
+    },
+    render: (args) => <Template {...args} />,
 }
 
 export const RadioGroupMultiple: Story = {
@@ -137,19 +166,22 @@ export const RadioGroupMultiple: Story = {
             }
         ],
         appearance: 'standard',
-    }
+    },
+    render: (args) => <Template {...args} />,
 }
 
 export const CPF: Story = {
     args: {
         type: 'cpf',
         label: 'CPF',
+        fluid: true,
         validated: {
             invalid: false,
             message: 'Please enter a valid cpf number.',
         },
         placeholder: 'Insert CPF',
-    }
+    },
+    render: (args) => <Template {...args} />,
 }
 
 export const Number: Story = {
@@ -157,7 +189,8 @@ export const Number: Story = {
         type: 'number',
         label: 'Number',
         placeholder: 'Number'
-    }
+    },
+    render: (args) => <Template {...args} />,
 };
 
 export const Email: Story = {
@@ -165,7 +198,8 @@ export const Email: Story = {
         type: 'email',
         label: 'E-Mail',
         placeholder: 'Email'
-    }
+    },
+    render: (args) => <Template {...args} />,
 };
 
 export const Phone: Story = {
@@ -173,7 +207,8 @@ export const Phone: Story = {
         type: 'phone',
         label: 'Phone',
         placeholder: 'Phone'
-    }
+    },
+    render: (args) => <Template {...args} />,
 };
 
 export const TextArea: Story = {
@@ -184,7 +219,8 @@ export const TextArea: Story = {
         fluid: true,
         label: 'Text Area',
         placeholder: 'Text Area'
-    }
+    },
+    render: (args) => <Template {...args} />,
 };
 
 export const Password: Story = {
@@ -192,7 +228,8 @@ export const Password: Story = {
         type: 'password',
         label: 'Password',
         placeholder: 'Input Password'
-    }
+    },
+    render: (args) => <Template {...args} />,
 };
 
 export const WithPrepend: Story = {
@@ -205,7 +242,8 @@ export const WithPrepend: Story = {
             </Button>
         ),
         placeholder: 'Input Prepend Placeholder'
-    }
+    },
+    render: (args) => <Template {...args} />,
 };
 
 export const WithIconLeft: Story = {
@@ -214,7 +252,8 @@ export const WithIconLeft: Story = {
         type: 'text',
         label: 'Input Icon Left',
         placeholder: 'Input Icon Left Placeholder'
-    }
+    },
+    render: (args) => <Template {...args} />,
 }
 
 export const WithIconRight: Story = {
@@ -226,7 +265,8 @@ export const WithIconRight: Story = {
         type: 'text',
         label: 'Input Icon Right',
         placeholder: 'Input Icon Right Placeholder'
-    }
+    },
+    render: (args) => <Template {...args} />,
 }
 
 export const WithCounter: Story = {
@@ -239,6 +279,7 @@ export const WithCounter: Story = {
         children: <div data-children="counter">8</div>,
         placeholder: 'Input Counter Placeholder'
     },
+    render: (args) => <Template {...args} />,
 };
 
 export const WithAddon: Story = {
@@ -251,7 +292,7 @@ export const WithAddon: Story = {
         children: <div data-children="addon">0,00</div>,
         placeholder: 'Input Addon Placeholder'
     },
-
+    render: (args) => <Template {...args} />,
 };
 
 export const WithAppend: Story = {
@@ -264,6 +305,7 @@ export const WithAppend: Story = {
         ),
         placeholder: 'Input Append Placeholder',
     },
+    render: (args) => <Template {...args} />,
 };
 
 export const WithPrependAndAppend: Story = {
@@ -272,13 +314,13 @@ export const WithPrependAndAppend: Story = {
         placeholder: 'Input Prepend and Append Placeholder',
     },
     render: (args) => (
-        <Input {...args}>
+        <Template {...args}>
             <Button size="small" context="neutral" data-children="prepend">
                 prepend
             </Button>
             <Button size="small" context="neutral" data-children="append">
                 append
             </Button>
-        </Input>
+        </Template>
     )
 };

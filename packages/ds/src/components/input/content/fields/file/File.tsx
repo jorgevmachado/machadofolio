@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { fileToBase64, imageTypeValidator, urlToBase64 } from '@repo/services';
+import { extractExtensionFromBase64, fileToBase64, imageTypeValidator, urlToBase64 } from '@repo/services';
 
 import DOC_IMAGE from '../../../../../assets/doc.png';
 import PDF_IMAGE from '../../../../../assets/pdf.png';
@@ -14,14 +14,17 @@ import Button from '../../../../button'
 
 import './File.scss';
 
-interface FileInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange'> {
+interface FileInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onInput' | 'onChange'> {
+    onInput?: (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, value?: string) => void;
     context: TContext;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>, value?: string) => void;
     withPreview?: boolean;
 }
 
 export default function FileInput({
+    value,
     accept,
+    onInput,
     context,
     disabled,
     onChange,
@@ -83,7 +86,25 @@ export default function FileInput({
         if (onChange) {
             onChange(e, result.currentFile);
         }
+
+        if(onInput) {
+            onInput(e as React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, result.currentFile);
+        }
     };
+
+    useEffect(() => {
+        if(value && withPreview) {
+            (async () => {
+                const base64 = await urlToBase64(value as string);
+                const extension = extractExtensionFromBase64(base64);
+                if(extension) {
+                    setPreview(base64);
+                    setFileName(`file.${extension}`);
+                }
+
+            })();
+        }
+    }, [value, withPreview]);
 
 
     return (

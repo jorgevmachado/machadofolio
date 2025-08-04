@@ -142,6 +142,7 @@ export const mdGroup: TIconGroupIcons = {
   train: <MdOutlineTrain />,
   route: <MdOutlineRoute />,
   share: <MdOutlineShare />,
+  github: undefined,
   config: undefined,
   church: <MdChurch />,
   google: undefined,
