@@ -7,19 +7,29 @@ jest.mock('@repo/ds', () => {
     const originalModule = jest.requireActual('@repo/ds') as Record<string, any>;
     return {
         ...originalModule,
-        Icon: (props: any) => React.createElement('span', { ...props, 'data-testid': 'mocked-ds-icon' }),
-        Link: (props: any) => React.createElement('a', { ...props, 'data-testid': 'mocked-ds-link' }),
-        Text: (props: any) => React.createElement('h1', { ...props, 'data-testid': 'mocked-ds-text' }),
-        Image: (props: any) => React.createElement('img', { ...props, 'data-testid': 'mocked-ds-image' }),
-        Button: (props: any) => React.createElement('button', { ...props, 'data-testid': 'mocked-ds-button' }),
-        Dropdown: (props: any) => {
+        Icon: ({ 'data-testid': dataTestId = 'mocked-ds-icon', ...props}: any) => React.createElement('span', { ...props, 'data-testid': dataTestId }),
+        Link: ({ 'data-testid': dataTestId = 'mocked-ds-link', ...props}: any) => React.createElement('a', { ...props, 'data-testid': dataTestId }),
+        Text: ({ 'data-testid': dataTestId = 'mocked-ds-text', ...props}: any) => React.createElement(props?.tag ?? 'p', { ...props, 'data-testid': dataTestId }),
+        Image: ({ 'data-testid': dataTestId = 'mocked-ds-image', ...props}: any) => React.createElement('img', { ...props, 'data-testid': dataTestId }),
+        Button: ({ 'data-testid': dataTestId = 'mocked-ds-button', ...props}: any) => React.createElement('button', { ...props, 'data-testid': dataTestId }),
+        Input: ({ 'data-testid': dataTestId = 'mocked-ds-input', ...props}: any) => {
+            if(props.validator) {
+                props.validator({ value: 'test@example.com'});
+            }
+
+            const { type, value, ...rest } = props;
+            const inputProps = type === 'file' ? rest : props;
+
+            return React.createElement('input', { ...inputProps, 'data-testid': dataTestId })
+        },
+        Dropdown: ({ 'data-testid': dataTestId = 'mocked-ds-dropdown', ...props}: any) => {
             const [isOpen, setIsOpen ] = React.useState(false)
             const onClick = () => {
                 setIsOpen(!isOpen);
             }
             return React.createElement(
                 'div',
-                { ...props, onClick, 'data-testid': 'mocked-ds-dropdown' },
+                { ...props, onClick, 'data-testid': dataTestId },
                 props?.activator
                     ? props?.activator
                     : React.createElement('div', { ...props }, props?.type === 'button'

@@ -15,14 +15,6 @@
     &--button {
       margin-right: var(--size-large);
     }
-    &--logo {
-      cursor: pointer;
-      width: var(--size-large);
-      height: var(--size-large);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
   }
   &__nav {
     display: none;

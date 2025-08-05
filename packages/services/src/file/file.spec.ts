@@ -9,9 +9,9 @@ import {
     jest,
 } from '@jest/globals';
 
-import { REQUIRED_FIELD } from '../shared';
+import { INVALID_TYPE, REQUIRED_FIELD } from '../shared';
 
-import { extractExtensionFromBase64, fileToBase64, imageTypeValidator, urlToBase64 } from './file';
+import { extractExtensionFromBase64, fileBase64Validator, fileToBase64, imageTypeValidator, urlToBase64 } from './file';
 
 describe('File function', () => {
     let OriginalFileReader: any;
@@ -69,6 +69,25 @@ describe('File function', () => {
         });
         it('should return invalid when received undefined image type', () => {
             expect(imageTypeValidator({})).toEqual(REQUIRED_FIELD);
+        });
+    });
+
+    describe('fileBase64Validator', () => {
+        it('should return invalid when received undefined file Base64', () => {
+            expect(fileBase64Validator({})).toEqual(REQUIRED_FIELD);
+        });
+
+        it('should return invalid when received invalid  file Base64 type', () => {
+            expect(fileBase64Validator({ value: new Date() })).toEqual(INVALID_TYPE);
+        });
+
+        it('should return valid when received valid  file Base64 type', () => {
+            const value = 'data:image/png;base64,mocked-data';
+            expect(fileBase64Validator({ value })).toEqual({
+                valid: true,
+                value,
+                message: 'Valid file.',
+            });
         });
     });
 

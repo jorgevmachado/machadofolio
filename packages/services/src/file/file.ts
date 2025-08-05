@@ -1,4 +1,4 @@
-import { REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams } from '../shared';
+import { INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams } from '../shared';
 
 export function imageTypeValidator({ accept }: ValidatorParams): ValidatorMessage {
  if (!accept) {
@@ -18,6 +18,22 @@ export function imageTypeValidator({ accept }: ValidatorParams): ValidatorMessag
   accept: valid ? accept : undefined,
   message: valid ? 'Valid image type.' : 'Please enter a valid image type.',
  };
+}
+
+export function fileBase64Validator({ value }: ValidatorParams): ValidatorMessage {
+    if (!value) {
+        return REQUIRED_FIELD;
+    }
+
+    if (typeof value !== 'string') {
+        return INVALID_TYPE;
+    }
+
+    return {
+        valid: true,
+        value,
+        message: 'Valid file.',
+    }
 }
 
 export async function urlToBase64(url: string): Promise<string> {

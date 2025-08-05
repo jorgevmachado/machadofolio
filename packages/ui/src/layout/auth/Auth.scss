@@ -1,0 +1,46 @@
+.ui-auth {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  &__title {
+    margin-top: 2rem;
+  }
+  &__description {
+    display: flex;
+    text-align: center;
+    line-height: var(--font-line-height-small, 1.5);
+    &--large {
+      width: clamp(15rem, 50%, 20rem);
+    }
+  }
+  &__social-media {
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  &__info-text {
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &--content {
+      white-space: nowrap;
+    }
+    &--line {
+      flex-grow: 1;
+      background-color: var(--color-neutral-90);
+    }
+    @media (min-width: 768px) {
+      max-width: 30%;
+    }
+  }
+  &__links {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+}

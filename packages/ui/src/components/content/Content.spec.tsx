@@ -7,7 +7,6 @@ jest.mock('../../animations', () => ({
     Fade: ({ children, ...props }: any) => <div data-testid="ds-fade" {...props}>{children}</div>
 }));
 
-
 import Content from './Content';
 
 describe('<Content/>', () => {

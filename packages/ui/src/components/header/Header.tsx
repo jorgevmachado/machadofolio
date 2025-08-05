@@ -1,16 +1,12 @@
 import React from 'react';
 
-import { Button, Dropdown, Image, Link, type TContext, type TIcon } from '@repo/ds';
+import { Button, Dropdown, Link, type TContext, type TIcon } from '@repo/ds';
+
+import Logo from '../logo';
 
 import './Header.scss';
 
-interface TLogo extends React.HTMLAttributes<HTMLDivElement>  {
-    src: string;
-    alt: string;
-    title: string;
-    width?: number;
-    height?: number;
-}
+type LogoProps = React.ComponentProps<typeof Logo>;
 
 type TNavbarItem = {
     key: string;
@@ -23,7 +19,7 @@ type TNavbarItem = {
 }
 
 type HeaderProps = {
-    logo?: TLogo;
+    logo?: LogoProps;
     navbar?: Array<TNavbarItem>;
     context?: TContext;
     handleToggleMenu?: () => void;
@@ -49,20 +45,13 @@ export default function Header({
                     appearance="icon"
                 />
                 {logo && (
-                    <div
-                        className="ui-header__brand--logo"
+                    <Logo
+                        {...logo}
+                        role="button"
                         onClick={handleLogoClick}
                         tabIndex={0}
-                        role="button"
-                        aria-label="Go to home page">
-                        <Image
-                            src={logo.src}
-                            alt={logo.alt}
-                            title={logo.title}
-                            width={logo.width}
-                            height={logo.height}
-                        />
-                    </div>
+                        aria-label="Go to home page"
+                    />
                 )}
             </div>
             <nav className="ui-header__nav" aria-label="main navigation">
