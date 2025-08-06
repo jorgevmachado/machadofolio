@@ -50,9 +50,11 @@ export default function Auth({
     const isDescriptionLarge = (description?.length ?? 0) > 56;
     const hasSocialMedia = socialMedia?.length > 0;
 
+    const showLogo =  Boolean(logo) || ( type === 'sign-in' || type === 'sign-up');
+
     return (
         <div {...props} className={joinClass(['ui-auth', className ])} data-testid="ui-auth">
-            { logo && <Logo {...logo} fit={logo?.fit ?? 'contain'}/>}
+            { showLogo && <Logo {...logo} fit={logo?.fit ?? 'contain'}/>}
             { title && (
                 <Text tag="h1" weight="bold" variant="xlarge" className="ui-auth__title" data-testid="ui-auth-title">
                     {title}

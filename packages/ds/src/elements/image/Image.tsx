@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { urlToBase64 } from '@repo/services';
-
-import LAW_LOGO from '../../assets/logo/law.png'
-import GEEK_LOGO from '../../assets/logo/geek.png'
-import FINANCE_LOGO from '../../assets/logo/finance.png'
-import NOTFOUND_IMAGE from '../../assets/danger/notfound.png'
+import {
+    LAW_LOGO_BASE64,
+    GEEK_LOGO_BASE64,
+    FINANCE_LOGO_BASE64,
+    NOTFOUND_IMAGE_BASE64
+} from '../../assets/base64';
 
 import { joinClass } from '../../utils';
 import { useActiveBrand } from '../../hooks';
@@ -37,29 +37,29 @@ export default function Image({
     className,
     ...props
 }: ImageProps) {
-    const [isInvalid, setIsInvalid] = useState<boolean>(!src);
+    const [isInvalid, setIsInvalid] = useState<boolean>(false);
     const [currentSrc, setCurrentSrc] = useState<string | undefined>(src);
 
-    const handleBrandSrc = async () => {
+    const handleBrandSrc = () => {
         const brand = useActiveBrand();
         switch (brand) {
             case 'law':
-                return await urlToBase64(LAW_LOGO);
+                return LAW_LOGO_BASE64;
             case 'finance':
-                return await urlToBase64(FINANCE_LOGO);
+                return FINANCE_LOGO_BASE64;
             case 'geek':
-                return urlToBase64(GEEK_LOGO);
+                return GEEK_LOGO_BASE64;
             default:
-                return urlToBase64(NOTFOUND_IMAGE);
+                return NOTFOUND_IMAGE_BASE64;
         }
     }
 
-    const handleCurrentSrc = async (type: TImage) => {
+    const handleCurrentSrc = (type: TImage) => {
         switch (type) {
             case 'brand':
-                return await handleBrandSrc();
+                return handleBrandSrc();
             case 'notfound':
-                return await urlToBase64(NOTFOUND_IMAGE);
+                return NOTFOUND_IMAGE_BASE64;
             case 'standard':
             default:
                 return;
@@ -67,23 +67,18 @@ export default function Image({
         }
     }
 
-    const handleSrc = async (type: TImage, src?: string) => {
-        const currentSrc = src ?? await handleCurrentSrc(type);
-        if(!currentSrc) {
-            throw new Error('Image src is required');
-        }
-        return currentSrc;
-    }
-
     useEffect(() => {
-        handleSrc(type, src)
-            .then((response) => {
-                setCurrentSrc(response);
-            })
-            .catch(() => {
-                setIsInvalid(true);
-            })
-    }, [src]);
+        if(!src) {
+            setIsInvalid(true);
+            const base64 = handleCurrentSrc(type);
+            if(base64) {
+                setIsInvalid(false);
+            }
+            setCurrentSrc(base64);
+            return;
+        }
+
+    }, [src, type]);
 
     const onError = useCallback<React.ReactEventHandler<HTMLImageElement>>(
         (event) => {

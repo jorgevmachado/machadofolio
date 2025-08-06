@@ -3,15 +3,13 @@ import React from 'react';
 import '@testing-library/jest-dom'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
-jest.mock('../../assets/logo/law.png', () => 'mock-law.png');
-jest.mock('../../assets/logo/geek.png', () => 'mock-geek.png');
-jest.mock('../../assets/logo/finance.png', () => 'mock-finance.png');
-jest.mock('../../assets/danger/notfound.png', () => 'mock-notfound.png');
+jest.mock('../../assets/base64', () =>({
+    LAW_LOGO_BASE64: 'base64-image-law',
+    GEEK_LOGO_BASE64: 'base64-image-geek',
+    FINANCE_LOGO_BASE64: 'base64-image-finance',
+    NOTFOUND_IMAGE_BASE64: 'base64-image-notfound',
+}))
 
-const mockUrlToBase64 = jest.fn();
-jest.mock('@repo/services', () => ({
-    urlToBase64: (...params: any[]) => mockUrlToBase64(...params),
-}));
 
 jest.mock('../../utils', () => ({
     joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
@@ -142,7 +140,6 @@ describe('<Image/>', () => {
 
     describe('type="notfound"', () => {
         it('should render component type notfound with props default.',  async () => {
-            mockUrlToBase64.mockResolvedValueOnce('base64-image-notfound');
             renderComponent({ src: undefined, type: 'notfound'});
             const component = screen.getByTestId('ds-image');
             expect(component).toBeInTheDocument();
@@ -167,7 +164,6 @@ describe('<Image/>', () => {
 
     describe('type="brand"', () => {
         it('should render component type brand when dont found brand.',  async () => {
-            mockUrlToBase64.mockResolvedValueOnce('base64-image-notfound');
             mockUseActiveBrand.mockReturnValue(undefined);
             renderComponent({ src: undefined, type: 'brand'});
             const component = screen.getByTestId('ds-image');
@@ -191,7 +187,6 @@ describe('<Image/>', () => {
         });
 
         it('should render component type brand equal law.',  async () => {
-            mockUrlToBase64.mockResolvedValueOnce('base64-image-law');
             mockUseActiveBrand.mockReturnValue('law');
             renderComponent({ src: undefined, type: 'brand'});
             const component = screen.getByTestId('ds-image');
@@ -204,7 +199,6 @@ describe('<Image/>', () => {
         });
 
         it('should render component type brand equal geek.',  async () => {
-            mockUrlToBase64.mockResolvedValueOnce('base64-image-geek');
             mockUseActiveBrand.mockReturnValue('geek');
             renderComponent({ src: undefined, type: 'brand'});
             const component = screen.getByTestId('ds-image');
@@ -217,7 +211,6 @@ describe('<Image/>', () => {
         });
 
         it('should render component type brand equal finance.',  async () => {
-            mockUrlToBase64.mockResolvedValueOnce('base64-image-finance');
             mockUseActiveBrand.mockReturnValue('finance');
             renderComponent({ src: undefined, type: 'brand'});
             const component = screen.getByTestId('ds-image');

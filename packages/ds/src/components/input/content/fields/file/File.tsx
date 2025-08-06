@@ -2,9 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { extractExtensionFromBase64, fileToBase64, imageTypeValidator, urlToBase64 } from '@repo/services';
 
-import DOC_IMAGE from '../../../../../assets/doc.png';
-import PDF_IMAGE from '../../../../../assets/pdf.png';
-import XLSX_IMAGE from '../../../../../assets/xlsx.png';
+import {
+    XLSX_IMAGE_BASE64,
+    DOC_IMAGE_BASE64,
+    PDF_IMAGE_BASE64
+} from '../../../../../assets/base64';
 
 import { type TContext, joinClass } from '../../../../../utils';
 
@@ -57,13 +59,13 @@ export default function FileInput({
 
         switch (extension) {
             case 'pdf':
-                result.previewImage = await urlToBase64(PDF_IMAGE);
+                result.previewImage = PDF_IMAGE_BASE64;
                 break;
             case 'xlsx':
-                result.previewImage = await urlToBase64(XLSX_IMAGE);
+                result.previewImage = XLSX_IMAGE_BASE64;
                 break;
             default:
-                result.previewImage = await urlToBase64(DOC_IMAGE);
+                result.previewImage = DOC_IMAGE_BASE64;
                 break;
         }
 

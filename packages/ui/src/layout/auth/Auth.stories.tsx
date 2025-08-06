@@ -18,10 +18,6 @@ const meta = {
     tags: ['autodocs'],
     args: {
         type: 'blank',
-        logo: {
-            src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHN5dygQnJFirBww40JLAsLuZHF0kOdBrzLw&s',
-            onClick: fn(),
-        },
     },
     title: 'Layout/Auth',
     argTypes: {},
@@ -149,3 +145,17 @@ export const Update: Story = {
     },
     render: (args) => <Template {...args} />,
 };
+
+export const ForgetPassword: Story = {
+    args: {
+        type: 'forgot-password',
+    },
+    render: (args) => <Template {...args} />,
+}
+
+export const ResetPassword: Story = {
+    args: {
+        type: 'reset-password',
+    },
+    render: (args) => <Template {...args} />,
+}

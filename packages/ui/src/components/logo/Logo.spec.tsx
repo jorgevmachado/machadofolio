@@ -25,7 +25,6 @@ describe('<Logo/>', () => {
         expect(component).toHaveClass('ui-logo');
         const image = screen.getByTestId('mocked-ds-image')
         expect(image).toBeInTheDocument();
-        expect(image).toHaveAttribute('src', 'https://placehold.co/150');
     });
 
     it('should render component with custom props.', () => {

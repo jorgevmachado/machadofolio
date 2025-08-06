@@ -11,12 +11,12 @@ type DivProps = React.HTMLAttributes<HTMLDivElement>
 type LogoProps = DivProps & ImageProps;
 
 export default function Logo({
-    src = 'https://placehold.co/150',
+    src,
     alt,
     fit,
     title,
-    width,
-    height,
+    width = '150',
+    height = '150',
     className,
     ...props
 }: LogoProps) {
@@ -31,6 +31,7 @@ export default function Logo({
                 src={src}
                 alt={alt}
                 fit={fit}
+                type="brand"
                 title={title}
                 width={width}
                 height={height}

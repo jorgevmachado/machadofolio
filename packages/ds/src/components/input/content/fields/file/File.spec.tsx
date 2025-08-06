@@ -5,9 +5,11 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 
 import FileInput from './File';
 
-jest.mock('../../../../../assets/doc.png', () => 'mock-doc.png');
-jest.mock('../../../../../assets/pdf.png', () => 'mock-pdf.png');
-jest.mock('../../../../../assets/xlsx.png', () => 'mock-xlsx.png');
+jest.mock('../../../../../assets/base64', () =>({
+    XLSX_IMAGE_BASE64: 'base64-image-xlsx',
+    DOC_IMAGE_BASE64: 'base64-image-doc',
+    PDF_IMAGE_BASE64: 'base64-image-pdf'
+}));
 
 const mockFileToBase64 = jest.fn();
 const mockImageTypeValidator = jest.fn();
@@ -112,7 +114,6 @@ describe('<File/>', () => {
     it('should call onChange with PDF file and show PDF preview', async () => {
         mockImageTypeValidator.mockReturnValueOnce({ valid: false });
         mockFileToBase64.mockResolvedValueOnce('base64-file');
-        mockUrlToBase64.mockResolvedValueOnce('pdf-preview-img');
         const mockOnChange = jest.fn();
         renderComponent({ onChange: mockOnChange, withPreview: true });
 
@@ -122,19 +123,17 @@ describe('<File/>', () => {
         fireEvent.change(input, { target: { files: [file] } });
 
         await waitFor(() => {
-            expect(mockUrlToBase64).toHaveBeenCalledWith('mock-pdf.png');
             expect(mockOnChange).toHaveBeenCalledWith(expect.any(Object), 'base64-file')
         });
 
         expect(screen.getByText('my-file.pdf')).toBeInTheDocument();
-        expect(await screen.findByAltText('Preview')).toHaveAttribute('src', 'pdf-preview-img');
+        expect(await screen.findByAltText('Preview')).toHaveAttribute('src', 'base64-image-pdf');
     });
 
     it('should call onChange with .xlsx file and show XLSX preview', async () => {
         const mockOnChange = jest.fn();
         mockImageTypeValidator.mockReturnValueOnce({ valid: false });
         mockFileToBase64.mockResolvedValueOnce('xlsx-file-base64');
-        mockUrlToBase64.mockResolvedValueOnce('xlsx-preview-img');
         renderComponent({ onChange: mockOnChange, withPreview: true });
 
         const input = document.querySelector('input[type="file"]') as HTMLInputElement;
@@ -143,8 +142,7 @@ describe('<File/>', () => {
         fireEvent.change(input, { target: { files: [file] } });
 
         await waitFor(async () => {
-            expect(mockUrlToBase64).toHaveBeenCalledWith('mock-xlsx.png');
-            expect(await screen.findByAltText('Preview')).toHaveAttribute('src', 'xlsx-preview-img');
+            expect(await screen.findByAltText('Preview')).toHaveAttribute('src', 'base64-image-xlsx');
         });
     });
 
@@ -152,7 +150,6 @@ describe('<File/>', () => {
         const mockOnChange = jest.fn();
         mockImageTypeValidator.mockReturnValueOnce({ valid: false });
         mockFileToBase64.mockResolvedValueOnce('default-file-base64');
-        mockUrlToBase64.mockResolvedValueOnce('default-preview-img');
         renderComponent({ onChange: mockOnChange, withPreview: true });
 
         const input = document.querySelector('input[type="file"]') as HTMLInputElement;
@@ -161,8 +158,7 @@ describe('<File/>', () => {
         fireEvent.change(input, { target: { files: [file] } });
 
         await waitFor(async () => {
-            expect(mockUrlToBase64).toHaveBeenCalledWith('mock-doc.png');
-            expect(await screen.findByAltText('Preview')).toHaveAttribute('src', 'default-preview-img');
+            expect(await screen.findByAltText('Preview')).toHaveAttribute('src', 'base64-image-doc');
         });
     });
 
