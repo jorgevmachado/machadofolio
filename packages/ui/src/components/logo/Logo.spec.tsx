@@ -25,7 +25,7 @@ describe('<Logo/>', () => {
         expect(component).toHaveClass('ui-logo');
         const image = screen.getByTestId('mocked-ds-image')
         expect(image).toBeInTheDocument();
-        expect(image.src).toContain('https://placehold.co/150');
+        expect(image).toHaveAttribute('src', 'https://placehold.co/150');
     });
 
     it('should render component with custom props.', () => {
@@ -35,7 +35,7 @@ describe('<Logo/>', () => {
         expect(component).toHaveClass('ui-logo');
         const image = screen.getByTestId('mocked-ds-image')
         expect(image).toBeInTheDocument();
-        expect(image.src).toContain('https://placehold.co/100');
-        expect(image.alt).toContain('custom-alt');
+        expect(image).toHaveAttribute('src', 'https://placehold.co/100');
+        expect(image).toHaveAttribute('alt', 'custom-alt');
     });
 });
