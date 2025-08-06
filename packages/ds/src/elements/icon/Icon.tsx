@@ -1,6 +1,6 @@
 import React from 'react';
 
-import joinClass from '../../utils/join-class';
+import { joinClass } from '../../utils';
 
 import type { IconProps, TIcon } from './types';
 import { getIcon } from './service';

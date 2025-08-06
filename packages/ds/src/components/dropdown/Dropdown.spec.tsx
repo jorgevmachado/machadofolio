@@ -6,6 +6,13 @@ import { act, cleanup, fireEvent, render, renderHook, screen } from '@testing-li
 import Dropdown from './Dropdown';
 import useDropdown from './useDropdown';
 
+jest.mock('../../utils', () => {
+    const originalModule = jest.requireActual('../../utils');
+    return {
+        ...originalModule,
+        joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
+    }
+});
 
 let outsideHandler: any;
 jest.mock('../../hooks', () => ({

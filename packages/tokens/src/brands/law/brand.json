@@ -1,4 +1,9 @@
 {
+  "brand": {
+    "name":{
+      "$value": "law"
+    }
+  },
   "color": {
     "$type": "color",
     "menu": {

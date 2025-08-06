@@ -17,8 +17,8 @@ jest.mock('../../../utils', () => {
     const originalUtils = jest.requireActual('../../../utils');
     return {
         ...originalUtils,
-        generateComponentId: jest.fn((id?: string) => id || 'mocked-id'),
         joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
+        generateComponentId: jest.fn((id?: string) => id || 'mocked-id'),
     }
 });
 

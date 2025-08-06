@@ -5,14 +5,22 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 
 import { Button } from './Button';
 
+jest.mock('../../utils', () => {
+    const originalModule = jest.requireActual('../../utils') as Record<string, any>;
+    return {
+        ...originalModule,
+        joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
+    }
+});
+
+jest.mock('../../elements', () => ({
+    Icon: ({ children }: any) => (<div data-testid="mock-icon">{children}</div>),
+}));
+
 jest.mock('./Content', () => ({
     __esModule: true,
     Content: ({ children }: any) => (<div data-testid="mock-content">{children}</div>),
     default: ({ children }: any) => (<div data-testid="mock-content">{children}</div>),
-}));
-
-jest.mock('../../elements', () => ({
-    Icon: ({ children }: any) => (<div data-testid="mock-icon">{children}</div>),
 }));
 
 describe('<Button/>', () => {

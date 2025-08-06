@@ -1,4 +1,3 @@
-// useBreakpoint.spec.ts
 import { act, renderHook } from '@testing-library/react-hooks';
 import useBreakpoint from './useBreakpoint';
 
@@ -131,17 +130,11 @@ describe('useBreakpoint', () => {
             };
         }) as any;
 
-        // "Dispara" um evento de mudança no primeiro breakpoint monitorado
+
         act(() => {
             Object.values(handlers).forEach(queue =>
                 queue.forEach(fn => fn())
             );
         });
-        // O valor interno vai atualizar para 'desktop' por causa do novo mock
-        // O hook manterá referência do primeiro matchMedia (salvo no mount)
-        // Em teste realista, deveria simular update do MediaQueryList.matches
-        // Por simplicidade, pode validar que ao acionar change sempre recalcule
-
-        // Não assegura a troca já que hook não se re-monta, mas cobre a chamada
     });
 });

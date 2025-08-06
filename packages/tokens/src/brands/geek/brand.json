@@ -1,4 +1,9 @@
 {
+  "brand": {
+    "name":{
+      "$value": "geek"
+    }
+  },
   "color": {
     "$type": "color",
     "menu": {

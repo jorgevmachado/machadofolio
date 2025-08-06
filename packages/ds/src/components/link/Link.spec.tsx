@@ -2,13 +2,20 @@ import React from 'react';
 
 import '@testing-library/jest-dom'
 import { cleanup, render, screen } from '@testing-library/react';
-import { fn } from 'storybook/test';
 
-import Link from './Link';
+jest.mock('../../utils', () => {
+    const originalModule = jest.requireActual('../../utils');
+    return {
+        ...originalModule,
+        joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
+    }
+});
 
 jest.mock('../../elements', () => ({
     Icon: ({ children, ...props }: any) => (<div data-testid="mock-icon" {...props}>{children}</div>),
 }));
+
+import Link from './Link';
 
 describe('<Link/>', () => {
     const defaultProps = {
@@ -18,7 +25,7 @@ describe('<Link/>', () => {
         context: 'neutral',
         children: 'Hello, World!',
         notification: undefined,
-        onClick: fn()
+        onClick: jest.fn()
     };
 
     const renderComponent = (props: any = {}) => {

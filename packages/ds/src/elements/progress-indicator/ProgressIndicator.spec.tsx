@@ -3,6 +3,14 @@ import React from 'react';
 import '@testing-library/jest-dom'
 import { cleanup, render, screen } from '@testing-library/react';
 
+jest.mock('../../utils', () => {
+    const originalModule = jest.requireActual('../../utils');
+    return {
+        ...originalModule,
+        joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
+    }
+});
+
 import ProgressIndicator from './ProgressIndicator';
 
 describe('<ProgressIndicator/>', () => {

@@ -5,6 +5,10 @@ import { cleanup, render, screen } from '@testing-library/react';
 
 import Icon from './Icon';
 
+jest.mock('../../utils', () => ({
+    joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
+}));
+
 jest.mock('./service', () => ({
     getIcon: jest.fn()
 }));

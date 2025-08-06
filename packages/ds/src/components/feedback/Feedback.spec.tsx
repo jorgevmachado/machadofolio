@@ -3,6 +3,11 @@ import React from 'react';
 import '@testing-library/jest-dom'
 import { cleanup, render, screen } from '@testing-library/react';
 
+jest.mock('../../utils', () => ({
+    joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
+    generateComponentId: jest.fn(() => 'mock-id'),
+}));
+
 jest.mock('../../elements', () => ({
     __esModule: true,
     default: (props: any) => (<p {...props}/>),

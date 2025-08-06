@@ -60,3 +60,11 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {  args: { src } };
+
+export const ErrorUrl: Story = {  args: { src: 'Error_URL' } };
+
+export const SrcUndefined: Story = {  args: { } };
+
+export const WithLogo: Story = {  args: { type: 'brand' } };
+
+export const WithNotFound: Story = {  args: { type: 'notfound' } };

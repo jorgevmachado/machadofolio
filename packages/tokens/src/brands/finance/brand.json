@@ -1,4 +1,9 @@
 {
+  "brand": {
+    "name":{
+      "$value": "finance"
+    }
+  },
   "color": {
     "$type": "color",
     "menu": {

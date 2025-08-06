@@ -7,8 +7,10 @@ jest.mock('../../utils', () => {
     const originalModule = jest.requireActual('../../utils') as Record<string, any>;
     return {
         ...originalModule,
+        joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
         isReactNode: jest.fn(),
-        formattedText: jest.fn()
+        formattedText: jest.fn(),
+        generateComponentId: jest.fn(() => 'mock-id'),
     }
 });
 

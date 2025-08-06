@@ -1,7 +1,8 @@
 import React, { type ComponentProps } from 'react';
 
-import { Icon, type TIconPosition } from '../../elements';
 import { type TColors, type TContext, type TSimplySIze, type TWeight, joinClass} from '../../utils';
+
+import { Icon, type TIconPosition } from '../../elements';
 
 import './Link.scss';
 
