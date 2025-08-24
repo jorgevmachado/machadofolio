@@ -11,7 +11,6 @@ jest.mock('@repo/ds', () => {
         Link: ({ 'data-testid': dataTestId = 'mocked-ds-link', ...props}: any) => React.createElement('a', { ...props, 'data-testid': dataTestId }),
         Text: ({ 'data-testid': dataTestId = 'mocked-ds-text', ...props}: any) => React.createElement(props?.tag ?? 'p', { ...props, 'data-testid': dataTestId }),
         Image: ({ 'data-testid': dataTestId = 'mocked-ds-image', ...props}: any) => React.createElement('img', { ...props, 'data-testid': dataTestId }),
-        Button: ({ 'data-testid': dataTestId = 'mocked-ds-button', ...props}: any) => React.createElement('button', { ...props, 'data-testid': dataTestId }),
         Input: ({ 'data-testid': dataTestId = 'mocked-ds-input', ...props}: any) => {
             if(props.validator) {
                 props.validator({ value: 'test@example.com'});
@@ -22,6 +21,20 @@ jest.mock('@repo/ds', () => {
 
             return React.createElement('input', { ...inputProps, 'data-testid': dataTestId })
         },
+        Alert: ({ 'data-testid': dataTestId = 'mocked-ds-alert', ...props}: any) => {
+            return React.createElement(
+                'div',
+                { ...props, 'data-testid': dataTestId },
+                props?.children && React.createElement(
+                    'div',
+                    { ...props, children: props.children, 'data-testid': 'mocked-ds-alert-content' },
+                    props.children,
+                    props?.link && React.createElement('span', { label: props.link.label,  onClick: props.link.onClick, 'data-testid': 'mocked-ds-alert-link' }),
+                ),
+                props?.onClose && React.createElement('span', { onClick: props.onClose, 'data-testid': 'mocked-ds-alert-icon-close' }),
+            )
+        },
+        Button: ({ 'data-testid': dataTestId = 'mocked-ds-button', ...props}: any) => React.createElement('button', { ...props, 'data-testid': dataTestId }),
         Dropdown: ({ 'data-testid': dataTestId = 'mocked-ds-dropdown', ...props}: any) => {
             const [isOpen, setIsOpen ] = React.useState(false)
             const onClick = () => {

@@ -39,6 +39,14 @@ describe('<Feedback/>', () => {
         expect(component).toHaveClass('ds-feedback');
     });
 
+    it('should render component with id.', () => {
+        renderComponent({ id: 'custom-id' });
+        const component = screen.getByTestId('ds-feedback');
+        expect(component).toBeInTheDocument();
+        expect(component).toHaveAttribute('id', 'custom-id');
+        expect(component).toHaveClass('ds-feedback');
+    });
+
     it('should render the component with context other than error with custom className.', () => {
         renderComponent({ context: 'success', className: 'custom-class' });
         const component = screen.getByTestId('ds-feedback');

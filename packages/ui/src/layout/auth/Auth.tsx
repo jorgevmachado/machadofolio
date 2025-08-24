@@ -56,12 +56,13 @@ export default function Auth({
         <div {...props} className={joinClass(['ui-auth', className ])} data-testid="ui-auth">
             { showLogo && <Logo {...logo} fit={logo?.fit ?? 'contain'}/>}
             { title && (
-                <Text tag="h1" weight="bold" variant="xlarge" className="ui-auth__title" data-testid="ui-auth-title">
+                <Text id="auth-title" tag="h1" weight="bold" variant="xlarge" className="ui-auth__title" data-testid="ui-auth-title">
                     {title}
                 </Text>
             )}
             { description && (
                 <Text
+                    id="auth-description"
                     tag="p"
                     variant="regular"
                     className={joinClass([
@@ -83,7 +84,7 @@ export default function Auth({
             {infoText && (
                 <div className="ui-auth__info-text" data-testid="ui-auth-info-text">
                     <hr className="ui-auth__info-text--line" aria-hidden={true} />
-                    <Text className="ui-auth__info-text--content" data-testid="ui-auth-info-text-content">{infoText}</Text>
+                    <Text id="auth-info-text" className="ui-auth__info-text--content" data-testid="ui-auth-info-text-content">{infoText}</Text>
                     <hr className="ui-auth__info-text--line" aria-hidden={true} />
                 </div>
             )}

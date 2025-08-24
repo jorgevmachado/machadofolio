@@ -14,6 +14,7 @@ export default function Icon({
                                  group,
                                  className,
                                  withDefault = true,
+                                 'data-testid': dataTestId,
                                  ...props
                              }: IconProps) {
     const classNameList = joinClass([
@@ -33,7 +34,12 @@ export default function Icon({
             };
 
     return (
-        <span {...props} data-testid="ds-icon" className={classNameList} aria-label={ariaLabel} data-group={currentData.group}>
+        <span
+            {...props}
+            data-testid={dataTestId ?? 'ds-icon'}
+            className={classNameList}
+            aria-label={ariaLabel}
+            data-group={currentData.group}>
       {currentData.icon}
     </span>
     );

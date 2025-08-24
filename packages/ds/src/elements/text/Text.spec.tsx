@@ -46,6 +46,15 @@ describe('<Text/>', () => {
         expect(component.tagName.toLowerCase()).toBe('p');
     });
 
+    it('should render component with id.', () => {
+        renderComponent({ id: 'custom-id' });
+        const component = screen.getByTestId('ds-text');
+        expect(component).toBeInTheDocument();
+        expect(component).toHaveAttribute('id', 'custom-id');
+        expect(component).toHaveClass('ds-text');
+        expect(component.tagName.toLowerCase()).toBe('p');
+    });
+
     it('should render with a custom tag', () => {
         renderComponent({ tag: 'span', children: 'Custom Tag' });
         const component = screen.getByTestId('ds-text');

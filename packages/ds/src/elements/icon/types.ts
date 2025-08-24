@@ -139,6 +139,7 @@ export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
     color?: TColors;
     group?: TIconGroup;
     withDefault?: boolean;
+    'data-testid'?: string;
 }
 
 export type TGenericIconProps = IconProps & {

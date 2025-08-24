@@ -42,6 +42,7 @@ export const config = {
         'interface.ts',
         'types.ts',
         'options.ts',
+        'styles.ts',
     ],
     testPathIgnorePatterns: [
         '<rootDir>/e2e/',

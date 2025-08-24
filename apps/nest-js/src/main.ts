@@ -16,7 +16,7 @@ async function bootstrap() {
   });
 
   app.useGlobalPipes(new ValidationPipe({
-    transform: true, // Necessário para o @Type funcionar
+    transform: true,
     whitelist: true
   }));
 
