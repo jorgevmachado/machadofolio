@@ -67,10 +67,14 @@ export function useForm({ user, type, onInput, onSubmit }: UseFormProps): TUseFo
         return user?.[input.id as keyof TUser] as string;
     },[]);
 
+    const isDisabled = useCallback(({ id }: InputForm) => {
+        return type === 'update' && (id === 'cpf' || id === 'email' || id === 'whatsapp');
+    }, [type]);
+
     const initializeInputs = useCallback((inputIds: Array<string>) => {
         const filteredInputs = INPUTS
             .filter((input) => inputIds.includes(input.id as string))
-            .map((input) => ({ ...input, value: handleValue(input, user) }));
+            .map((input) => ({ ...input, disabled: isDisabled(input), value: handleValue(input, user) }));
 
         setInputs(filteredInputs);
 

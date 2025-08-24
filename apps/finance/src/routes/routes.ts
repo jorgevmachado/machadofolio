@@ -44,13 +44,6 @@ export const privateRoutes: Array<TRoute> = [
         title: 'Profile',
     },
     {
-        key: 'config',
-        icon: 'config',
-        path: '/config',
-        type: 'private',
-        title: 'Configuration',
-    },
-    {
         key: 'bank',
         icon: 'school',
         path: '/banks',

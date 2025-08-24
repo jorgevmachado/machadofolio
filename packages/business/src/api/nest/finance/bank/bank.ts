@@ -5,6 +5,6 @@ import type { IBank, ICreateBankParams, IUpdateBankParams } from './types';
 
 export class Bank extends NestModuleAbstract<IBank, ICreateBankParams, IUpdateBankParams> {
     constructor(nestModuleConfig: INestModuleConfig) {
-        super({ pathUrl: 'finance/bank', nestModuleConfig });
+        super({ pathUrl: 'finance', subPathUrl: 'bank', nestModuleConfig });
     }
 }

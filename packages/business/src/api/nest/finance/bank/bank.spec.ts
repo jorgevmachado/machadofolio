@@ -35,7 +35,8 @@ describe('Bank', () => {
         it('should initialize with the correct path and config', () => {
             expect(NestModuleAbstract).toHaveBeenCalledTimes(1);
             expect(NestModuleAbstract).toHaveBeenCalledWith({
-                pathUrl: 'finance/bank',
+                pathUrl: 'finance',
+                subPathUrl: 'bank',
                 nestModuleConfig: mockConfig,
             });
         });

@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import { type UserEntity } from '@repo/business/index';
 
-import { Page, useAlert, useLoading } from '@repo/ui';
+import { Page, useAlert, useLoading, UserProvider } from '@repo/ui';
 
 import { authService, getAccessToken, removeAccessToken } from '../../../app/shared';
 
@@ -21,7 +21,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
     const { addAlert } = useAlert();
     const { show, hide } = useLoading();
 
-    const [user, setUser] = useState<UserEntity | null>(null);
+    const [user, setUser] = useState<UserEntity | undefined>(undefined);
 
     const isAuthenticationRoute = useMemo(
         () => publicRoutes.some((route) => route.path === pathname),
@@ -57,13 +57,19 @@ export default function PageLayout({ children }: PageLayoutProps) {
         }
     }, [token]);
 
-    return (
-        <Page
-            menu={privateRoutes}
-            userName={user?.name}
-            navbarTitle="Finance"
-            onLinkClick={handleLinkClick}
-            isAuthenticated={Boolean(user)}
-        >{children}</Page>
-    )
+    if(isAuthenticationRoute && !user) {
+        return (<Page isAuthenticated={false}>{children}</Page>)
+    }
+
+    return user ? (
+        <UserProvider user={user}>
+            <Page
+                menu={privateRoutes}
+                userName={user?.name}
+                navbarTitle="Finance"
+                onLinkClick={handleLinkClick}
+                isAuthenticated={Boolean(user)}
+            >{children}</Page>
+        </UserProvider>
+    ): null;
 }

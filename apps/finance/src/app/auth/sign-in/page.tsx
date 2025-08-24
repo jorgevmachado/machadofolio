@@ -18,7 +18,6 @@ export default function SignInPage() {
 
     const handeOnSubmit = async ( valid: boolean, email?: string, password?: string ) => {
         if(!valid) {
-            console.log('# => handeOnSubmit => invalid')
             addAlert({ type: 'error', message: 'Please fill in all required fields.' });
             return;
         }
@@ -35,7 +34,7 @@ export default function SignInPage() {
                     : 'Unable to authenticate at this time, please try again later';
 
             addAlert({ type: 'error', message });
-            console.error('# => handeOnSubmit => error => ', error)
+            console.error(error)
         } finally {
             hide();
         }

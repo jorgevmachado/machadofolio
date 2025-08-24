@@ -11,7 +11,7 @@ type PageProvidersProps = {
 
 export default function PageProviders({ children }: PageProvidersProps) {
  return (
-     <AlertProvider>
+     <AlertProvider style={{ marginTop: '3.2rem'}}>
          <LoadingProvider>
              <PageLayout>
                  {children}
