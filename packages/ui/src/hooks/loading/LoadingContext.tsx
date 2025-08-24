@@ -27,9 +27,9 @@ type LoadingProviderProps = {
 
 export function LoadingProvider({ children, defaultSpinnerProps }: LoadingProviderProps) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [spinnerProps, setSpinnerProps] = useState<SpinnerProps>(defaultSpinnerProps);
+    const [spinnerProps, setSpinnerProps] = useState<SpinnerProps | undefined>(defaultSpinnerProps);
 
-    const show = useCallback((props?: SpinnerProps = undefined) => {
+    const show = useCallback((props?: SpinnerProps) => {
         setSpinnerProps(props || defaultSpinnerProps);
         setIsLoading(true);
     }, [defaultSpinnerProps]);

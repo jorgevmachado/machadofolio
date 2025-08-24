@@ -5,15 +5,15 @@ const domain = typeof window !== 'undefined' ? window.location.hostname : '.loca
 
 export function getAccessToken() {
     if(typeof window !== 'undefined') {
-        return cookies.get('accessToken')
+        return cookies.get('financeAccessToken')
     }
     return;
 }
 
 export function setAccessToken(token: string) {
-    return cookies.set('accessToken', token, domain);
+    return cookies.set('financeAccessToken', token, domain);
 }
 
 export function removeAccessToken() {
-    return cookies.remove('accessToken', domain);
+    return cookies.remove('financeAccessToken', domain);
 }

@@ -1,1 +1,1 @@
-export { default as PageLayout } from './page-layout';
+export { default as PageProviders } from './page-providers';

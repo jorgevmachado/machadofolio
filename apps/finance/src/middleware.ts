@@ -1,82 +1,93 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 
 import { allRoutes, publicRoutes } from './routes';
 
-type TAccount = 'sign-in' | 'sign-up' | 'update';
-
-function accountRedirect(
-    url: NextRequest['nextUrl'],
-    host?: string,
-    redirectTo?: string,
-) {
-    const currentPath = !redirectTo ? '/dashboard' : redirectTo;
-    const currentRedirectTo =
-        currentPath === '/sign-in' ||
-        currentPath === '/sign-up' ||
-        currentPath === '/update'
-            ? '/dashboard'
-            : currentPath;
-    const redirectToUrl = new URL(currentRedirectTo, url);
-    redirectToUrl.host = !host ? redirectToUrl.host : host;
-    return redirectToUrl;
+function convertUrlToKey(url: string) {
+    return url.startsWith('/') ? url.slice(1) : url;
 }
 
-function accountRoute(
-    type: TAccount,
+function treatRedirectUrl(request: NextRequest, destination: string) {
+    const url = request.nextUrl.clone();
+    const keyDestination = convertUrlToKey(destination);
+    const authRoute = publicRoutes.find(route => route.key === keyDestination);
+
+    if(!authRoute) {
+        url.pathname =  destination;
+        return url;
+    }
+    const keyPathname = convertUrlToKey(url.pathname);
+    if(keyPathname !== keyDestination) {
+        const host = request.headers.get('host') ?? undefined;
+        const redirectToUrl = new URL(destination, url);
+        url.host = !host ? redirectToUrl.host : host;
+        url.searchParams.set('redirectTo', redirectToUrl.href);
+    }
+    url.searchParams.set('source', 'finance');
+    url.searchParams.set('env', 'dev');
+    url.pathname = authRoute.path;
+    return url;
+}
+
+function redirectTo(
     request: NextRequest,
-    redirectTo?: string,
-) {
-    const host = request.headers.get('host') ?? undefined;
-    const url = request.nextUrl;
-    const accountUrl = new URL(`/auth/${type}`, url);
+    redirectTo: string = '/dashboard',
+): NextResponse {
+    const destination = treatRedirectUrl(request, redirectTo);
+    return NextResponse.redirect(destination);
+}
 
-    const redirectToUrl = accountRedirect(url, host, redirectTo);
-    accountUrl.searchParams.append('redirectTo', redirectToUrl.href);
+function isAppRoute(path: string): boolean {
+    const validRoutes = allRoutes.map((item) => item.path);
+    if (
+        path === '/favicon.ico' ||
+        path.startsWith('/.well-known') ||
+        path.match(/\.(png|jpg|jpeg|gif|svg|ico)$/)
+    ) {
+        return false;
+    }
+    return validRoutes.includes(path);
+}
 
-    accountUrl.searchParams.append('source', 'finance');
-    accountUrl.searchParams.append('env', 'dev');
-    accountUrl.host = !host ? accountUrl.host : host;
-    accountUrl.port = '4003';
-    return accountUrl;
+
+function isAuthRoute(path: string): boolean {
+    const authPaths = publicRoutes.map((item) => item.path);
+    return authPaths.includes(path);
+}
+
+
+async function isTokenValid(token: string): Promise<boolean> {
+    return true;
 }
 
 
 export default async function middleware(request: NextRequest) {
-    const path = request.nextUrl.pathname;
-    const cookieStore = await cookies();
+    const { pathname } = request.nextUrl;
 
-    const isAuthRoute = publicRoutes.some((route) => route.path === path);
-
-    const accessToken = cookieStore.get('financeAccessToken');
-    const isAuthenticated = Boolean(accessToken);
-
-    if (isAuthRoute && isAuthenticated) {
-        return NextResponse.redirect(new URL('/dashboard', request.nextUrl));
+    if(pathname === '/' ) {
+        return redirectTo(request);
     }
 
-    if (!isAuthRoute && !isAuthenticated) {
-        return NextResponse.redirect(accountRoute('sign-in', request, path));
+    if(!isAppRoute(pathname)) {
+        return NextResponse.next();
     }
 
-    // const isRoutePath = allRoutes.some((route) => route.path === path);
-    //
-    // const isEmptyPath = path === '/';
-    //
-    // if (isEmptyPath) {
-    //     return NextResponse.redirect(new URL('/dashboard', request.nextUrl));
-    // }
-    //
-    // if (!isRoutePath) {
-    //     return NextResponse.next();
-    // }
-    //
-    //
-    //
+    const token = request.cookies.get('financeAccessToken')?.value;
+
+    const isAuth = isAuthRoute(pathname);
+
+    const isAuthenticated = token ? await isTokenValid(token) : false;
+
+    if(!isAuth && !isAuthenticated) {
+        return redirectTo(request, '/sign-in');
+    }
+
+    if(isAuth && isAuthenticated) {
+        return redirectTo(request);
+    }
 
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+    matcher: ['/((?!api|_next/static|_next/image|favicon.ico|\\.well-known/.*).*)'],
 };

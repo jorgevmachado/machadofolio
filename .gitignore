@@ -50,6 +50,9 @@ dist
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# AGENS IA
+/.github/
+
 # Debug
 logs
 *.log

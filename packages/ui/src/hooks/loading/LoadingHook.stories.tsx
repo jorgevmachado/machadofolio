@@ -41,7 +41,7 @@ const CustomLoading: React.FC<CustomLoadingProps> = ({ items }) => {
             <h3>Add Loading</h3>
             <div style={{ display: 'flex', width: '350px', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
                 {items.map((item, index) => (
-                    <Button key={index} context="primary" loading={isLoading} onClick={() => show(item)}>
+                    <Button key={index} context="primary" loading={{ value: isLoading }} onClick={() => show(item)}>
                         Add Loading {item.type}
                     </Button>
                 ))}

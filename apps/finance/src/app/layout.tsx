@@ -4,10 +4,9 @@ import '@repo/tokens/dist/finance/css/_variables.css';
 import '@repo/ds/dist/index.css';
 import '@repo/ui/dist/index.css';
 
-import { PageLayout } from '../components';
+import { PageProviders } from '../components';
 
-import './globals.css';
-
+import './page.scss';
 
 export default function RootLayout({
   children,
@@ -17,9 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-      <PageLayout>
+      <PageProviders>
           {children}
-      </PageLayout>
+      </PageProviders>
       </body>
     </html>
   );
