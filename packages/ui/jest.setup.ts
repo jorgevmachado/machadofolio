@@ -21,19 +21,17 @@ jest.mock('@repo/ds', () => {
 
             return React.createElement('input', { ...inputProps, 'data-testid': dataTestId })
         },
-        Alert: ({ 'data-testid': dataTestId = 'mocked-ds-alert', ...props}: any) => {
-            return React.createElement(
+        Alert: ({ 'data-testid': dataTestId = 'mocked-ds-alert', ...props}: any) => React.createElement(
+            'div',
+            { ...props, 'data-testid': dataTestId },
+            props?.children && React.createElement(
                 'div',
-                { ...props, 'data-testid': dataTestId },
-                props?.children && React.createElement(
-                    'div',
-                    { ...props, children: props.children, 'data-testid': 'mocked-ds-alert-content' },
-                    props.children,
-                    props?.link && React.createElement('span', { label: props.link.label,  onClick: props.link.onClick, 'data-testid': 'mocked-ds-alert-link' }),
-                ),
-                props?.onClose && React.createElement('span', { onClick: props.onClose, 'data-testid': 'mocked-ds-alert-icon-close' }),
-            )
-        },
+                { ...props, children: props.children, 'data-testid': 'mocked-ds-alert-content' },
+                props.children,
+                props?.link && React.createElement('span', { label: props.link.label,  onClick: props.link.onClick, 'data-testid': 'mocked-ds-alert-link' }),
+            ),
+            props?.onClose && React.createElement('span', { onClick: props.onClose, 'data-testid': 'mocked-ds-alert-icon-close' }),
+        ),
         Button: ({ 'data-testid': dataTestId = 'mocked-ds-button', ...props}: any) => React.createElement('button', { ...props, 'data-testid': dataTestId }),
         Dropdown: ({ 'data-testid': dataTestId = 'mocked-ds-dropdown', ...props}: any) => {
             const [isOpen, setIsOpen ] = React.useState(false)
@@ -52,6 +50,11 @@ jest.mock('@repo/ds', () => {
                 isOpen && props?.children,
             )
         },
+        Spinner: ({ 'data-testid': dataTestId = 'mocked-ds-spinner', ...props}: any) => React.createElement(
+            'div',
+            { ...props, 'data-testid': dataTestId },
+            React.createElement('div', { ...props, 'data-testid': `${dataTestId}-${props.type ?? 'circle'}` })
+        ),
         useBreakpoint: useBreakpointMock,
     }
 });

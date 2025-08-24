@@ -1,0 +1,35 @@
+.ds-spinner-circle {
+  animation: spin 1s linear infinite;
+  border-radius: var(--border-radius-circle);
+  &__context--info {
+    color: var(--color-info-80);
+    background: var(--color-info-80);
+  }
+  &__context--error {
+    color: var(--color-error-80);
+  }
+  &__context--neutral {
+    color: var(--color-neutral-80);
+  }
+  &__context--success {
+    color: var(--color-success-80);
+  }
+  &__context--primary {
+    color: var(--color-primary-80);
+  }
+  &__context--secondary {
+    color: var(--color-secondary-80);
+  }
+  &__context--attention {
+    color: var(--color-attention-80);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -17,7 +17,7 @@ const meta = {
                 type: { summary: 'number' },
                 defaultValue: { summary: '32' },
             },
-            control: { type: 'range', min: 16, max: 300 },
+            control: { type: 'range', min: 1, max: 300 },
         },
         context: {
             table: {
@@ -35,3 +35,9 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 export const Default: Story = {  args: {} };
+
+export const Circle: Story = {  args: { size: 48 } };
+
+export const Dots: Story = {  args: { type: 'dots', size: 48 } };
+
+export const Bar: Story = {  args: { type: 'bar', size: 2 } };

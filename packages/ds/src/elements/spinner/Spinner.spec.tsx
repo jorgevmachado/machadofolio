@@ -11,6 +11,21 @@ jest.mock('../../utils', () => {
     }
 });
 
+jest.mock('./circle', () => ({
+    __esModule: true,
+    default: (props: any) => (<div {...props} data-testid="ds-spinner-circle"/>),
+}));
+
+jest.mock('./dots', () => ({
+    __esModule: true,
+    default: (props: any) => (<div {...props} data-testid="ds-spinner-dots"/>),
+}));
+
+jest.mock('./bar', () => ({
+    __esModule: true,
+    default: (props: any) => (<div {...props} data-testid="ds-spinner-bar"/>),
+}));
+
 import Spinner from './Spinner';
 
 describe('<Spinner/>', () => {
@@ -33,6 +48,23 @@ describe('<Spinner/>', () => {
         renderComponent({ size: undefined, context: undefined });
         const spinner = screen.getByTestId('ds-spinner');
         expect(spinner).toBeInTheDocument();
-        expect(spinner).toHaveClass('ds-spinner__context--primary')
-    })
+        expect(spinner).toHaveClass('ds-spinner');
+        expect(screen.getByTestId('ds-spinner-circle')).toBeInTheDocument();
+    });
+
+    it('should render component with type dots.', () => {
+        renderComponent({ type: 'dots' });
+        const spinner = screen.getByTestId('ds-spinner');
+        expect(spinner).toBeInTheDocument();
+        expect(spinner).toHaveClass('ds-spinner');
+        expect(screen.getByTestId('ds-spinner-dots')).toBeInTheDocument();
+    });
+
+    it('should render component with type bar.', () => {
+        renderComponent({ type: 'bar' });
+        const spinner = screen.getByTestId('ds-spinner');
+        expect(spinner).toBeInTheDocument();
+        expect(spinner).toHaveClass('ds-spinner');
+        expect(screen.getByTestId('ds-spinner-bar')).toBeInTheDocument();
+    });
 });

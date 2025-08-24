@@ -1,0 +1,32 @@
+.ds-spinner-dots {
+  border-radius: var(--border-radius-circle);
+  filter: brightness(.95);
+  
+  &__context--info {
+    background: var(--color-info-80);
+  }
+  &__context--error {
+    background: var(--color-error-80);
+  }
+  &__context--neutral {
+    background: var(--color-neutral-80);
+  }
+  &__context--success {
+    background: var(--color-success-80);
+  }
+  &__context--primary {
+    background: var(--color-primary-80);
+  }
+  &__context--secondary {
+    background: var(--color-secondary-80);
+  }
+  &__context--attention {
+    background: var(--color-attention-80);
+  }
+}
+@keyframes loader-dots-bounce {
+  to {
+    transform: translateY(-40%);
+    opacity: 0.5;
+  }
+}
