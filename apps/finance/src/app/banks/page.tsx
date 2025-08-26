@@ -4,13 +4,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Bank, Paginate, QueryParameters } from '@repo/business';
-import { Button, Text } from '@repo/ds';
+import { Button, Table, Text, ETypeTableHeader } from '@repo/ds';
 import { useAlert, useLoading } from '@repo/ui';
 
 import { bankService } from '../shared';
 
 import './banks.scss';
 
+type TableProps = React.ComponentProps<typeof Table>;
 
 export default function BanksPage() {
     const isMounted = useRef(false);
@@ -18,11 +19,15 @@ export default function BanksPage() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [results, setResults] = useState<Array<Bank>>([]);
     const [totalPages, setTotalPages] = useState<number>(1);
+    const [sortedColumn, setSortedColumn] = useState<TableProps['sortedColumn']>({
+        sort: '',
+        order: '',
+    });
 
     const router = useRouter();
 
     const { addAlert } = useAlert();
-    const { show, hide } = useLoading();
+    const { show, hide, isLoading } = useLoading();
 
     const fetchItems = async ({ page = currentPage, limit = 10,  ...props}: QueryParameters) => {
         show();
@@ -57,6 +62,18 @@ export default function BanksPage() {
         router.push('/banks/create');
     }
 
+    const handleEdit = (id: string) => {
+        router.push(`/banks/${id}`);
+    }
+
+    const handleDelete = (id: string) => {
+        console.log('# => handleDelete => id => ', id);
+    }
+
+    const handleOnSortedColumn = (sortedColumn: TableProps['sortedColumn']) => {
+        setSortedColumn(sortedColumn);
+    }
+
     return (
         <div>
             <div className="banks__header">
@@ -67,6 +84,32 @@ export default function BanksPage() {
                     Create new Bank
                 </Button>
             </div>
+            <Table
+                items={results}
+                headers={[
+                    {
+                        text: 'Name',
+                        value: 'name',
+                        sortable: true
+                    },
+                    {
+                        text: 'Created At',
+                        value: 'created_at',
+                        type: ETypeTableHeader.DATE,
+                        sortable: true,
+                    },
+                ]}
+                actions={{
+                    text: 'Actions',
+                    align: 'center',
+                    edit: { onClick: ({ id }: Bank) => handleEdit(id) },
+                    delete: { onClick: ({ id }: Bank) => handleDelete(id) },
+                }}
+                loading={isLoading}
+                onRowClick={({ id }: Bank) => handleEdit(id) }
+                sortedColumn={sortedColumn}
+                onSortedColumn={handleOnSortedColumn}
+            />
         </div>
     )
 }

@@ -28,7 +28,7 @@ jest.mock('./actions', () => ({
 }));
 
 import Body from './Body';
-import { ETypeTableHeaderItem } from '../enum';
+import { ETypeTableHeader } from '../enum';
 
 describe('<Body/>', () => {
     afterEach(() => {
@@ -60,7 +60,7 @@ describe('<Body/>', () => {
             {
                 text: 'Total',
                 value: 'total',
-                type: ETypeTableHeaderItem.MONEY,
+                type: ETypeTableHeader.MONEY,
                 sortable: true,
             },
             {
@@ -74,7 +74,7 @@ describe('<Body/>', () => {
             {
                 text: 'Created At',
                 value: 'created_at',
-                type: ETypeTableHeaderItem.DATE,
+                type: ETypeTableHeader.DATE,
                 sortable: true,
             },
         ],

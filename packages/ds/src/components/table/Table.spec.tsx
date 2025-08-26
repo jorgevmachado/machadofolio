@@ -34,7 +34,7 @@ jest.mock('./body', () => ({
 
 import Table from './Table';
 import { useBreakpoint } from '../../hooks';
-import { ETypeTableHeaderItem } from './enum';
+import { ETypeTableHeader } from './enum';
 
 describe('<Table/>', () => {
 
@@ -64,7 +64,7 @@ describe('<Table/>', () => {
             {
                 text: 'Total',
                 value: 'total',
-                type: ETypeTableHeaderItem.MONEY,
+                type: ETypeTableHeader.MONEY,
                 sortable: true,
             },
             {
@@ -78,7 +78,7 @@ describe('<Table/>', () => {
             {
                 text: 'Created At',
                 value: 'created_at',
-                type: ETypeTableHeaderItem.DATE,
+                type: ETypeTableHeader.DATE,
                 sortable: true,
             },
         ],

@@ -1,8 +1,8 @@
-export const ETypeTableHeaderItem ={
+export const ETypeTableHeader ={
     STRING: 'string' ,
     NUMBER: 'number' ,
     DATE: 'date' ,
     MONEY: 'money'
 } as const;
 
-export type ETypeTableHeaderItem = typeof ETypeTableHeaderItem[keyof typeof ETypeTableHeaderItem];
+export type ETypeTableHeader = typeof ETypeTableHeader[keyof typeof ETypeTableHeader];

@@ -2,7 +2,7 @@ import React from 'react';
 
 import '@testing-library/jest-dom'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { ETypeTableHeaderItem } from '../enum';
+import { ETypeTableHeader } from '../enum';
 import Header from './Header';
 
 jest.mock('../../../utils', () => {
@@ -44,7 +44,7 @@ describe('<Header/>', () => {
             {
                 text: 'Total',
                 value: 'total',
-                type: ETypeTableHeaderItem.MONEY,
+                type: ETypeTableHeader.MONEY,
                 sortable: true,
             },
             {
@@ -58,7 +58,7 @@ describe('<Header/>', () => {
             {
                 text: 'Created At',
                 value: 'created_at',
-                type: ETypeTableHeaderItem.DATE,
+                type: ETypeTableHeader.DATE,
                 sortable: true,
             },
         ],

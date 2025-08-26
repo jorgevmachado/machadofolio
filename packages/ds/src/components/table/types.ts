@@ -2,7 +2,7 @@ import React from 'react';
 
 import { type TColors } from '../../utils';
 
-import { ETypeTableHeaderItem } from './enum';
+import { ETypeTableHeader } from './enum';
 
 import Button from '../button'
 
@@ -27,7 +27,7 @@ export type TableProps = {
 
 type TableHeaderItem = {
     text: string;
-    type?: ETypeTableHeaderItem;
+    type?: ETypeTableHeader;
     value: string;
     align?: TAlign;
     style?: React.CSSProperties;

@@ -5,7 +5,7 @@ import { fn } from 'storybook/internal/test';
 
 import Button from '../button';
 
-import { ETypeTableHeaderItem } from './enum';
+import { ETypeTableHeader } from './enum';
 
 import type { SortedColumn } from './types';
 
@@ -122,13 +122,13 @@ const meta = {
             {
                 text: 'Total',
                 value: 'total',
-                type: ETypeTableHeaderItem.MONEY,
+                type: ETypeTableHeader.MONEY,
                 sortable: true,
             },
             {
                 text: 'Created At',
                 value: 'created_at',
-                type: ETypeTableHeaderItem.DATE,
+                type: ETypeTableHeader.DATE,
                 sortable: true,
             },
         ],

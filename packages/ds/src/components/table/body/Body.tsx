@@ -3,7 +3,7 @@ import React from 'react';
 import { currencyFormatter } from '@repo/services';
 
 import type { TableProps } from '../types';
-import { ETypeTableHeaderItem } from '../enum';
+import { ETypeTableHeader } from '../enum';
 
 import Actions from './actions';
 
@@ -60,11 +60,11 @@ export default function Body({
         }
 
         if (typeof value === 'string' || typeof value === 'number') {
-            if (header.type === ETypeTableHeaderItem.DATE && formattedDate) {
+            if (header.type === ETypeTableHeader.DATE && formattedDate) {
                 return new Date(value).toLocaleDateString();
             }
 
-            if (header.type === ETypeTableHeaderItem.MONEY) {
+            if (header.type === ETypeTableHeader.MONEY) {
                 const valueNumber =
                     typeof value === 'string' ? parseFloat(value) : value;
                 return currencyFormatter(valueNumber);
