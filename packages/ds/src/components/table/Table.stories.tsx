@@ -1,7 +1,7 @@
+import React, { useState } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/internal/test';
-
-import React from 'react';
 
 import Button from '../button';
 
@@ -142,7 +142,7 @@ const meta = {
         onRowClick: fn(),
         onSortedColumn: fn(),
         notFoundMessage: 'No data found',
-        currentSortedColumn: { sort: '', order: '' }
+        sortedColumn: { sort: '', order: '' }
     },
     title: 'Components/Table',
     argTypes: {},
@@ -247,8 +247,8 @@ const CustomTable: React.FC<TableProps> = (props) => {
                 }}
                 loading={loading}
                 onRowClick={(item: { name: string }) => handleClick('row', item)}
+                sortedColumn={sortedColumn}
                 onSortedColumn={({ sort, order }) => setSortedColumn({ sort, order })}
-                currentSortedColumn={sortedColumn}
             />
 
         </div>
