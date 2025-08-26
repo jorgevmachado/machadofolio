@@ -43,9 +43,11 @@ describe('<ProgressIndicator/>', () => {
 
     it('should render the correct number of indicators', () => {
         renderComponent();
-        const items = screen.getAllByTestId('ds-progress-indicator-item');
+        Array.from({ length: 7 }, (_, index ) => {
+            expect(screen.getByTestId(`ds-progress-indicator-item-${index + 1}`)).toBeInTheDocument();
+        })
         const spans = screen.getAllByText((_c, el) => el?.tagName === 'SPAN');
-        expect(items.length || spans.length).toBe(7);
+        expect(spans.length).toBe(7);
     });
 
     it('should mark only the current item with the context class', () => {

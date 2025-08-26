@@ -4,7 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Bank, Paginate, QueryParameters } from '@repo/business';
-import { Button, Table, Text, ETypeTableHeader } from '@repo/ds';
+
+import { Button, Table, Text, ETypeTableHeader, Pagination } from '@repo/ds';
 import { useAlert, useLoading } from '@repo/ui';
 
 import { bankService } from '../shared';
@@ -74,6 +75,10 @@ export default function BanksPage() {
         setSortedColumn(sortedColumn);
     }
 
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    }
+
     return (
         <div>
             <div className="banks__header">
@@ -110,6 +115,17 @@ export default function BanksPage() {
                 sortedColumn={sortedColumn}
                 onSortedColumn={handleOnSortedColumn}
             />
+            {totalPages > 1 && (
+                <Pagination
+                    fluid
+                    type="numbers"
+                    total={totalPages}
+                    range={totalPages}
+                    current={currentPage}
+                    disabled
+                    handleNew={handlePageChange}
+                />
+            )}
         </div>
     )
 }
