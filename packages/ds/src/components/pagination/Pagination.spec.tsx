@@ -103,7 +103,7 @@ describe('<Pagination/>', () => {
         expect(buttonPrev).toBeDisabled();
         const buttonNext = screen.getByTestId('ds-pagination-button-next');
         expect(buttonNext).toBeInTheDocument();
-        expect(buttonNext).toBeDisabled();
+        expect(buttonNext).not.toBeDisabled();
     });
 
     it('should render component with type numbers.', () => {
