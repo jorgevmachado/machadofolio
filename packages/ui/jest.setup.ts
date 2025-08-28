@@ -32,7 +32,34 @@ jest.mock('@repo/ds', () => {
             ),
             props?.onClose && React.createElement('span', { onClick: props.onClose, 'data-testid': 'mocked-ds-alert-icon-close' }),
         ),
+        Modal: ({ 'data-testid': dataTestId = 'mocked-ds-modal', ...props}: any) => React.createElement(
+            'div',
+            props,
+            React.createElement('div', { onClick: () => props?.closeOnOutsideClick && props?.onClose, 'data-testid': `${dataTestId}-backdrop`}),
+            React.createElement('div', {
+                role: 'dialog',
+                style: { width: props?.width, maxHeight: props?.maxHeight},
+                'data-testid': dataTestId
+            },
+                React.createElement('div', {
+                    'data-testid': `${dataTestId}-header`
+                },
+                    React.createElement('div', { 'data-testid': `${dataTestId}-header-side`}),
+                    props?.title && React.createElement('h2', { 'data-testid': `${dataTestId}-title`}),
+                    React.createElement('button', { 'data-testid': `${dataTestId}-close`, onClick: props?.onClose},
+                        props?.customCloseIcon && props.customCloseIcon,
+                        !props?.customCloseIcon && React.createElement('span', { 'data-testid': `${dataTestId}-close-icon`})
+                    ),
+                ),
+                React.createElement('div', { 'data-testid': `${dataTestId}-children` }, props?.children),
+            ),
+        ),
         Button: ({ 'data-testid': dataTestId = 'mocked-ds-button', ...props}: any) => React.createElement('button', { ...props, 'data-testid': dataTestId }),
+        Spinner: ({ 'data-testid': dataTestId = 'mocked-ds-spinner', ...props}: any) => React.createElement(
+            'div',
+            { ...props, 'data-testid': dataTestId },
+            React.createElement('div', { ...props, 'data-testid': `${dataTestId}-${props.type ?? 'circle'}` })
+        ),
         Dropdown: ({ 'data-testid': dataTestId = 'mocked-ds-dropdown', ...props}: any) => {
             const [isOpen, setIsOpen ] = React.useState(false)
             const onClick = () => {
@@ -50,11 +77,6 @@ jest.mock('@repo/ds', () => {
                 isOpen && props?.children,
             )
         },
-        Spinner: ({ 'data-testid': dataTestId = 'mocked-ds-spinner', ...props}: any) => React.createElement(
-            'div',
-            { ...props, 'data-testid': dataTestId },
-            React.createElement('div', { ...props, 'data-testid': `${dataTestId}-${props.type ?? 'circle'}` })
-        ),
         useBreakpoint: useBreakpointMock,
     }
 });

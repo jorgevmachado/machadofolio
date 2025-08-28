@@ -52,3 +52,12 @@ export const Default: Story = {
         return <CustomModal {...args}/>
     }
 };
+
+export const WithTitle: Story = {
+    args: {
+        title: 'Modal Title',
+    },
+    render: (args) => {
+        return <CustomModal {...args}/>
+    }
+};

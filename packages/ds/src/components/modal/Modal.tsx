@@ -15,6 +15,7 @@ interface ModalProps extends  React.HTMLAttributes<HTMLDivElement>  {
     children: React.ReactNode;
     maxHeight?: string;
     closeOnEsc?: boolean;
+    'data-testid'?: string;
     backDropColor?: TColors;
     customCloseIcon?: React.ReactElement;
     closeOnOutsideClick?: boolean;
@@ -30,6 +31,7 @@ export default function Modal({
                                   children,
                                   maxHeight = '80vh',
                                   closeOnEsc = true,
+                                  'data-testid': dataTestId = 'ds-modal',
                                   backDropColor = 'neutral-100',
                                   customCloseIcon,
                                   closeOnOutsideClick = true,
@@ -103,7 +105,7 @@ export default function Modal({
             <div
                 onClick={() => closeOnOutsideClick && onClose()}
                 className={classNameListBackdrop}
-                data-testid="ds-modal-backdrop"
+                data-testid={`${dataTestId}-backdrop`}
                 aria-hidden="true"
             />
             <div
@@ -113,19 +115,22 @@ export default function Modal({
                 tabIndex={-1}
                 style={{ width, maxHeight }}
                 className={classNameList}
-                data-testid="ds-modal"
                 aria-modal="true"
-                aria-labelledby="ds-modal-title"
-                aria-describedby="ds-modal-description"
+                data-testid={dataTestId}
+                aria-labelledby={`${dataTestId}-title`}
+                aria-describedby={`${dataTestId}-description`}
             >
-                <div className="ds-modal__header" data-testid="ds-modal-header">
+                <div className="ds-modal__header" data-testid={`${dataTestId}-header`}>
+                    <div className="ds-modal__header--side" data-testid={`${dataTestId}-header-side`} />
                     {title && (
                         <Text
                             id="ds-modal-title"
                             tag="h2"
+                            color={`${context}-80`}
                             weight="bold"
                             variant="xlarge"
                             className="ds-modal__title"
+                            data-testid={`${dataTestId}-title`}
                         >
                             {title}
                         </Text>
@@ -136,12 +141,12 @@ export default function Modal({
                         className="ds-modal__close"
                         aria-label="Close modal"
                         tabIndex={0}
-                        data-testid="ds-modal-close"
+                        data-testid={`${dataTestId}-close`}
                     >
-                        {customCloseIcon || <Icon icon="close" size={24} />}
+                        {customCloseIcon || <Icon icon="close" size={24} data-testid={`${dataTestId}-close-icon`} />}
                     </button>
                 </div>
-                <div id="ds-modal-description" data-testid="ds-modal-children">
+                <div id="ds-modal-description" data-testid={`${dataTestId}-children`}>
                     {children}
                 </div>
             </div>

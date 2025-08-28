@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Meta, StoryObj } from "@storybook/react";
+import React, { useEffect } from 'react';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { Button } from '@repo/ds';
 import { Spinner } from '@repo/ds';

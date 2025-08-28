@@ -21,6 +21,7 @@ interface TextProps extends React.HTMLProps<Element> {
     variant?: TVariant;
     htmlFor?: string;
     children: React.ReactNode | string;
+    'data-testid'?: string;
 }
 
 export default function Text({
@@ -32,6 +33,7 @@ export default function Text({
     htmlFor,
     children,
     className,
+    'data-testid': dataTestId = 'ds-text',
     ...props
 }: TextProps) {
     const CustomTag = tag as React.ElementType;
@@ -48,7 +50,7 @@ export default function Text({
     return (
         <CustomTag
             id={componentId}
-            data-testid="ds-text"
+            data-testid={dataTestId}
             className={joinClass([
                 'ds-text',
                 `ds-color-${color}`,
