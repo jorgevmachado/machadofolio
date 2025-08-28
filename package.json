@@ -6,7 +6,25 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+    "check-types": "turbo run check-types",
+    "test:services": "yarn workspace @repo/services test",
+    "build:services": "yarn workspace @repo/services build",
+    "test:business": "yarn workspace @repo/business test",
+    "build:business": "yarn workspace @repo/business build",
+    "build:tokens": "yarn workspace @repo/tokens build",
+    "test:ds": "yarn workspace @repo/ds test",
+    "storybook:ds:law": "yarn workspace @repo/ds storybook:law",
+    "storybook:ds:geek": "yarn workspace @repo/ds storybook:geek",
+    "storybook:ds:finance": "yarn workspace @repo/ds storybook:finance",
+    "build:ds": "yarn workspace @repo/ds build",
+    "test:ui": "yarn workspace @repo/ui test",
+    "storybook:ui:law": "yarn workspace @repo/ui storybook:law",
+    "storybook:ui:geek": "yarn workspace @repo/ui storybook:geek",
+    "storybook:ui:finance": "yarn workspace @repo/ui storybook:finance",
+    "build:ui": "yarn workspace @repo/ui build",
+    "dev:nest": "yarn workspace nest-js start:dev",
+    "dev:finance": "yarn workspace finance dev"
+
   },
   "devDependencies": {
     "prettier": "^3.5.3",
