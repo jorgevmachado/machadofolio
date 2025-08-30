@@ -1,0 +1,107 @@
+// NOVO SELECT ACESSÍVEL E BONITO
+.ds-select {
+  position: relative;
+  width: 100%; // Garante que o container ocupe toda a largura disponível
+  max-width: 400px; // Opcional: limite de largura para evitar esticamento excessivo
+  //font-family: 'Inter', Arial, sans-serif;
+
+  &__control {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+    &:hover, &--open {
+      border-color: var(--color-neutral-100);
+    }
+
+    &[aria-disabled="true"] {
+      cursor: not-allowed;
+      background: #f3f3f3;
+      border-color: #ddd;
+      color: #aaa;
+    }
+    .ds-select__arrow {
+      position: absolute;
+      right: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%) rotate(0deg);
+      pointer-events: none;
+      color: var(--color-primary-80);
+      transition: transform 0.2s;
+      z-index: 2;
+      &.ds-select__arrow--open {
+        transform: translateY(-50%) rotate(180deg);
+      }
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border: 1.5px solid var(--color-neutral-60);
+    border-radius: var(--border-radius-large);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    z-index: 10;
+    padding: 0.5rem 0;
+    margin: 0;
+    list-style: none;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  &__dropdown--closing {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+  }
+
+  &__option {
+    width: 100%;
+    padding: var(--size-x-small) 1rem;
+    font-size: 1rem;
+    color: #222;
+    cursor: pointer;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    transition: background 0.18s, color 0.18s;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    &:hover, &.ds-select__option--focused {
+      background: #e0e7ff;
+      color: #2563eb;
+    }
+    &.ds-select__option--selected {
+      background: #dbeafe;
+      color: #1e40af;
+      font-weight: 600;
+    }
+  }
+
+  &__placeholder {
+    color: #aaa;
+  }
+}
+
+@keyframes ds-select-slide-fade {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scaleY(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}

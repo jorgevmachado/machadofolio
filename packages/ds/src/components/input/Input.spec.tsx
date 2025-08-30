@@ -73,6 +73,23 @@ describe('<Input/>', () => {
         expect(screen.getByTestId('mock-label')).toHaveTextContent('Test Label');
     });
 
+    it('should renders the label when inline prop is true', () => {
+        renderComponent({ label: 'Test Label', inline: true });
+        const label = screen.getByTestId('mock-label');
+        expect(label).toHaveTextContent('Test Label');
+        expect(label).toHaveClass('ds-input__label');
+        expect(label).toHaveClass('ds-input__label--inline');
+    });
+
+    it('should renders the label when inline prop is true and error', () => {
+        renderComponent({ label: 'Test Label', inline: true, validated: { invalid: true, message: 'Error!' } });
+        const label = screen.getByTestId('mock-label');
+        expect(label).toHaveTextContent('Test Label');
+        expect(label).toHaveClass('ds-input__label');
+        expect(label).toHaveClass('ds-input__label--inline');
+        expect(label).toHaveClass('ds-input__label--inline-error');
+    });
+
     it('should renders the helperText when the helperText prop is provided', () => {
         renderComponent({ helperText: { color: 'info-80', children: 'Test Helper Text', className: 'custom-helper' }});
         expect(screen.getByTestId('mock-text')).toHaveTextContent('Test Helper Text');

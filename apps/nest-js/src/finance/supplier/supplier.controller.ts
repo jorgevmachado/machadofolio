@@ -14,7 +14,7 @@ export class SupplierController {
 
   @Get()
   findAll(@Query() parameters: QueryParameters) {
-    return this.service.findAll({ parameters });
+    return this.service.findAll({ parameters, withRelations: true });
   }
 
   @Post()

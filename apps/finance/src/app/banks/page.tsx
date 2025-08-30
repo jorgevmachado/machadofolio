@@ -1,16 +1,15 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
 
-import { useRouter } from 'next/navigation';
-
 import { Bank, Paginate, QueryParameters } from '@repo/business';
 
 import { Button, Table, Text, ETypeTableHeader, Pagination } from '@repo/ds';
-import { useAlert, useLoading } from '@repo/ui';
+import { useAlert, useLoading, useModal } from '@repo/ui';
 
 import { bankService } from '../shared';
 
 import './banks.scss';
+import { Persist } from './components';
 
 type TableProps = React.ComponentProps<typeof Table>;
 
@@ -25,10 +24,9 @@ export default function BanksPage() {
         order: '',
     });
 
-    const router = useRouter();
-
     const { addAlert } = useAlert();
     const { show, hide, isLoading } = useLoading();
+    const { openModal, modal, closeModal } = useModal();
 
     const fetchItems = async ({ page = currentPage, limit = 10,  ...props}: QueryParameters) => {
         show();
@@ -59,16 +57,60 @@ export default function BanksPage() {
         }
     }, []);
 
-    const handleCreate = () => {
-        router.push('/banks/create');
+    const handleSave = async (bank?: Bank) => {
+        if(!bank) {
+            return;
+        }
+        show();
+        try {
+            const body = { name: bank.name ?? '' };
+            bank?.id
+                ? await bankService.update(bank.id, body)
+                : await bankService.create(body);
+            addAlert({ type: 'success', message: 'Bank saved successfully!' });
+            await fetchItems({ page: currentPage });
+            closeModal();
+        } catch (error) {
+            addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error saving Bank' });
+            console.error(error)
+        } finally {
+            hide();
+        }
     }
 
-    const handleEdit = (id: string) => {
-        router.push(`/banks/${id}`);
+    const handleOpenModal = (item?: Bank) => {
+        openModal({
+            title: item?.id ? `Edit Bank` : `Create Bank`,
+            body: (<Persist bank={item} onClose={closeModal} onSubmit={handleSave}/>)
+        })
     }
 
-    const handleDelete = (id: string) => {
-        console.log('# => handleDelete => id => ', id);
+    const handleDelete = (item: Bank) => {
+        openModal({
+            title: `Are you sure you want to delete the bank ${item.name}`,
+            width: '700px',
+            body: (
+                <div>
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', justifyContent: 'flex-end' }}>
+                        <Button context="error" appearance="outline" onClick={closeModal}>Cancel</Button>
+                        <Button context="error" onClick={async () => {
+                            show();
+                            try {
+                                await bankService.remove(item.id);
+                                addAlert({ type: 'success', message: 'Bank deleted successfully!' });
+                                await fetchItems({ page: currentPage });
+                                closeModal();
+                            } catch (error) {
+                                addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error deleting Bank' });
+                                console.error(error)
+                            } finally {
+                                hide();
+                            }
+                        }}>Delete</Button>
+                    </div>
+                </div>
+            )
+        })
     }
 
     const handleOnSortedColumn = (sortedColumn: TableProps['sortedColumn']) => {
@@ -85,7 +127,7 @@ export default function BanksPage() {
                 <Text tag="h1" variant="big" className="banks__header--title">
                     Management of Banks
                 </Text>
-                <Button  className="page-header__button" onClick={handleCreate} context="success">
+                <Button  className="page-header__button" onClick={() => handleOpenModal()} context="success">
                     Create new Bank
                 </Button>
             </div>
@@ -107,14 +149,15 @@ export default function BanksPage() {
                 actions={{
                     text: 'Actions',
                     align: 'center',
-                    edit: { onClick: ({ id }: Bank) => handleEdit(id) },
-                    delete: { onClick: ({ id }: Bank) => handleDelete(id) },
+                    edit: { onClick: (item: Bank) => handleOpenModal(item) },
+                    delete: { onClick: (item: Bank) => handleDelete(item) },
                 }}
                 loading={isLoading}
-                onRowClick={({ id }: Bank) => handleEdit(id) }
+                onRowClick={(item: Bank) => handleOpenModal(item)}
                 sortedColumn={sortedColumn}
                 onSortedColumn={handleOnSortedColumn}
             />
+            {modal}
             {totalPages > 1 && (
                 <Pagination
                     fluid

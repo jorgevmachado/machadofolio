@@ -44,6 +44,13 @@ jest.mock('./fields', () => ({
     RadioGroupInput: (props: any) => (
         <input data-testid="mock-radio-group-input" {...props} onClick={props.onClick} />
     ),
+    SelectInput: (props: any) => (
+        <select data-testid="mock-select-input" value={props.value} onChange={e => props.onChange?.(e.target.value)}>
+            {props.options?.map((option: any) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+        </select>
+    ),
 }));
 
 jest.mock('./inside', () => ({
@@ -59,6 +66,7 @@ jest.mock('./inside', () => ({
 import { EContext, EInputAppearance } from '../../../utils';
 
 import Content from './Content';
+import { SelectInput } from './fields';
 
 describe('<Content />', () => {
     afterEach(() => {
@@ -321,4 +329,46 @@ describe('<Content />', () => {
             expect(onInput).toHaveBeenCalled();
         });
     })
+
+    describe('type="select"', () => {
+        it('should render Select when type="select".', () => {
+            const onChange = jest.fn();
+            const options = [
+                {
+                    label: 'Option 1',
+                    value: 'option1',
+                },
+                {
+                    label: 'Option 2',
+                    value: 'option2',
+                }
+            ]
+            renderComponent({ type: 'select', value: 'option1', options, onChange });
+            const select = screen.getByTestId('mock-select-input');
+            expect(select).toBeInTheDocument();
+            expect(select).toHaveValue('option1');
+            fireEvent.change(select, { target: { value: 'option2' } });
+            expect(onChange).toHaveBeenCalled();
+        });
+
+        it('should render Select when type="select" and value is undefined.', () => {
+            const onChange = jest.fn();
+            const options = [
+                {
+                    label: 'Option 1',
+                    value: 'option1',
+                },
+                {
+                    label: 'Option 2',
+                    value: 'option2',
+                }
+            ]
+            renderComponent({ type: 'select', options, onChange });
+            const select = screen.getByTestId('mock-select-input');
+            expect(select).toBeInTheDocument();
+            expect(select).toHaveValue('option1');
+            fireEvent.change(select, { target: { value: 'option2' } });
+            expect(onChange).toHaveBeenCalled();
+        });
+    });
 });

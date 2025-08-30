@@ -16,6 +16,7 @@ const meta = {
         tip: '(tip)',
         type: 'text',
         label: 'Label',
+        inline: true,
         context: 'primary',
         required: true,
         helperText: { children: 'Helper Text' },
@@ -51,7 +52,7 @@ const Template = (args: InputProps) => {
     const [onInput, setOnInput] = React.useState<{ name: string; value: string | Array<string>;} | undefined>(undefined);
     return (
         <>
-            <Input {...args} onInput={(_, name, value) =>setOnInput({name, value })} />
+            <Input {...args} onInput={( { name, value}) =>setOnInput({name, value })} />
             {onInput && (
                 <div style={{ marginTop: '1rem' }}>
                     <strong>On Input:</strong>
@@ -228,6 +229,27 @@ export const Password: Story = {
         type: 'password',
         label: 'Password',
         placeholder: 'Input Password'
+    },
+    render: (args) => <Template {...args} />,
+};
+
+export const Select: Story = {
+    args: {
+        type: 'select',
+        name: 'select',
+        label: 'Select',
+        options: [
+            {
+                label: 'Option 1',
+                value: 'option1',
+            },
+            {
+                label: 'Option 2',
+                value: 'option2',
+            }
+        ],
+        placeholder: 'Input Select',
+        helperText: undefined,
     },
     render: (args) => <Template {...args} />,
 };

@@ -51,6 +51,7 @@ interface InputProps extends Omit<InputPropsItem, 'onInput'>, HostProps {
     addon?: TextProps;
     value?: string | Array<string>;
     label?: string;
+    inline?: boolean;
     onOpen?: () => void;
     onInput?: ContentProps['onInput'];
     onClose?: () => void;
@@ -81,6 +82,7 @@ export default function Input({
     fluid,
     addon,
     label,
+    inline,
     onOpen,
     accept,
     onBlur,
@@ -162,7 +164,6 @@ export default function Input({
         }
     }, [validated]);
 
-
     return (
         <div
             {...props}
@@ -171,59 +172,66 @@ export default function Input({
             tabIndex={-1}
             className={joinClass(['ds-input', className])}
             data-testid="ds-input">
-            {label && (
-                <Label
-                    id={componentLabelId}
-                    tip={tip}
-                    color={inputValidated.invalid ? 'error-80' : 'neutral-80'}
-                    label={label}
-                    className="ds-input__label"
-                />
-            )}
+            <div className={joinClass([inline &&'ds-input__row'])}>
+                {label && (
+                    <Label
+                        id={componentLabelId}
+                        tip={tip}
+                        color={inputValidated.invalid ? 'error-80' : 'neutral-80'}
+                        label={label}
+                        className={joinClass([
+                            'ds-input__label',
+                            inline && 'ds-input__label--inline',
+                            (inline && inputValidated.invalid && 'ds-input__label--inline-error'),
+                        ])}
+                    />
+                )}
 
-            <InputProvider value={children} addon={addon} counter={counter}>
-                <Content
-                    min={min}
-                    max={max}
-                    icon={icon}
-                    name={name}
-                    type={type}
-                    rows={rows}
-                    value={value}
-                    fluid={fluid}
-                    onOpen={onOpen}
-                    accept={accept}
-                    onBlur={handleOnBlur}
-                    onClose={onClose}
-                    options={options}
-                    invalid={inputValidated.invalid}
-                    onInput={onInput}
-                    onFocus={onFocus}
-                    context={context}
-                    multiple={multiple}
-                    required={required}
-                    disabled={disabled}
-                    onChange={onChange}
-                    calendar={calendar}
-                    formatter={formatter}
-                    onKeyDown={onKeyDown}
-                    autoFocus={autoFocus}
-                    maxLength={maxLength}
-                    minLength={minLength}
-                    appearance={appearance}
-                    onMouseDown={onMouseDown}
-                    placeholder={placeholder}
-                    withPreview={withPreview}
-                    autoComplete={autoComplete}
-                    defaultFormatter={defaultFormatter}
-                />
-            </InputProvider>
-
-            {(inputValidated.invalid && inputValidated.message) && (
-                <Feedback id={`${componentId}-feedback`} context="error" className="ds-input__feedback" >
-                    {inputValidated.message}
-                </Feedback>
-            )}
+                <div className={joinClass(['ds-input__field-group', inline &&'ds-input__field-group--inline'])}>
+                    <InputProvider value={children} addon={addon} counter={counter}>
+                        <Content
+                            min={min}
+                            max={max}
+                            icon={icon}
+                            name={name}
+                            type={type}
+                            rows={rows}
+                            value={value}
+                            fluid={fluid}
+                            onOpen={onOpen}
+                            accept={accept}
+                            onBlur={handleOnBlur}
+                            onClose={onClose}
+                            options={options}
+                            invalid={inputValidated.invalid}
+                            onInput={onInput}
+                            onFocus={onFocus}
+                            context={context}
+                            multiple={multiple}
+                            required={required}
+                            disabled={disabled}
+                            onChange={onChange}
+                            calendar={calendar}
+                            formatter={formatter}
+                            onKeyDown={onKeyDown}
+                            autoFocus={autoFocus}
+                            maxLength={maxLength}
+                            minLength={minLength}
+                            appearance={appearance}
+                            onMouseDown={onMouseDown}
+                            placeholder={placeholder}
+                            withPreview={withPreview}
+                            autoComplete={autoComplete}
+                            defaultFormatter={defaultFormatter}
+                        />
+                    </InputProvider>
+                    {(inputValidated.invalid && inputValidated.message) && (
+                        <Feedback id={`${componentId}-feedback`} context="error" className="ds-input__feedback" >
+                            {inputValidated.message}
+                        </Feedback>
+                    )}
+                </div>
+            </div>
 
             {(helperText) && (
                 <Text

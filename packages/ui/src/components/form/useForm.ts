@@ -4,6 +4,8 @@ import type { ValidatorMessage, ValidatorParams } from '@repo/services';
 
 import type { TUser } from '@repo/business';
 
+import { type OnInputParams } from '@repo/ds';
+
 import type { AuthForm, InputForm, InputFormProps, TForm } from './types';
 import { FORMS, INPUTS } from './config';
 
@@ -17,7 +19,7 @@ type TUseForm = {
     label: string;
     inputs: Array<InputForm>;
     handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-    handleOnInput: (e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, name: string, value: string | Array<string>) => void;
+    handleOnInput: (params: OnInputParams) => void;
     handleValidator: (input: InputForm, params: ValidatorParams) => ValidatorMessage;
 }
 
@@ -146,13 +148,13 @@ export function useForm({ user, type, onInput, onSubmit }: UseFormProps): TUseFo
     }, []);
 
     const handleOnInput = useCallback(
-        (e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, name: string, value: string | Array<string>) => {
+        ({ name, value, event }: OnInputParams) => {
             setAuthForm((prev) => ({
                 ...prev,
                 fields: { ...prev.fields, [name]: value }
             }));
             if(onInput) {
-                onInput(e);
+                onInput(event);
             }
         }, [onInput]);
 

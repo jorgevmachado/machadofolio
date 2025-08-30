@@ -1,0 +1,1 @@
+export { default as Persist } from './persist';

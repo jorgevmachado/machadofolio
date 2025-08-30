@@ -9,7 +9,26 @@
   &__label {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
+    &--inline {
+      margin-top: 0;
+      margin-bottom: 0;
+      &-error {
+        margin-bottom: 2.5rem;
+      }
+    }
   }
+
+  &__row {
+    gap: 1rem;
+    display: flex;
+    align-items: center;
+  }
+  &__field-group {
+    gap: 0.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+
   &__feedback, &__helper-text {
     margin-top: 0;
   }

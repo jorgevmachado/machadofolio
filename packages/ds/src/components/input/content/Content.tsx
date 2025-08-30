@@ -8,7 +8,7 @@ import type { TGenericIconProps } from '../../../elements';
 
 import { useInput } from '../InputContext';
 
-import { DateInput, FileInput, RadioGroupInput } from './fields';
+import { DateInput, FileInput, RadioGroupInput, SelectInput } from './fields';
 import Addon from './addon';
 import Inside from './inside';
 
@@ -16,13 +16,20 @@ import './Content.scss';
 
 type DateInputProps = React.ComponentProps<typeof DateInput>;
 
+export type OnInputParams = {
+    name: string;
+    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>;
+    value: string | Array<string>;
+    invalid: boolean;
+}
+
 interface ContentProps extends Omit<React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>, 'value' | 'onInput'> {
     icon?: TGenericIconProps;
     rows?: number;
     fluid?: boolean;
     value?: string | Array<string>;
     onOpen?: () => void;
-    onInput?: (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, name: string, value: string | Array<string>) => void;
+    onInput?: (params: OnInputParams) => void;
     context: TContext;
     onClose?: () => void;
     invalid?: boolean;
@@ -71,16 +78,22 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
     const isFile = type === 'file';
     const isDate = type === 'date';
     const isRadioGroup = type === 'radio-group';
-    const isDefault = !isTextArea && !isFile && !isDate && !isRadioGroup;
+    const isSelect = type === 'select';
+    const isDefault = !isTextArea && !isFile && !isDate && !isRadioGroup && !isSelect;
 
     const componentId = props.id ?? generateComponentId(`ds-input-${type}`);
 
-    const handleInput = (e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, value?: string | Array<string>) => {
-        const target = e.target as HTMLInputElement | HTMLTextAreaElement;
+    const handleInput = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, value?: string | Array<string>) => {
+        const target = event.target as HTMLInputElement | HTMLTextAreaElement;
         const currentValue = value || target.value;
         setCurrentInputValue(currentValue);
         if(onInput) {
-            onInput(e, name || '', currentValue);
+            onInput({
+                name: name || '',
+                event,
+                value: currentValue,
+                invalid
+            });
         }
     };
 
@@ -114,7 +127,12 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         if(isRadioGroup) {
 
             if(onInput) {
-                onInput(e as React.MouseEvent<HTMLInputElement>, name || '', value || '');
+                onInput({
+                    name: name || '',
+                    value: value || '',
+                    event: e as React.MouseEvent<HTMLInputElement>,
+                    invalid,
+                });
             }
             setCurrentInputValue(value || '');
         }
@@ -267,6 +285,18 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         disabled={disabled}
                         onChange={handleOnChange}
                         className={classNameInputList}
+                        placeholder={props?.placeholder}
+                    />
+                )}
+                {isSelect && (
+                    <SelectInput
+                        id={componentId}
+                        name={name}
+                        value={currentInputValue ? currentInputValue as string : ''}
+                        onInput={handleInput}
+                        options={options}
+                        onChange={handleOnChange}
+                        className={joinClass(defaultClassNameInputList)}
                         placeholder={props?.placeholder}
                     />
                 )}
