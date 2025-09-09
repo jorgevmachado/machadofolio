@@ -19,12 +19,12 @@ import { CreateGroupDto } from './dto/create-group.dto';
 import { GroupService } from './group.service';
 import { UpdateGroupDto } from './dto/update-group.dto';
 
-@Controller('finance/group')
+@Controller('finance')
 @UseGuards(AuthGuard(), AuthRoleGuard, AuthStatusGuard, FinanceInitializeGuard)
 export class GroupController {
   constructor(private readonly service: GroupService) {}
 
-  @Get()
+  @Get('/list/group')
   findAll(@GetUserAuth() user: User, @Query() parameters: QueryParameters) {
     const finance = user.finance as Finance;
     const filters: ListParams['filters'] = [{
@@ -35,12 +35,12 @@ export class GroupController {
     return this.service.findAll({ parameters, filters });
   }
 
-  @Post()
+  @Post('/group')
   create(@GetUserAuth() user: User, @Body() createBillCategoryDto: CreateGroupDto) {
     return this.service.create(user.finance as Finance, createBillCategoryDto);
   }
 
-  @Get(':param')
+  @Get(':param/group')
   findOne(@GetUserAuth() user: User, @Param('param') param: string) {
     const finance = user.finance as Finance;
     const filters: ListParams['filters'] = [{
@@ -51,7 +51,7 @@ export class GroupController {
     return this.service.findOne({ value: param, filters });
   }
 
-  @Put(':param')
+  @Put(':param/group')
   @AuthRoles(ERole.ADMIN)
   update(
       @GetUserAuth() user: User,
@@ -61,7 +61,7 @@ export class GroupController {
     return this.service.update(user.finance as Finance,param, updateBillCategoryDto);
   }
 
-  @Delete(':param')
+  @Delete(':param/group')
   @AuthRoles(ERole.ADMIN)
   remove(@GetUserAuth() user: User,@Param('param') param: string) {
     const finance = user.finance as Finance;

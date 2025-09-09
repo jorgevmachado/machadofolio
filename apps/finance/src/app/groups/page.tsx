@@ -1,20 +1,21 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
 
-import { Bank, Paginate, QueryParameters } from '@repo/business';
+import { Group, Paginate, QueryParameters } from '@repo/business';
 
 import { ETypeTableHeader } from '@repo/ds';
+
 import { useAlert, useLoading } from '@repo/ui';
+
+import { groupService } from '../shared';
 
 import { PageCrud } from '../../components';
 
-import { bankService } from '../shared';
-
-export default function BanksPage() {
+export default function GroupsPage() {
     const isMounted = useRef(false);
 
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [results, setResults] = useState<Array<Bank>>([]);
+    const [results, setResults] = useState<Array<Group>>([]);
     const [totalPages, setTotalPages] = useState<number>(1);
 
     const { addAlert } = useAlert();
@@ -23,7 +24,7 @@ export default function BanksPage() {
     const fetchItems = async ({ page = currentPage, limit = 10,  ...props}: QueryParameters) => {
         show();
         try {
-            const response = (await bankService.getAll({...props, page, limit })) as Paginate<Bank>;
+            const response = (await groupService.getAll({...props, page, limit })) as Paginate<Group>;
             setResults(response.results);
             setTotalPages(response.pages);
             return response;
@@ -49,7 +50,7 @@ export default function BanksPage() {
         }
     }, []);
 
-    const handleSave = async (item?: Bank) => {
+    const handleSave = async (item?: Group) => {
         if(!item) {
             return;
         }
@@ -58,8 +59,8 @@ export default function BanksPage() {
         try {
             const body = { name: item.name ?? '' };
             isEdit
-                ? await bankService.update(item.id, body)
-                : await bankService.create(body);
+                ? await groupService.update(item.id, body)
+                : await groupService.create(body);
             addAlert({ type: 'success', message: `Bank ${isEdit ? 'updated' : 'saved'} successfully!` });
             await fetchItems({ page: currentPage });
         } catch (error) {
@@ -70,13 +71,13 @@ export default function BanksPage() {
         }
     }
 
-    const handleDelete = async (item?: Bank) => {
+    const handleDelete = async (item?: Group) => {
         if(!item) {
             return;
         }
         show();
         try {
-            await bankService.remove(item.id);
+            await groupService.remove(item.id);
             addAlert({ type: 'success', message: 'Bank deleted successfully!' });
             await fetchItems({ page: currentPage });
         } catch (error) {
@@ -95,9 +96,9 @@ export default function BanksPage() {
                     fluid: true,
                     type: 'text',
                     name: 'name',
-                    label: 'Bank',
+                    label: 'Group',
                     required: true,
-                    placeholder: 'Enter a bank'
+                    placeholder: 'Enter a group'
                 }
             ]}
             headers={[
@@ -116,15 +117,15 @@ export default function BanksPage() {
             actions={{
                 text: 'Actions',
                 align: 'center',
-                edit: async (item) => handleSave(item as Bank),
-                create: async (item) => handleSave(item as Bank),
-                delete: async (item) => handleDelete(item as Bank),
+                edit: async (item) => handleSave(item as Group),
+                create: async (item) => handleSave(item as Group),
+                delete: async (item) => handleDelete(item as Group),
             }}
             loading={isLoading}
-            onRowClick={(item) => handleSave(item as Bank)}
+            onRowClick={(item) => handleSave(item as Group)}
             totalPages={totalPages}
             currentPage={currentPage}
-            resourceName="Bank"
+            resourceName="Group"
             handlePageChange={setCurrentPage}
         />
     )

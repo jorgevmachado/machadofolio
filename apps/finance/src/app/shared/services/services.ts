@@ -1,4 +1,4 @@
-import { AuthService, BankService, Nest, SupplierService, SupplierTypeService } from '@repo/business';
+import { AuthService, BankService, GroupService, Nest, SupplierService, SupplierTypeService } from '@repo/business';
 
 import { getAccessToken } from '../cookies';
 
@@ -15,3 +15,4 @@ export const authService = new AuthService(nest);
 export const bankService = new BankService(nest);
 export const supplierService = new SupplierService(nest);
 export const supplierTypeService = new SupplierTypeService(nest);
+export const groupService = new GroupService(nest);

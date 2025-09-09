@@ -51,6 +51,13 @@ export const privateRoutes: Array<TRoute> = [
         title: 'Bank',
     },
     {
+        key: 'group',
+        icon: 'group',
+        path: '/groups',
+        type: 'private',
+        title: 'Group',
+    },
+    {
         key: 'supplier-parent',
         icon: 'user-tie',
         path: '/suppliers',
