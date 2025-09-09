@@ -10,6 +10,7 @@ import './Page.scss';
 interface PageProps extends React.HTMLAttributes<HTMLDivElement> {
     menu?: Array<TRoute>;
     title?: string;
+    logout?: Partial<TRoute>;
     userName?: string;
     children: React.ReactNode;
     ariaLabel?: string;
@@ -23,6 +24,7 @@ interface PageProps extends React.HTMLAttributes<HTMLDivElement> {
 export default function Page({
     menu,
     title,
+    logout,
     userName,
     children,
     ariaLabel,
@@ -41,6 +43,16 @@ export default function Page({
         setIsSidebarOpen(isOpen);
     };
 
+    const treatLogout = (): TRoute => {
+        return {
+            key: 'logout',
+            type: 'private',
+            title: logout?.title ?? 'Logout',
+            icon: logout?.icon ?? 'sign-out',
+            path: logout?.path ?? '/logout'
+        }
+    }
+
     useEffect(() => {
         if(!isAuthenticated) {
             return;
@@ -57,6 +69,7 @@ export default function Page({
                     { menu && (
                         <Sidebar
                             menu={menu}
+                            logout={treatLogout()}
                             onToggle={handleSidebarToggle}
                             isSidebarOpen={isSidebarOpen}
                             onLinkClick={onLinkClick}

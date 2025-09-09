@@ -47,6 +47,7 @@ export default function DateInput({
     disabled,
     className,
     placeholder,
+    showYearDropdown = true,
     ...props
 }: DateProps) {
     const [currentSelectedDate, setCurrentSelectedDate] = useState<Date | undefined>(undefined);
@@ -151,6 +152,7 @@ export default function DateInput({
                 onCalendarOpen={handleCalendarOpen}
                 onCalendarClose={handleCalendarClose}
                 placeholderText={placeholder}
+                showYearDropdown={showYearDropdown}
                 toggleCalendarOnIconClick={Boolean(icon)}
             >
                 {hasCalendar && calendarElement}

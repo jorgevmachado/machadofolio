@@ -10,12 +10,13 @@ import './Sidebar.scss';
 
 type SidebarProps = {
     menu: Array<TRoute>;
+    logout?: TRoute;
     onToggle?: (value: boolean) => void;
     onLinkClick?: (path: string) => void;
     isSidebarOpen?: boolean;
 }
 
-export default function Sidebar({ menu, onToggle, onLinkClick, isSidebarOpen }: SidebarProps) {
+export default function Sidebar({ menu, logout, onToggle, onLinkClick, isSidebarOpen }: SidebarProps) {
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
     useEffect(() => {
@@ -70,6 +71,19 @@ export default function Sidebar({ menu, onToggle, onLinkClick, isSidebarOpen }: 
                         }
                     </div>
                 ))}
+
+                {logout && (
+                    <div className="ui-sidebar__menu--item ui-sidebar__menu--item-logout">
+                        <div className="ui-sidebar__menu--item-link" onClick={() => handleOnClick(logout.path)}>
+                            <Icon icon={logout.icon}/>
+                            {isOpen && (
+                                <span className="ui-sidebar__menu--item-link__title">
+                                    {logout.title}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

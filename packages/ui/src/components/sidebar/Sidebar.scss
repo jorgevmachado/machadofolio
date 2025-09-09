@@ -43,6 +43,9 @@ $transition-speed: 0.3s;
           margin-left: var(--dimensions-fixed-10);
         }
       }
+      &-logout {
+        margin-top: auto;
+      }
     }
   }
 
