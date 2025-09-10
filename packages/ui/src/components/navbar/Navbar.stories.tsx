@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { fn } from 'storybook/test';
+
 import Navbar from './Navbar';
 
 const meta = {
@@ -13,7 +15,7 @@ const meta = {
     parameters: {},
     decorators: [
         (Story) => (
-            <div style={{ height: '25vh', width: '100%' }}>
+            <div className="ui-navbar-storybook-preview" style={{ height: '25vh', width: '100%', maxWidth: 800 }}>
                 <Story />
             </div>
         ),
@@ -24,3 +26,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {  args: {} };
+
+export const WithAction: Story = {
+    args: {
+        action: {
+            label: 'sign-in',
+            onClick: fn()
+        }
+    }
+};

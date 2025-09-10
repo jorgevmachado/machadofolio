@@ -16,10 +16,23 @@
     font-size: var(--dimensions-relative-36);
     font-weight: var(--font-weight-bold);
   }
-  &__right--profile {
-    font-size: var(--dimensions-relative-18);
-    strong {
-      color: var(--color-strong);
+  &__right {
+    gap: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--profile {
+      font-size: var(--dimensions-relative-18);
+      strong {
+        color: var(--color-strong);
+      }
     }
   }
+}
+
+.ui-navbar-storybook-preview .ui-navbar {
+  position: static !important;
+  box-shadow: none !important;
+  width: 100%;
 }

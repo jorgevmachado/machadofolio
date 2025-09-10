@@ -36,6 +36,20 @@ describe('<Navbar/>', () => {
         expect(component).toHaveClass('ui-navbar');
         expect(component).toHaveTextContent('Title');
         expect(component).toHaveTextContent('Welcome, UserName');
+    });
 
+    it('should render component with action props.', () => {
+        const mockActionClick = jest.fn();
+        const mockAction = {
+            label: 'Action',
+            onClick: mockActionClick,
+        }
+        renderComponent({ action: mockAction});
+        expect(screen.getByTestId('ui-navbar')).toBeInTheDocument();
+        const actionButton = screen.getByTestId('ui-navbar-action');
+        expect(actionButton).toBeInTheDocument();
+        expect(actionButton).toHaveTextContent('Action');
+        actionButton.click();
+        expect(mockActionClick).toHaveBeenCalled();
     });
 });

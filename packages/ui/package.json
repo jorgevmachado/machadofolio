@@ -32,6 +32,7 @@
     "test:watch": "jest",
     "check-types": "tsc --noEmit",
     "storybook:law": "cross-env VITE_BRAND=law storybook dev -p 6006",
+    "storybook:auth": "cross-env VITE_BRAND=auth storybook dev -p 6006",
     "storybook:geek": "cross-env VITE_BRAND=geek storybook dev -p 6006",
     "storybook:finance": "cross-env VITE_BRAND=finance storybook dev -p 6006",
     "build-storybook": "storybook build"

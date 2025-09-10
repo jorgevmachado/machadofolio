@@ -22,7 +22,7 @@ const meta = {
     parameters: {},
     decorators: [
         (Story) => (
-            <div style={{ minHeight: '100vh', maxWidth: '100%', margin: 0, padding: 0, textRendering: 'optimizeSpeed' }}>
+            <div className="ui-page-storybook-preview" style={{ minHeight: '100vh', maxWidth: '100%'}}>
                 <Story />
             </div>
         ),
@@ -34,6 +34,18 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {  args: {} };
 
-export const Authenticated: Story = {  args: {
+export const Authenticated: Story = {
+    args: {
         isAuthenticated: true
-    } };
+    }
+};
+
+export const WithNavbarAction: Story = {
+    args: {
+        navbarAction: {
+            label: 'Action',
+            onClick: fn()
+        },
+        isAuthenticated: true
+    }
+};

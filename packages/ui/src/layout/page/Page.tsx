@@ -15,6 +15,10 @@ interface PageProps extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
     ariaLabel?: string;
     navbarTitle?: string;
+    navbarAction?: {
+        label: string;
+        onClick: () => void;
+    };
     sidebarOpen?: boolean;
     onLinkClick?: (path: string) => void;
     withAnimation?: boolean;
@@ -29,6 +33,7 @@ export default function Page({
     children,
     ariaLabel,
     navbarTitle,
+    navbarAction,
     sidebarOpen = true,
     onLinkClick,
     withAnimation = true,
@@ -65,7 +70,7 @@ export default function Page({
         <div className="ui-page" data-testid="ui-page">
             { isAuthenticated && (
                 <>
-                    <Navbar title={navbarTitle || 'My App'} userName={userName}/>
+                    <Navbar title={navbarTitle || 'My App'} action={navbarAction} userName={userName}/>
                     { menu && (
                         <Sidebar
                             menu={menu}

@@ -4,6 +4,9 @@ switch (brand) {
     case 'geek':
         import('@repo/tokens/dist/geek/css/_variables.css');
         break;
+    case 'auth':
+        import('@repo/tokens/dist/auth/css/_variables.css');
+        break;
     case 'law':
         import('@repo/tokens/dist/law/css/_variables.css');
         break;
