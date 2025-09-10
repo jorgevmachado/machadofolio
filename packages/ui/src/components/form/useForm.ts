@@ -105,7 +105,9 @@ export function useForm({ user, type, onInput, onSubmit }: UseFormProps): TUseFo
 
         const { valid, errors, messages, updatedInputs } = inputs.reduce((acc, input) => {
             const value = authFormDraft.fields[input.id as keyof AuthForm['fields']];
-            const validatorMessage = input.validator({ value });
+            const validatorMessage = input.id === 'password_confirmation'
+                ? input.validator({ value, optionalValue: authFormDraft.fields.password })
+                : input.validator({ value });
 
             const inputValid = validatorMessage?.valid;
             const message = `${input.label}: ${validatorMessage.message}`;
@@ -130,10 +132,20 @@ export function useForm({ user, type, onInput, onSubmit }: UseFormProps): TUseFo
         authFormDraft.message = messages
             .map((message) => `   ${message}`)
             .join('\n');
-
         setAuthForm(authFormDraft);
         setInputs(updatedInputs);
     },[authForm, inputs]);
+
+    const cleanFields = (fields: AuthForm['fields']) => {
+        const data = {...fields};
+        if(data.cpf) {
+            data.cpf = data.cpf.replace(/\D/g, '');
+        }
+        if(data.whatsapp) {
+            data.whatsapp = data.whatsapp.replace(/\D/g, '');
+        }
+        return data;
+    }
 
     const handleAuthFormData = useCallback(() => {
         setAuthForm((prev) => {
@@ -173,7 +185,8 @@ export function useForm({ user, type, onInput, onSubmit }: UseFormProps): TUseFo
         handleValidatorForm();
         handleAuthFormData();
         if(onSubmit) {
-            onSubmit(authForm);
+            const fields = cleanFields(authForm.fields);
+            onSubmit({...authForm, fields });
         }
     }, [authForm, handleAuthFormData, handleValidatorForm, onSubmit]);
 

@@ -11,15 +11,33 @@ jest.mock('@repo/ds', () => {
         Link: ({ 'data-testid': dataTestId = 'mocked-ds-link', ...props}: any) => React.createElement('a', { ...props, 'data-testid': dataTestId }),
         Text: ({ 'data-testid': dataTestId = 'mocked-ds-text', ...props}: any) => React.createElement(props?.tag ?? 'p', { ...props, 'data-testid': dataTestId }),
         Image: ({ 'data-testid': dataTestId = 'mocked-ds-image', ...props}: any) => React.createElement('img', { ...props, 'data-testid': dataTestId }),
-        Input: ({ 'data-testid': dataTestId = 'mocked-ds-input', ...props}: any) => {
+        Input: ({ 'data-testid': dataTestId = 'mocked-ds-input', ...props }: any) => {
             if(props.validator) {
                 props.validator({ value: 'test@example.com'});
             }
-
+            const handleInput = (event: React.FormEvent<HTMLInputElement>) => {
+                if (props.onInput) {
+                    props.onInput({
+                        name: event.currentTarget.name,
+                        value: event.currentTarget.value,
+                        event,
+                        invalid: false
+                    });
+                }
+                if (props.onChange) {
+                    props.onChange(event);
+                }
+            };
             const { type, value, ...rest } = props;
             const inputProps = type === 'file' ? rest : props;
-
-            return React.createElement('input', { ...inputProps, 'data-testid': dataTestId })
+            return React.createElement('input', {
+                ...inputProps,
+                'data-testid': dataTestId,
+                onInput: handleInput,
+                onChange: handleInput,
+                value: props.value ?? '',
+                name: props.name
+            });
         },
         Alert: ({ 'data-testid': dataTestId = 'mocked-ds-alert', ...props}: any) => React.createElement(
             'div',

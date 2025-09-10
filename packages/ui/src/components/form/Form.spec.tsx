@@ -30,7 +30,7 @@ describe('<Form/>', () => {
     it('should initialize form with type sign-up', () => {
         renderComponent({ type: 'sign-up' });
         expect(screen.getByTestId('ui-form-sign-up')).toBeInTheDocument();
-        expect(screen.getByTestId('ui-form-input-avatar')).toBeInTheDocument();
+        expect(screen.queryByTestId('ui-form-input-avatar')).not.toBeInTheDocument();
         expect(screen.getByTestId('ui-form-input-cpf')).toBeInTheDocument();
         expect(screen.getByTestId('ui-form-input-name')).toBeInTheDocument();
         expect(screen.getByTestId('ui-form-input-email')).toBeInTheDocument();
@@ -96,6 +96,39 @@ describe('<Form/>', () => {
     it('should execute submit when button is clicked', () => {
         const onSubmitMock = jest.fn();
         renderComponent({ type: 'sign-in', onSubmit: onSubmitMock });
+        const button = screen.getByTestId('mocked-ds-button');
+        button.click();
+        expect(onSubmitMock).toHaveBeenCalled();
+    });
+
+    it('should execute submit when button is clicked and type is sign-up', () => {
+        const onSubmitMock = jest.fn();
+        renderComponent({ type: 'sign-up', onSubmit: onSubmitMock });
+
+        const inputCpf = screen.getByTestId('ui-form-input-cpf-field');
+        fireEvent.input(inputCpf, { target: { name: 'cpf', value: '498.921.204-50' } });
+
+        const inputName = screen.getByTestId('ui-form-input-name-field');
+        fireEvent.input(inputName, { target: { name: 'name', value: 'John Doe' } });
+
+        const inputEmail = screen.getByTestId('ui-form-input-email-field');
+        fireEvent.input(inputEmail, { target: { name: 'email', value: 'mail@mail.com'} });
+
+        const inputGender = screen.getByTestId('ui-form-input-gender-field');
+        fireEvent.input(inputGender, { target: { name: 'gender', value: 'MALE'} });
+
+        const inputWhatsapp = screen.getByTestId('ui-form-input-whatsapp-field');
+        fireEvent.input(inputWhatsapp, { target: { name: 'whatsapp', value: '(61) 99876-5432'} });
+
+        const inputPassword = screen.getByTestId('ui-form-input-password-field');
+        fireEvent.input(inputPassword, { target: { name: 'password', value: '@Password1'} });
+
+        const inputDateOfBirth = screen.getByTestId('ui-form-input-date_of_birth-field');
+        fireEvent.input(inputDateOfBirth, { target: { name: 'date_of_birth', value: '1990-07-20' } });
+
+        const inputPasswordConfirmation = screen.getByTestId('ui-form-input-password_confirmation-field');
+        fireEvent.input(inputPasswordConfirmation, { target: { name: 'password_confirmation', value: '@Password1'} });
+        
         const button = screen.getByTestId('mocked-ds-button');
         button.click();
         expect(onSubmitMock).toHaveBeenCalled();

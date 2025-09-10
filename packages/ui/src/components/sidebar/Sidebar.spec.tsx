@@ -126,4 +126,16 @@ describe('<Sidebar/>', () => {
         render(<Sidebar menu={[]} />);
         expect(screen.getByTestId('ui-sidebar')).toBeInTheDocument();
     });
+
+    it('show logout when logout is provided', () => {
+        const mockLogout = {
+            key: 'logout',
+            type: 'private',
+            title: 'Logout',
+            icon: 'sign-out',
+            path: '/logout'
+        }
+        renderComponent({ logout: mockLogout });
+        expect(screen.getByTestId('ui-sidebar-logout')).toBeInTheDocument();
+    })
 });

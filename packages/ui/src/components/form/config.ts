@@ -25,7 +25,6 @@ export const FORMS: Array<InputFormProps> = [
             'name',
             'email',
             'gender',
-            'avatar',
             'whatsapp',
             'password',
             'date_of_birth',
@@ -124,7 +123,7 @@ export const INPUTS: Array<InputForm> = [
     },
     {
         id: 'date_of_birth',
-        min: calculateMaxDate(new Date(), 18)?.toISOString(),
+        max: calculateMaxDate(new Date(), 18)?.toISOString(),
         type: 'date',
         name: 'date_of_birth',
         label: 'Date of Birth',

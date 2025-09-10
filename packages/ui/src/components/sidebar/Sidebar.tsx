@@ -73,11 +73,11 @@ export default function Sidebar({ menu, logout, onToggle, onLinkClick, isSidebar
                 ))}
 
                 {logout && (
-                    <div className="ui-sidebar__menu--item ui-sidebar__menu--item-logout">
+                    <div className="ui-sidebar__menu--item ui-sidebar__menu--item-logout" data-testid="ui-sidebar-logout">
                         <div className="ui-sidebar__menu--item-link" onClick={() => handleOnClick(logout.path)}>
                             <Icon icon={logout.icon}/>
                             {isOpen && (
-                                <span className="ui-sidebar__menu--item-link__title">
+                                <span className="ui-sidebar__menu--item-link__title" data-testid="ui-sidebar-logout-title">
                                     {logout.title}
                                 </span>
                             )}
