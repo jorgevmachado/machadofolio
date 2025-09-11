@@ -98,6 +98,7 @@ import type { TIconGroupIcons } from '../types';
 export const mdGroup: TIconGroupIcons = {
   tv: <MdTv />,
   box: undefined,
+  law: undefined,
   tag: undefined,
   key: <MdOutlineKey />,
   map: <MdMap />,
@@ -157,6 +158,7 @@ export const mdGroup: TIconGroupIcons = {
   upload: <MdCloudUpload />,
   school: <MdSchool />,
   rocket: <MdOutlineRocketLaunch />,
+  system: undefined,
   shower: <MdOutlineShower />,
   tablet: <MdOutlineTabletAndroid />,
   android: <MdAndroid />,

@@ -8,3 +8,5 @@ export { default as Alert } from './alert';
 export { default as Table, ETypeTableHeader } from './table';
 export { default as Pagination } from './pagination';
 export { default as Modal } from './modal';
+export { default as Avatar } from './avatar';
+export { default as Card } from './card';

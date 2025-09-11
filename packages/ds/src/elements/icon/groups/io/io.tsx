@@ -86,6 +86,7 @@ import type { TIconGroupIcons } from '../types';
 export const ioGroup: TIconGroupIcons = {
   tv: <IoMdTv/>,
   box: undefined,
+  law: undefined,
   tag: <IoIosPricetag/>,
   key: <IoIosKey/>,
   map: <IoMdMap/>,
@@ -145,6 +146,7 @@ export const ioGroup: TIconGroupIcons = {
   upload: <IoMdCloudUpload/>,
   school: <IoIosSchool/>,
   rocket: <IoIosRocket/>,
+  system: undefined,
   shower: undefined,
   tablet: <IoIosTabletPortrait/>,
   android: <IoLogoAndroid/>,

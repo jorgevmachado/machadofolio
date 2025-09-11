@@ -16,6 +16,7 @@ import type { TIconGroupIcons } from '../types';
 export const ciGroup: TIconGroupIcons = {
   tv: undefined,
   box: undefined,
+  law: undefined,
   tag: undefined,
   key: undefined,
   map: undefined,
@@ -75,6 +76,7 @@ export const ciGroup: TIconGroupIcons = {
   upload: undefined,
   school: undefined,
   rocket: undefined,
+  system: undefined,
   shower: undefined,
   tablet: undefined,
   android: undefined,

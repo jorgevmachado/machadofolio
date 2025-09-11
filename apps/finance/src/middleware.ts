@@ -18,13 +18,14 @@ function treatRedirectUrl(request: NextRequest, destination: string) {
     const keyPathname = convertUrlToKey(url.pathname);
     if(keyPathname !== keyDestination) {
         const host = request.headers.get('host') ?? undefined;
-        const redirectToUrl = new URL(destination, url);
+        const redirectToUrl = new URL('/dashboard', url);
         url.host = !host ? redirectToUrl.host : host;
         url.searchParams.set('redirectTo', redirectToUrl.href);
     }
     url.searchParams.set('source', 'finance');
     url.searchParams.set('env', 'dev');
     url.pathname = authRoute.path;
+    url.port = '4001';
     return url;
 }
 
@@ -71,7 +72,7 @@ export default async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    const token = request.cookies.get('financeAccessToken')?.value;
+    const token = request.cookies.get('accessToken')?.value;
 
     const isAuth = isAuthRoute(pathname);
 

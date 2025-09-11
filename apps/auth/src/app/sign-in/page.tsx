@@ -5,8 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { Auth, useAlert, useLoading } from '@repo/ui';
 
-import {  generateUrlString } from '../../../routes';
 import { authService, setAccessToken } from '../../shared';
+import { generateUrlString } from '../../routes';
 
 export default function SignInPage() {
     const router = useRouter();
@@ -39,7 +39,6 @@ export default function SignInPage() {
             hide();
         }
     }
-
     return (
         <Auth
             type="sign-in"

@@ -161,8 +161,11 @@ export function useForm({ user, type, onInput, onSubmit }: UseFormProps): TUseFo
 
     const handleOnInput = useCallback(
         ({ name, value, event }: OnInputParams) => {
+            const eventFile = event as React.ChangeEvent<HTMLInputElement>;
+            const file = eventFile.target.files?.[0];
             setAuthForm((prev) => ({
                 ...prev,
+                file,
                 fields: { ...prev.fields, [name]: value }
             }));
             if(onInput) {

@@ -7,6 +7,9 @@ switch (brand) {
     case 'law':
         import('@repo/tokens/dist/law/css/_variables.css');
         break;
+    case 'auth':
+        import('@repo/tokens/dist/auth/css/_variables.css');
+        break;
     case 'finance':
         import('@repo/tokens/dist/finance/css/_variables.css');
         break;

@@ -106,6 +106,7 @@ import type { TIconGroupIcons } from '../types';
 export const fa6Group: TIconGroupIcons = {
   tv: <FaTv />,
   box: undefined,
+  law: undefined,
   tag: <FaTag />,
   key: <FaKey />,
   map: <FaMap />,
@@ -165,6 +166,7 @@ export const fa6Group: TIconGroupIcons = {
   upload: <FaUpload />,
   school: <FaSchool />,
   rocket: <FaRocket />,
+  system: undefined,
   shower: <FaShower />,
   tablet: <FaTabletScreenButton />,
   android: <FaAndroid />,

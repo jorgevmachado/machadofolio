@@ -22,6 +22,7 @@ type InputFields = Record<TInput, string | undefined>;
 type InputErrors = Record<TInput, ValidatorMessage | undefined>;
 
 export type AuthForm = {
+    file?: File;
     valid: boolean;
     fields: InputFields;
     errors: InputErrors;

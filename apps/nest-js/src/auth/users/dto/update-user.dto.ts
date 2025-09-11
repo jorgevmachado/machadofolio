@@ -1,4 +1,4 @@
-import { IsDate, IsEmpty, IsEnum, MaxDate, MaxLength } from 'class-validator';
+import { IsDate, IsEnum, IsOptional, MaxDate, MaxLength } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 import { EGender } from '@repo/services';
@@ -6,26 +6,26 @@ import { EGender } from '@repo/services';
 import { ERole, EStatus, UpdateParams } from '@repo/business';
 
 export class UpdateUserDto implements UpdateParams {
-    @IsEmpty()
+    @IsOptional()
     id?: string;
 
-    @IsEmpty()
+    @IsOptional()
     @IsEnum(ERole)
     role?: ERole;
 
-    @IsEmpty()
+    @IsOptional()
     @MaxLength(200)
     name?: string;
 
-    @IsEmpty()
+    @IsOptional()
     @IsEnum(EGender)
     gender?: EGender;
 
-    @IsEmpty()
+    @IsOptional()
     @IsEnum(EStatus)
     status?: EStatus;
 
-    @IsEmpty()
+    @IsOptional()
     @Transform(({ value }) => {
         if (!value || isNaN(Date.parse(value as string))) {
             throw new Error("Invalid date format");

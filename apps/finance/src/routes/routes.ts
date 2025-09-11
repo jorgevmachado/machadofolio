@@ -4,25 +4,25 @@ import { ReadonlyURLSearchParams } from 'next/navigation';
 export const publicRoutes: Array<TRoute> = [
     {
         key: 'sign-in',
-        path: '/auth/sign-in',
+        path: '/sign-in',
         type: 'public',
         title: 'Sign In',
     },
     {
         key: 'sign-up',
-        path: '/auth/sign-up',
+        path: '/sign-up',
         type: 'public',
         title: 'Sign Up',
     },
     {
         key: 'forgot-password',
-        path: '/auth/forgot-password',
+        path: '/forgot-password',
         type: 'public',
         title: 'Forgot Password',
     },
     {
         key: 'reset-password',
-        path: '/auth/reset-password',
+        path: '/reset-password',
         type: 'public',
         title: 'Reset Password',
     },
@@ -39,7 +39,7 @@ export const privateRoutes: Array<TRoute> = [
     {
         key: 'profile',
         icon: 'user',
-        path: '/profile',
+        path: 'http://localhost:4001/profile?source=finance&redirectTo=http://localhost:4002/dashboard',
         type: 'private',
         title: 'Profile',
     },

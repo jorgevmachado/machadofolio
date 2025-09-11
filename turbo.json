@@ -6,7 +6,11 @@
     "**/.env.*mock",
     "ENV",
     "API",
-    "PORT"
+    "PORT",
+    "AUTH_URL",
+    "FINANCE_URL",
+    "GEEK_URL",
+    "LAW_URL"
   ],
   "ui": "tui",
   "tasks": {

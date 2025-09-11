@@ -23,6 +23,7 @@ interface ImageProps extends React.ImgHTMLAttributes<Element> {
     type?: TImage;
     lazyLoad?: boolean;
     fallback?: React.ReactNode;
+    'data-testid'?: string;
 }
 
 export default function Image({
@@ -35,6 +36,7 @@ export default function Image({
     lazyLoad,
     fallback,
     className,
+    'data-testid': dataTestId = 'ds-image',
     ...props
 }: ImageProps) {
     const [isInvalid, setIsInvalid] = useState<boolean>(false);
@@ -99,7 +101,7 @@ export default function Image({
             <div
                 title={alt}
                 className="ds-image__fallback"
-                data-testid="ds-image-fallback"
+                data-testid={`${dataTestId}-fallback`}
                 aria-label={alt ?? 'Image failed to load'}
             >
                 { typeof fallback === 'boolean'
@@ -113,10 +115,10 @@ export default function Image({
             {...props}
             alt={alt}
             src={currentSrc}
-            data-testid="ds-image"
             onError={onError}
             loading={loading ?? (lazyLoad ? 'lazy' : undefined)}
             className={classNameList}
+            data-testid={dataTestId}
         />
     );
 };

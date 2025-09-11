@@ -4,6 +4,7 @@ import type { TColors } from '../../utils';
 export type TIcon =
     | 'tv'
     | 'box'
+    | 'law'
     | 'tag'
     | 'key'
     | 'map'
@@ -63,6 +64,7 @@ export type TIcon =
     | 'upload'
     | 'school'
     | 'rocket'
+    | 'system'
     | 'shower'
     | 'tablet'
     | 'android'

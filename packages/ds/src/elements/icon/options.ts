@@ -5,6 +5,7 @@ export const OIconPosition: Array<TIconPosition> = ['left', 'right'];
 export const OIcon: Array<TIcon> = [
      'tv',
      'box',
+     'law',
      'tag',
      'key',
      'map',
@@ -63,6 +64,7 @@ export const OIcon: Array<TIcon> = [
      'upload',
      'school',
      'rocket',
+     'system',
      'shower',
      'tablet',
      'android',

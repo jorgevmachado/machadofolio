@@ -85,6 +85,7 @@ import React from 'react';
 export const io5Group: TIconGroupIcons = {
   tv: <IoTv/>,
   box: undefined,
+  law: undefined,
   tag: <IoPricetag/>,
   key: <IoKey/>,
   map: <IoMap/>,
@@ -144,6 +145,7 @@ export const io5Group: TIconGroupIcons = {
   upload: <IoCloudUpload/>,
   school: <IoSchool/>,
   rocket: <IoRocket/>,
+  system: undefined,
   shower: undefined,
   tablet: <IoTabletPortrait/>,
   android: <IoLogoAndroid/>,

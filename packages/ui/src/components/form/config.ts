@@ -72,6 +72,7 @@ export const INPUTS: Array<InputForm> = [
         label: 'Avatar',
         accept: 'image/*',
         validator: fileBase64Validator,
+        required: false,
         withPreview: true,
         placeholder: 'Enter your Avatar',
     },

@@ -78,6 +78,7 @@ import type { TIconGroupIcons } from '../types';
 export const giGroup: TIconGroupIcons = {
   tv: <GiTv />,
   box: undefined,
+  law: undefined,
   tag: <GiPriceTag />,
   key: <GiKey />,
   map: <GiTreasureMap />,
@@ -137,6 +138,7 @@ export const giGroup: TIconGroupIcons = {
   upload: <GiCloudUpload />,
   school: <GiSchoolBag />,
   rocket: <GiRocket />,
+  system: undefined,
   shower: <GiShower />,
   tablet: <GiTablet />,
   android: undefined,

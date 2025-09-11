@@ -5,6 +5,7 @@ import type { TIconGroupIcons } from '../types';
 export const vscGroup: TIconGroupIcons = {
   tv: undefined,
   box: undefined,
+  law: undefined,
   tag: undefined,
   key: undefined,
   map: undefined,
@@ -64,6 +65,7 @@ export const vscGroup: TIconGroupIcons = {
   upload: undefined,
   school: undefined,
   rocket: undefined,
+  system: undefined,
   shower: undefined,
   tablet: undefined,
   android: undefined,
