@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 
-import { cleanFormatter, cpfFormatter, phoneFormatter } from '@repo/services';
+import { cleanFormatter, cpfFormatter, currencyFormatter, digitsToDecimalString, phoneFormatter } from '@repo/services';
 
 import { type OptionsProps, type TAppearance, type TContext, generateComponentId, joinClass } from '../../../utils';
 
@@ -83,9 +83,22 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
 
     const componentId = props.id ?? generateComponentId(`ds-input-${type}`);
 
-    const handleInput = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, value?: string | Array<string>) => {
+    const handleInputValue = (value: string = '') => {
+        switch (type) {
+            case 'money':
+                return digitsToDecimalString(value);
+            case 'cpf':
+            case 'phone':
+                return value.replace(/\D/g, '');
+            default:
+                return value;
+        }
+    }
+
+    const handleInput = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, value?: string) => {
         const target = event.target as HTMLInputElement | HTMLTextAreaElement;
-        const currentValue = value || target.value;
+        const rawValue = value || target.value;
+        const currentValue = handleInputValue(rawValue);
         setCurrentInputValue(currentValue);
         if(onInput) {
             onInput({
@@ -127,6 +140,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         if(isRadioGroup) {
 
             if(onInput) {
+                console.log('# => value => ', value);
                 onInput({
                     name: name || '',
                     value: value || '',
@@ -180,6 +194,8 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                 return formatter ? formatter(currentValue) : cpfFormatter(currentValue);
             case 'phone':
                 return formatter ? formatter(currentValue) : phoneFormatter(currentValue);
+            case 'money':
+                return formatter ? formatter(currentValue) : currencyFormatter(currentValue);
             default:
                 return formatter ? formatter(currentValue) : currentValue;
         }

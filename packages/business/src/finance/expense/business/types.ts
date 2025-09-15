@@ -90,3 +90,10 @@ export type ParseToDetailsTableParams = {
 }
 
 export type ParseToDetailsTable = Array<Record<string, string | number | boolean | object>>;
+
+export type AllExpensesCalculated = {
+    total: number;
+    allPaid: boolean;
+    totalPaid: number;
+    totalPending: number;
+}

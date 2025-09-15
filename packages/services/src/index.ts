@@ -14,4 +14,5 @@ export * from './personal-data';
 export * from './file';
 export * from './password';
 export * from './spreadsheet';
+export * from './money';
 export type { ValidatorMessage , ValidatorParams } from './shared';

@@ -194,6 +194,15 @@ export const Number: Story = {
     render: (args) => <Template {...args} />,
 };
 
+export const Money: Story = {
+    args: {
+        type: 'money',
+        label: 'Money',
+        placeholder: 'Money'
+    },
+    render: (args) => <Template {...args} />,
+};
+
 export const Email: Story = {
     args: {
         type: 'email',

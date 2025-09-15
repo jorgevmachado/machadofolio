@@ -1,0 +1,25 @@
+.expenses {
+  padding: 20px;
+  margin-bottom: 1rem;
+  &__summary {
+    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    &--item {
+      //flex: 1;
+      //min-width: 150px;
+      &-text {
+        margin: 0;
+        &__status {
+          &--yes {
+            color: var(--color-success-80);
+          }
+          &--no {
+            color: var(--color-error-80);
+          }
+        }
+      }
+    }
+  }
+}

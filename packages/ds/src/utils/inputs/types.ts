@@ -1,4 +1,4 @@
-export type TInputType = 'cpf' |'text' | 'radio' | 'file' | 'number' | 'email' | 'date' | 'phone' | 'textarea' | 'select' | 'password' | 'radio-group';
+export type TInputType = 'cpf' |'text' | 'money' | 'radio' | 'file' | 'number' | 'email' | 'date' | 'phone' | 'textarea' | 'select' | 'password' | 'radio-group';
 
 export type ValidatedProps = {
     invalid: boolean;

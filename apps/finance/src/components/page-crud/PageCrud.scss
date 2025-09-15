@@ -1,15 +1,4 @@
 .page-crud {
-  &__header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-bottom: 20px;
-    justify-content: space-between;
-    &--title {
-      margin: 0;
-      font-size: 1.8rem;
-    }
-  }
   &__modal {
     &--persist {
       &-inputs {

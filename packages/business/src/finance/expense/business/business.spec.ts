@@ -660,6 +660,24 @@ describe('Expense Business', () => {
         });
     });
 
+    describe('calculateAll', () => {
+        it('should return 0 and true in all values when the expense list is empty.', () => {
+            const result = business.calculateAll([]);
+            expect(result.total).toEqual(0);
+            expect(result.allPaid).toBeTruthy();
+            expect(result.totalPaid).toEqual(0);
+            expect(result.totalPending).toEqual(0);
+        });
+
+        it('should calculated all and return correctly values.', () => {
+            const result = business.calculateAll([mockEntity,mockEntity,mockEntity,mockEntity]);
+            expect(result.total).toEqual(400);
+            expect(result.allPaid).toBeFalsy();
+            expect(result.totalPaid).toEqual(0);
+            expect(result.totalPending).toEqual(400);
+        });
+    });
+
 
     describe('private', () => {
 

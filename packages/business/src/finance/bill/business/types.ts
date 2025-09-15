@@ -89,3 +89,11 @@ export type GetWorkSheetTitle = {
     nextRow: number;
     groupName: string;
 }
+
+type TList = 'type' | 'group' | 'bank';
+
+export type BillList = {
+    title: string;
+    list: Array<Bill>;
+    type: TList;
+}

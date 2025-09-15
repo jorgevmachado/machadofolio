@@ -299,6 +299,151 @@ describe('Bill Business', () => {
 
     });
 
+    describe('mapBillListByFilter', () => {
+        const mockList: Array<Bill> = [
+            mockEntity,
+            {
+                ...mockEntity,
+                type: EBillType.BANK_SLIP,
+                bank: {...mockEntity.bank, name: 'Caixa'},
+                group: {...mockEntity.group, name: 'Monte Carlo Residential'},
+            },
+            {
+                ...mockEntity,
+                type: EBillType.PIX,
+                bank: {...mockEntity.bank, name: 'Itaú'},
+                group: {...mockEntity.group, name: 'Ingrid Residential'},
+            },
+            {
+                ...mockEntity,
+                type: EBillType.ACCOUNT_DEBIT,
+                bank: {...mockEntity.bank, name: 'Santander'},
+                group: {...mockEntity.group, name: 'Mother'},
+            },
+        ]
+        it('should return a list of bills filtered by type empty.', () => {
+            const result = business.mapBillListByFilter([], 'type');
+            expect(result).toEqual([]);
+        });
+
+        it('should return a list of bills filtered by type.', () => {
+            const result = business.mapBillListByFilter(mockList, 'type');
+            expect(result[0]).toEqual({
+                title: 'credit_card',
+                list: [mockEntity],
+                type: 'type'
+            });
+            expect(result[1]).toEqual({
+                title: 'bank_slip',
+                list: [{
+                    ...mockEntity,
+                    type: EBillType.BANK_SLIP,
+                    bank: {...mockEntity.bank, name: 'Caixa'},
+                    group: {...mockEntity.group, name: 'Monte Carlo Residential'},
+                }],
+                type: 'type'
+            },);
+            expect(result[2]).toEqual({
+                title: 'pix',
+                list: [{
+                    ...mockEntity,
+                    type: EBillType.PIX,
+                    bank: {...mockEntity.bank, name: 'Itaú'},
+                    group: {...mockEntity.group, name: 'Ingrid Residential'},
+                }],
+                type: 'type'
+            });
+            expect(result[3]).toEqual({
+                title: 'account_debit',
+                list: [{
+                    ...mockEntity,
+                    type: EBillType.ACCOUNT_DEBIT,
+                    bank: {...mockEntity.bank, name: 'Santander'},
+                    group: {...mockEntity.group, name: 'Mother'},
+                }],
+                type: 'type'
+            });
+        });
+
+        it('should return a list of bills filtered by group.', () => {
+            const result = business.mapBillListByFilter(mockList, 'group');
+            expect(result[0]).toEqual({
+                title: 'Personal',
+                list: [mockEntity],
+                type: 'group'
+            });
+            expect(result[1]).toEqual({
+                title: 'Monte Carlo Residential',
+                list: [{
+                    ...mockEntity,
+                    type: EBillType.BANK_SLIP,
+                    bank: {...mockEntity.bank, name: 'Caixa'},
+                    group: {...mockEntity.group, name: 'Monte Carlo Residential'},
+                }],
+                type: 'group'
+            },);
+            expect(result[2]).toEqual({
+                title: 'Ingrid Residential',
+                list: [{
+                    ...mockEntity,
+                    type: EBillType.PIX,
+                    bank: {...mockEntity.bank, name: 'Itaú'},
+                    group: {...mockEntity.group, name: 'Ingrid Residential'},
+                }],
+                type: 'group'
+            });
+            expect(result[3]).toEqual({
+                title: 'Mother',
+                list: [{
+                    ...mockEntity,
+                    type: EBillType.ACCOUNT_DEBIT,
+                    bank: {...mockEntity.bank, name: 'Santander'},
+                    group: {...mockEntity.group, name: 'Mother'},
+                }],
+                type: 'group'
+            });
+        });
+
+        it('should return a list of bills filtered by bank.', () => {
+            const result = business.mapBillListByFilter(mockList, 'bank');
+            expect(result[0]).toEqual({
+                title: 'Nubank',
+                list: [mockEntity],
+                type: 'bank'
+            });
+            expect(result[1]).toEqual({
+                title: 'Caixa',
+                list: [{
+                    ...mockEntity,
+                    type: EBillType.BANK_SLIP,
+                    bank: {...mockEntity.bank, name: 'Caixa'},
+                    group: {...mockEntity.group, name: 'Monte Carlo Residential'},
+                }],
+                type: 'bank'
+            },);
+            expect(result[2]).toEqual({
+                title: 'Itaú',
+                list: [{
+                    ...mockEntity,
+                    type: EBillType.PIX,
+                    bank: {...mockEntity.bank, name: 'Itaú'},
+                    group: {...mockEntity.group, name: 'Ingrid Residential'},
+                }],
+                type: 'bank'
+            });
+            expect(result[3]).toEqual({
+                title: 'Santander',
+                list: [{
+                    ...mockEntity,
+                    type: EBillType.ACCOUNT_DEBIT,
+                    bank: {...mockEntity.bank, name: 'Santander'},
+                    group: {...mockEntity.group, name: 'Mother'},
+                }],
+                type: 'bank'
+            });
+        });
+    });
+
     describe('privates', () => {
         const mockData = [
             { ...mockEntity, type: EBillType.BANK_SLIP, expenses: mockExpenses },
@@ -555,6 +700,28 @@ describe('Bill Business', () => {
                 });
 
                 expect(result).toBe(2);
+            });
+        });
+
+        describe('getItemTitle', () => {
+            it('should return the default when the type is undefined.', () => {
+                const result = business['getItemTitle'](mockEntity, undefined);
+                expect(result).toEqual(mockEntity.group.name);
+            });
+
+            it('should return the group name when the type is group.', () => {
+                const result = business['getItemTitle'](mockEntity, 'group');
+                expect(result).toEqual(mockEntity.group.name);
+            });
+
+            it('should return the bank name when the type is bank.', () => {
+                const result = business['getItemTitle'](mockEntity, 'bank');
+                expect(result).toEqual(mockEntity.bank.name);
+            });
+
+            it('should return the type when the type is type.', () => {
+                const result = business['getItemTitle'](mockEntity, 'type');
+                expect(result).toEqual(mockEntity.type.toLowerCase().replace(/ /g, '_'));
             });
         });
     });

@@ -33,32 +33,6 @@ export function ensureOrderNumber(order?: number, url?: string): number {
  return extractLastNumberFromUrl(url);
 }
 
-export type TCountry = 'br';
-
-export function currencyFormatter(
-    value: number = 0,
-    country: TCountry = 'br',
-): string {
- const MAP = {
-  br: { locale: 'pt-BR', currency: 'BRL' },
- };
- const mapped = MAP[country];
-
- return new Intl.NumberFormat(mapped.locale, {
-  style: 'currency',
-  currency: mapped.currency,
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-  maximumSignificantDigits: 7,
- })
-     .format(value)
-     .replace(/\s/, ' ');
-}
-
-export function removeCurrencyFormatter(value: string): number {
- return Number(value.replace(/[^0-9,-]+/g, ''));
-}
-
 export function numberValidator({ value }: ValidatorParams): ValidatorMessage {
  if (!value) {
   return {

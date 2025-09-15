@@ -35,3 +35,17 @@ export type InitializedExpense = {
     monthsForCurrentYear?: Array<string>;
     expenseForCurrentYear: ExpenseEntity;
 }
+
+export type TMonthPaid =
+    | 'january_paid'
+    | 'february_paid'
+    | 'march_paid'
+    | 'april_paid'
+    | 'may_paid'
+    | 'june_paid'
+    | 'july_paid'
+    | 'august_paid'
+    | 'september_paid'
+    | 'october_paid'
+    | 'november_paid'
+    | 'december_paid';

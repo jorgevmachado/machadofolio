@@ -7,12 +7,10 @@ import {
     jest,
 } from '@jest/globals';
 import {
-    currencyFormatter,
     ensureOrderNumber,
     extractLastNumberFromUrl,
     isNumberEven,
     numberValidator,
-    removeCurrencyFormatter
 } from './number';
 import { INVALID_TYPE } from '../shared';
 
@@ -70,18 +68,6 @@ describe('Number function', () => {
 
         it('should return false for a negative odd number', () => {
             expect(isNumberEven(-3)).toBe(false);
-        });
-    });
-
-    describe('currencyFormatter', () => {
-        it('should return formatted currency when currency is received', () => {
-            expect(currencyFormatter(9.99)).toEqual('R$ 9,99');
-        });
-    });
-
-    describe('removeCurrencyFormatter', () => {
-        it('should return number when received currency', () => {
-            expect(removeCurrencyFormatter('R$ 900')).toEqual(900);
         });
     });
 

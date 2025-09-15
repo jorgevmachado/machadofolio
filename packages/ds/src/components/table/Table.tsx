@@ -92,7 +92,7 @@ export default function Table({
         <div {...props} className={classNameList} data-testid="ds-table">
             {sortedItems.length === 0 ? (
                 <div className="ds-table__no-data-container" data-testid="ds-table-no-data">
-                    <Text>{notFoundMessage ? notFoundMessage : 'No data found!!'}</Text>
+                    <Text id="ds-table-not-found">{notFoundMessage ? notFoundMessage : 'No data found!!'}</Text>
                 </div>
             ) : (
                 <table cellSpacing="0" cellPadding="0" style={style} data-testid="ds-table-data">

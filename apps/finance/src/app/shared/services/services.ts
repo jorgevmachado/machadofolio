@@ -1,6 +1,8 @@
 import {
     AuthService,
     BankService,
+    BillService,
+    ExpenseService,
     FinanceService,
     GroupService,
     Nest,
@@ -25,3 +27,5 @@ export const bankService = new BankService(nest);
 export const supplierService = new SupplierService(nest);
 export const supplierTypeService = new SupplierTypeService(nest);
 export const groupService = new GroupService(nest);
+export const billService = new BillService(nest);
+export const expenseService = new ExpenseService(nest);

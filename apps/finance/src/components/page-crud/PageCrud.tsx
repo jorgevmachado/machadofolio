@@ -1,8 +1,10 @@
 'use client'
 import React, { useState } from 'react';
-import { Button, Pagination, Table, Text } from '@repo/ds';
+import { Pagination, Table } from '@repo/ds';
 
 import { useModal } from '@repo/ui';
+
+import PageHeader from '../page-header';
 
 import ModalDelete from './modal-delete';
 import ModalPersist from './modal-persist';
@@ -68,7 +70,7 @@ export default function PageCrud({
                     item={item}
                     inputs={inputs}
                     onClose={closeModal}
-                    onSubmit={actions?.create}
+                    onSubmit={actions?.edit ?? actions?.create}
                 />
             )
 
@@ -90,17 +92,13 @@ export default function PageCrud({
 
     return (
         <div className="page-crud">
-            <div className="page-crud__header">
-                <Text tag="h1" variant="big" className="banks__header--title">
-                    Management of {resourceName}
-                </Text>
-                {actions?.create && inputs?.length && (
-                    <Button onClick={() => handlePersistModal()} context="success">
-                        Create new {resourceName}
-                    </Button>
-                )}
-
-            </div>
+            <PageHeader
+                resourceName={resourceName}
+                action={actions?.create && inputs?.length ? {
+                    label: `Create new ${resourceName}`,
+                    onClick: () => handlePersistModal()
+                } : undefined}
+            />
             <Table
                 items={items}
                 actions={actions && {

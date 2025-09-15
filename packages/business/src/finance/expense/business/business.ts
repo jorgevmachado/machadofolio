@@ -16,34 +16,35 @@ import { EBillType, EExpenseType } from '../../../api';
 import type { ExpenseEntity, InitializedExpense } from '../types';
 import type Expense from '../expense';
 
-import {
-    type AccumulateGroupTables,
-    type AccumulateGroupTablesParams,
-    type BuildCreditCardBodyData,
-    type BuildCreditCardBodyDataParams,
-    type BuildDetailData,
-    type BuildDetailDataParams,
-    type BuildGroupTable,
-    type BuildGroupTableParams,
-    type DataAccumulator,
-    type GenerateCreditCardTable,
-    type GenerateCreditCardTableParams,
-    type GenerateDetailsTable,
-    type GenerateDetailsTableParams,
-    type ParseToDetailsTable,
-    type ParseToDetailsTableParams
+import type {
+    AccumulateGroupTables,
+    AccumulateGroupTablesParams,
+    AllExpensesCalculated,
+    BuildCreditCardBodyData,
+    BuildCreditCardBodyDataParams,
+    BuildDetailData,
+    BuildDetailDataParams,
+    BuildGroupTable,
+    BuildGroupTableParams,
+    DataAccumulator,
+    GenerateCreditCardTable,
+    GenerateCreditCardTableParams,
+    GenerateDetailsTable,
+    GenerateDetailsTableParams,
+    ParseToDetailsTable,
+    ParseToDetailsTableParams,
 } from './types';
 
 import type { Bill } from '../../bill';
 
 export default class ExpenseBusiness {
-    initialize(expense: Expense, value: number, month?: ExpenseEntity['month']): InitializedExpense {
+    public initialize(expense: Expense, value: number, month?: ExpenseEntity['month']): InitializedExpense {
         return expense.type === EExpenseType.FIXED
             ? this.handleFixedExpense(expense, value)
             : this.handleVariableExpense(expense, value, month);
     }
 
-    reinitialize(months: Array<string>, expense: Expense, existingExpense?: Expense): Expense {
+    public reinitialize(months: Array<string>, expense: Expense, existingExpense?: Expense): Expense {
         if (!existingExpense) {
             return expense;
         }
@@ -141,7 +142,7 @@ export default class ExpenseBusiness {
         return builtExpense;
     }
 
-    calculate(expense: Expense): Expense {
+    public calculate(expense: Expense): Expense {
         const builtExpense = { ...expense };
         if (builtExpense.paid) {
             MONTHS.forEach((month) => {
@@ -585,5 +586,11 @@ export default class ExpenseBusiness {
         return { data: bodyData, supplierList: normalizedSupplierList };
     }
 
-
+    public calculateAll(expenses: Array<Expense> = []): AllExpensesCalculated {
+        const total = expenses.reduce((acc, expense) => acc + expense.total, 0);
+        const allPaid = expenses.every((expense) => expense.paid);
+        const totalPaid = expenses.reduce((acc, expense) => acc + (expense.paid ? expense.total : 0), 0);
+        const totalPending = total - totalPaid;
+        return { total, allPaid, totalPaid, totalPending };
+    }
 }

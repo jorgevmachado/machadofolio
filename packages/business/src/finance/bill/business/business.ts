@@ -9,6 +9,7 @@ import type { Expense } from '../../expense';
 import type Bill from '../bill';
 
 import {
+    BillList,
     type BodyData,
     type BuildBodyDataParams,
     type GetWorkSheetTitle,
@@ -316,5 +317,29 @@ export default class BillBusiness {
         };
     }
 
+    public mapBillListByFilter(bills: Array<Bill>, type: BillList['type']): Array<BillList> {
+        return bills.reduce<Array<BillList>>((groupedBills, currentBill) => {
+            const title = this.getItemTitle(currentBill, type);
+            let item = groupedBills.find((item) => item.title === title);
+            if(!item) {
+                item = { title, list: [], type};
+                groupedBills.push(item);
+            }
+            item.list.push(currentBill);
+            return groupedBills;
+        }, []);
+    }
+
+    private getItemTitle(bill: Bill, type: BillList['type']): string {
+        switch (type) {
+            case 'bank':
+                return bill.bank.name;
+            case 'type':
+                return bill.type.toLowerCase().replace(/ /g, '_');
+            case 'group':
+            default:
+                return bill.group.name;
+        }
+    }
 
 }

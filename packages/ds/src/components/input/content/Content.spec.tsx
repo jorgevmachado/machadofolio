@@ -5,11 +5,15 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 
 const mockCpfFormatter = jest.fn((v?: string) => (v ?? ''));
 const mockPhoneFormatter = jest.fn((v?: string) => (v ?? ''));
+const mockCurrencyFormatter = jest.fn((v?: string) => (v ?? ''));
+const mockDigitsToDecimalString = jest.fn((v?: string) => (v ?? ''));
 
 jest.mock('@repo/services', () => ({
     cleanFormatter: jest.fn((v?: string) => v ?? ''),
     cpfFormatter: mockCpfFormatter,
     phoneFormatter: mockPhoneFormatter,
+    currencyFormatter: mockCurrencyFormatter,
+    digitsToDecimalString: mockDigitsToDecimalString,
 }));
 
 
@@ -41,9 +45,23 @@ jest.mock('./fields', () => ({
     DateInput: (props: any) => (
         <input data-testid="mock-date-input" value={props.value} onChange={e => props.onChange?.(e, '1990-01-01T00:00:00Z')} />
     ),
-    RadioGroupInput: (props: any) => (
-        <input data-testid="mock-radio-group-input" {...props} onClick={props.onClick} />
-    ),
+    RadioGroupInput: (props: any) => {
+        return (
+            <div data-testid="mock-radio-group-input">
+                {props.options?.map((option: any, index: number) => (
+                    <input
+                        {...props}
+                        key={option.value}
+                        type="radio"
+                        value={option.value}
+                        checked={option.value === props.value}
+                        onClick={(e) => props.onClick(e, index === 0 ?[option.value] : undefined)}
+                        data-testid={`mock-radio-group-input-${index}`}
+                    />
+                ))}
+            </div>
+        )
+    },
     SelectInput: (props: any) => (
         <select data-testid="mock-select-input" value={props.value} onChange={e => props.onChange?.(e.target.value)}>
             {props.options?.map((option: any) => (
@@ -66,7 +84,6 @@ jest.mock('./inside', () => ({
 import { EContext, EInputAppearance } from '../../../utils';
 
 import Content from './Content';
-import { SelectInput } from './fields';
 
 describe('<Content />', () => {
     afterEach(() => {
@@ -233,6 +250,75 @@ describe('<Content />', () => {
             fireEvent.blur(input);
             expect(onBlur).toHaveBeenCalled();
         });
+
+        it('should call external onInput and onChange if passed when type="cpf".', () => {
+            const onInput = jest.fn();
+            const onChange = jest.fn();
+            renderComponent({
+                type: 'cpf',
+                onInput,
+                onChange,
+            });
+            const input = screen.getByRole('textbox');
+            fireEvent.input(input, { target: { value: '11122233344' } });
+            fireEvent.change(input, { target: { value: '11122233344' } });
+            expect(onInput).toHaveBeenCalled();
+            expect(onChange).toHaveBeenCalled();
+        });
+    });
+
+    describe('type="money"', () => {
+        it('should render input when type="money" with defaultFormatter.', () => {
+            mockCurrencyFormatter.mockReturnValue('R$ 15.258,45');
+            renderComponent({ type: 'money', value: '15258.45' });
+            const input = screen.getByTestId('ds-input-content-field');
+            expect(input).toBeInTheDocument();
+            expect(input).toHaveAttribute('value', 'R$ 15.258,45');
+        });
+
+        it('should render input when type="money" with defaultFormatter false.', () => {
+            renderComponent({ type: 'money', value: '15258.45', defaultFormatter: false });
+            const input = screen.getByTestId('ds-input-content-field');
+            expect(input).toBeInTheDocument();
+            expect(input).toHaveAttribute('value', '15258.45');
+        });
+
+        it('should render input when type="money" with custom formatter.', () => {
+            renderComponent({ type: 'money', formatter: (value?: string) => value,  value: '15258.45' });
+            const input = screen.getByTestId('ds-input-content-field');
+            expect(input).toBeInTheDocument();
+            expect(input).toHaveAttribute('value', '15258.45');
+        });
+
+        it('should render input when type="money" with custom formatter and defaultFormatter false.', () => {
+            renderComponent({ type: 'money', formatter: (value?: string) => value,  value: '15258.45', defaultFormatter: false });
+            const input = screen.getByTestId('ds-input-content-field');
+            expect(input).toBeInTheDocument();
+            expect(input).toHaveAttribute('value', '15258.45');
+        });
+
+        it('should trigger onBlur when input loses focus.', () => {
+            const onBlur = jest.fn();
+            renderComponent({ onBlur, type: 'money', value: '15258.45' });
+            const input = screen.getByTestId('ds-input-content-field');
+            fireEvent.blur(input);
+            expect(onBlur).toHaveBeenCalled();
+        });
+
+        it('should call external onInput and onChange if passed when type="money".', () => {
+            const onInput = jest.fn();
+            const onChange = jest.fn();
+            renderComponent({
+                type: 'money',
+                onInput,
+                onChange,
+            });
+            const input = screen.getByRole('textbox');
+            fireEvent.input(input, { target: { value: '15258.45' } });
+            fireEvent.change(input, { target: { value: '15258.45' } });
+            expect(onInput).toHaveBeenCalled();
+            expect(onChange).toHaveBeenCalled();
+        });
     });
 
     describe('type="phone"', () => {
@@ -322,11 +408,18 @@ describe('<Content />', () => {
                     value: 'option2',
                 }
             ]
-            renderComponent({ type: 'radio-group', value: 'option1', options, onInput });
-            const input = screen.getByTestId('mock-radio-group-input');
-            fireEvent.click(input);
-            expect(input).toBeInTheDocument();
+            renderComponent({ type: 'radio-group', value: ['option1'], options, onInput, multiple: true });
+            expect(screen.getByTestId('mock-radio-group-input')).toBeInTheDocument();
+            const inputOne = screen.getByTestId('mock-radio-group-input-0');
+            fireEvent.click(inputOne);
+            expect(inputOne).toBeInTheDocument();
             expect(onInput).toHaveBeenCalled();
+
+            const inputTwo = screen.getByTestId('mock-radio-group-input-1');
+            fireEvent.click(inputTwo);
+            expect(inputTwo).toBeInTheDocument();
+            expect(onInput).toHaveBeenCalled();
+
         });
     })
 

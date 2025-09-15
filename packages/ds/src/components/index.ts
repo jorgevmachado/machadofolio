@@ -10,3 +10,7 @@ export { default as Pagination } from './pagination';
 export { default as Modal } from './modal';
 export { default as Avatar } from './avatar';
 export { default as Card } from './card';
+
+export { default as Tabs } from './tabs';
+export { default as Accordion } from './accordion';
+export { default as Switch } from './switch';
