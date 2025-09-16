@@ -31,7 +31,7 @@ const Template = (args: SwitchProps) =>  {
             <Switch
                 {...args}
                 checked={isChecked}
-                onChange={(event, nextChecked) => {
+                onChange={(_, nextChecked) => {
                     setIsChecked(nextChecked);
                 }}
             />

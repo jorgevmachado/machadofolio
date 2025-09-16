@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsNumber, MaxLength } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, MaxLength } from 'class-validator';
 
 import { CreateBillParams, EBillType } from '@repo/business';
 
@@ -10,7 +10,7 @@ export class CreateBillDto implements CreateBillParams {
     @IsEnum(EBillType)
     type!: EBillType;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber({ maxDecimalPlaces: 0 })
     year?: number;
 

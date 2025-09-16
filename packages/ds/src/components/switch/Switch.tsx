@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Text } from '../../elements';
 
@@ -50,6 +50,10 @@ export default function Switch({
         'ds-switch__button',
         `${enable ? 'ds-switch__button--checked' : 'ds-switch__button--no-checked'}`,
     ])
+
+    useEffect(() => {
+        setEnable(checked)
+    }, [checked]);
 
     return (
         <div {...props} className={classNameList} data-testid={dataTestId}>

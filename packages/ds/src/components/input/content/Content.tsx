@@ -312,6 +312,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         onInput={handleInput}
                         options={options}
                         onChange={handleOnChange}
+                        disabled={disabled}
                         className={joinClass(defaultClassNameInputList)}
                         placeholder={props?.placeholder}
                     />

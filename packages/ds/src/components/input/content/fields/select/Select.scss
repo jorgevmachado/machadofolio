@@ -1,9 +1,7 @@
-// NOVO SELECT ACESSÍVEL E BONITO
 .ds-select {
   position: relative;
-  width: 100%; // Garante que o container ocupe toda a largura disponível
-  max-width: 400px; // Opcional: limite de largura para evitar esticamento excessivo
-  //font-family: 'Inter', Arial, sans-serif;
+  width: 100%;
+  max-width: 400px;
 
   &__control {
     width: 100%;

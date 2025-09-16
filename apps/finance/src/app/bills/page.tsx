@@ -3,17 +3,17 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { Bank, Bill, type BillList, Group, Supplier } from '@repo/business';
+import { Bank, Bill, type BillList, CreateBillParams, Group, Supplier } from '@repo/business';
 
 import { Tabs } from '@repo/ds';
 
-import { useAlert, useLoading } from '@repo/ui';
+import { useAlert, useLoading, useModal } from '@repo/ui';
 
 import { DependencyFallback, PageHeader } from '../../components';
 
 import { bankService, billBusiness, billService, groupService, supplierService } from '../shared';
 
-import { SubTab } from './components';
+import { Persist, SubTab } from './components';
 
 export default function BillsPage() {
     const isMounted = useRef(false);
@@ -28,6 +28,7 @@ export default function BillsPage() {
 
     const { show, hide, isLoading } = useLoading();
     const { addAlert } = useAlert();
+    const { openModal, modal, closeModal } = useModal();
 
     const fetchAllDependencies = async () => {
         show();
@@ -76,6 +77,39 @@ export default function BillsPage() {
         }
     }, []);
 
+    const handleSubmit = async (params: CreateBillParams, bill?: Bill) => {
+        show();
+        try {
+            console.log('# => params => ', params)
+            bill
+                ? await billService.update(bill.id, params)
+                : await billService.create(params)
+            addAlert({ type: 'success', message: `Bill ${bill ? 'updated' : 'saved'} successfully!` });
+            await fetchItems();
+        } catch (error) {
+            addAlert({
+                type: 'error',
+                message: (error as Error)?.message ?? `Error ${bill ? 'updating' : 'saving'} Bill`
+            });
+            console.error('Bill => handleSubmit => ', error)
+        } finally {
+            hide();
+        }
+    }
+
+    const handleOpenModal = (bill?: Bill) => {
+        openModal({
+            width: '799px',
+            title: `${bill ? 'Edit' : 'Create'} Bill`,
+            body: (
+                <Persist banks={banks} groups={groups} bill={bill} onClose={closeModal} onSubmit={handleSubmit}/>
+            ),
+            closeOnEsc: true,
+            closeOnOutsideClick: true,
+            removeBackgroundScroll: true,
+        })
+    }
+
     useEffect(() => {
         setHasAllDependencies(banks.length > 0 && groups.length > 0 && suppliers.length > 0);
     }, [banks, groups, suppliers]);
@@ -84,7 +118,7 @@ export default function BillsPage() {
         <>
             <PageHeader resourceName="Bill" action={{
                 label: 'Create New Bill',
-                onClick: () => router.push('/bills/create'),
+                onClick: () => handleOpenModal(),
                 disabled: !hasAllDependencies,
             }}/>
             {groups.length === 0 && (
@@ -117,10 +151,18 @@ export default function BillsPage() {
             {billListGroup.length === 0 ? (
                 <DependencyFallback message="No bills were found."/>
             ) : (
-                <Tabs fluid items={billListGroup.map((item) => ({
-                    title: item.title,
-                    children: <SubTab key={item.title} list={item.list} suppliers={suppliers}/>,
-                }))}/>
+                <>
+                    <Tabs fluid items={billListGroup.map((item) => ({
+                        title: item.title,
+                        children: <SubTab
+                            key={item.title}
+                            list={item.list}
+                            suppliers={suppliers}
+                            handleOpenModal={handleOpenModal}
+                        />,
+                    }))}/>
+                    {modal}
+                </>
             )}
         </>
     ) : null;

@@ -128,14 +128,34 @@ export default function Persist({
 
     const handleOnSwitch = (checked: boolean, name?: string)  => {
         if(name) {
-            const persistFormDraft = { ...persistForm };
-            persistFormDraft.fields[name as keyof PersistForm['fields']] = `${checked}`;
-            if(name === 'paid') {
-                MONTHS.forEach((month) => {
-                    persistFormDraft.fields[`${month}_paid` as keyof PersistForm['fields']] = `${checked}`;
-                })
-            }
-            setPersistForm(persistFormDraft);
+            setPersistForm((prev) => {
+                const newFields = { ...prev.fields };
+                newFields[name as keyof PersistForm['fields']] = `${checked}`;
+
+                if(name === 'paid') {
+                    MONTHS.forEach((month) => {
+                        newFields[`${month}_paid`] = `${checked}`;
+                    })
+                }
+                if(name.endsWith('_paid') && !checked) {
+                    newFields['paid'] = 'false';
+                }
+                if(name.endsWith('_paid') && checked) {
+                    const allMonthsPaid = MONTHS.every(
+                        (month) => (
+                            name === `${month}_paid` ? checked : prev.fields[`${month}_paid`] === 'true'
+                        )
+                    );
+                    if (allMonthsPaid) {
+                        newFields['paid'] = 'true';
+                    }
+                }
+
+                return {
+                    ...prev,
+                    fields: newFields
+                }
+            })
         }
 
     }
@@ -151,20 +171,20 @@ export default function Persist({
         return '';
     }
 
-    const switchChecked = ({ name, item }: Omit<CurrentValueParams, 'type'>) => {
-        const allPaid = persistForm.fields?.paid === 'true';
-        if(allPaid) {
-            return true;
-        }
-
-        if(item && name) {
-            const currentValue = item?.[name as keyof Expense];
-            if(typeof currentValue === 'boolean') {
-                return currentValue;
-            }
+    const switchChecked = ({ name }: Omit<CurrentValueParams, 'type'>) => {
+        if(!name) {
             return false;
         }
+        if(name === 'paid') {
+            return persistForm?.fields?.paid === 'true';
+        }
+
+        if (MONTHS.some(month => name === `${month}_paid`)) {
+            return persistForm?.fields?.[name as keyof PersistForm['fields']] === 'true';
+        }
+
         return false;
+
     }
 
     const initializeInputs = (type?: EExpenseType) => {

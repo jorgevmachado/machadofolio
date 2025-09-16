@@ -42,44 +42,51 @@ export default function Select({
     }, [value]);
 
     useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
+        const handleClickOutside = (event: MouseEvent) => {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
                 setOpen(false);
                 setFocused(-1);
             }
         }
-        if (open) document.addEventListener('mousedown', handleClickOutside);
+        if (open && !disabled) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [open]);
+    }, [open, disabled]);
 
     function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-        if (disabled) return;
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            setOpen(true);
-            setFocused((prev) => Math.min(prev + 1, optionsList.length - 1));
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            setOpen(true);
-            setFocused((prev) => Math.max(prev - 1, 0));
-        } else if (e.key === 'Enter') {
-            if (open && focused >= 0) {
-                if (optionsList) {
-                    selectOption(optionsList?.[focused]?.value ?? '');
+        if (disabled) {
+            return;
+        }
+
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                e.preventDefault();
+                setOpen(true);
+                setFocused((prev) => Math.min(prev + 1, optionsList.length - 1));
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                setOpen(true);
+                setFocused((prev) => Math.max(prev - 1, 0));
+                break;
+            case 'Enter':
+                if(open && focused >= 0 && optionsList[focused] ) {
+                    selectOption(optionsList[focused].value);
+                    return;
                 }
-            } else {
                 setOpen((o) => !o);
-            }
-        } else if (e.key === 'Escape') {
-            setOpen(false);
-            setFocused(-1);
-        } else if (e.key === 'Tab') {
-            setOpen(false);
-            setFocused(-1);
+                break;
+            case 'Escape':
+            case 'Tab':
+                setOpen(false);
+                setFocused(-1);
+                break;
         }
     }
 
-    function selectOption(value: string) {
+    const selectOption = (value: string) => {
         setSelectedValue(value);
         const event = {
             target: {
@@ -103,7 +110,17 @@ export default function Select({
         }, 200);
     }
 
-    const selectedLabel = optionsList.find(opt => opt.value === selectedValue)?.label || '';
+    const selectedLabel = useMemo(
+        () => optionsList.find(opt => opt.value === selectedValue)?.label || '',
+        [optionsList, selectedValue]
+    );
+
+    const handleOnClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        if(!disabled) {
+            setOpen((prev) => !prev);
+        }
+    }
 
     return (
         <div className="ds-select" ref={wrapperRef} data-testid="ds-select">
@@ -113,7 +130,7 @@ export default function Select({
                     open && "ds-select__control--open",
                     className
                 ])}
-                onClick={() => !disabled && setOpen((o) => !o)}
+                onClick={handleOnClick}
                 role="combobox"
                 aria-label={selectedLabel || placeholder}
                 aria-expanded={open}

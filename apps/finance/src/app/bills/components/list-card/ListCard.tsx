@@ -13,10 +13,10 @@ import './ListCard.scss';
 type ListCardProps = {
     list: Array<Bill>;
     suppliers: Array<Supplier>;
+    handleOpenModal: (item?: Bill) => void;
 }
-export default function ListCard({ list , suppliers }: ListCardProps) {
+export default function ListCard({ list , suppliers, handleOpenModal }: ListCardProps) {
     const currentList = billBusiness.mapBillListByFilter(list, 'bank');
-    const handleOpenModal = (item?: Bill) => {}
 
     const renderChildrenTitle = (bill: Bill) => {
         return (
