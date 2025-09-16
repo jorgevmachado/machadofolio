@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Input } from '@repo/ds';
 import { ValidatorMessage } from '@repo/services';
+import { CreateExpenseParams, UpdateExpenseParams } from '@repo/business/finance/expense/types';
+import { Expense } from '@repo/business/finance/expense/index';
 
 
 type InputProps = React.ComponentProps<typeof Input>;
@@ -50,12 +52,19 @@ type TPersistInput =
     | 'november_paid'
     | 'december'
     | 'december_paid'
+    | 'parent'
     | 'instalment_number'
     | 'description';
 
 export type PersistForm = {
     valid: boolean;
-    fields: Record<TPersistInput, string | boolean | undefined>;
+    fields: Record<TPersistInput, string | undefined>;
     errors: Record<TPersistInput, ValidatorMessage | undefined>;
     message?: string;
+}
+
+export type OnSubmitParams = {
+    create: CreateExpenseParams;
+    update: UpdateExpenseParams;
+    expense?: Expense;
 }

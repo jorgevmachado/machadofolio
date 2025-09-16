@@ -1,4 +1,4 @@
-import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, MaxLength } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, MaxLength } from 'class-validator';
 
 import { EMonth } from '@repo/services';
 
@@ -17,9 +17,8 @@ export class CreateExpenseDto implements CreateExpenseParams {
     @IsBoolean()
     paid?: boolean;
 
-    @IsPositive()
     @IsNotEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsNumber({ maxDecimalPlaces: 2 })
     value?: number;
 
     @IsOptional()
@@ -34,9 +33,8 @@ export class CreateExpenseDto implements CreateExpenseParams {
     @MaxLength(200)
     description?: string | undefined;
 
-    @IsPositive()
     @IsNotEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsNumber({ maxDecimalPlaces: 2 })
     instalment_number?: number | undefined;
 
     @IsOptional()

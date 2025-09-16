@@ -57,7 +57,7 @@ export class BillController {
 
   @Get(':param')
   findOne(@Param('param') param: string) {
-    return this.service.findOne({ value: param });
+    return this.service.findOne({ value: param, withRelations: true });
   }
 
   @Delete(':param')

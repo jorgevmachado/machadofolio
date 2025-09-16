@@ -1,2 +1,2 @@
 export { default as Persist } from './Persist';
-export type { PersistForm } from './types';
+export type { PersistForm, OnSubmitParams } from './types';

@@ -1,130 +1,118 @@
-import { IsBoolean, IsEmpty, IsEnum, IsNumber, IsPositive, MaxLength } from 'class-validator';
+import { IsBoolean, IsEnum, IsNumber, IsOptional, MaxLength } from 'class-validator';
 
 import { EExpenseType, type UpdateExpenseParams } from '@repo/business';
 
 import { Supplier } from '../../../entities/supplier.entity';
 
 export class UpdateExpenseDto implements UpdateExpenseParams{
-    @IsEmpty()
+    @IsOptional()
     @IsEnum(EExpenseType)
     type?: EExpenseType;
 
-    @IsEmpty()
+    @IsOptional()
     @IsBoolean()
     paid?: boolean;
 
-    @IsEmpty()
+    @IsOptional()
     @MaxLength(200)
     supplier?: string | Supplier;
 
-    @IsEmpty()
+    @IsOptional()
     @MaxLength(200)
     description?: string;
 
-    @IsPositive()
-    @IsEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 2 })
     january?: number;
 
     @IsBoolean()
-    @IsEmpty()
+    @IsOptional()
     january_paid?: boolean;
 
-    @IsPositive()
-    @IsEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 2 })
     february?: number;
 
     @IsBoolean()
-    @IsEmpty()
+    @IsOptional()
     february_paid?: boolean;
 
-    @IsPositive()
-    @IsEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 2 })
     march?: number;
 
     @IsBoolean()
-    @IsEmpty()
+    @IsOptional()
     march_paid?: boolean;
 
-    @IsPositive()
-    @IsEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 2 })
     april?: number;
 
     @IsBoolean()
-    @IsEmpty()
+    @IsOptional()
     april_paid?: boolean;
 
-    @IsPositive()
-    @IsEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 2 })
     may?: number;
 
     @IsBoolean()
-    @IsEmpty()
+    @IsOptional()
     may_paid?: boolean;
 
-    @IsPositive()
-    @IsEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 2 })
     june?: number;
 
     @IsBoolean()
     june_paid?: boolean;
 
-    @IsPositive()
-    @IsEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 2 })
     july?: number;
 
     @IsBoolean()
-    @IsEmpty()
+    @IsOptional()
     july_paid?: boolean;
 
-    @IsPositive()
-    @IsEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 2 })
     august?: number;
 
     @IsBoolean()
-    @IsEmpty()
+    @IsOptional()
     august_paid?: boolean;
 
-    @IsPositive()
-    @IsEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 2 })
     september?: number;
 
     @IsBoolean()
-    @IsEmpty()
+    @IsOptional()
     september_paid?: boolean;
 
-    @IsPositive()
-    @IsEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 2 })
     october?: number;
 
     @IsBoolean()
-    @IsEmpty()
+    @IsOptional()
     october_paid?: boolean;
 
-    @IsPositive()
-    @IsEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 2 })
     november?: number;
 
     @IsBoolean()
-    @IsEmpty()
+    @IsOptional()
     november_paid?: boolean;
 
-    @IsPositive()
-    @IsEmpty()
-    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 2 })
     december?: number;
 
     @IsBoolean()
-    @IsEmpty()
+    @IsOptional()
     december_paid?: boolean;
 }

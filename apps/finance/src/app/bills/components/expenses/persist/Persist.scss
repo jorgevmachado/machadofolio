@@ -10,6 +10,14 @@
     margin-bottom: 1rem;
     justify-content: center;
   }
+  &__parent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &--row {
+      width: 50%;
+    }
+  }
   &__row {
     gap: 1rem;
     width: 100%;

@@ -7,4 +7,14 @@ export class Expense extends NestModuleAbstract<IExpense, ICreateExpenseParams, 
     constructor(nestModuleConfig: INestModuleConfig) {
         super({ pathUrl: 'finance/bill', subPathUrl: 'expense', nestModuleConfig });
     }
+
+    async create(params: ICreateExpenseParams, by: string = ''): Promise<IExpense> {
+        const path = `${this.pathUrl}/${by}/${this.subPathUrl}`;
+        return this.post(path, { body: params });
+    }
+
+    async update(param: string, params: IUpdateExpenseParams, by: string = ''): Promise<IExpense> {
+        const path = `${this.pathUrl}/${by}/${this.subPathUrl}/${param}`;
+        return this.path(`${path}`, { body: params });
+    }
 }

@@ -1,0 +1,10 @@
+.credit-card {
+  &__table {
+    margin-bottom: 1rem;
+  }
+  &__accordions {
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+}

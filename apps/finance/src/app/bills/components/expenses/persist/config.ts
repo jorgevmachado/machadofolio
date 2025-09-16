@@ -7,7 +7,7 @@ import { InputGroup, InputGroupItem, PersistForm } from './types';
 
 export const GROUPS: Array<InputGroup> = [
     {
-      id: 'group_1',
+      id: 'group_0',
       inputs: [
           {
               id: 'paid',
@@ -21,6 +21,37 @@ export const GROUPS: Array<InputGroup> = [
           }
       ],
       className: 'persist__paid',
+    },
+    {
+        id: 'group_1',
+        inputs: [
+            {
+                id: 'select_parent',
+                show: true,
+                type: 'select',
+                fluid: true,
+                name: 'parent',
+                label: 'Parent',
+                options: [],
+                validator: ({ value }) => {
+                    if(!value) {
+                        return {
+                            valid: false,
+                            message: 'Parent is required'
+                        }
+                    }
+                    return {
+                        valid: true,
+                        message: ''
+                    }
+                },
+                needType: false,
+                required: true,
+                className: 'persist__parent--row',
+                placeholder: 'Choose a Parent',
+            },
+        ],
+        className: 'persist__parent',
     },
     {
       id: 'group_2',
@@ -183,7 +214,7 @@ export const GROUPS: Array<InputGroup> = [
         ]
     })),
     {
-        id: 'group_16',
+        id: 'group_17',
         inputs: [
             {
                 id: 'description',
@@ -235,6 +266,7 @@ export const DEFAULT_PERSIST_FORM: PersistForm = {
         december_paid: undefined,
         instalment_number: undefined,
         description: undefined,
+        parent: undefined,
     },
     errors: {
         id: undefined,
@@ -269,39 +301,44 @@ export const DEFAULT_PERSIST_FORM: PersistForm = {
         december_paid: undefined,
         instalment_number: undefined,
         description: undefined,
+        parent: undefined,
     },
     message: undefined,
 }
 
 
-export const getInputGroup = (isCreate: boolean, type?: EExpenseType): Array<InputGroup> => {
+export const getInputGroup = (isCreate: boolean, type?: EExpenseType, hasParents: boolean = false): Array<InputGroup> => {
     const isVariable = type === EExpenseType.VARIABLE;
     const hasType = Boolean(type);
     const groups: Array<InputGroup> = [];
     GROUPS.forEach((group) => {
         const data = {
             ...group,
-            inputs: group.inputs.map((input) => {
-                if(input.show && !input.needType) {
+            inputs: group.inputs.map((inputGroupItem) => {
+                const { needType, isCreate: inputIsCreate, isVariable: inputIsVariable, ...input } = inputGroupItem
+                if(!hasParents && input.name === 'parent') {
+                    return;
+                }
+                if(input.show && !needType) {
                     return input;
                 }
-                if(input.show && input.needType === hasType) {
+                if(input.show && needType === hasType) {
                     return input;
                 }
-                if(input.needType === hasType && input.isVariable === isVariable && input.isCreate === isCreate) {
+                if(needType === hasType && inputIsVariable === isVariable && inputIsCreate === isCreate) {
                     return {
                         ...input,
                         show: true
                     }
                 }
-                if(input.needType === hasType && input.isCreate === isCreate && input.isVariable === undefined) {
+                if(needType === hasType && inputIsCreate === isCreate && inputIsVariable === undefined) {
                     return {
                         ...input,
                         show: true
                     }
                 }
 
-                if(input.needType === hasType && input.isCreate === undefined && input.isVariable === isVariable) {
+                if(needType === hasType && inputIsCreate === undefined && inputIsVariable === isVariable) {
                     return {
                         ...input,
                         show: true

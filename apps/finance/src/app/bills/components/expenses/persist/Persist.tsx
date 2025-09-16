@@ -1,20 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { ValidatorParams } from '@repo/services';
+import { EMonth, MONTHS, ValidatorParams } from '@repo/services';
 
-import { EExpenseType, Expense, Supplier } from '@repo/business';
+import { type CreateExpenseParams, EExpenseType, Expense, Supplier, UpdateExpenseParams } from '@repo/business';
 
 import { Button, Input, OnInputParams, Switch } from '@repo/ds';
 
-import './Persist.scss';
-import { InputGroup, InputGroupItem, PersistForm } from './types';
+import { InputGroup, InputGroupItem, OnSubmitParams, PersistForm } from './types';
 import { DEFAULT_PERSIST_FORM, getInputGroup } from './config';
+
+import './Persist.scss';
 
 type PersistProps = {
     onClose: () => void;
     expense?: Expense;
-    onSubmit: (fields: PersistForm['fields'], expense?: Expense) => void;
+    onSubmit: (params: OnSubmitParams) => void;
     suppliers: Array<Supplier>;
+    parent?: Expense;
+    parents?: Array<Expense>;
 }
 
 type InputProps = React.ComponentProps<typeof Input>;
@@ -29,6 +32,8 @@ type CurrentValueParams = {
 export default function Persist({
     onClose,
     expense,
+    parent,
+    parents,
     onSubmit,
     suppliers,
 }: PersistProps) {
@@ -37,17 +42,47 @@ export default function Persist({
     const [inputGroups, setInputGroups] = useState<Array<InputGroup>>([]);
     const [inputs, setInputs] = useState<Array<InputGroupItem>>([]);
     const [persistForm, setPersistForm] = useState<PersistForm>(DEFAULT_PERSIST_FORM);
-    const [currentExpense, setCurrentExpense] = useState<Expense | undefined>(expense);
 
-    const mergeExpense = (fields: PersistForm['fields'], expense?: Expense) => {
-        setCurrentExpense(expense)
+    const convertToNumber = (value?: string) => {
+        if(!value) {
+            return 0;
+        }
+        const rawValue = Number(value)
+        if(isNaN(rawValue)) {
+            return 0;
+        }
+        return rawValue;
     }
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         handleValidatorForm();
-        mergeExpense(persistForm.fields, expense);
-        onSubmit?.(persistForm.fields, expense);
+        const fields = persistForm.fields;
+        const parent = fields?.parent ? parents?.find((item) => item.id === fields.parent) : undefined;
+        const create: CreateExpenseParams = {
+            type: fields?.type as EExpenseType,
+            paid: fields?.paid === 'true',
+            value: convertToNumber(fields?.value),
+            month: fields?.month as EMonth,
+            parent: parent ? parent.id : undefined,
+            supplier: fields?.supplier ?? '',
+            description: fields?.description,
+            aggregate_name: parent ? parent?.supplier?.name : undefined,
+            instalment_number: convertToNumber(fields?.instalment_number),
+        }
+        const update: UpdateExpenseParams = {
+            ...expense,
+            type: fields?.type ? fields?.type as EExpenseType : expense?.type,
+            paid: fields?.paid ? fields?.paid === 'true' : expense?.paid,
+            supplier: fields?.supplier ?? expense?.supplier,
+            description: fields?.description ?? expense?.description,
+        }
+
+        MONTHS.forEach((month) => {
+            update[month] = convertToNumber(fields[month] as string);
+            update[`${month}_paid`] = fields[`${month}_paid` as keyof PersistForm['fields']] === 'true';
+        });
+        onSubmit?.({ create, update, expense });
         onClose();
     };
 
@@ -93,10 +128,14 @@ export default function Persist({
 
     const handleOnSwitch = (checked: boolean, name?: string)  => {
         if(name) {
-            setPersistForm((prev) => ({
-                ...prev,
-                fields: { ...prev.fields, [name]: checked }
-            }))
+            const persistFormDraft = { ...persistForm };
+            persistFormDraft.fields[name as keyof PersistForm['fields']] = `${checked}`;
+            if(name === 'paid') {
+                MONTHS.forEach((month) => {
+                    persistFormDraft.fields[`${month}_paid` as keyof PersistForm['fields']] = `${checked}`;
+                })
+            }
+            setPersistForm(persistFormDraft);
         }
 
     }
@@ -113,6 +152,11 @@ export default function Persist({
     }
 
     const switchChecked = ({ name, item }: Omit<CurrentValueParams, 'type'>) => {
+        const allPaid = persistForm.fields?.paid === 'true';
+        if(allPaid) {
+            return true;
+        }
+
         if(item && name) {
             const currentValue = item?.[name as keyof Expense];
             if(typeof currentValue === 'boolean') {
@@ -124,7 +168,8 @@ export default function Persist({
     }
 
     const initializeInputs = (type?: EExpenseType) => {
-        const inputGroups = getInputGroup(!expense, type);
+        const hasParents = parents && parents?.length > 0;
+        const inputGroups = getInputGroup(!expense, type, hasParents);
         const currentInputGroups = inputGroups.map((group) => ({
             ...group,
             inputs: group.inputs.map((input) => {
@@ -137,6 +182,15 @@ export default function Persist({
                     return {
                         ...currentInput,
                         options: suppliers.map((supplier) => ({ value: supplier.id, label: supplier.name })),
+                    }
+                }
+
+                if(input.name === 'parent') {
+                    return {
+                        ...currentInput,
+                        value: parent?.id ?? '',
+                        options: parents?.map((parent) => ({ value: parent.id, label: parent.name })),
+                        disabled: Boolean(parent?.id),
                     }
                 }
 
@@ -206,7 +260,7 @@ export default function Persist({
                                 <Input
                                     {...input}
                                     onInput={handleOnInput}
-                                    className="persist__row--item"
+                                    className={input.className ?? 'persist__row--item'}
                                     validator={(params) => handleValidator(input, params)}
                                 />
                             )}

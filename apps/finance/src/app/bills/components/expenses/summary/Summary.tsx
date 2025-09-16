@@ -2,14 +2,18 @@
 
 import { currencyFormatter } from '@repo/services';
 
-import type { AllExpensesCalculated } from '@repo/business';
+import { AllExpensesCalculated, Expense } from '@repo/business';
 
 import { Button, type TColors, Text } from '@repo/ds';
 
 import './Summary.scss';
+import { useEffect, useState } from 'react';
+import { expenseBusiness } from '../../../../shared';
 
-type SummaryProps = AllExpensesCalculated & {
-    action: () => void;
+type SummaryProps = {
+    label?: string;
+    action?: () => void;
+    expenses?: Array<Expense>;
 }
 
 type ItemSummary = {
@@ -22,47 +26,61 @@ type ItemSummary = {
 }
 
 export default function Summary({
-    total,
+    label = 'Add Expense',
     action,
-    allPaid,
-    totalPaid,
-    totalPending
+    expenses = []
 }: SummaryProps) {
-    const items: Array<ItemSummary> = [
-        {
-            key: 'expenses_paid',
-            label: 'Expenses Paid: ',
-            value: {
-                label: allPaid ? 'Yes' : 'No',
-                color: allPaid ? 'success-80' : 'error-80'
+
+    const [itemSummary, setItemSummary] = useState<Array<ItemSummary>>([]);
+
+    const generateItemSummary = (calculatedAllExpenses: AllExpensesCalculated) => {
+        const items: Array<ItemSummary> = [
+            {
+                key: 'expenses_paid',
+                label: 'Expenses Paid: ',
+                value: {
+                    label: calculatedAllExpenses.allPaid ? 'Yes' : 'No',
+                    color: calculatedAllExpenses.allPaid ? 'success-80' : 'error-80'
+                },
             },
-        },
-        {
-            key: 'total',
-            label: 'Total: ',
-            value: {
-                label: currencyFormatter(total),
+            {
+                key: 'total',
+                label: 'Total: ',
+                value: {
+                    label: currencyFormatter(calculatedAllExpenses.total),
+                }
+            },
+            {
+                key: 'total_paid',
+                label: 'Total Paid:',
+                value: {
+                    label: currencyFormatter(calculatedAllExpenses.totalPaid),
+                }
+            },
+            {
+                key: 'total_pending',
+                label: 'Total Pending:',
+                value: {
+                    label: currencyFormatter(calculatedAllExpenses.totalPending),
+                }
             }
-        },
-        {
-            key: 'total_paid',
-            label: 'Total Paid:',
-            value: {
-                label: currencyFormatter(totalPaid),
-            }
-        },
-        {
-            key: 'total_pending',
-            label: 'Total Pending:',
-            value: {
-                label: currencyFormatter(totalPending),
-            }
-        }
-    ]
+        ];
+        setItemSummary(items);
+    }
+
+    const calculateAllExpenses = (expenses: Array<Expense>) => {
+        const calculatedAllExpenses = expenseBusiness.calculateAll(expenses);
+        generateItemSummary(calculatedAllExpenses);
+    };
+
+    useEffect(() => {
+        calculateAllExpenses(expenses);
+    }, [expenses]);
+
     return (
         <div className="summary" data-testid="expenses-summary">
             <div className="summary__text">
-                {items.map((item) => (
+                {itemSummary.map((item) => (
                     <div key={item.key} className="summary__text--item">
                         <Text
                             id={`expenses-summary-item-label-${item.key}`}
@@ -84,11 +102,13 @@ export default function Summary({
                     </div>
                 ))}
             </div>
-            <div className="summary__action">
-                <Button onClick={action} context="success">
-                    Add Expense
-                </Button>
-            </div>
+            {action && (
+                <div className="summary__action">
+                    <Button onClick={action} context="success">
+                        {label}
+                    </Button>
+                </div>
+            )}
         </div>
     )
 }

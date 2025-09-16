@@ -1,77 +1,64 @@
 'use client'
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { EMonth, MONTHS, truncateString } from '@repo/services';
+import { MONTHS, truncateString } from '@repo/services';
 
-import { Bill, Expense, AllExpensesCalculated, Supplier, EExpenseType } from '@repo/business';
+import { Bill, EBillType, Expense, Supplier } from '@repo/business';
 
 import { ETypeTableHeader, Table, type TColors } from '@repo/ds';
 
 import { useAlert, useLoading, useModal } from '@repo/ui';
 
-import { expenseBusiness, expenseService } from '../../../shared';
+import { billService, expenseBusiness, expenseService } from '../../../shared';
 
 import Summary from './summary';
-import { Persist, PersistForm } from './persist';
+import { type OnSubmitParams, Persist } from './persist';
+import CreditCard from './credit-card';
 
 import './Expenses.scss';
+
 
 type ExpensesProps = {
     bill: Bill;
     suppliers: Array<Supplier>;
 }
 
-export default function Expenses({ bill, suppliers }: ExpensesProps) {
+type OpenFormModalParams = {
+    parent?: Expense;
+    parents?: Array<Expense>;
+    expense?: Expense;
+}
+
+export default function Expenses({ bill: billData, suppliers }: ExpensesProps) {
     const { show, hide, isLoading } = useLoading();
     const { addAlert } = useAlert();
-    const [allCalculatedExpenses, setAllCalculatedExpenses] =
-        useState<AllExpensesCalculated>({
-            total: 0.9,
-            allPaid: false,
-            totalPaid: 0,
-            totalPending: 0,
-        });
+
+    const [bill, setBill] = useState<Bill | undefined>(billData);
 
     const { openModal, modal, closeModal } = useModal();
 
     const [calculatedExpenses, setCalculatedExpenses] = useState<Array<Expense>>([]);
 
-    const convertToNumber = (value: string) => {
-        const rawValue = Number(value)
-        if(isNaN(rawValue)) {
-            return 0;
-        }
-        return rawValue;
-    }
-
-    const handleSubmit = async (fields: PersistForm['fields'], expense?: Expense) => {
-        console.log('Expense => handleSubmit => ', fields)
-        console.log('Expense => expense => ', expense)
-        const isEdit = Boolean(fields.id);
+    const handleSubmit = async ({ create, update, expense }: OnSubmitParams) => {
         show();
         try {
             expense
-                ? await expenseService.update(expense.id, expense, bill.id)
-                : await expenseService.create({
-                    type: fields.type as EExpenseType,
-                    paid: fields.paid === 'true',
-                    value: convertToNumber(fields.value as string),
-                    month: fields.month as EMonth,
-                    supplier: fields.supplier as string,
-                    description: fields.description as string,
-                    instalment_number: convertToNumber(fields.instalment_number as string),
-                },
-                    bill.id
-                )
+                ? await expenseService.update(expense.id, update, bill?.id)
+                : await expenseService.create(create, bill?.id)
+            addAlert({ type: 'success', message: `Expense ${expense ? 'updated' : 'saved'} successfully!` });
+            await fetchBill(bill?.id ?? '');
         } catch (error) {
-            addAlert({ type: 'error', message: (error as Error)?.message ?? `Error ${isEdit ? 'updating' : 'saving'} Expense` });
+            addAlert({
+                type: 'error',
+                message: (error as Error)?.message ?? `Error ${expense ? 'updating' : 'saving'} Expense`
+            });
             console.error('Expense => handleSubmit => ', error)
         } finally {
             hide();
         }
     }
 
-    const handleOpenFormModal = (expense?: Expense) => {
+    const handleOpenFormModal = ({ expense, parent, parents }: OpenFormModalParams) => {
         openModal({
             width: '799px',
             title: `${expense ? 'Edit' : 'Create'} Expense`,
@@ -81,6 +68,8 @@ export default function Expenses({ bill, suppliers }: ExpensesProps) {
                     expense={expense}
                     onSubmit={handleSubmit}
                     suppliers={suppliers}
+                    parent={parent}
+                    parents={parents}
                 />
             ),
             closeOnEsc: true,
@@ -107,35 +96,52 @@ export default function Expenses({ bill, suppliers }: ExpensesProps) {
         ];
     }
 
-
     const calculateExpenses = (expenses: Array<Expense>) => {
-        return expenses?.map((expense) => expenseBusiness.calculate(expense) );
+        return expenses?.map((expense) => expenseBusiness.calculate(expense));
     }
 
-    const calculateAllExpenses = (expenses: Array<Expense>) => {
-        const calculatedAllExpenses =expenseBusiness.calculateAll(expenses);
-        setAllCalculatedExpenses(calculatedAllExpenses);
-    };
-
+    const fetchBill = async (id: string) => {
+        show();
+        try {
+            const response = await billService.get(id);
+            setBill(response);
+        } catch (error) {
+            addAlert({ type: 'error', message: 'Error fetching Bill' });
+            console.error(error)
+            throw error;
+        } finally {
+            hide();
+        }
+    }
     useEffect(() => {
         const calculatedExpenses = calculateExpenses(bill?.expenses ?? []);
         setCalculatedExpenses((calculatedExpenses as Expense[]) || []);
-    }, [bill.expenses]);
-
-    useEffect(() => {
-        calculateAllExpenses(calculatedExpenses);
-    }, [calculatedExpenses]);
+    }, [bill?.expenses]);
 
     return (
         <div className="expenses" data-testid="expenses">
-            <Summary {...allCalculatedExpenses} action={() => handleOpenFormModal()} />
-            <div className="expenses__table">
-                <Table
-                    headers={generateHeaders()}
-                    items={calculatedExpenses}
-                    onRowClick={(item) => handleOpenFormModal(item as Expense)}
-                />
-            </div>
+            {bill?.type === EBillType.CREDIT_CARD
+                ? (
+                    <CreditCard
+                        items={calculatedExpenses}
+                        action={(expense, parent, parents) => handleOpenFormModal({ expense, parent, parents })}
+                        loading={isLoading}
+                    />
+                )
+                : (
+                    <>
+                        <Summary expenses={calculatedExpenses} action={() => handleOpenFormModal({})}/>
+                        <div className="expenses__table">
+                            <Table
+                                headers={generateHeaders()}
+                                items={calculatedExpenses}
+                                onRowClick={(item) => handleOpenFormModal({ expense: item as Expense })}
+                                loading={isLoading}
+                            />
+                        </div>
+                    </>
+                )
+            }
             {modal}
         </div>
     )
