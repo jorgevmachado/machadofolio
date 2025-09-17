@@ -35,7 +35,7 @@ export class FinanceService extends Service<Finance> {
         protected readonly supplierService: SupplierService,
         protected readonly billService: BillService,
     ) {
-        super('finances', ['bills', 'bills.expenses'], repository);
+        super('finances', ['bills', 'groups', 'bills.expenses'], repository);
     }
 
     async initialize(user: User) {
@@ -212,5 +212,42 @@ export class FinanceService extends Service<Finance> {
         const finance = await this.initialize(user) as Finance;
 
         return await this.billService.initializeBySpreadsheet(file.buffer, finance);
+    }
+
+    async getByUser(user: User) {
+        const userFinance = this.validateFinance(user);
+        const finance = await this.findOne({ value: userFinance.id, withRelations: true }) as Finance;
+        finance.user = user;
+        const bills = await this.fetchBills(finance.id);
+        const groups = finance?.groups ?? [];
+        const expenses = bills?.flatMap((bill) => bill?.expenses).filter((item) => !!item);
+        const { total, allPaid, totalPaid, totalPending } = this.billService.expense.business.calculateAll(expenses);
+        const banks = await this.bankService.findAll({}) as Array<Bank>;
+        const suppliers = await this.supplierService.findAll({ withRelations: true }) as Array<Supplier>;
+        const supplierTypes = await this.supplierService.type.findAll({}) as Array<SupplierType>;
+        return {
+            finance,
+            groups,
+            bills,
+            banks,
+            suppliers,
+            supplierTypes,
+            expenses,
+            total,
+            allPaid,
+            totalPaid,
+            totalPending,
+        };
+    }
+
+    private async fetchBills(financeId: string) {
+        return await this.billService.findAll({
+            filters: [{
+                value: financeId,
+                param: 'finance',
+                condition: '='
+            }],
+            withRelations: true
+        }) as Array<Bill>;
     }
 }

@@ -81,27 +81,11 @@ export const privateRoutes: Array<TRoute> = [
         ],
     },
     {
-        key: 'bill-parent',
+        key: 'bill',
         icon: 'wallet',
         path: '/bills',
         type: 'private',
         title: 'Bill',
-        children: [
-            {
-                key: 'bill',
-                icon: 'wallet',
-                path: '',
-                type: 'private',
-                title: 'Bill',
-            },
-            {
-                key: 'bill-category',
-                path: '/categories',
-                type: 'private',
-                icon: 'category',
-                title: 'Bill Category',
-            },
-        ],
     },
 ];
 

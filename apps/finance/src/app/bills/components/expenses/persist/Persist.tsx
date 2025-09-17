@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { EMonth, MONTHS, ValidatorParams } from '@repo/services';
+import { EMonth, MONTHS, ValidatorParams, convertToNumber } from '@repo/services';
 
-import { type CreateExpenseParams, EExpenseType, Expense, Supplier, UpdateExpenseParams } from '@repo/business';
+import { type CreateExpenseParams, EExpenseType, Expense, UpdateExpenseParams } from '@repo/business';
 
 import { Button, Input, OnInputParams, Switch } from '@repo/ds';
+
+import { useFinance } from '../../../../../hooks';
 
 import { InputGroup, InputGroupItem, OnSubmitParams, PersistForm } from './types';
 import { DEFAULT_PERSIST_FORM, getInputGroup } from './config';
@@ -13,15 +15,13 @@ import './Persist.scss';
 
 type PersistProps = {
     onClose: () => void;
-    expense?: Expense;
-    onSubmit: (params: OnSubmitParams) => void;
-    suppliers: Array<Supplier>;
     parent?: Expense;
     parents?: Array<Expense>;
+    expense?: Expense;
+    onSubmit: (params: OnSubmitParams) => void;
 }
 
 type InputProps = React.ComponentProps<typeof Input>;
-
 
 type CurrentValueParams = {
     type: InputProps['type'];
@@ -30,12 +30,11 @@ type CurrentValueParams = {
 }
 
 export default function Persist({
-    onClose,
-    expense,
     parent,
     parents,
+    onClose,
+    expense,
     onSubmit,
-    suppliers,
 }: PersistProps) {
     const isMounted = useRef(false);
 
@@ -43,16 +42,7 @@ export default function Persist({
     const [inputs, setInputs] = useState<Array<InputGroupItem>>([]);
     const [persistForm, setPersistForm] = useState<PersistForm>(DEFAULT_PERSIST_FORM);
 
-    const convertToNumber = (value?: string) => {
-        if(!value) {
-            return 0;
-        }
-        const rawValue = Number(value)
-        if(isNaN(rawValue)) {
-            return 0;
-        }
-        return rawValue;
-    }
+    const { suppliers } = useFinance();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -246,6 +236,16 @@ export default function Persist({
         setPersistForm((prev) => ({...prev, fields, errors }));
     }
 
+    const handleValidator = (input: Omit<InputGroupItem, 'show'>, params: ValidatorParams) => {
+        if(!input.validator) {
+            return {
+                valid: true,
+                message: ''
+            };
+        }
+        return input.validator(params);
+    }
+
     useEffect(() => {
         if(!isMounted.current) {
             isMounted.current = true;
@@ -259,16 +259,6 @@ export default function Persist({
             initializeInputs(persistForm?.fields?.type as EExpenseType);
         }
     }, [persistForm.fields?.type]);
-
-    function handleValidator(input: Omit<InputGroupItem, 'show'>, params: ValidatorParams) {
-        if(!input.validator) {
-            return {
-                valid: true,
-                message: ''
-            };
-        }
-        return input.validator(params);
-    }
 
     return (
         <form onSubmit={handleSubmit} className="persist">

@@ -1,5 +1,5 @@
 export { Finance } from './finance';
-export type { IFinance, ICreateFinanceParams, IUpdateFinanceParams } from './types';
+export type { IFinance, IFinanceInfo, ICreateFinanceParams, IUpdateFinanceParams } from './types';
 export type { IBank, ICreateBankParams, IUpdateBankParams } from './bank';
 export type {
     ISupplierType,

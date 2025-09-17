@@ -9,7 +9,8 @@ import { useAlert, useLoading } from '@repo/ui';
 
 import { PageCrud } from '../../../components';
 
-import { supplierTypeService } from '../../shared';
+import { supplierTypeService } from '../../../shared';
+import { useFinance } from '../../../hooks';
 
 export default function SuppliersTypePage() {
     const isMounted = useRef(false);
@@ -20,8 +21,9 @@ export default function SuppliersTypePage() {
 
     const { addAlert } = useAlert();
     const { show, hide, isLoading } = useLoading();
+    const { refresh } = useFinance();
 
-    const fetchItems = async ({ page = currentPage, limit = 10, ...props }: QueryParameters) => {
+    const fetchSuppliersType = async ({ page = currentPage, limit = 10, ...props }: QueryParameters) => {
         show();
         try {
             const response = (await supplierTypeService.getAll({ ...props, page, limit })) as Paginate<Supplier>;
@@ -37,32 +39,20 @@ export default function SuppliersTypePage() {
         }
     }
 
-    useEffect(() => {
-        if (isMounted.current) {
-            fetchItems({ page: currentPage }).then();
-        }
-    }, [currentPage, isMounted]);
-
-    useEffect(() => {
-        if (!isMounted.current) {
-            isMounted.current = true;
-            fetchItems({ page: currentPage }).then();
-        }
-    }, []);
-
-    const handleSave = async (item?: SupplierType) => {
-        if (!item) {
+    const handleSave = async (supplierType?: SupplierType) => {
+        if (!supplierType) {
             return;
         }
-        const isEdit = Boolean(item?.id);
+        const isEdit = Boolean(supplierType?.id);
         show();
         try {
-            const body = { name: item.name ?? ''}
+            const body = { name: supplierType.name ?? ''}
             isEdit
-                ? await supplierTypeService.update(item.id, body)
+                ? await supplierTypeService.update(supplierType.id, body)
                 : await supplierTypeService.create(body);
             addAlert({ type: 'success', message: `Supplier Type ${isEdit ? 'updated' : 'saved'} successfully!` });
-            await fetchItems({ page: currentPage });
+            await fetchSuppliersType({ page: currentPage });
+            refresh();
         } catch (error) {
             addAlert({ type: 'error', message: (error as Error)?.message ?? `Error ${isEdit ? 'updating' : 'saving'} Supplier Type` });
             console.error(error)
@@ -71,12 +61,13 @@ export default function SuppliersTypePage() {
         }
     }
 
-    const handleDelete = async (item: SupplierType) => {
+    const handleDelete = async (supplierType: SupplierType) => {
         show();
         try {
-            await supplierTypeService.remove(item.id);
+            await supplierTypeService.remove(supplierType.id);
             addAlert({ type: 'success', message: 'Supplier Type deleted successfully!' });
-            await fetchItems({ page: currentPage });
+            await fetchSuppliersType({ page: currentPage });
+            refresh();
         } catch (error) {
             addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error deleting Supplier Type' });
             console.error(error)
@@ -84,6 +75,19 @@ export default function SuppliersTypePage() {
             hide();
         }
     }
+
+    useEffect(() => {
+        if (isMounted.current) {
+            fetchSuppliersType({ page: currentPage }).then();
+        }
+    }, [currentPage, isMounted]);
+
+    useEffect(() => {
+        if (!isMounted.current) {
+            isMounted.current = true;
+            fetchSuppliersType({ page: currentPage }).then();
+        }
+    }, []);
 
  return (
      <PageCrud

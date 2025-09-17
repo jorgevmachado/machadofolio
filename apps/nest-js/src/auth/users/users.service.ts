@@ -140,6 +140,7 @@ export class UsersService extends Service<User>{
     async me(id: string) {
         const currentUser = await this.findOne({
             value: id,
+            withRelations: true,
         }) as User;
         return new UserConstructor({...currentUser, clean: true });
     }

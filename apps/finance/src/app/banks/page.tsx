@@ -8,7 +8,8 @@ import { useAlert, useLoading } from '@repo/ui';
 
 import { PageCrud } from '../../components';
 
-import { bankService } from '../shared';
+import { bankService } from '../../shared';
+import { useFinance } from '../../hooks';
 
 export default function BanksPage() {
     const isMounted = useRef(false);
@@ -19,8 +20,9 @@ export default function BanksPage() {
 
     const { addAlert } = useAlert();
     const { show, hide, isLoading } = useLoading();
+    const { refresh } = useFinance();
 
-    const fetchItems = async ({ page = currentPage, limit = 10,  ...props}: QueryParameters) => {
+    const fetchBanks = async ({ page = currentPage, limit = 10,  ...props}: QueryParameters) => {
         show();
         try {
             const response = (await bankService.getAll({...props, page, limit })) as Paginate<Bank>;
@@ -36,32 +38,20 @@ export default function BanksPage() {
         }
     }
 
-    useEffect(() => {
-        if(isMounted.current) {
-            fetchItems({ page: currentPage }).then();
-        }
-    }, [currentPage, isMounted]);
-
-    useEffect(() => {
-        if(!isMounted.current) {
-            isMounted.current = true;
-            fetchItems({ page: currentPage }).then();
-        }
-    }, []);
-
-    const handleSave = async (item?: Bank) => {
-        if(!item) {
+    const handleSave = async (bank?: Bank) => {
+        if(!bank) {
             return;
         }
-        const isEdit = Boolean(item?.id);
+        const isEdit = Boolean(bank?.id);
         show();
         try {
-            const body = { name: item.name ?? '' };
+            const body = { name: bank.name ?? '' };
             isEdit
-                ? await bankService.update(item.id, body)
+                ? await bankService.update(bank.id, body)
                 : await bankService.create(body);
             addAlert({ type: 'success', message: `Bank ${isEdit ? 'updated' : 'saved'} successfully!` });
-            await fetchItems({ page: currentPage });
+            await fetchBanks({ page: currentPage });
+            refresh();
         } catch (error) {
             addAlert({ type: 'error', message: (error as Error)?.message ?? `Error ${isEdit ? 'updating' : 'saving'} Bank` });
             console.error(error)
@@ -78,7 +68,8 @@ export default function BanksPage() {
         try {
             await bankService.remove(item.id);
             addAlert({ type: 'success', message: 'Bank deleted successfully!' });
-            await fetchItems({ page: currentPage });
+            await fetchBanks({ page: currentPage });
+            refresh();
         } catch (error) {
             addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error deleting Bank' });
             console.error(error)
@@ -86,6 +77,19 @@ export default function BanksPage() {
             hide();
         }
     }
+
+    useEffect(() => {
+        if(isMounted.current) {
+            fetchBanks({ page: currentPage }).then();
+        }
+    }, [currentPage, isMounted]);
+
+    useEffect(() => {
+        if(!isMounted.current) {
+            isMounted.current = true;
+            fetchBanks({ page: currentPage }).then();
+        }
+    }, []);
 
     return (
         <PageCrud

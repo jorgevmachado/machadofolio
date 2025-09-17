@@ -17,10 +17,17 @@ export class FinanceController {
     constructor(private readonly service: FinanceService) {
     }
 
+    @Get()
+    find(@GetUserAuth() user: User) {
+        return this.service.getByUser(user);
+    }
+
     @Post('/initialize')
     initialize(@GetUserAuth() user: User) {
         return this.service.initialize(user);
     }
+
+
 
     @Get('/generate-document')
     async generateDocument(@Res() res: Response, @GetUserAuth() user: User): Promise<void> {

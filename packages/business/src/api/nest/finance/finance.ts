@@ -1,7 +1,7 @@
 import type { INestModuleConfig } from '../types';
 import { NestModuleAbstract } from '../abstract';
 
-import type { IFinance } from './types';
+import type { IFinance, IFinanceInfo } from './types';
 
 import { Bank } from './bank';
 import { Bill } from './bill';
@@ -40,5 +40,9 @@ export class Finance extends NestModuleAbstract<IFinance, unknown, unknown> {
 
     async initialize(): Promise<IFinance> {
         return this.post('finance/initialize');
+    }
+
+    async find(): Promise<IFinanceInfo> {
+        return this.get('finance');
     }
 }

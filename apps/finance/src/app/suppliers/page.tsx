@@ -1,8 +1,8 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
-import { router } from 'next/client';
+import { useRouter } from 'next/navigation';
 
-import { Paginate, QueryParameters, Supplier, SupplierType } from '@repo/business';
+import { Paginate, QueryParameters, Supplier } from '@repo/business';
 
 import { ETypeTableHeader } from '@repo/ds';
 
@@ -10,36 +10,23 @@ import { useAlert, useLoading } from '@repo/ui';
 
 import { DependencyFallback, PageCrud } from '../../components';
 
-import { supplierService, supplierTypeService } from '../shared';
+import { supplierService } from '../../shared';
+import { useFinance } from '../../hooks';
 
 
 export default function SuppliersPage() {
+    const router = useRouter();
     const isMounted = useRef(false);
 
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [results, setResults] = useState<Array<Supplier>>([]);
-    const [types, setTypes] = useState<Array<SupplierType>>([]);
     const [totalPages, setTotalPages] = useState<number>(1);
 
     const { addAlert } = useAlert();
     const { show, hide, isLoading } = useLoading();
+    const { fetch, refresh, supplierTypes } = useFinance();
 
-    const fetchTypes = async () => {
-        if (types.length === 0) {
-            show();
-            try {
-                const response = await supplierTypeService.getAll({});
-                setTypes(response as Array<SupplierType>);
-            } catch (error) {
-                addAlert({ type: 'error', message: 'Error fetching Supplier Types' });
-                console.error(error)
-            } finally {
-                hide();
-            }
-        }
-    }
-
-    const fetchItems = async ({ page = currentPage, limit = 10, ...props }: QueryParameters) => {
+    const fetchSuppliers = async ({ page = currentPage, limit = 10, ...props }: QueryParameters) => {
         show();
         try {
             const response = (await supplierService.getAll({ ...props, page, limit })) as Paginate<Supplier>;
@@ -55,47 +42,38 @@ export default function SuppliersPage() {
         }
     }
 
-    useEffect(() => {
-        if (isMounted.current) {
-            fetchItems({ page: currentPage }).then();
-        }
-    }, [currentPage, isMounted]);
-
-    useEffect(() => {
-        if (!isMounted.current) {
-            isMounted.current = true;
-            fetchItems({ page: currentPage }).then();
-            fetchTypes().then();
-        }
-    }, []);
-
-    const handleSave = async (item?: Supplier) => {
-        if (!item) {
+    const handleSave = async (supplier?: Supplier) => {
+        if (!supplier) {
             return;
         }
-        const isEdit = Boolean(item?.id);
+        const isEdit = Boolean(supplier?.id);
         show();
         try {
-            const body = { name: item.name ?? '', type: item?.type?.name ?? '' }
+            const body = { name: supplier.name ?? '', type: supplier?.type?.name ?? '' }
             isEdit
-                ? await supplierService.update(item.id, body)
+                ? await supplierService.update(supplier.id, body)
                 : await supplierService.create(body);
             addAlert({ type: 'success', message: `Supplier ${isEdit ? 'updated' : 'saved'} successfully!` });
-            await fetchItems({ page: currentPage });
+            await fetchSuppliers({ page: currentPage });
+            refresh();
         } catch (error) {
-            addAlert({ type: 'error', message: (error as Error)?.message ?? `Error ${isEdit ? 'updating' : 'saving'} Supplier` });
+            addAlert({
+                type: 'error',
+                message: (error as Error)?.message ?? `Error ${isEdit ? 'updating' : 'saving'} Supplier`
+            });
             console.error(error)
         } finally {
             hide();
         }
     }
 
-    const handleDelete = async (item: Supplier) => {
+    const handleDelete = async (supplier: Supplier) => {
         show();
         try {
-            await supplierService.remove(item.id);
+            await supplierService.remove(supplier.id);
             addAlert({ type: 'success', message: 'Supplier deleted successfully!' });
-            await fetchItems({ page: currentPage });
+            await fetchSuppliers({ page: currentPage });
+            refresh();
         } catch (error) {
             addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error deleting Supplier' });
             console.error(error)
@@ -104,9 +82,23 @@ export default function SuppliersPage() {
         }
     }
 
+    useEffect(() => {
+        if (isMounted.current) {
+            fetchSuppliers({ page: currentPage }).then();
+        }
+    }, [currentPage, isMounted]);
+
+    useEffect(() => {
+        if (!isMounted.current) {
+            isMounted.current = true;
+            fetchSuppliers({ page: currentPage }).then();
+            fetch().then();
+        }
+    }, []);
+
     return (
         <div>
-            {types.length === 0 ? (
+            {supplierTypes.length === 0 ? (
                 <DependencyFallback
                     message="No supplier types were found. Please create a supplier type before creating a supplier."
                     button={{
@@ -120,21 +112,21 @@ export default function SuppliersPage() {
                     inputs={[
                         {
                             fluid: true,
+                            type: 'select',
+                            name: 'type',
+                            label: 'Type',
+                            list: supplierTypes,
+                            options: supplierTypes.map((type) => ({ value: type.id, label: type.name })),
+                            required: true,
+                            placeholder: 'Enter a supplier type'
+                        },
+                        {
+                            fluid: true,
                             type: 'text',
                             name: 'name',
                             label: 'Supplier',
                             required: true,
                             placeholder: 'Enter a supplier'
-                        },
-                        {
-                            fluid: true,
-                            type: 'select',
-                            name: 'type',
-                            label: 'Type',
-                            list: types,
-                            options: types.map((type) => ({ value: type.id, label: type.name })),
-                            required: true,
-                            placeholder: 'Enter a supplier type'
                         },
                     ]}
                     headers={[

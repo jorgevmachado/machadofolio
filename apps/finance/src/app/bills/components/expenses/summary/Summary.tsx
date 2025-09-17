@@ -8,7 +8,7 @@ import { Button, type TColors, Text } from '@repo/ds';
 
 import './Summary.scss';
 import { useEffect, useState } from 'react';
-import { expenseBusiness } from '../../../../shared';
+import { expenseBusiness } from '../../../../../shared';
 
 type SummaryProps = {
     label?: string;

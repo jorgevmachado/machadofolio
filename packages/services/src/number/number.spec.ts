@@ -7,6 +7,7 @@ import {
     jest,
 } from '@jest/globals';
 import {
+    convertToNumber,
     ensureOrderNumber,
     extractLastNumberFromUrl,
     isNumberEven,
@@ -116,4 +117,26 @@ describe('Number function', () => {
             expect(result).toBe(99);
         });
     });
+
+    describe('convertToNumber', () => {
+        it('should convert a string to a number', () => {
+            const result = convertToNumber('123');
+            expect(result).toBe(123);
+        });
+
+        it('should return 0 when received undefined', () => {
+            const result = convertToNumber(undefined);
+            expect(result).toBe(0);
+        });
+
+        it('should return 0 when cant convert', () => {
+            const result = convertToNumber('abc');
+            expect(result).toBe(0);
+        });
+
+        it('should return 10.53 when received "10.53"', () => {
+            const result = convertToNumber('10.53');
+            expect(result).toBe(10.53);
+        });
+    })
 });

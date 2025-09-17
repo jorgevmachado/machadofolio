@@ -25,6 +25,10 @@ export class SupplierService extends Service<Supplier> {
     super('suppliers', ['type'], repository);
   }
 
+    get type(): SupplierTypeService {
+        return this.supplierTypeService;
+    }
+
     async create({ name, type }: CreateSupplierDto) {
         const supplierType =
             await this.supplierTypeService.treatEntityParam<SupplierType>(

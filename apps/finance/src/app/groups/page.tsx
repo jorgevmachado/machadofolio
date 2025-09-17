@@ -7,9 +7,10 @@ import { ETypeTableHeader } from '@repo/ds';
 
 import { useAlert, useLoading } from '@repo/ui';
 
-import { groupService } from '../shared';
+import { groupService } from '../../shared';
 
 import { PageCrud } from '../../components';
+import { useFinance } from '../../hooks';
 
 export default function GroupsPage() {
     const isMounted = useRef(false);
@@ -20,8 +21,9 @@ export default function GroupsPage() {
 
     const { addAlert } = useAlert();
     const { show, hide, isLoading } = useLoading();
+    const { refresh } = useFinance();
 
-    const fetchItems = async ({ page = currentPage, limit = 10,  ...props}: QueryParameters) => {
+    const fetchGroups = async ({ page = currentPage, limit = 10,  ...props}: QueryParameters) => {
         show();
         try {
             const response = (await groupService.getAll({...props, page, limit })) as Paginate<Group>;
@@ -37,32 +39,20 @@ export default function GroupsPage() {
         }
     }
 
-    useEffect(() => {
-        if(isMounted.current) {
-            fetchItems({ page: currentPage }).then();
-        }
-    }, [currentPage, isMounted]);
-
-    useEffect(() => {
-        if(!isMounted.current) {
-            isMounted.current = true;
-            fetchItems({ page: currentPage }).then();
-        }
-    }, []);
-
-    const handleSave = async (item?: Group) => {
-        if(!item) {
+    const handleSave = async (group?: Group) => {
+        if(!group) {
             return;
         }
-        const isEdit = Boolean(item?.id);
+        const isEdit = Boolean(group?.id);
         show();
         try {
-            const body = { name: item.name ?? '' };
+            const body = { name: group.name ?? '' };
             isEdit
-                ? await groupService.update(item.id, body)
+                ? await groupService.update(group.id, body)
                 : await groupService.create(body);
             addAlert({ type: 'success', message: `Bank ${isEdit ? 'updated' : 'saved'} successfully!` });
-            await fetchItems({ page: currentPage });
+            await fetchGroups({ page: currentPage });
+            refresh();
         } catch (error) {
             addAlert({ type: 'error', message: (error as Error)?.message ?? `Error ${isEdit ? 'updating' : 'saving'} Bank` });
             console.error(error)
@@ -71,15 +61,16 @@ export default function GroupsPage() {
         }
     }
 
-    const handleDelete = async (item?: Group) => {
-        if(!item) {
+    const handleDelete = async (group?: Group) => {
+        if(!group) {
             return;
         }
         show();
         try {
-            await groupService.remove(item.id);
+            await groupService.remove(group.id);
             addAlert({ type: 'success', message: 'Bank deleted successfully!' });
-            await fetchItems({ page: currentPage });
+            await fetchGroups({ page: currentPage });
+            refresh();
         } catch (error) {
             addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error deleting Bank' });
             console.error(error)
@@ -87,6 +78,19 @@ export default function GroupsPage() {
             hide();
         }
     }
+
+    useEffect(() => {
+        if(isMounted.current) {
+            fetchGroups({ page: currentPage }).then();
+        }
+    }, [currentPage, isMounted]);
+
+    useEffect(() => {
+        if(!isMounted.current) {
+            isMounted.current = true;
+            fetchGroups({ page: currentPage }).then();
+        }
+    }, []);
 
     return (
         <PageCrud

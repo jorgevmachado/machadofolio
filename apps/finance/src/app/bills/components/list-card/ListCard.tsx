@@ -1,9 +1,9 @@
 'use client'
-import { Bill, Supplier } from '@repo/business';
+import { Bill } from '@repo/business';
 
 import { Accordion, Icon, Text } from '@repo/ds';
 
-import { billBusiness } from '../../../shared';
+import { billBusiness } from '../../../../shared';
 
 import Expenses from '../expenses';
 
@@ -12,10 +12,9 @@ import './ListCard.scss';
 
 type ListCardProps = {
     list: Array<Bill>;
-    suppliers: Array<Supplier>;
     handleOpenDeleteModal: (item?: Bill) => void;
 }
-export default function ListCard({ list , suppliers, handleOpenDeleteModal }: ListCardProps) {
+export default function ListCard({ list, handleOpenDeleteModal }: ListCardProps) {
     const currentList = billBusiness.mapBillListByFilter(list, 'bank');
 
     const renderChildrenTitle = (bill: Bill) => {
@@ -47,7 +46,7 @@ export default function ListCard({ list , suppliers, handleOpenDeleteModal }: Li
                             subtitle={bill.year?.toString()}
                             childrenTitle={renderChildrenTitle(bill)}
                         >
-                            <Expenses bill={bill} suppliers={suppliers} />
+                            <Expenses bill={bill} />
                         </Accordion>
                     ))}
                 </div>

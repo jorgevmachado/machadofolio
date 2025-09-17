@@ -7,9 +7,10 @@ import { type UserEntity } from '@repo/business/index';
 
 import { Page, useAlert, useLoading, UserProvider } from '@repo/ui';
 
-import { authService, getAccessToken, removeAccessToken } from '../../../app/shared';
+import { authService, getAccessToken, removeAccessToken } from '../../../shared';
 
 import { privateRoutes, publicRoutes } from '../../../routes';
+import { FinanceProvider } from '../../../hooks';
 
 type PageLayoutProps = {
     children: React.ReactNode;
@@ -52,24 +53,33 @@ export default function PageLayout({ children }: PageLayoutProps) {
     );
 
     useEffect(() => {
-        if(token && !isAuthenticationRoute) {
+        if (token && !isAuthenticationRoute) {
             fetchUser().then();
         }
     }, [token]);
 
-    if(isAuthenticationRoute && !user) {
+    if (isAuthenticationRoute && !user) {
         return (<Page isAuthenticated={false}>{children}</Page>)
+    }
+
+    const loadMenu = () => {
+        if (!user?.finance) {
+            return privateRoutes.filter((item) => item.key === 'dashboard' || item.key === 'profile');
+        }
+        return privateRoutes;
     }
 
     return user ? (
         <UserProvider user={user}>
-            <Page
-                menu={privateRoutes}
-                userName={user?.name}
-                navbarTitle="Finance"
-                onLinkClick={handleLinkClick}
-                isAuthenticated={Boolean(user)}
-            >{children}</Page>
+            <FinanceProvider>
+                <Page
+                    menu={loadMenu()}
+                    userName={user?.name}
+                    navbarTitle="Finance"
+                    onLinkClick={handleLinkClick}
+                    isAuthenticated={Boolean(user)}
+                >{children}</Page>
+            </FinanceProvider>
         </UserProvider>
-    ): null;
+    ) : null;
 }

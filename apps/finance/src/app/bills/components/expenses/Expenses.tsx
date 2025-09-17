@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react';
 
 import { MONTHS, truncateString } from '@repo/services';
 
-import { Bill, EBillType, Expense, Supplier } from '@repo/business';
+import { Bill, EBillType, Expense } from '@repo/business';
 
 import { ETypeTableHeader, Table, type TColors } from '@repo/ds';
 
 import { useAlert, useLoading, useModal } from '@repo/ui';
 
-import { billService, expenseBusiness, expenseService } from '../../../shared';
+import { billService, expenseBusiness, expenseService } from '../../../../shared';
 
 import Summary from './summary';
 import { type OnSubmitParams, Persist } from './persist';
@@ -20,7 +20,6 @@ import './Expenses.scss';
 
 type ExpensesProps = {
     bill: Bill;
-    suppliers: Array<Supplier>;
 }
 
 type OpenFormModalParams = {
@@ -29,15 +28,14 @@ type OpenFormModalParams = {
     expense?: Expense;
 }
 
-export default function Expenses({ bill: billData, suppliers }: ExpensesProps) {
-    const { show, hide, isLoading } = useLoading();
-    const { addAlert } = useAlert();
-
+export default function Expenses({ bill: billData }: ExpensesProps) {
+    const [calculatedExpenses, setCalculatedExpenses] = useState<Array<Expense>>([]);
     const [bill, setBill] = useState<Bill | undefined>(billData);
 
+    const { show, hide, isLoading } = useLoading();
+    const { addAlert } = useAlert();
     const { openModal, modal, closeModal } = useModal();
 
-    const [calculatedExpenses, setCalculatedExpenses] = useState<Array<Expense>>([]);
 
     const handleSubmit = async ({ create, update, expense }: OnSubmitParams) => {
         show();
@@ -67,7 +65,6 @@ export default function Expenses({ bill: billData, suppliers }: ExpensesProps) {
                     onClose={closeModal}
                     expense={expense}
                     onSubmit={handleSubmit}
-                    suppliers={suppliers}
                     parent={parent}
                     parents={parents}
                 />

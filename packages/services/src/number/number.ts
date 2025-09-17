@@ -51,3 +51,16 @@ export function numberValidator({ value }: ValidatorParams): ValidatorMessage {
   message: valid ? 'valid number.' : 'Please enter a valid number.',
  };
 }
+
+export function convertToNumber(value?: string): number {
+    if(!value) {
+        return 0;
+    }
+
+    const rawValue = parseFloat(value);
+    if(isNaN(rawValue)) {
+        return 0;
+    }
+
+    return rawValue;
+}

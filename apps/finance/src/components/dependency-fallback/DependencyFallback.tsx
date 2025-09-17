@@ -31,9 +31,9 @@ const DependencyFallback: React.FC<DependencyFallbackProps> = ({
       <Text>{resultMessage}</Text>
       {button && (
         <Button
-          className="dependency-fallback__button"
           onClick={button.onClick}
-        >
+          context="primary"
+          className="dependency-fallback__button">
           {button.label}
         </Button>
       )}
