@@ -13,9 +13,9 @@ import './ListCard.scss';
 type ListCardProps = {
     list: Array<Bill>;
     suppliers: Array<Supplier>;
-    handleOpenModal: (item?: Bill) => void;
+    handleOpenDeleteModal: (item?: Bill) => void;
 }
-export default function ListCard({ list , suppliers, handleOpenModal }: ListCardProps) {
+export default function ListCard({ list , suppliers, handleOpenDeleteModal }: ListCardProps) {
     const currentList = billBusiness.mapBillListByFilter(list, 'bank');
 
     const renderChildrenTitle = (bill: Bill) => {
@@ -23,10 +23,10 @@ export default function ListCard({ list , suppliers, handleOpenModal }: ListCard
             <div className="list-card__accordion--title">
                 <Text>{bill.name}</Text>
                 <Icon
-                    icon="edit"
+                    icon="trash"
                     onClick={(e) => {
                         e.stopPropagation();
-                        handleOpenModal(bill);
+                        handleOpenDeleteModal(bill);
                     }}
                 />
             </div>

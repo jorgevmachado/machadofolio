@@ -6,7 +6,7 @@ import { useModal } from '@repo/ui';
 
 import PageHeader from '../page-header';
 
-import ModalDelete from './modal-delete';
+import ModalDelete from '../modal-delete';
 import ModalPersist from './modal-persist';
 
 import './PageCrud.scss';

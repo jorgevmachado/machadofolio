@@ -9,7 +9,7 @@ import { Tabs } from '@repo/ds';
 
 import { useAlert, useLoading, useModal } from '@repo/ui';
 
-import { DependencyFallback, PageHeader } from '../../components';
+import { DependencyFallback, ModalDelete, PageHeader } from '../../components';
 
 import { bankService, billBusiness, billService, groupService, supplierService } from '../shared';
 
@@ -80,7 +80,6 @@ export default function BillsPage() {
     const handleSubmit = async (params: CreateBillParams, bill?: Bill) => {
         show();
         try {
-            console.log('# => params => ', params)
             bill
                 ? await billService.update(bill.id, params)
                 : await billService.create(params)
@@ -97,12 +96,39 @@ export default function BillsPage() {
         }
     }
 
-    const handleOpenModal = (bill?: Bill) => {
+    const handleOnDelete = async (item?: Bill) => {
+        if(!item) {
+            return;
+        }
+        show();
+        try {
+            await billService.remove(item.id);
+            addAlert({ type: 'success', message: 'Bill deleted successfully!' });
+            await fetchItems();
+        } catch (error) {
+            addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error deleting Bill' });
+        }
+    }
+
+    const handleOpenPersistModal = (bill?: Bill) => {
         openModal({
             width: '799px',
             title: `${bill ? 'Edit' : 'Create'} Bill`,
             body: (
                 <Persist banks={banks} groups={groups} bill={bill} onClose={closeModal} onSubmit={handleSubmit}/>
+            ),
+            closeOnEsc: true,
+            closeOnOutsideClick: true,
+            removeBackgroundScroll: true,
+        })
+    }
+
+    const handleOpenDeleteModal = (bill?: Bill) => {
+        openModal({
+            width: '700px',
+            title: `Are you sure you want to delete Bill`,
+            body: (
+                <ModalDelete item={bill} onClose={closeModal} onDelete={(item) => handleOnDelete(item as Bill)} />
             ),
             closeOnEsc: true,
             closeOnOutsideClick: true,
@@ -118,7 +144,7 @@ export default function BillsPage() {
         <>
             <PageHeader resourceName="Bill" action={{
                 label: 'Create New Bill',
-                onClick: () => handleOpenModal(),
+                onClick: () => handleOpenPersistModal(),
                 disabled: !hasAllDependencies,
             }}/>
             {groups.length === 0 && (
@@ -158,7 +184,9 @@ export default function BillsPage() {
                             key={item.title}
                             list={item.list}
                             suppliers={suppliers}
-                            handleOpenModal={handleOpenModal}
+                            handleOpenDeleteModal={handleOpenDeleteModal}
+                            handleOpenPersistModal={handleOpenPersistModal}
+
                         />,
                     }))}/>
                     {modal}
