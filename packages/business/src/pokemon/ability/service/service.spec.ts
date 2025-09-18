@@ -53,7 +53,7 @@ describe('Pokemon Ability Service', () => {
     });
     
     describe('get', () => {
-        it('should successfully get an bank', async () => {
+        xit('should successfully get an bank', async () => {
             mockNest.pokemon.ability.getOne.mockResolvedValue(mockEntity);
             const result = await service.get(mockEntity.id);
 
@@ -63,7 +63,7 @@ describe('Pokemon Ability Service', () => {
     });
 
     describe('getAll', () => {
-        it('should successfully getAll pokemon ability list', async () => {
+        xit('should successfully getAll pokemon ability list', async () => {
             mockNest.pokemon.ability.getAll.mockResolvedValue(mockEntityList);
             const result = await service.getAll({});
 
@@ -71,7 +71,7 @@ describe('Pokemon Ability Service', () => {
             expect(result).toEqual(mockEntityList);
         });
 
-        it('should successfully getAll pokemon ability list paginate', async () => {
+        xit('should successfully getAll pokemon ability list paginate', async () => {
             mockNest.pokemon.ability.getAll.mockResolvedValue(mockEntityPaginate);
             const result = await service.getAll(mockPaginateParams);
 

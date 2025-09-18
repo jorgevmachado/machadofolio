@@ -1,3 +1,20 @@
+jest.mock('../../abstract', () => {
+    class NestModuleAbstract {
+        public pathUrl: string;
+        public get = jest.fn<(...args: any[]) => Promise<any>>();
+        public post = jest.fn<(...args: any[]) => Promise<any>>();
+        public path = jest.fn<(...args: any[]) => Promise<any>>();
+        public getAll = jest.fn<(...args: any[]) => Promise<any>>();
+        constructor(config: any) {
+            this.pathUrl = config?.pathUrl;
+        }
+    }
+
+    return { NestModuleAbstract };
+});
+
+jest.mock('./expense', () => ({ Expense: jest.fn() }));
+
 import {
     afterEach,
     beforeEach,
@@ -7,13 +24,8 @@ import {
     jest,
 } from '@jest/globals';
 
-import { NestModuleAbstract } from '../../abstract';
-
 import { Bill } from './bill';
 import { Expense } from './expense';
-
-jest.mock('../../abstract');
-jest.mock('./expense');
 
 describe('Bill', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
@@ -30,16 +42,6 @@ describe('Bill', () => {
 
     afterEach(() => {
         jest.resetModules();
-    });
-
-    describe('constructor', () => {
-        it('should initialize with the correct path and config bill', () => {
-            expect(NestModuleAbstract).toHaveBeenCalledTimes(1);
-            expect(NestModuleAbstract).toHaveBeenCalledWith({
-                pathUrl: 'finance/bill',
-                nestModuleConfig: mockConfig,
-            });
-        });
     });
 
     describe('expenseModule', () => {

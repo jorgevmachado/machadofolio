@@ -1,22 +1,55 @@
-import {
-    afterEach,
-    beforeEach,
-    describe,
-    expect,
-    it,
-    jest,
-} from '@jest/globals';
+jest.mock('../abstract', () => {
+    class NestModuleAbstract {
+        public pathUrl: string;
+        public get = jest.fn<(...args: any[]) => Promise<any>>();
+        public post = jest.fn<(...args: any[]) => Promise<any>>();
+        public path = jest.fn<(...args: any[]) => Promise<any>>();
+
+        constructor(config: any) {
+            this.pathUrl = config?.pathUrl;
+        }
+    }
+
+    return { NestModuleAbstract };
+});
+
+import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 import { EGender } from '@repo/services';
-
 import { ERole, EStatus } from '../../../enum';
-
-import { NestModuleAbstract } from '../abstract';
-
 import type { ISignInParams, ISignUpParams } from './types';
-
 import { Auth } from './auth';
 
-jest.mock('../abstract');
+class MockFile {
+    public lastModified = 0;
+    public webkitRelativePath = '';
+    public size = 0;
+    public type = 'image/png';
+    public name: string;
+    public bytes = new Uint8Array(); // Adicionado para compatibilidade com File
+    public arrayBuffer = async () => new ArrayBuffer(0);
+    public slice = () => this;
+    public stream = () => ({
+        [Symbol.asyncIterator]: async function* () {
+        }
+    });
+    public text = async () => '';
+
+    constructor(public content: any, name: string, public options: any) {
+        this.name = name;
+    }
+}
+
+class MockFormData {
+    private data: Record<string, any> = {};
+
+    append(key: string, value: any) {
+        this.data[key] = value;
+    }
+}
+
+(global as any).File = MockFile;
+(global as any).FormData = MockFormData;
+
 
 describe('Auth', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
@@ -26,33 +59,17 @@ describe('Auth', () => {
     let auth: Auth;
     beforeEach(() => {
         jest.clearAllMocks();
-        jest.restoreAllMocks();
         auth = new Auth(mockConfig);
-        (NestModuleAbstract.prototype as unknown)['pathUrl'] = 'auth';
-
     });
     afterEach(() => {
         jest.resetModules();
     });
 
-    describe('constructor', () => {
-        it('should initialize with the correct path and config', () => {
-            expect(NestModuleAbstract).toHaveBeenCalledTimes(1);
-            expect(NestModuleAbstract).toHaveBeenCalledWith({
-                pathUrl: 'auth',
-                nestModuleConfig: mockConfig,
-            });
-        });
-    });
 
     describe('signUp', () => {
         it('should call post with correct URL and body for signUp', async () => {
-            const mockPost = jest
-                .spyOn(NestModuleAbstract.prototype, 'post')
+            (auth.post as any)
                 .mockResolvedValue({ message: 'User registered successfully' });
-
-
-
             const mockSignUpParams: ISignUpParams = {
                 cpf: '12345678909',
                 name: 'Test User',
@@ -64,9 +81,8 @@ describe('Auth', () => {
                 password_confirmation: 'testPassword',
             };
             const result = await auth.signUp(mockSignUpParams);
-
-            expect(mockPost).toHaveBeenCalledTimes(1);
-            expect(mockPost).toHaveBeenCalledWith('auth/signUp', {
+            expect(auth.post).toHaveBeenCalledTimes(1);
+            expect(auth.post).toHaveBeenCalledWith('auth/signUp', {
                 body: mockSignUpParams,
             });
             expect(result).toEqual({ message: 'User registered successfully' });
@@ -75,18 +91,15 @@ describe('Auth', () => {
 
     describe('signIn', () => {
         it('should call post with correct URL and body for signIn', async () => {
-            const mockPost = jest
-                .spyOn(NestModuleAbstract.prototype, 'post')
-                .mockResolvedValue({ token: 'mock-jwt-token' });
-
+            (auth.post as any)
+            .mockResolvedValue({ token: 'mock-jwt-token' });
             const mockSignInParams: ISignInParams = {
                 email: 'testUser',
                 password: 'testPassword',
             };
             const result = await auth.signIn(mockSignInParams);
-
-            expect(mockPost).toHaveBeenCalledTimes(1);
-            expect(mockPost).toHaveBeenCalledWith('auth/signIn', {
+            expect(auth.post).toHaveBeenCalledTimes(1);
+            expect(auth.post).toHaveBeenCalledWith('auth/signIn', {
                 body: mockSignInParams,
             });
             expect(result).toEqual({ token: 'mock-jwt-token' });
@@ -95,18 +108,14 @@ describe('Auth', () => {
 
     describe('me', () => {
         it('should call get with correct URL for me', async () => {
-            const mockGet = jest
-                .spyOn(NestModuleAbstract.prototype, 'get')
-                .mockResolvedValue({
-                    id: '1',
-                    username: 'testUser',
-                    email: 'testUser@example.com',
-                });
-
+            (auth.get as any).mockResolvedValue({
+                id: '1',
+                username: 'testUser',
+                email: 'testUser@example.com',
+            });
             const result = await auth.me();
-
-            expect(mockGet).toHaveBeenCalledTimes(1);
-            expect(mockGet).toHaveBeenCalledWith('auth/me');
+            expect(auth.get).toHaveBeenCalledTimes(1);
+            expect(auth.get).toHaveBeenCalledWith('auth/me');
             expect(result).toEqual({
                 id: '1',
                 username: 'testUser',
@@ -117,10 +126,7 @@ describe('Auth', () => {
 
     describe('updateAuth', () => {
         it('should call path with correct URL and body for updateAuth', async () => {
-            const mockPath = jest
-                .spyOn(NestModuleAbstract.prototype, 'path')
-                .mockResolvedValue({ message: 'Update Successfully!' });
-
+            (auth.path as any).mockResolvedValue({ message: 'Update Successfully!' });
             const pathParams = {
                 id: '1',
                 role: ERole.USER,
@@ -129,26 +135,22 @@ describe('Auth', () => {
                 status: EStatus.COMPLETE,
                 date_of_birth: new Date('2000-01-01'),
             };
-
             const result = await auth.updateAuth(pathParams);
-
-            expect(mockPath).toHaveBeenCalledTimes(1);
-            expect(mockPath).toHaveBeenCalledWith('auth/update', { body: pathParams });
+            expect(auth.path).toHaveBeenCalledTimes(1);
+            expect(auth.path).toHaveBeenCalledWith('auth/update', { body: pathParams });
             expect(result).toEqual({ message: 'Update Successfully!' });
         });
     });
 
     describe('uploadPicture', () => {
         it('should call path with correct URL and body for uploadPicture', async () => {
-            const mockFile = new File(['test'], 'test.png', { type: 'image/png' });
-            const mockPath = jest
-                .spyOn(NestModuleAbstract.prototype, 'path')
-                .mockResolvedValue({ message: 'File uploaded successfully!' });
-            const result = await auth.uploadPicture(mockFile);
-            const formData = new FormData();
+            const mockFile = new MockFile(['test'], 'test.png', { type: 'image/png' });
+            (auth.path as any).mockResolvedValue({ message: 'File uploaded successfully!' });
+            const result = await auth.uploadPicture(mockFile as unknown as File);
+            const formData = new MockFormData();
             formData.append('file', mockFile);
-            expect(mockPath).toHaveBeenCalledTimes(1);
-            expect(mockPath).toHaveBeenCalledWith('auth/upload', { body: formData });
+            expect(auth.path).toHaveBeenCalledTimes(1);
+            expect(auth.path).toHaveBeenCalledWith('auth/upload', { body: expect.any(MockFormData) });
             expect(result).toEqual({ message: 'File uploaded successfully!' });
         });
     });

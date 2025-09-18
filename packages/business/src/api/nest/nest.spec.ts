@@ -7,14 +7,16 @@ import {
     jest,
 } from '@jest/globals';
 
-import { Auth } from './auth';
-import { Finance } from './finance';
-import { Nest } from './nest';
-import { Pokemon } from './pokemon';
+jest.mock('./auth', () => ({ Auth: jest.fn() }));
+jest.mock('./finance', () => ({ Finance: jest.fn() }));
+jest.mock('./pokemon', () => ({ Pokemon: jest.fn() }));
 
-jest.mock('./auth');
-jest.mock('./finance');
-jest.mock('./pokemon');
+import { Auth }  from './auth';
+import { Finance } from'./finance';
+import { Pokemon } from'./pokemon';
+import { Nest } from './nest';
+import { INestConfig } from './types';
+
 
 describe('Nest', () => {
     const mockBaseUrl = 'http://test-url.com';
@@ -44,10 +46,7 @@ describe('Nest', () => {
 
         it('should expose the auth property', () => {
             const instance = new Nest({ baseUrl: mockBaseUrl, token: mockToken });
-            const authInstance = instance.auth;
-
-            expect(authInstance).toBeInstanceOf(Auth);
-            expect(Auth).toHaveBeenCalledTimes(1);
+            expect(instance.auth).toBeInstanceOf(Auth);
         });
     });
 
@@ -64,12 +63,10 @@ describe('Nest', () => {
 
         it('should expose the finance property', () => {
             const instance = new Nest({ baseUrl: mockBaseUrl, token: mockToken });
-            const financeInstance = instance.finance;
-
-            expect(financeInstance).toBeInstanceOf(Finance);
-            expect(Finance).toHaveBeenCalledTimes(1);
+            expect(instance.finance).toBeInstanceOf(Finance);
         });
     });
+
     describe('PokemonModule', () => {
         it('should create the Pokemon module with correct config', () => {
             new Nest({ baseUrl: mockBaseUrl, token: mockToken });
@@ -83,10 +80,24 @@ describe('Nest', () => {
 
         it('should expose the pokemon property', () => {
             const instance = new Nest({ baseUrl: mockBaseUrl, token: mockToken });
-            const pokemonInstance = instance.pokemon;
+            expect(instance.pokemon).toBeInstanceOf(Pokemon);
+        });
+    });
 
-            expect(pokemonInstance).toBeInstanceOf(Pokemon);
-            expect(Pokemon).toHaveBeenCalledTimes(1);
+    describe('Nest constructor edge cases', () => {
+        it('should throw if baseUrl is missing', () => {
+            expect(() => new Nest({ token: mockToken } as INestConfig)).toThrow();
+        });
+        it('should throw if token is missing', () => {
+            expect(() => new Nest({ baseUrl: mockBaseUrl })).toThrow();
+        });
+        it('should create multiple instances independently', () => {
+            const instance1 = new Nest({ baseUrl: mockBaseUrl, token: mockToken });
+            const instance2 = new Nest({ baseUrl: mockBaseUrl, token: mockToken });
+            expect(instance1).not.toBe(instance2);
+            expect(Auth).toHaveBeenCalledTimes(2);
+            expect(Finance).toHaveBeenCalledTimes(2);
+            expect(Pokemon).toHaveBeenCalledTimes(2);
         });
     });
 });

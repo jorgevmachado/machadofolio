@@ -9,5 +9,19 @@ export const config = {
         '^.+\\.(t|j)s$': 'ts-jest',
     },
     testEnvironment: 'node',
+    moduleNameMapper: {
+        '^@repo/(.*)$': [
+            '<rootDir>/../../$1/src',
+            '<rootDir>/../../$1/dist'
+        ],
+    },
     coverageDirectory: '../coverage',
+    moduleDirectories: ['node_modules', '<rootDir>/../../packages'],
+    collectCoverageFrom: [
+        ...baseConfig.collectCoverageFrom || [],
+        '**/*.{ts,js}',
+        'packages/**/src/**/*.{js,ts}',
+        '!**/@types/**',
+        '!**/mock/**',
+    ]
 } as const satisfies Config;

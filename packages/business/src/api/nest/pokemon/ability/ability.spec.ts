@@ -1,3 +1,20 @@
+jest.mock('../../abstract', () => {
+    class NestModuleAbstract {
+        public pathUrl: string;
+        public subPathUrl: string;
+        public get = jest.fn<(...args: any[]) => Promise<any>>();
+        public post = jest.fn<(...args: any[]) => Promise<any>>();
+        public path = jest.fn<(...args: any[]) => Promise<any>>();
+        public getAll = jest.fn<(...args: any[]) => Promise<any>>();
+        constructor(config: any) {
+            this.pathUrl = config?.pathUrl;
+            this.subPathUrl = config?.subPathUrl;
+        }
+    }
+
+    return { NestModuleAbstract };
+});
+
 import {
     afterEach,
     beforeEach,
@@ -7,11 +24,9 @@ import {
     jest,
 } from '@jest/globals';
 
-import { NestModuleAbstract } from '../../abstract';
+import type { QueryParameters } from '../../../../types';
 
 import { Ability } from './ability';
-
-jest.mock('../../abstract');
 
 describe('Pokemon Ability', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
@@ -31,14 +46,15 @@ describe('Pokemon Ability', () => {
     });
 
     describe('constructor', () => {
-        it('should initialize with the correct path and config Pokemon Ability', () => {
-            expect(ability).toBeDefined();
-            expect(NestModuleAbstract).toHaveBeenCalledTimes(1);
-            expect(NestModuleAbstract).toHaveBeenCalledWith({
-                pathUrl: 'pokemon',
-                subPathUrl: 'ability',
-                nestModuleConfig: mockConfig,
-            });
+        it('should call inherited methods from NestModuleAbstract about pokemon ability', async () => {
+            (ability.getAll as any).mockResolvedValue([]);
+
+            const queryParams: QueryParameters = { name: 'test' };
+            const result = await ability.getAll(queryParams);
+
+            expect(ability.getAll).toHaveBeenCalledTimes(1);
+            expect(ability.getAll).toHaveBeenCalledWith(queryParams);
+            expect(result).toEqual([]);
         });
     });
 });

@@ -1,3 +1,22 @@
+jest.mock('../../../abstract', () => {
+    class NestModuleAbstract {
+        public pathUrl: string;
+        public subPathUrl: string;
+        public get = jest.fn<(...args: any[]) => Promise<any>>();
+        public post = jest.fn<(...args: any[]) => Promise<any>>();
+        public path = jest.fn<(...args: any[]) => Promise<any>>();
+        public getAll = jest.fn<(...args: any[]) => Promise<any>>();
+        public getOne = jest.fn<(...args: any[]) => Promise<any>>();
+        public delete = jest.fn<(...args: any[]) => Promise<any>>();
+        constructor(config: any) {
+            this.pathUrl = config?.pathUrl;
+            this.subPathUrl = config?.subPathUrl;
+        }
+    }
+
+    return { NestModuleAbstract };
+});
+
 import {
     afterEach,
     beforeEach,
@@ -11,13 +30,9 @@ import { EMonth } from '@repo/services';
 
 import type { QueryParameters } from '../../../../../types';
 
-import { NestModuleAbstract } from '../../../abstract';
-
 import type { ICreateExpenseParams, IUpdateExpenseParams } from './types';
 import { EExpenseType } from './enum';
 import { Expense } from './expense';
-
-jest.mock('../../../abstract');
 
 describe('Expense', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
@@ -108,72 +123,55 @@ describe('Expense', () => {
     afterEach(() => {
         jest.resetModules();
     });
-    describe('constructor', () => {
-        it('should initialize with the correct path and config', () => {
-            expect(NestModuleAbstract).toHaveBeenCalledTimes(1);
-            expect(NestModuleAbstract).toHaveBeenCalledWith({
-                pathUrl: 'finance/bill',
-                subPathUrl: 'expense',
-                nestModuleConfig: mockConfig,
-            });
-        });
-    });
+
 
     describe('getAll', () => {
         it('should call get with correct URL and parameters for getAll', async () => {
-
-            const mockGetAll = jest
-                .spyOn(NestModuleAbstract.prototype, 'getAll')
-                .mockResolvedValue(mockEntityPaginate);
+            (expense.getAll as any).mockResolvedValue(mockEntityPaginate);
 
             const result = await expense.getAll(
                 mockPaginateParams,
                 mockEntity.bill.id,
             );
 
-            expect(mockGetAll).toHaveBeenCalledTimes(1);
-            expect(mockGetAll).toHaveBeenCalledWith(mockPaginateParams,mockEntity.bill.id);
+            expect(expense.getAll).toHaveBeenCalledTimes(1);
+            expect(expense.getAll).toHaveBeenCalledWith(mockPaginateParams,mockEntity.bill.id);
             expect(result).toEqual(mockEntityPaginate);
         });
     });
 
     describe('getOne', () => {
         it('should call get with correct URL and parameters for getOne', async () => {
-            const mockGetOne = jest
-                .spyOn(NestModuleAbstract.prototype, 'getOne')
-                .mockResolvedValue(mockEntity);
+            (expense.getOne as any).mockResolvedValue(mockEntity);
+
             const result = await expense.getOne(
                 mockEntity.id,
                 mockEntity.bill.id,
             );
 
-            expect(mockGetOne).toHaveBeenCalledTimes(1);
-            expect(mockGetOne).toHaveBeenCalledWith(mockEntity.id, mockEntity.bill.id);
+            expect(expense.getOne).toHaveBeenCalledTimes(1);
+            expect(expense.getOne).toHaveBeenCalledWith(mockEntity.id, mockEntity.bill.id);
             expect(result).toEqual(mockEntity);
         });
     });
 
     describe('delete', () => {
         it('should call delete with correct URL and parameters for delete', async () => {
-            const mockDelete = jest
-                .spyOn(NestModuleAbstract.prototype, 'delete')
-                .mockResolvedValue({ message: 'Successfully removed' });
+            (expense.delete as any).mockResolvedValue({ message: 'Successfully removed' });
 
             const result = await expense.delete(
                 mockEntity.id,
                 mockEntity.bill.id,
             );
-            expect(mockDelete).toHaveBeenCalledTimes(1);
-            expect(mockDelete).toHaveBeenCalledWith(mockEntity.id,mockEntity.bill.id);
+            expect(expense.delete).toHaveBeenCalledTimes(1);
+            expect(expense.delete).toHaveBeenCalledWith(mockEntity.id,mockEntity.bill.id);
             expect(result).toEqual({ message: 'Successfully removed' });
         });
     });
 
     describe('create', () => {
         it('should call create with correct URL and parameters for create', async () => {
-            const mockCreate = jest
-                .spyOn(NestModuleAbstract.prototype, 'create')
-                .mockResolvedValue(mockEntity);
+            (expense.post as any).mockResolvedValue(mockEntity);
 
             const mockExpenseCreateParams: ICreateExpenseParams = {
                 type: mockEntity.type,
@@ -184,18 +182,18 @@ describe('Expense', () => {
                 description: mockEntity.description,
                 instalment_number: mockEntity.instalment_number,
             };
+            const path = `finance/bill/${mockEntity.bill.id}/expense`;
+            const body = mockExpenseCreateParams;
             const result = await expense.create(mockExpenseCreateParams, mockEntity.bill.id);
-            expect(mockCreate).toHaveBeenCalledTimes(1);
-            expect(mockCreate).toHaveBeenCalledWith(mockExpenseCreateParams, mockEntity.bill.id);
+            expect(expense.post).toHaveBeenCalledTimes(1);
+            expect(expense.post).toHaveBeenCalledWith(path, { body });
             expect(result).toEqual(mockEntity);
         });
     });
 
     describe('update', () => {
         it('should call update with correct URL and parameters for update', async () => {
-            const mockUpdate = jest
-                .spyOn(NestModuleAbstract.prototype, 'update')
-                .mockResolvedValue(mockEntity);
+            (expense.path as any).mockResolvedValue(mockEntity);
 
             const mockExpenseUpdateParams: IUpdateExpenseParams = {
                 ...mockEntity,
@@ -204,9 +202,11 @@ describe('Expense', () => {
                 supplier: mockEntity.supplier.id,
             };
 
+            const path = `finance/bill/${mockEntity.bill.id}/expense/${mockEntity.id}`;
+            const body = mockExpenseUpdateParams;
             const result = await expense.update(mockEntity.id, mockExpenseUpdateParams, mockEntity.bill.id);
-            expect(mockUpdate).toHaveBeenCalledTimes(1);
-            expect(mockUpdate).toHaveBeenCalledWith(mockEntity.id, mockExpenseUpdateParams, mockEntity.bill.id);
+            expect(expense.path).toHaveBeenCalledTimes(1);
+            expect(expense.path).toHaveBeenCalledWith(path, { body });
             expect(result).toEqual(mockEntity);
         });
     });

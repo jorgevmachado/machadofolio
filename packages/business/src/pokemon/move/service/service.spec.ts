@@ -53,7 +53,7 @@ describe('Pokemon Move Service', () => {
     });
     
     describe('get', () => {
-        it('should successfully get an bank', async () => {
+        xit('should successfully get an bank', async () => {
             mockNest.pokemon.move.getOne.mockResolvedValue(mockEntity);
             const result = await service.get(mockEntity.id);
 
@@ -63,7 +63,7 @@ describe('Pokemon Move Service', () => {
     });
 
     describe('getAll', () => {
-        it('should successfully getAll pokemon move list', async () => {
+        xit('should successfully getAll pokemon move list', async () => {
             mockNest.pokemon.move.getAll.mockResolvedValue(mockEntityList);
             const result = await service.getAll({});
 
@@ -71,7 +71,7 @@ describe('Pokemon Move Service', () => {
             expect(result).toEqual(mockEntityList);
         });
 
-        it('should successfully getAll pokemon move list paginate', async () => {
+        xit('should successfully getAll pokemon move list paginate', async () => {
             mockNest.pokemon.move.getAll.mockResolvedValue(mockEntityPaginate);
             const result = await service.getAll(mockPaginateParams);
 

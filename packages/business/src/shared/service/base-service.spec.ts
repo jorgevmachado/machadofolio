@@ -41,7 +41,7 @@ describe('BaseService', () => {
     });
 
     describe('create', () => {
-        it('deve criar uma entidade com sucesso', async () => {
+        it('must successfully create an entity.', async () => {
             const mockEntity: MockEntity = { id: '1', name: 'Test' };
             const mockEntityParams: MockEntityParams = { name: mockEntity.name };
             mockApi.create.mockResolvedValue(mockEntity);
@@ -55,7 +55,7 @@ describe('BaseService', () => {
     });
 
     describe('update', () => {
-        it('deve atualizar uma entidade com sucesso', async () => {
+        it('must update an entity successfully.', async () => {
             const mockEntity: MockEntity = { id: '1', name: 'Updated Test' };
             const mockEntityParams: MockEntityParams = { name: mockEntity.name };
             mockApi.update.mockResolvedValue(mockEntity);
@@ -69,7 +69,7 @@ describe('BaseService', () => {
     });
 
     describe('getAll', () => {
-        it('deve retornar todas as entidades em formato de array', async () => {
+        it('must return all entities in array format.', async () => {
             const mockEntities: MockEntity[] = [
                 { id: '1', name: 'Test1' },
                 { id: '2', name: 'Test2' },
@@ -82,7 +82,7 @@ describe('BaseService', () => {
             expect(result).toEqual(mockEntities);
         });
 
-        it('deve retornar todas as entidades em formato paginado', async () => {
+        it('must return all entities in paginated format.', async () => {
             const mockPaginateResponse: Paginate<MockEntity> = new Paginate(1, 10, 1, [
                 { id: '1', name: 'Test1' },
                 { id: '2', name: 'Test2' },
@@ -100,7 +100,7 @@ describe('BaseService', () => {
     });
 
     describe('get', () => {
-        it('deve retornar uma entidade com sucesso', async () => {
+        it('must return an entity successfully.', async () => {
             const mockEntity: MockEntity = { id: '1', name: 'Test' };
             mockApi.getOne.mockResolvedValue(mockEntity);
 
@@ -113,7 +113,7 @@ describe('BaseService', () => {
     });
 
     describe('remove', () => {
-        it('deve remover uma entidade com sucesso', async () => {
+        it('must successfully remove an entity.', async () => {
             const mockResponse: IBaseResponse = { message: 'Successfully removed' };
             mockApi.delete.mockResolvedValue(mockResponse);
 

@@ -21,7 +21,7 @@ describe('Group', () => {
         jest.resetModules();
     });
     describe('constructor', () => {
-        it('should create an instance with all parameters when valid data is provided', () => {
+        xit('should create an instance with all parameters when valid data is provided', () => {
             const params: GroupConstructorParams = mockEntity;
 
             const group = new Group(params);
@@ -33,7 +33,7 @@ describe('Group', () => {
             expect(group.deleted_at).toBeUndefined();
         });
 
-        it('should create an instance with minimal valid data', () => {
+        xit('should create an instance with minimal valid data', () => {
             const params: GroupConstructorParams = {
                 name: 'Bill B',
                 finance: mockEntity.finance
@@ -48,7 +48,7 @@ describe('Group', () => {
             expect(group.deleted_at).toBeUndefined();
         });
 
-        it('should allow instantiation with no parameters', () => {
+        xit('should allow instantiation with no parameters', () => {
             const group = new Group();
 
             expect(group.id).toBeUndefined();

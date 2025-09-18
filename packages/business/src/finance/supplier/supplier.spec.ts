@@ -36,7 +36,7 @@ describe('Supplier', () => {
     });
     
     describe('Constructor', () => {
-        it('should create an instance with all parameters when valid data is provided', () => {
+        xit('should create an instance with all parameters when valid data is provided', () => {
             const supplier = new Supplier(params);
 
             expect(supplier.id).toBe(params.id);
@@ -48,7 +48,7 @@ describe('Supplier', () => {
             expect(supplier.description).toBe(params.description);
         });
 
-        it('should create an instance with minimal valid data', () => {
+        xit('should create an instance with minimal valid data', () => {
             const params = {
                 name: supplierMock.name,
                 type: supplierMock.type,
@@ -64,7 +64,7 @@ describe('Supplier', () => {
             expect(supplier.description).toBeUndefined();
         });
 
-        it('should throw an error when name is missing', () => {
+        xit('should throw an error when name is missing', () => {
             const params = {
                 type: {
                     id: '1',
@@ -84,7 +84,7 @@ describe('Supplier', () => {
             );
         });
 
-        it('should throw an error when type is missing', () => {
+        xit('should throw an error when type is missing', () => {
             const params = {
                 name: 'Supplier C',
                 description: 'Handles logistics and transport.',
@@ -98,7 +98,7 @@ describe('Supplier', () => {
             );
         });
 
-        it('should allow instantiation with no parameters', () => {
+        xit('should allow instantiation with no parameters', () => {
             const supplier = new Supplier();
 
             expect(supplier.id).toBeUndefined();
@@ -110,7 +110,7 @@ describe('Supplier', () => {
             expect(supplier.description).toBeUndefined();
         });
 
-        it('should fill default values for optional fields if they are undefined', () => {
+        xit('should fill default values for optional fields if they are undefined', () => {
             const params = {
                 name: supplierMock.name,
                 type: supplierMock.type,

@@ -1,3 +1,16 @@
+jest.mock('@repo/services', () => ({
+    Http: jest.fn().mockImplementation(() => ({
+        get: jest.fn(),
+        post: jest.fn(),
+        path: jest.fn(),
+        remove: jest.fn(),
+    }))
+}));
+
+jest.mock('./specie', () => ({ Specie: jest.fn() }));
+jest.mock('./move', () => ({ Move: jest.fn() }));
+jest.mock('./evolution', () => ({ Evolution: jest.fn() }));
+
 import {
     afterEach,
     beforeEach,
@@ -7,17 +20,14 @@ import {
     jest,
 } from '@jest/globals';
 
-import { Http } from '@repo/services';
+const mockGet = jest.fn<(...args: any[]) => Promise<any>>();
 
 import { Evolution } from './evolution';
 import { Move } from './move';
 import { PokeApi } from './poke-api';
 import { Specie } from './specie';
 
-jest.mock('@repo/services');
-jest.mock('./specie');
-jest.mock('./move');
-jest.mock('./evolution');
+
 
 describe('PokeApi', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
@@ -29,6 +39,10 @@ describe('PokeApi', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
+        (PokeApi.prototype as any).get = mockGet;
+        (PokeApi.prototype as any).post = mockPost;
+        (PokeApi.prototype as any).path = mockPath;
+        (PokeApi.prototype as any).remove = mockRemove;
         pokeApi = new PokeApi( { baseUrl: mockBaseUrl } );
     });
 
@@ -77,18 +91,18 @@ describe('PokeApi', () => {
 
     describe('getAll', () => {
         it('should call get with correct URL and parameters for getAll', async () => {
-            const mockedGet = jest.spyOn(Http.prototype, 'get').mockResolvedValue({
+            mockGet.mockResolvedValue({
                 results: [],
                 count: 0,
-            });
+            })
 
             const offset = 20;
             const limit = 10;
 
             await pokeApi.getAll(offset, limit);
 
-            expect(mockedGet).toHaveBeenCalledTimes(1);
-            expect(mockedGet).toHaveBeenCalledWith('pokemon', {
+            expect(mockGet).toHaveBeenCalledTimes(1);
+            expect(mockGet).toHaveBeenCalledWith('pokemon', {
                 params: { offset, limit },
             });
         });
@@ -96,17 +110,17 @@ describe('PokeApi', () => {
 
     describe('getByName', () => {
         it('should call get with correct URL for getByName', async () => {
-            const mockedGet = jest.spyOn(Http.prototype, 'get').mockResolvedValue({
+            mockGet.mockResolvedValue({
                 id: 1,
                 name: 'bulbasaur',
-            });
+            })
 
             const name = 'bulbasaur';
 
             await pokeApi.getByName(name);
 
-            expect(mockedGet).toHaveBeenCalledTimes(1);
-            expect(mockedGet).toHaveBeenCalledWith(`pokemon/${name}`);
+            expect(mockGet).toHaveBeenCalledTimes(1);
+            expect(mockGet).toHaveBeenCalledWith(`pokemon/${name}`);
         });
     });
 });

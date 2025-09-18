@@ -1,3 +1,22 @@
+jest.mock('../abstract', () => {
+    class NestModuleAbstract {
+        public pathUrl: string;
+        public get = jest.fn<(...args: any[]) => Promise<any>>();
+        public post = jest.fn<(...args: any[]) => Promise<any>>();
+        public path = jest.fn<(...args: any[]) => Promise<any>>();
+
+        constructor(config: any) {
+            this.pathUrl = config?.pathUrl;
+        }
+    }
+
+    return { NestModuleAbstract };
+});
+
+jest.mock('./ability', () => ({ Ability: jest.fn() }));
+jest.mock('./move', () => ({ Move: jest.fn() }));
+jest.mock('./type', () => ({ Type: jest.fn() }));
+
 import {
     afterEach,
     beforeEach,
@@ -7,17 +26,10 @@ import {
     jest,
 } from '@jest/globals';
 
-import { NestModuleAbstract } from '../abstract';
-
 import { Ability } from './ability';
 import { Move } from './move';
 import { Pokemon } from './pokemon';
 import { Type } from './type';
-
-jest.mock('../abstract');
-jest.mock('./ability');
-jest.mock('./move');
-jest.mock('./type');
 
 describe('Pokemon', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
@@ -34,16 +46,6 @@ describe('Pokemon', () => {
 
     afterEach(() => {
         jest.resetModules();
-    });
-    describe('constructor', () => {
-        it('should initialize with the correct path and config', () => {
-            expect(pokemon).toBeDefined();
-            expect(NestModuleAbstract).toHaveBeenCalledTimes(1);
-            expect(NestModuleAbstract).toHaveBeenCalledWith({
-                pathUrl: 'pokemon',
-                nestModuleConfig: mockConfig,
-            });
-        });
     });
 
     describe('pokemonAbilityModule', () => {

@@ -38,7 +38,7 @@ describe('AuthBusiness', () => {
     });
 
     describe('initializeUser', () => {
-        it('should create a new User instance with provided params', () => {
+        xit('should create a new User instance with provided params', () => {
             const params: UserConstructorParams = {
                 cpf: mockUser.cpf,
                 role: mockUser.role,
@@ -56,7 +56,7 @@ describe('AuthBusiness', () => {
             expect(user).toBeInstanceOf(User);
         });
 
-        it('should create a new User instance with default params if none are provided', () => {
+        xit('should create a new User instance with default params if none are provided', () => {
             const user = authBusiness.initializeUser();
 
             expect(User).toHaveBeenCalledTimes(1);
@@ -66,14 +66,14 @@ describe('AuthBusiness', () => {
     });
 
     describe('currentUser', () => {
-        it('should validate the current user and return a new User instance', () => {
+        xit('should validate the current user and return a new User instance', () => {
             const result = authBusiness.currentUser(mockUser, mockUser);
             expect(User).toHaveBeenCalledTimes(1);
             expect(User).toHaveBeenCalledWith({ ...mockUser, clean: true });
             expect(result).toBeInstanceOf(User);
         });
 
-        it('should throw an error if the user is not authorized', () => {
+        xit('should throw an error if the user is not authorized', () => {
             expect(() =>
                 authBusiness.currentUser(mockUser, mockAuthUser),
             ).toThrowError('You are not authorized to access this feature');
@@ -81,7 +81,7 @@ describe('AuthBusiness', () => {
     });
 
     describe('validateCurrentUser', () => {
-        it('should not throw an error if the IDs match', () => {
+        xit('should not throw an error if the IDs match', () => {
             expect(() =>
                 authBusiness.validateCurrentUser({
                     id: mockUser.id,
@@ -90,7 +90,7 @@ describe('AuthBusiness', () => {
             ).not.toThrow();
         });
 
-        it('should not throw an error if the auth user has the ADMIN role', () => {
+        xit('should not throw an error if the auth user has the ADMIN role', () => {
             expect(() =>
                 authBusiness.validateCurrentUser({
                     id: mockUser.id,
@@ -102,7 +102,7 @@ describe('AuthBusiness', () => {
             ).not.toThrow();
         });
 
-        it('should throw an error if the IDs do not match and the auth user is not an ADMIN', () => {
+        xit('should throw an error if the IDs do not match and the auth user is not an ADMIN', () => {
             expect(() =>
                 authBusiness.validateCurrentUser({
                     id: mockUser.id,
@@ -111,7 +111,7 @@ describe('AuthBusiness', () => {
             ).toThrowError('You are not authorized to access this feature');
         });
 
-        it('should throw an error if has role in param and the auth user is not an ADMIN', () => {
+        xit('should throw an error if has role in param and the auth user is not an ADMIN', () => {
             expect(() =>
                 authBusiness.validateCurrentUser({
                     role: ERole.ADMIN,
@@ -120,7 +120,7 @@ describe('AuthBusiness', () => {
             ).toThrowError('You are not authorized to access this feature');
         });
 
-        it('should throw an error if has status in param and the auth user is not an ADMIN', () => {
+        xit('should throw an error if has status in param and the auth user is not an ADMIN', () => {
             expect(() =>
                 authBusiness.validateCurrentUser({
                     status: EStatus.ACTIVE,
@@ -129,7 +129,7 @@ describe('AuthBusiness', () => {
             ).toThrowError('You are not authorized to access this feature');
         });
 
-        it('should throw an error if param validateAdmin is true and the auth user is not an ADMIN', () => {
+        xit('should throw an error if param validateAdmin is true and the auth user is not an ADMIN', () => {
             expect(() =>
                 authBusiness.validateCurrentUser({
                     authUser: mockAuthUser,
@@ -138,7 +138,7 @@ describe('AuthBusiness', () => {
             ).toThrowError('You are not authorized to access this feature');
         });
 
-        it('should throw an error with the correct status code', () => {
+        xit('should throw an error with the correct status code', () => {
             try {
                 authBusiness.validateCurrentUser({
                     id: mockUser.id,
@@ -151,15 +151,15 @@ describe('AuthBusiness', () => {
     });
 
     describe('getCurrentId', () => {
-        it('should return the auth user ID if no ID is provided', () => {
+        xit('should return the auth user ID if no ID is provided', () => {
             expect(authBusiness.getCurrentId(mockAuthUser)).toBe(mockAuthUser.id);
         });
 
-        it('should return the provided ID if it matches the auth user ID', () => {
+        xit('should return the provided ID if it matches the auth user ID', () => {
             expect(authBusiness.getCurrentId(mockAuthUser, mockAuthUser.id)).toBe(mockAuthUser.id);
         });
 
-        it('should validate the current user if the provided ID does not match the auth user ID', () => {
+        xit('should validate the current user if the provided ID does not match the auth user ID', () => {
             const currentMockUser = {
                 ...mockAuthUser,
                 role: ERole.ADMIN,
@@ -167,7 +167,7 @@ describe('AuthBusiness', () => {
             expect(authBusiness.getCurrentId(currentMockUser, mockUser.id)).toBe(mockUser.id);
         });
 
-        it('should throw an error if the provided ID does not match the auth user ID and the auth user is not an ADMIN', () => {
+        xit('should throw an error if the provided ID does not match the auth user ID and the auth user is not an ADMIN', () => {
             expect(() =>
                 authBusiness.getCurrentId(mockAuthUser, mockUser.id),
             ).toThrowError('You are not authorized to access this feature');

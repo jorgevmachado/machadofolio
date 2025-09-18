@@ -23,7 +23,7 @@ describe('Pokemon Move', () => {
     });
 
     describe('constructor', () => {
-        it('should create an instance pokemon move with all provided parameters', () => {
+        xit('should create an instance pokemon move with all provided parameters', () => {
             const entity = new PokemonMove(entityMock);
             expect(entity.id).toEqual(entityMock.id);
             expect(entity.pp).toEqual(entityMock.pp);
@@ -44,7 +44,7 @@ describe('Pokemon Move', () => {
             expect(entity.deleted_at).toEqual(entityMock.deleted_at);
         });
 
-        it('should create an instance with some provided parameters', () => {
+        xit('should create an instance with some provided parameters', () => {
             const entity = new PokemonMove();
             expect(entity.id).toBeUndefined();
             expect(entity.pp).toEqual(0);

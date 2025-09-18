@@ -9,7 +9,13 @@ export class Nest {
     private readonly financeModule: Finance;
     private readonly pokemonModule: Pokemon;
 
-    constructor({ baseUrl = 'http://localhost:3000', token = '' }: INestConfig) {
+    constructor({ baseUrl, token }: INestConfig) {
+        if (!baseUrl) {
+            throw new Error('baseUrl is required.');
+        }
+        if (!token) {
+            throw new Error('token is required.');
+        }
         const headers = {
             Authorization: `Bearer ${token}`,
         };

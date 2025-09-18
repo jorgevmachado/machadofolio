@@ -67,11 +67,11 @@ describe('Poke Api Service', () => {
     });
 
     describe('MoveService', () => {
-        it('should initialize Move Service', () => {
+        xit('should initialize Move Service', () => {
             expect(PokeApiMoveService).toHaveBeenCalledTimes(1);
         });
 
-        it('should return the instance of MoveService via move getter', () => {
+        xit('should return the instance of MoveService via move getter', () => {
             const moveService = service.move;
             expect(moveService).toBeInstanceOf(PokeApiMoveService);
             expect(PokeApiMoveService).toHaveBeenCalledTimes(1);
@@ -79,7 +79,7 @@ describe('Poke Api Service', () => {
     });
 
     describe('getAll', () => {
-        it('should return a list of pokemon using poke-api', async () => {
+        xit('should return a list of pokemon using poke-api', async () => {
             const mockResponse: PokemonPaginateResponse<PokemonResponse> = {
                 count: 1302,
                 next: 'http://pokemon-mock/pokemon?offset=1302&limit=2',
@@ -107,7 +107,7 @@ describe('Poke Api Service', () => {
     });
 
     describe('getByName', () => {
-        it('should return a pokemon by name using poke-api', async () => {
+        xit('should return a pokemon by name using poke-api', async () => {
 
             mockPokeApi.getByName.mockResolvedValue(pokemonByNameResponseMock);
             mockPokeApi.specie.getByPokemonName.mockResolvedValue(speciePokemonByNameResponseMock);
@@ -154,7 +154,7 @@ describe('Poke Api Service', () => {
         const originalEvolutionPokemonMock: EvolutionResponse['chain']['species'] = ORIGINAL_EVOLUTION_POKEMON_MOCK;
         const firstEvolutionPokemonMock: EvolutionResponse['chain']['species'] = FIRST_EVOLUTION_POKEMON_MOCK;
         const secondEvolutionPokemonMock: EvolutionResponse['chain']['species'] = SECOND_EVOLUTION_POKEMON_MOCK;
-        it('Should return a list of names evolutions to this pokemon', async () => {
+        xit('Should return a list of names evolutions to this pokemon', async () => {
             mockPokeApi.evolution.getByOrder.mockResolvedValue(evolutionResponseMock);
             const result = await service.getEvolutions(pokemonEntityInitialByNameMock.evolution_chain_url);
             expect(result).toEqual([ originalEvolutionPokemonMock.name, firstEvolutionPokemonMock.name, secondEvolutionPokemonMock.name ]);

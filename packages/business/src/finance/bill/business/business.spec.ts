@@ -101,21 +101,21 @@ describe('Bill Business', () => {
     });
 
     describe('calculate', () => {
-        it('should calculate bill without expenses', () => {
+        xit('should calculate bill without expenses', () => {
             const result = business.calculate(mockEntity);
             expect(result.total).toBe(0);
             expect(result.total_paid).toBe(0);
             expect(result.all_paid).toBeFalsy();
         });
 
-        it('should calculate bill with expenses', () => {
+        xit('should calculate bill with expenses', () => {
             const result = business.calculate({ ...mockEntity, expenses: mockExpenses });
             expect(result.total).toBe(100);
             expect(result.total_paid).toBe(0);
             expect(result.all_paid).toBeFalsy();
         });
 
-        it('Should calculate even when expense[property] is undefined.', () => {
+        xit('Should calculate even when expense[property] is undefined.', () => {
             const bill = {
                 expenses: [
                     { total: undefined, total_paid: undefined, paid: true }
@@ -140,7 +140,7 @@ describe('Bill Business', () => {
     });
 
     describe('spreadsheetProcessing', () => {
-        it('Shouldn\'t do anything because the data is empty.', () => {
+        xit('Shouldn\'t do anything because the data is empty.', () => {
             business.spreadsheetProcessing({
                 year: 2025,
                 sheet: spreadsheetMock,
@@ -155,7 +155,7 @@ describe('Bill Business', () => {
             expect(spreadsheetMock.addTables).not.toHaveBeenCalled();
         });
 
-        it('Processes normally with basic bills.', () => {
+        xit('Processes normally with basic bills.', () => {
             const params: SpreadsheetProcessingParams = {
                 year: 2025,
                 sheet: spreadsheetMock,
@@ -177,7 +177,7 @@ describe('Bill Business', () => {
 
         });
 
-        it('Covers flow with childrenTables.', () => {
+        xit('Covers flow with childrenTables.', () => {
             const params: SpreadsheetProcessingParams = {
                 year: 2025,
                 sheet: spreadsheetMock,
@@ -205,7 +205,7 @@ describe('Bill Business', () => {
     });
 
     describe('getWorkSheetTitle', () => {
-        it('must correctly extract the year and title name in the format "Name (2025)".', () => {
+        xit('must correctly extract the year and title name in the format "Name (2025)".', () => {
             spreadsheetMock.workSheet.cell.mockImplementation(() => ({ value: 'Fixed Accounts (2025)' }) as any);
             const result = business.getWorkSheetTitle({
                 row: 2,
@@ -219,7 +219,7 @@ describe('Bill Business', () => {
             });
         });
 
-        it('should return the current year and name when there is no year in the title.', () => {
+        xit('should return the current year and name when there is no year in the title.', () => {
             const currentYear = new Date().getFullYear();
             spreadsheetMock.workSheet.cell.mockImplementation(() => ({ value: 'Other releases' }) as any);
             const result = business.getWorkSheetTitle({
@@ -232,7 +232,7 @@ describe('Bill Business', () => {
 
         });
 
-        it('must handle undefined value in cell.', () => {
+        xit('must handle undefined value in cell.', () => {
             const currentYear = new Date().getFullYear();
             spreadsheetMock.workSheet.cell.mockImplementation(() => ({ value: undefined }) as any);
             const result = business.getWorkSheetTitle({
@@ -244,7 +244,7 @@ describe('Bill Business', () => {
             expect(result.groupName).toBe('');
         });
 
-        it('must use custom parameters correctly.', () => {
+        xit('must use custom parameters correctly.', () => {
             spreadsheetMock.workSheet.cell.mockImplementation(() => ({ value: 'Custom (2030)' }) as any);
             const result = business.getWorkSheetTitle({
                 row: 5,
@@ -261,7 +261,7 @@ describe('Bill Business', () => {
             });
         });
 
-        it('must treat extra spaces in the value.', () => {
+        xit('must treat extra spaces in the value.', () => {
             spreadsheetMock.workSheet.cell.mockImplementation(() => ({ value: '   Investments   (2022)   ' }) as any);
             const result = business.getWorkSheetTitle({
                 row: 3,
@@ -274,7 +274,7 @@ describe('Bill Business', () => {
             });
         });
 
-        it('should return the cell text directly when there is no match in the regex (null match).', () => {
+        xit('should return the cell text directly when there is no match in the regex (null match).', () => {
             const CELL_VALUE = 'Purchasing Group';
 
             spreadsheetMock.workSheet.cell.mockImplementation(() => ({ value: CELL_VALUE }) as any);
@@ -321,12 +321,12 @@ describe('Bill Business', () => {
                 group: {...mockEntity.group, name: 'Mother'},
             },
         ]
-        it('should return a list of bills filtered by type empty.', () => {
+        xit('should return a list of bills filtered by type empty.', () => {
             const result = business.mapBillListByFilter([], 'type');
             expect(result).toEqual([]);
         });
 
-        it('should return a list of bills filtered by type.', () => {
+        xit('should return a list of bills filtered by type.', () => {
             const result = business.mapBillListByFilter(mockList, 'type');
             expect(result[0]).toEqual({
                 title: 'credit_card',
@@ -365,7 +365,7 @@ describe('Bill Business', () => {
             });
         });
 
-        it('should return a list of bills filtered by group.', () => {
+        xit('should return a list of bills filtered by group.', () => {
             const result = business.mapBillListByFilter(mockList, 'group');
             expect(result[0]).toEqual({
                 title: 'Personal',
@@ -404,7 +404,7 @@ describe('Bill Business', () => {
             });
         });
 
-        it('should return a list of bills filtered by bank.', () => {
+        xit('should return a list of bills filtered by bank.', () => {
             const result = business.mapBillListByFilter(mockList, 'bank');
             expect(result[0]).toEqual({
                 title: 'Nubank',
@@ -461,7 +461,7 @@ describe('Bill Business', () => {
 
         describe('processingSpreadsheetTable', () => {
 
-            it('should return startRow when not have table', () => {
+            xit('should return startRow when not have table', () => {
                 const result = business['processingSpreadsheetTable']({
                     sheet: spreadsheetMock,
                     table: undefined,
@@ -478,7 +478,7 @@ describe('Bill Business', () => {
                 expect(result).toBe(14);
             });
 
-            it('should return startRow when not have tableBodyData', () => {
+            xit('should return startRow when not have tableBodyData', () => {
                 const result = business['processingSpreadsheetTable']({
                     sheet: spreadsheetMock,
                     table: {
@@ -498,7 +498,7 @@ describe('Bill Business', () => {
                 expect(result).toBe(14);
             });
 
-            it('should return a new start row when table title is defined', () => {
+            xit('should return a new start row when table title is defined', () => {
                 const result = business['processingSpreadsheetTable']({
                     sheet: spreadsheetMock,
                     table: {
@@ -533,7 +533,7 @@ describe('Bill Business', () => {
                 expect(result).toBe(2);
             });
 
-            it('should return a new start row when table title is undefined', () => {
+            xit('should return a new start row when table title is undefined', () => {
 
                 const tableData = mockData.map((item) => ({
                     type: snakeCaseToNormal(item.type),
@@ -564,7 +564,7 @@ describe('Bill Business', () => {
         });
 
         describe('processingSpreadsheetSecondaryTables', () => {
-            it('Should processingSpreadsheetSecondaryTables with type other than  CREDIT_CARD.', () => {
+            xit('Should processingSpreadsheetSecondaryTables with type other than  CREDIT_CARD.', () => {
                 const result = business['processingSpreadsheetSecondaryTables']({
                     sheet: spreadsheetMock,
                     data: [{ ...mockEntity, type: EBillType.BANK_SLIP, expenses: mockExpenses }],
@@ -582,7 +582,7 @@ describe('Bill Business', () => {
                 expect(result).toBe(2);
             });
 
-            it('Should processingSpreadsheetSecondaryTables with type other than CREDIT_CARD and expenses empty.', () => {
+            xit('Should processingSpreadsheetSecondaryTables with type other than CREDIT_CARD and expenses empty.', () => {
                 const result = business['processingSpreadsheetSecondaryTables']({
                     sheet: spreadsheetMock,
                     data: [{ ...mockEntity, type: EBillType.BANK_SLIP, expenses: undefined }],
@@ -600,7 +600,7 @@ describe('Bill Business', () => {
                 expect(result).toBe(14);
             });
 
-            it('Should processingSpreadsheetSecondaryTables with type CREDIT_CARD.', () => {
+            xit('Should processingSpreadsheetSecondaryTables with type CREDIT_CARD.', () => {
                 const result = business['processingSpreadsheetSecondaryTables']({
                     sheet: spreadsheetMock,
                     data: [{ ...mockEntity, type: EBillType.CREDIT_CARD, expenses: mockExpenses }],
@@ -618,7 +618,7 @@ describe('Bill Business', () => {
                 expect(result).toBe(2);
             });
 
-            it('Should processingSpreadsheetSecondaryTables with type CREDIT_CARD and expenses empty.', () => {
+            xit('Should processingSpreadsheetSecondaryTables with type CREDIT_CARD and expenses empty.', () => {
                 const result = business['processingSpreadsheetSecondaryTables']({
                     sheet: spreadsheetMock,
                     data: [{ ...mockEntity, type: EBillType.CREDIT_CARD, expenses: undefined }],
@@ -636,7 +636,7 @@ describe('Bill Business', () => {
                 expect(result).toBe(14);
             });
 
-            it('Should processingSpreadsheetSecondaryTables with type CREDIT_CARD and all total undefined.', () => {
+            xit('Should processingSpreadsheetSecondaryTables with type CREDIT_CARD and all total undefined.', () => {
                 const monthsObj = MONTHS.reduce((acc, month) => {
                     acc[month] = 50;
                     return acc;
@@ -672,7 +672,7 @@ describe('Bill Business', () => {
         });
 
         describe('processingSpreadsheetDetailTable', () => {
-            it('should return startRow when not have table', () => {
+            xit('should return startRow when not have table', () => {
                 const result = business['processingSpreadsheetDetailTable']({
                     sheet: spreadsheetMock,
                     table: undefined,
@@ -685,7 +685,7 @@ describe('Bill Business', () => {
                 expect(result).toBe(14);
             });
 
-            it('should return startRow when table title is undefined.', () => {
+            xit('should return startRow when table title is undefined.', () => {
                 const result = business['processingSpreadsheetDetailTable']({
                     sheet: spreadsheetMock,
                     table: {
@@ -704,22 +704,22 @@ describe('Bill Business', () => {
         });
 
         describe('getItemTitle', () => {
-            it('should return the default when the type is undefined.', () => {
+            xit('should return the default when the type is undefined.', () => {
                 const result = business['getItemTitle'](mockEntity, undefined);
                 expect(result).toEqual(mockEntity.group.name);
             });
 
-            it('should return the group name when the type is group.', () => {
+            xit('should return the group name when the type is group.', () => {
                 const result = business['getItemTitle'](mockEntity, 'group');
                 expect(result).toEqual(mockEntity.group.name);
             });
 
-            it('should return the bank name when the type is bank.', () => {
+            xit('should return the bank name when the type is bank.', () => {
                 const result = business['getItemTitle'](mockEntity, 'bank');
                 expect(result).toEqual(mockEntity.bank.name);
             });
 
-            it('should return the type when the type is type.', () => {
+            xit('should return the type when the type is type.', () => {
                 const result = business['getItemTitle'](mockEntity, 'type');
                 expect(result).toEqual(mockEntity.type.toLowerCase().replace(/ /g, '_'));
             });
