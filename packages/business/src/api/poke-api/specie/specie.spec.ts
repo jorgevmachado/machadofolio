@@ -1,3 +1,14 @@
+jest.mock('@repo/services', () => ({
+    Http: jest.fn().mockImplementation(() => ({
+        get: jest.fn(),
+        post: jest.fn(),
+        path: jest.fn(),
+        remove: jest.fn(),
+    }))
+}));
+
+const mockGet = jest.fn<(...args: any[]) => Promise<any>>();
+
 import {
     afterEach,
     beforeEach,
@@ -7,11 +18,7 @@ import {
     jest,
 } from '@jest/globals';
 
-import { Http } from '@repo/services';
-
 import { Specie } from './specie';
-
-jest.mock('@repo/services');
 
 describe('PokeApi Specie', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
@@ -23,6 +30,7 @@ describe('PokeApi Specie', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
+        (Specie.prototype as any).get = mockGet;
         specie = new Specie(mockConfig);
     });
 
@@ -32,8 +40,8 @@ describe('PokeApi Specie', () => {
 
 
     describe('getByPokemonName', () => {
-        xit('should call get with correct URL for getByPokemonName', async () => {
-            const mockedGet = jest.spyOn(Http.prototype, 'get').mockResolvedValue({
+        it('should call get with correct URL for getByPokemonName', async () => {
+            mockGet.mockResolvedValue({
                 color: { name: 'green' },
                 id: 1,
             });
@@ -42,8 +50,8 @@ describe('PokeApi Specie', () => {
 
             await specie.getByPokemonName(name);
 
-            expect(mockedGet).toHaveBeenCalledTimes(1);
-            expect(mockedGet).toHaveBeenCalledWith(`pokemon-species/${name}`);
+            expect(mockGet).toHaveBeenCalledTimes(1);
+            expect(mockGet).toHaveBeenCalledWith(`pokemon-species/${name}`);
         });
     });
 });

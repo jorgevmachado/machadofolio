@@ -1,3 +1,30 @@
+jest.mock('../../../shared', () => ({
+    BaseService: class {
+        private repo: any;
+        constructor(repo) {
+            this.repo = repo;
+        }
+        create(...args) {
+            return this.repo.create(...args);
+        }
+        update(...args) {
+            return this.repo.update(...args);
+        }
+        delete(...args) {
+            return this.repo.delete(...args);
+        }
+        remove(...args) {
+            return this.repo.delete(...args);
+        }
+        get(...args) {
+            return this.repo.getOne(...args);
+        }
+        getAll(...args) {
+            return this.repo.getAll(...args);
+        }
+    },
+}));
+
 import {
     afterEach,
     beforeEach,
@@ -13,7 +40,19 @@ import { type Nest } from '../../../api';
 
 import { EXPENSE_MOCK } from '../../mock';
 
-import type { CreateExpenseParams, UpdateExpenseParams } from '../types';
+jest.mock('../expense', () => ({
+    __esModule: true,
+    default: function Expense(response) {
+        Object.assign(this, EXPENSE_MOCK, response);
+    },
+    Expense: function Expense(response) {
+        Object.assign(this, EXPENSE_MOCK, response);
+    },
+}));
+
+
+
+import type { CreateExpenseParams, ExpenseEntity, UpdateExpenseParams } from '../types';
 
 import { ExpenseService } from './service';
 
@@ -22,7 +61,7 @@ jest.mock('../../../api');
 describe('Expense Service', () => {
     let service: ExpenseService;
     let mockNest: jest.Mocked<Nest>;
-    const mockEntity = EXPENSE_MOCK;
+    const mockEntity = EXPENSE_MOCK as unknown as ExpenseEntity;
 
     const mockPaginateParams = { page: 1, limit: 10 };
     const mockEntityList = [mockEntity, mockEntity];
@@ -62,14 +101,14 @@ describe('Expense Service', () => {
     });
 
     describe('constructor', () => {
-        xit('should instantiate the service correctly', () => {
+        it('should instantiate the service correctly', () => {
             expect(service).toBeInstanceOf(ExpenseService);
             expect(service['nest']).toBe(mockNest);
         });
     });
 
     describe('create', () => {
-        xit('should successfully create an supplier', async () => {
+        it('should successfully create an supplier', async () => {
             mockNest.finance.bill.expense.create.mockResolvedValue(mockEntity);
 
             const mockExpenseCreateParams: CreateExpenseParams = {
@@ -96,7 +135,7 @@ describe('Expense Service', () => {
     });
 
     describe('update', () => {
-        xit('should successfully update an expense', async () => {
+        it('should successfully update an expense', async () => {
             mockNest.finance.bill.expense.update.mockResolvedValue(mockEntity);
             const mockExpenseUpdateParams: UpdateExpenseParams = {
                 ...mockEntity,
@@ -118,7 +157,7 @@ describe('Expense Service', () => {
     });
 
     describe('delete', () => {
-        xit('should successfully delete an expense', async () => {
+        it('should successfully delete an expense', async () => {
             const mockResponse = { message: 'Successfully removed' };
             mockNest.finance.bill.expense.delete.mockResolvedValue(
                 mockResponse,
@@ -134,7 +173,7 @@ describe('Expense Service', () => {
     });
 
     describe('get', () => {
-        xit('should successfully get an expense', async () => {
+        it('should successfully get an expense', async () => {
             mockNest.finance.bill.expense.getOne.mockResolvedValue(mockEntity);
             const result = await service.get(mockEntity.id, mockEntity.bill.id);
 
@@ -147,7 +186,7 @@ describe('Expense Service', () => {
     });
 
     describe('getAll', () => {
-        xit('should successfully getAll supplier list', async () => {
+        it('should successfully getAll supplier list', async () => {
             mockNest.finance.bill.expense.getAll.mockResolvedValue(
                 mockEntityList,
             );
@@ -160,7 +199,7 @@ describe('Expense Service', () => {
             expect(result).toEqual(mockEntityList);
         });
 
-        xit('should successfully getAll supplier list paginate', async () => {
+        it('should successfully getAll supplier list paginate', async () => {
             mockNest.finance.bill.expense.getAll.mockResolvedValue(
                 mockEntityPaginate,
             );

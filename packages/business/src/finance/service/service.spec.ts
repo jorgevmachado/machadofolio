@@ -1,3 +1,10 @@
+jest.mock('../bill', () => ({ Bill: jest.fn() }));
+jest.mock('../bank', () => ({ Bank: jest.fn() }));
+jest.mock('../group', () => ({ Group: jest.fn() }));
+jest.mock('../supplier', () => ({ Supplier: jest.fn() }));
+jest.mock('../expense', () => ({ Expense: jest.fn() }));
+jest.mock('../supplier-type', () => ({ SupplierType: jest.fn() }));
+
 import {
     afterEach,
     beforeEach,
@@ -10,12 +17,25 @@ import {
 import { type Nest } from '../../api';
 
 import { FINANCE_MOCK } from '../mock';
+
+jest.mock('../finance', () => ({
+    __esModule: true,
+    default: function Finance(response) {
+        Object.assign(this, FINANCE_MOCK, response);
+    },
+    Finance: function Finance(response) {
+        Object.assign(this, FINANCE_MOCK, response);
+    },
+}));
+
+import type { FinanceEntity } from '../types';
+
 import { FinanceService } from './service';
 
 jest.mock('../../api');
 
 describe('Finance Service', () => {
-    const mockEntity = FINANCE_MOCK;
+    const mockEntity = FINANCE_MOCK as unknown as FinanceEntity;
     let service: FinanceService;
     let mockNest: jest.Mocked<Nest>;
 
@@ -37,17 +57,17 @@ describe('Finance Service', () => {
     });
 
     describe('constructor', () => {
-        xit('should be instantiated correctly', () => {
+        it('should be instantiated correctly', () => {
             expect(service).toBeDefined();
         });
 
-        xit('should receive the Nest dependency in the constructor', () => {
+        it('should receive the Nest dependency in the constructor', () => {
             expect(service['nest']).toBe(mockNest);
         });
     });
 
     describe('initialize', () => {
-        xit('should initialize the finance', async () => {
+        it('should initialize the finance', async () => {
             mockNest.finance.initialize.mockResolvedValue({
                 ...mockEntity,
                 bills: undefined,
@@ -63,7 +83,7 @@ describe('Finance Service', () => {
     });
 
     describe('find', () => {
-        xit('should find the finance', async () => {
+        it('should find the finance', async () => {
             const mockResponse = {
                 bills: [],
                 total: 0,
@@ -94,7 +114,7 @@ describe('Finance Service', () => {
             expect(result.finance.id).toEqual(mockEntity.id);
             expect(result.finance.user).toEqual(mockEntity.user);
             expect(result.finance.bills).toHaveLength(1);
-            expect(result.finance.groups).toBeUndefined();
+            expect(result.finance.groups).toHaveLength(1);
             expect(result.finance.created_at).toEqual(mockEntity.created_at);
             expect(result.finance.updated_at).toEqual(mockEntity.updated_at);
             expect(result.finance.deleted_at).toEqual(mockEntity.deleted_at);

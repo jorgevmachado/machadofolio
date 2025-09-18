@@ -1,3 +1,44 @@
+import { BANK_MOCK } from '../../mock';
+
+jest.mock('../../../api');
+
+jest.mock('../bank', () => ({
+    __esModule: true,
+    default: function Bank(response) {
+        Object.assign(this, BANK_MOCK, response);
+    },
+    Bank: function Bank(response) {
+        Object.assign(this, BANK_MOCK, response);
+    },
+}));
+
+jest.mock('../../../shared', () => ({
+    BaseService: class {
+        private repo: any;
+        constructor(repo) {
+            this.repo = repo;
+        }
+        create(...args) {
+            return this.repo.create(...args);
+        }
+        update(...args) {
+            return this.repo.update(...args);
+        }
+        delete(...args) {
+            return this.repo.delete(...args);
+        }
+        remove(...args) {
+            return this.repo.delete(...args);
+        }
+        get(...args) {
+            return this.repo.getOne(...args);
+        }
+        getAll(...args) {
+            return this.repo.getAll(...args);
+        }
+    },
+}));
+
 import {
     afterEach,
     beforeEach,
@@ -9,11 +50,9 @@ import {
 
 import { type Nest } from '../../../api';
 
-import { BANK_MOCK } from '../../mock';
-
 import { BankService } from './service';
 
-jest.mock('../../../api');
+
 
 describe('Bank Service', () => {
     let service: BankService;
@@ -56,10 +95,10 @@ describe('Bank Service', () => {
     });
     
     describe('create', () => {
-        xit('should successfully create an bank', async () => {
+        it('should successfully create an bank', async () => {
             mockNest.finance.bank.create.mockResolvedValue(mockEntity);
 
-            const result = await service.create({ name: mockEntity.name });
+            const result = await service.create({ name: mockEntity.name }, undefined);
 
             expect(mockNest.finance.bank.create).toHaveBeenCalledWith({
                 name: mockEntity.name,
@@ -69,7 +108,7 @@ describe('Bank Service', () => {
     });
 
     describe('update', () => {
-        xit('should successfully update an bank', async () => {
+        it('should successfully update an bank', async () => {
             mockNest.finance.bank.update.mockResolvedValue(mockEntity);
 
             const result = await service.update(mockEntity.id, {
@@ -78,11 +117,11 @@ describe('Bank Service', () => {
 
             expect(mockNest.finance.bank.update).toHaveBeenCalledWith(mockEntity.id, {
                 name: mockEntity.name,
-            }, undefined);
+            });
             expect(result).toEqual(mockEntity);
         });
 
-        xit('should throw an error if the update fails', async () => {
+        it('should throw an error if the update fails', async () => {
             const mockError = new Error('Failed to update bank');
             mockNest.finance.bank.update.mockRejectedValue(mockError);
 
@@ -91,55 +130,54 @@ describe('Bank Service', () => {
             ).rejects.toThrow('Failed to update bank');
         });
 
-        xit('should call the update method with correct arguments', async () => {
+        it('should call the update method with correct arguments', async () => {
             mockNest.finance.bank.update.mockResolvedValue(mockEntity);
 
             await service.update(mockEntity.id, { name: mockEntity.name });
 
             expect(mockNest.finance.bank.update).toHaveBeenCalledWith(mockEntity.id, {
                 name: mockEntity.name,
-            },undefined);
+            });
             expect(mockNest.finance.bank.update).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('delete', () => {
-        xit('should successfully delete an bank', async () => {
+        it('should successfully delete an bank', async () => {
             const mockResponse = { message: 'Successfully removed' };
             mockNest.finance.bank.delete.mockResolvedValue(mockResponse);
             const result = await service.remove(mockEntity.id);
 
-            expect(mockNest.finance.bank.delete).toHaveBeenCalledWith(mockEntity.id,undefined);
+            expect(mockNest.finance.bank.delete).toHaveBeenCalledWith(mockEntity.id);
             expect(result).toEqual(mockResponse);
         });
     });
 
     describe('get', () => {
-        xit('should successfully get an bank', async () => {
+        it('should successfully get an bank', async () => {
             mockNest.finance.bank.getOne.mockResolvedValue(mockEntity);
             const result = await service.get(mockEntity.id);
 
-            expect(mockNest.finance.bank.getOne).toHaveBeenCalledWith(mockEntity.id,undefined);
+            expect(mockNest.finance.bank.getOne).toHaveBeenCalledWith(mockEntity.id);
             expect(result).toEqual(mockEntity);
         });
     });
 
     describe('getAll', () => {
-        xit('should successfully getAll bank list', async () => {
+        it('should successfully getAll bank list', async () => {
             mockNest.finance.bank.getAll.mockResolvedValue(mockEntityList);
             const result = await service.getAll({});
 
-            expect(mockNest.finance.bank.getAll).toHaveBeenCalledWith({},undefined);
+            expect(mockNest.finance.bank.getAll).toHaveBeenCalledWith({});
             expect(result).toEqual(mockEntityList);
         });
 
-        xit('should successfully getAll bank list paginate', async () => {
+        it('should successfully getAll bank list paginate', async () => {
             mockNest.finance.bank.getAll.mockResolvedValue(mockEntityPaginate);
             const result = await service.getAll(mockPaginateParams);
 
             expect(mockNest.finance.bank.getAll).toHaveBeenCalledWith(
-                mockPaginateParams,
-                undefined
+                mockPaginateParams
             );
             expect(result).toEqual(mockEntityPaginate);
         });

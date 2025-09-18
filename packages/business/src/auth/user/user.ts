@@ -1,10 +1,8 @@
-import { cleanFormatter } from '@repo/services';
-import { mobileValidator } from '@repo/services';
+import { cleanFormatter, mobileValidator } from '@repo/services';
 
 import { ERole, EStatus } from '../../enum';
 
 import type { UserConstructorParams, UserEntity } from '../types';
-
 
 export default class User implements UserEntity {
     id!: UserEntity['id'];

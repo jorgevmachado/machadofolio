@@ -11,8 +11,9 @@ import { FINANCE_MOCK } from './mock';
 import Finance from './finance';
 import type { FinanceEntity } from './types';
 
+
 describe('Finance', () => {
-    const financeMock: FinanceEntity = FINANCE_MOCK;
+    const financeMock: FinanceEntity = FINANCE_MOCK as unknown as FinanceEntity;
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
@@ -23,7 +24,7 @@ describe('Finance', () => {
     });
 
     describe('Constructor', () => {
-        xit('should create an instance with all provided parameters', () => {
+        it('should create an instance with all provided parameters', () => {
             const finance = new Finance(financeMock);
             expect(finance).toBeInstanceOf(Finance);
             expect(finance.id).toBe(financeMock.id);
@@ -37,7 +38,7 @@ describe('Finance', () => {
             );
             expect(finance.deleted_at).toBe(financeMock.deleted_at);
         });
-        xit('should create an instance with some provided parameters', () => {
+        it('should create an instance with some provided parameters', () => {
             const finance = new Finance({
                 user: financeMock.user,
             });
@@ -49,7 +50,7 @@ describe('Finance', () => {
             expect(finance.updated_at).toBeUndefined();
             expect(finance.deleted_at).toBeUndefined();
         });
-        xit('should initialize fields with default values when no parameters are provided', () => {
+        it('should initialize fields with default values when no parameters are provided', () => {
             const finance = new Finance();
             expect(finance.id).toBeUndefined();
             expect(finance.user).toBeUndefined();

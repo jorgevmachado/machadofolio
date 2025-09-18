@@ -1,3 +1,30 @@
+jest.mock('../../../shared', () => ({
+    BaseService: class {
+        private repo: any;
+        constructor(repo) {
+            this.repo = repo;
+        }
+        create(...args) {
+            return this.repo.create(...args);
+        }
+        update(...args) {
+            return this.repo.update(...args);
+        }
+        delete(...args) {
+            return this.repo.delete(...args);
+        }
+        remove(...args) {
+            return this.repo.delete(...args);
+        }
+        get(...args) {
+            return this.repo.getOne(...args);
+        }
+        getAll(...args) {
+            return this.repo.getAll(...args);
+        }
+    },
+}));
+
 import {
     afterEach,
     beforeEach,
@@ -10,6 +37,17 @@ import {
 import { type Nest } from '../../../api';
 
 import { GROUP_MOCK } from '../../mock';
+import type { GroupEntity } from '../types';
+
+jest.mock('../group', () => ({
+    __esModule: true,
+    default: function Group(response) {
+        Object.assign(this, GROUP_MOCK, response);
+    },
+    Group: function Group(response) {
+        Object.assign(this, GROUP_MOCK, response);
+    },
+}));
 
 import { GroupService } from './service';
 
@@ -18,7 +56,7 @@ jest.mock('../../../api');
 describe('Group Service', () => {
     let service: GroupService;
     let mockNest: jest.Mocked<Nest>;
-    const mockEntity = GROUP_MOCK;
+    const mockEntity = GROUP_MOCK as unknown as GroupEntity;
     const mockPaginateParams = { page: 1, limit: 10 };
     const mockEntityList = [mockEntity, mockEntity];
     const mockEntityPaginate = {
@@ -56,15 +94,12 @@ describe('Group Service', () => {
 
 
     describe('create', () => {
-        xit('should successfully create an group', async () => {
+        it('should successfully create an group', async () => {
             mockNest.finance.group.create.mockResolvedValue(mockEntity);
 
-            const result = await service.create({ name: mockEntity.name, finance: mockEntity.finance });
+            const result = await service.create({ name: mockEntity.name });
 
-            expect(mockNest.finance.group.create).toHaveBeenCalledWith({
-                name: mockEntity.name,
-                finance: mockEntity.finance
-            }, undefined);
+            expect(mockNest.finance.group.create).toHaveBeenCalledWith({ name: mockEntity.name });
             expect(result.id).toEqual(mockEntity.id);
             expect(result.name).toEqual(mockEntity.name);
             expect(result.name_code).toEqual(mockEntity.name_code);
@@ -73,21 +108,16 @@ describe('Group Service', () => {
     });
 
     describe('update', () => {
-        xit('should successfully update an group', async () => {
+        it('should successfully update an group', async () => {
             mockNest.finance.group.update.mockResolvedValue(mockEntity);
 
             const result = await service.update(mockEntity.id, {
                 name: mockEntity.name,
-                finance: mockEntity.finance
             });
 
             expect(mockNest.finance.group.update).toHaveBeenCalledWith(
                 mockEntity.id,
-                {
-                    name: mockEntity.name,
-                    finance: mockEntity.finance
-                },
-                undefined
+                { name: mockEntity.name }
             );
             expect(result.id).toEqual(mockEntity.id);
             expect(result.name).toEqual(mockEntity.name);
@@ -95,54 +125,48 @@ describe('Group Service', () => {
             expect(result.finance.id).toEqual(mockEntity.finance.id);
         });
 
-        xit('should throw an error if the update fails', async () => {
+        it('should throw an error if the update fails', async () => {
             const mockError = new Error('Failed to update group');
             mockNest.finance.group.update.mockRejectedValue(mockError);
 
             await expect(
-                service.update(mockEntity.id, { name: mockEntity.name, finance: mockEntity.finance }),
+                service.update(mockEntity.id, { name: mockEntity.name }),
             ).rejects.toThrow('Failed to update group');
         });
 
-        xit('should call the update method with correct arguments', async () => {
+        it('should call the update method with correct arguments', async () => {
             mockNest.finance.group.update.mockResolvedValue(mockEntity);
 
-            await service.update(mockEntity.id, { name: mockEntity.name, finance: mockEntity.finance });
+            await service.update(mockEntity.id, { name: mockEntity.name });
 
             expect(mockNest.finance.group.update).toHaveBeenCalledWith(
                 mockEntity.id,
-                {
-                    name: mockEntity.name,
-                    finance: mockEntity.finance
-                },
-                undefined
+                { name: mockEntity.name },
             );
             expect(mockNest.finance.group.update).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('delete', () => {
-        xit('should successfully delete an group', async () => {
+        it('should successfully delete an group', async () => {
             const mockResponse = { message: 'Successfully removed' };
             mockNest.finance.group.delete.mockResolvedValue(mockResponse);
             const result = await service.remove(mockEntity.id);
 
             expect(mockNest.finance.group.delete).toHaveBeenCalledWith(
-                mockEntity.id,
-                undefined
+                mockEntity.id
             );
             expect(result).toEqual(mockResponse);
         });
     });
 
     describe('get', () => {
-        xit('should successfully get an group', async () => {
+        it('should successfully get an group', async () => {
             mockNest.finance.group.getOne.mockResolvedValue(mockEntity);
             const result = await service.get(mockEntity.id);
 
             expect(mockNest.finance.group.getOne).toHaveBeenCalledWith(
-                mockEntity.id,
-                undefined
+                mockEntity.id
             );
             expect(result.id).toEqual(mockEntity.id);
             expect(result.name).toEqual(mockEntity.name);
@@ -152,23 +176,22 @@ describe('Group Service', () => {
     });
 
     describe('getAll', () => {
-        xit('should successfully getAll group list', async () => {
+        it('should successfully getAll group list', async () => {
             mockNest.finance.group.getAll.mockResolvedValue(mockEntityList);
             const result = await service.getAll({});
 
-            expect(mockNest.finance.group.getAll).toHaveBeenCalledWith({}, undefined);
+            expect(mockNest.finance.group.getAll).toHaveBeenCalledWith({});
             expect(result).toEqual(mockEntityList);
         });
 
-        xit('should successfully getAll group list paginate', async () => {
+        it('should successfully getAll group list paginate', async () => {
             mockNest.finance.group.getAll.mockResolvedValue(
                 mockEntityPaginate,
             );
             const result = await service.getAll(mockPaginateParams);
 
             expect(mockNest.finance.group.getAll).toHaveBeenCalledWith(
-                mockPaginateParams,
-                undefined
+                mockPaginateParams
             );
             expect(result).toEqual(mockEntityPaginate);
         });

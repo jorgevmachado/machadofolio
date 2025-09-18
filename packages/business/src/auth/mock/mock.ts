@@ -2,9 +2,7 @@ import { EGender } from '@repo/services';
 
 import { ERole, EStatus } from '../../enum';
 
-import type { UserEntity } from '../types';
-
-export const USER_ENTITY_MOCK: UserEntity = {
+export const USER_ENTITY_MOCK = {
     id: 'eaca4c08-e62d-495a-ae1c-918199da8d52',
     cpf: '49892120450',
     salt: '$2a$10$5pv7wQmv3rnXyB9YMqgocO',
@@ -22,7 +20,7 @@ export const USER_ENTITY_MOCK: UserEntity = {
     confirmation_token: '9bd0aceff9012467fce99a8c2efdfacd3a27255d87f0b516adfd5e889ad3668e',
 };
 
-export const USER_MOCK: UserEntity = {
+export const USER_MOCK = {
     ...USER_ENTITY_MOCK,
     salt: undefined,
     password: undefined,

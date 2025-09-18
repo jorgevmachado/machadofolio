@@ -1,3 +1,14 @@
+jest.mock('@repo/services', () => ({
+    Http: jest.fn().mockImplementation(() => ({
+        get: jest.fn(),
+        post: jest.fn(),
+        path: jest.fn(),
+        remove: jest.fn(),
+    }))
+}));
+
+const mockGet = jest.fn<(...args: any[]) => Promise<any>>();
+
 import {
     afterEach,
     beforeEach,
@@ -7,11 +18,7 @@ import {
     jest,
 } from '@jest/globals';
 
-import { Http } from '@repo/services';
-
 import { Evolution } from './evolution';
-
-jest.mock('@repo/services');
 
 describe('PokeApi Evolution', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
@@ -23,6 +30,7 @@ describe('PokeApi Evolution', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
+        (Evolution.prototype as any).get = mockGet;
         evolution = new Evolution(mockConfig);
     });
 
@@ -32,8 +40,8 @@ describe('PokeApi Evolution', () => {
 
 
     describe('getByOrder', () => {
-        xit('should call get with correct URL for getByOrder', async () => {
-            const mockedGet = jest.spyOn(Http.prototype, 'get').mockResolvedValue({
+        it('should call get with correct URL for getByOrder', async () => {
+            mockGet.mockResolvedValue({
                 chain: {},
                 id: 1,
             });
@@ -42,8 +50,8 @@ describe('PokeApi Evolution', () => {
 
             await evolution.getByOrder(order);
 
-            expect(mockedGet).toHaveBeenCalledTimes(1);
-            expect(mockedGet).toHaveBeenCalledWith(`evolution-chain/${order}`);
+            expect(mockGet).toHaveBeenCalledTimes(1);
+            expect(mockGet).toHaveBeenCalledWith(`evolution-chain/${order}`);
         });
     });
 });

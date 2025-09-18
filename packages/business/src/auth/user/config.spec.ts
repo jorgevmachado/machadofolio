@@ -36,7 +36,7 @@ describe('config utilities', () => {
       valid: true,
       message: 'Valid mobile number.',
     };
-    xit('should return the formatted value if it is valid', () => {
+    it('should return the formatted value if it is valid', () => {
       (mobileValidator as jest.Mock).mockReturnValue(
         mockValidatorSuccessResponse,
       );
@@ -50,7 +50,7 @@ describe('config utilities', () => {
       expect(cleanFormatter).toHaveBeenCalledWith(mockPhone);
     });
 
-    xit('should throw error if number is invalid', () => {
+    it('should throw error if number is invalid', () => {
       const mockValidatorErrorResponse = {
         valid: false,
         message: 'Please enter a valid mobile number.',
@@ -69,7 +69,7 @@ describe('config utilities', () => {
       expect(mobileValidator).toHaveBeenCalledWith({ value });
     });
 
-    xit('should return a valid formatted number while maintaining formatting when cleanAllFormatter is false', () => {
+    it('should return a valid formatted number while maintaining formatting when cleanAllFormatter is false', () => {
 
       (mobileValidator as jest.Mock).mockReturnValue(
         mockValidatorSuccessResponse,
@@ -83,7 +83,7 @@ describe('config utilities', () => {
       });
     });
 
-    xit('should throw error when value is undefined', () => {
+    it('should throw error when value is undefined', () => {
       (cleanFormatter as jest.Mock).mockReturnValue('');
       const mockValidatorRequiredResponse = {
         valid: false,

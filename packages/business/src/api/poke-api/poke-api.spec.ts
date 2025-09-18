@@ -40,9 +40,6 @@ describe('PokeApi', () => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
         (PokeApi.prototype as any).get = mockGet;
-        (PokeApi.prototype as any).post = mockPost;
-        (PokeApi.prototype as any).path = mockPath;
-        (PokeApi.prototype as any).remove = mockRemove;
         pokeApi = new PokeApi( { baseUrl: mockBaseUrl } );
     });
 

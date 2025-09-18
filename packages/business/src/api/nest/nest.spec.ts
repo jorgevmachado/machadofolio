@@ -15,7 +15,7 @@ import { Auth }  from './auth';
 import { Finance } from'./finance';
 import { Pokemon } from'./pokemon';
 import { Nest } from './nest';
-import { INestConfig } from './types';
+import type { INestConfig } from './types';
 
 
 describe('Nest', () => {

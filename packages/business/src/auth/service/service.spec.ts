@@ -55,7 +55,7 @@ describe('AuthService', () => {
             date_of_birth: mockUser.date_of_birth,
             password_confirmation: mockPassword,
         };
-        xit('should return success message when registering', async () => {
+        it('should return success message when registering', async () => {
             const mockResponse = { message: 'Registration Completed Successfully!' };
 
             mockNest.auth.signUp.mockResolvedValue(mockResponse);
@@ -66,7 +66,7 @@ describe('AuthService', () => {
             expect(mockNest.auth.signUp).toHaveBeenCalledWith(mockSignUpParams);
         });
 
-        xit('should throw error when registration fails', async () => {
+        it('should throw error when registration fails', async () => {
             mockNest.auth.signUp.mockRejectedValue(
                 new Error(mockResponseError.message),
             );
@@ -84,7 +84,7 @@ describe('AuthService', () => {
             email: mockUser.email,
             password: mockPassword,
         };
-        xit('should return token when logging in', async () => {
+        it('should return token when logging in', async () => {
             const mockResponse = { token: 'abc123' };
 
             mockNest.auth.signIn.mockResolvedValue(mockResponse);
@@ -95,7 +95,7 @@ describe('AuthService', () => {
             expect(mockNest.auth.signIn).toHaveBeenCalledWith(mockSignInParams);
         });
 
-        xit('should throw error when login fails', async () => {
+        it('should throw error when login fails', async () => {
             mockNest.auth.signIn.mockRejectedValue(
                 new Error(mockResponseError.message),
             );
@@ -109,7 +109,7 @@ describe('AuthService', () => {
     });
 
     describe('get', () => {
-        xit('should return a user when searching by id', async () => {
+        it('should return a user when searching by id', async () => {
             mockNest.auth.getOne.mockResolvedValue(mockUser);
 
             const result = await authService.get(mockUser.id);
@@ -118,7 +118,7 @@ describe('AuthService', () => {
             expect(mockNest.auth.getOne).toHaveBeenCalledWith(mockUser.id);
         });
 
-        xit('should throw error when userid not found', async () => {
+        it('should throw error when userid not found', async () => {
             mockNest.auth.getOne.mockRejectedValue(
                 new Error(mockResponseNotFound.message),
             );
@@ -132,7 +132,7 @@ describe('AuthService', () => {
     });
 
     describe('me', () => {
-        xit('should return the current user', async () => {
+        it('should return the current user', async () => {
             mockNest.auth.me.mockResolvedValue(mockUser);
 
             const result = await authService.me();
@@ -140,7 +140,7 @@ describe('AuthService', () => {
             expect(mockNest.auth.me).toHaveBeenCalledTimes(1);
         });
 
-        xit('should throw error when failing to fetch current user', async () => {
+        it('should throw error when failing to fetch current user', async () => {
             mockNest.auth.me.mockRejectedValue(new Error(mockResponseError.message));
 
             await expect(authService.me()).rejects.toThrow(mockResponseError.message);
@@ -157,7 +157,7 @@ describe('AuthService', () => {
             status: mockUser.status,
             date_of_birth: mockUser.date_of_birth,
         };
-        xit('should return success message when updating user', async () => {
+        it('should return success message when updating user', async () => {
             const mockResponse = { message: 'Update Successfully!' };
             mockNest.auth.updateAuth.mockResolvedValue(mockResponse);
             const result = await authService.update(mockUpdateParams);
@@ -169,7 +169,7 @@ describe('AuthService', () => {
 
     describe('upload', () => {
         const mockFile = new File(['test'], 'test.png', { type: 'image/png' });
-        xit('should return success message when upload picture', async () => {
+        it('should return success message when upload picture', async () => {
             const mockResponse = { message: 'File uploaded successfully!' };
             mockNest.auth.uploadPicture.mockResolvedValue(mockResponse);
             const result = await authService.upload(mockFile);

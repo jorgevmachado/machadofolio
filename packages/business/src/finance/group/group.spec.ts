@@ -8,10 +8,10 @@ import {
 } from '@jest/globals';
 import { GROUP_MOCK } from '../mock';
 import Group from './group';
-import type { GroupConstructorParams } from './types';
+import type { GroupConstructorParams, GroupEntity } from './types';
 
 describe('Group', () => {
-    const mockEntity = GROUP_MOCK;
+    const mockEntity = GROUP_MOCK as unknown as GroupEntity;
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
@@ -21,7 +21,7 @@ describe('Group', () => {
         jest.resetModules();
     });
     describe('constructor', () => {
-        xit('should create an instance with all parameters when valid data is provided', () => {
+        it('should create an instance with all parameters when valid data is provided', () => {
             const params: GroupConstructorParams = mockEntity;
 
             const group = new Group(params);
@@ -33,7 +33,7 @@ describe('Group', () => {
             expect(group.deleted_at).toBeUndefined();
         });
 
-        xit('should create an instance with minimal valid data', () => {
+        it('should create an instance with minimal valid data', () => {
             const params: GroupConstructorParams = {
                 name: 'Bill B',
                 finance: mockEntity.finance
@@ -48,7 +48,7 @@ describe('Group', () => {
             expect(group.deleted_at).toBeUndefined();
         });
 
-        xit('should allow instantiation with no parameters', () => {
+        it('should allow instantiation with no parameters', () => {
             const group = new Group();
 
             expect(group.id).toBeUndefined();

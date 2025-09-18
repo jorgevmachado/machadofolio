@@ -1,17 +1,30 @@
-import { afterEach, beforeEach, describe, jest, } from '@jest/globals';
+
+jest.mock('./config', () => ({
+    validateMobile: jest.fn()
+}));
+
+
+const mockMobileValidator = jest.fn();
+jest.mock('@repo/services', () => {
+    const originalModule = jest.requireActual('@repo/services') as Record<string, any>;
+    return {
+        ...originalModule,
+        mobileValidator: mockMobileValidator,
+    }
+});
+
+import { afterEach, beforeEach, describe, expect, jest, } from '@jest/globals';
 
 import { type UserConstructorParams, type UserEntity } from '../types';
 import { USER_ENTITY_MOCK } from '../mock';
 
 import User from './user';
-import { validateMobile } from './config';
-
-jest.mock('./config');
 
 describe('User Class', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
+        mockMobileValidator.mockReturnValue({valid: true, message: 'Invalid phone number'});
     });
 
     afterEach(() => {
@@ -38,9 +51,7 @@ describe('User Class', () => {
     const mockCpfFormatted: string = mockUser.cpf;
 
     describe('constructor', () => {
-        xit('should create a User object with the given parameters', () => {
-            (validateMobile as jest.Mock).mockReturnValue(mockUserConstructorParams.whatsapp);
-
+        it('should create a User object with the given parameters', () => {
             const user = new User({
                 cpf: mockUserConstructorParams.cpf,
                 role: mockUserConstructorParams.role,
@@ -63,7 +74,7 @@ describe('User Class', () => {
             expect(user.date_of_birth).toBe(mockUserConstructorParams.date_of_birth);
         });
 
-        xit('should create a User with default values if parameters are not provided', () => {
+        it('should create a User with default values if parameters are not provided', () => {
             const user = new User();
 
             expect(user.id).toBeUndefined();
@@ -77,8 +88,8 @@ describe('User Class', () => {
             expect(user.date_of_birth).toBeUndefined();
         });
 
-        xit('should call validateMobile correctly when clearing values', () => {
-            (validateMobile as jest.Mock).mockReturnValue(mockPhoneFormatted);
+        it('should call validateMobile correctly when clearing values', () => {
+            // (validateMobile as jest.Mock).mockReturnValue(mockPhoneFormatted);
 
             const user = new User({
                 ...mockUserConstructorParams,
@@ -89,7 +100,7 @@ describe('User Class', () => {
             expect(user.whatsapp).toBe(mockPhoneFormatted);
         });
 
-        xit('should not clear salt, password, and tokens when clean is false', () => {
+        it('should not clear salt, password, and tokens when clean is false', () => {
             const mockParams: UserConstructorParams = {
                 ...mockUserConstructorParams,
                 salt: 'randomSalt',
@@ -107,7 +118,7 @@ describe('User Class', () => {
             expect(user.confirmation_token).toBe(mockParams.confirmation_token);
         });
 
-        xit('should not include salt, password, or tokens when clean is true', () => {
+        it('should not include salt, password, or tokens when clean is true', () => {
             const mockParams: UserConstructorParams = {
                 ...mockUserConstructorParams,
                 salt: 'randomSalt',
@@ -124,5 +135,18 @@ describe('User Class', () => {
             expect(user.recover_token).toBeUndefined();
             expect(user.confirmation_token).toBeUndefined();
         });
+
+        it('should return throw error when validator is not valid', () => {
+            mockMobileValidator.mockReturnValue({valid: false, message: 'Invalid phone number'});
+            const createUser = () => new User({
+                ...mockUserConstructorParams,
+                salt: 'randomSalt',
+                clean: true,
+                password: 'hashedPassword',
+                recover_token: 'recoveryToken',
+                confirmation_token: 'confirmationToken',
+            });
+            expect(createUser).toThrowError('Invalid phone number');
+        })
     });
 });
