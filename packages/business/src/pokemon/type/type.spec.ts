@@ -24,7 +24,7 @@ describe('Pokemon Type', () => {
     });
 
     describe('constructor', () => {
-        xit('should create an instance pokemon type with all provided parameters', () => {
+        it('should create an instance pokemon type with all provided parameters', () => {
             const entity = new PokemonType(entityMock);
             expect(entity).toBeInstanceOf(PokemonType);
             expect(entity.id).toEqual(entityMock.id);
@@ -38,7 +38,7 @@ describe('Pokemon Type', () => {
             expect(entity.background_color).toEqual(entityMock.background_color);
         });
 
-        xit('should create an instance with some provided parameters', () => {
+        it('should create an instance with some provided parameters', () => {
             const entity = new PokemonType();
             expect(entity.id).toBeUndefined();
             expect(entity.url).toBeUndefined();

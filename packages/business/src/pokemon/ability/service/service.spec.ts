@@ -1,3 +1,30 @@
+jest.mock('../../../shared', () => ({
+    BaseService: class {
+        private repo: any;
+        constructor(repo) {
+            this.repo = repo;
+        }
+        create(...args) {
+            return this.repo.create(...args);
+        }
+        update(...args) {
+            return this.repo.update(...args);
+        }
+        delete(...args) {
+            return this.repo.delete(...args);
+        }
+        remove(...args) {
+            return this.repo.delete(...args);
+        }
+        get(...args) {
+            return this.repo.getOne(...args);
+        }
+        getAll(...args) {
+            return this.repo.getAll(...args);
+        }
+    },
+}));
+
 import {
     afterEach,
     beforeEach,
@@ -10,6 +37,16 @@ import {
 import { type Nest } from '../../../api';
 
 import { POKEMON_ABILITY_MOCK } from '../mock';
+
+jest.mock('../ability', () => ({
+    __esModule: true,
+    default: function PokemonAbility(response) {
+        Object.assign(this, POKEMON_ABILITY_MOCK, response);
+    },
+    PokemonAbility: function PokemonAbility(response) {
+        Object.assign(this, POKEMON_ABILITY_MOCK, response);
+    },
+}));
 
 import { PokemonAbilityService } from './service';
 
@@ -53,31 +90,30 @@ describe('Pokemon Ability Service', () => {
     });
     
     describe('get', () => {
-        xit('should successfully get an bank', async () => {
+        it('should successfully get an bank', async () => {
             mockNest.pokemon.ability.getOne.mockResolvedValue(mockEntity);
             const result = await service.get(mockEntity.id);
 
-            expect(mockNest.pokemon.ability.getOne).toHaveBeenCalledWith(mockEntity.id,undefined);
+            expect(mockNest.pokemon.ability.getOne).toHaveBeenCalledWith(mockEntity.id);
             expect(result).toEqual(mockEntity);
         });
     });
 
     describe('getAll', () => {
-        xit('should successfully getAll pokemon ability list', async () => {
+        it('should successfully getAll pokemon ability list', async () => {
             mockNest.pokemon.ability.getAll.mockResolvedValue(mockEntityList);
             const result = await service.getAll({});
 
-            expect(mockNest.pokemon.ability.getAll).toHaveBeenCalledWith({},undefined);
+            expect(mockNest.pokemon.ability.getAll).toHaveBeenCalledWith({});
             expect(result).toEqual(mockEntityList);
         });
 
-        xit('should successfully getAll pokemon ability list paginate', async () => {
+        it('should successfully getAll pokemon ability list paginate', async () => {
             mockNest.pokemon.ability.getAll.mockResolvedValue(mockEntityPaginate);
             const result = await service.getAll(mockPaginateParams);
 
             expect(mockNest.pokemon.ability.getAll).toHaveBeenCalledWith(
-                mockPaginateParams,
-                undefined
+                mockPaginateParams
             );
             expect(result).toEqual(mockEntityPaginate);
         });

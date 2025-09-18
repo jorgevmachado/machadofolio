@@ -14,7 +14,7 @@ import Pokemon from './pokemon';
 import type { PokemonEntity } from './types';
 
 describe('Pokemon', () => {
-    const entityMock: PokemonEntity = POKEMON_MOCK;
+    const entityMock: PokemonEntity = POKEMON_MOCK as unknown as PokemonEntity;
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
@@ -25,7 +25,7 @@ describe('Pokemon', () => {
     });
 
     describe('constructor', () => {
-        xit('should create an instance Pokemon with all provided parameters', () => {
+        it('should create an instance Pokemon with all provided parameters', () => {
             const entity = new Pokemon(entityMock);
             expect(entity).toBeInstanceOf(Pokemon);
             expect(entity.id).toEqual(entityMock.id);
@@ -62,7 +62,7 @@ describe('Pokemon', () => {
             expect(entity.has_gender_differences).toEqual(entityMock.has_gender_differences);
         });
 
-        xit('should create an instance with some provided parameters', () => {
+        it('should create an instance with some provided parameters', () => {
             const entity = new Pokemon();
             expect(entity).toBeInstanceOf(Pokemon);
             expect(entity.id).toBeUndefined();

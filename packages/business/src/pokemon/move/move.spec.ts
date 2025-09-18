@@ -12,7 +12,7 @@ import PokemonMove from './move';
 import type { PokemonMoveEntity } from './types';
 
 describe('Pokemon Move', () => {
-    const entityMock: PokemonMoveEntity = POKEMON_MOVE_MOCK;
+    const entityMock: PokemonMoveEntity = POKEMON_MOVE_MOCK as unknown as PokemonMoveEntity;
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
@@ -23,7 +23,7 @@ describe('Pokemon Move', () => {
     });
 
     describe('constructor', () => {
-        xit('should create an instance pokemon move with all provided parameters', () => {
+        it('should create an instance pokemon move with all provided parameters', () => {
             const entity = new PokemonMove(entityMock);
             expect(entity.id).toEqual(entityMock.id);
             expect(entity.pp).toEqual(entityMock.pp);
@@ -44,7 +44,7 @@ describe('Pokemon Move', () => {
             expect(entity.deleted_at).toEqual(entityMock.deleted_at);
         });
 
-        xit('should create an instance with some provided parameters', () => {
+        it('should create an instance with some provided parameters', () => {
             const entity = new PokemonMove();
             expect(entity.id).toBeUndefined();
             expect(entity.pp).toEqual(0);

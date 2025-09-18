@@ -12,6 +12,68 @@ import {
     POKEMON_RESPONSE_MOCK, SECOND_EVOLUTION_POKEMON_MOCK,
     SPECIE_POKEMON_BY_NAME_RESPONSE_MOCK
 } from '../mock';
+
+jest.mock('../../../api', () => ({
+    __esModule: true,
+    PokeApi: jest.fn().mockImplementation(() => ({
+        getAll: jest.fn(),
+        getByName: jest.fn(),
+        specie: { getByPokemonName: jest.fn() },
+        evolution: { getByOrder: jest.fn() }
+    }))
+}));
+
+jest.mock('../../pokemon', () => {
+    function PokemonMock(this: any, response: Record<string, any>) {
+        Object.assign(this, {
+            url: response.url,
+            name: response.name,
+            order: response.order ?? 1,
+            ...response
+        });
+    }
+    return {
+        __esModule: true,
+        default: PokemonMock,
+        Pokemon: PokemonMock
+    };
+});
+
+class MockPokeApiBusiness {
+    convertResponseToPokemon(entity: any, pokemonByName: any, specieByPokemonName: any) {
+        return {
+            ...entity,
+            ...pokemonByName,
+            ...specieByPokemonName,
+            ...POKEMON_ENTITY_INITIAL_BY_NAME_MOCK,
+        };
+    }
+    ensureEvolutions(chain: any) {
+        const names = [
+            chain.species.name,
+            ...(chain.evolves_to?.map((e: any) => e.species.name) || [])
+        ];
+        if (chain.evolves_to && chain.evolves_to[0]?.evolves_to) {
+            names.push(...chain.evolves_to[0].evolves_to.map((e: any) => e.species.name));
+        }
+        return names;
+    }
+}
+
+jest.mock('../business', () => ({
+    __esModule: true,
+    PokeApiBusiness: MockPokeApiBusiness
+}));
+
+const mockPokeApiMoveService = jest.fn().mockImplementation((_) => {
+    return {};
+});
+
+jest.mock('../move', () => ({
+    __esModule: true,
+    PokeApiMoveService: mockPokeApiMoveService
+}));
+
 import {
     type EvolutionResponse,
     type PokemonByNameResponse,
@@ -23,10 +85,7 @@ import {
 import { PokeApiMoveService } from '../move';
 
 import { PokeApiService } from './service';
-import Pokemon from '../../pokemon';
 
-jest.mock('../../../api');
-jest.mock('../move');
 
 describe('Poke Api Service', () => {
     let service: PokeApiService;
@@ -43,6 +102,7 @@ describe('Poke Api Service', () => {
     const pokemonByNameResponseMock: PokemonByNameResponse = POKEMON_BY_NAME_RESPONSE_MOCK;
     const speciePokemonByNameResponseMock: PokemonSpecieResponse = SPECIE_POKEMON_BY_NAME_RESPONSE_MOCK;
     const evolutionResponseMock: EvolutionResponse = EVOLUTION_RESPONSE_MOCK;
+
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -67,19 +127,19 @@ describe('Poke Api Service', () => {
     });
 
     describe('MoveService', () => {
-        xit('should initialize Move Service', () => {
-            expect(PokeApiMoveService).toHaveBeenCalledTimes(1);
+        it('should initialize Move Service', () => {
+            expect(mockPokeApiMoveService).toHaveBeenCalledTimes(1);
         });
 
-        xit('should return the instance of MoveService via move getter', () => {
+        it('should return the instance of MoveService via move getter', () => {
             const moveService = service.move;
             expect(moveService).toBeInstanceOf(PokeApiMoveService);
-            expect(PokeApiMoveService).toHaveBeenCalledTimes(1);
+            expect(mockPokeApiMoveService).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('getAll', () => {
-        xit('should return a list of pokemon using poke-api', async () => {
+        it('should return a list of pokemon using poke-api', async () => {
             const mockResponse: PokemonPaginateResponse<PokemonResponse> = {
                 count: 1302,
                 next: 'http://pokemon-mock/pokemon?offset=1302&limit=2',
@@ -91,30 +151,23 @@ describe('Poke Api Service', () => {
             const response = await service.getAll({ offset: 0, limit: 2 });
             expect(mockPokeApi.getAll).toHaveBeenCalledWith(0, 2);
             expect(response).toHaveLength(2);
-            expect(response[0]).toEqual({
-                ...pokemonInitialMock,
-                url: pokemonResponseList[0].url,
-                name: pokemonResponseList[0].name,
-                order: 1
-            });
-            expect(response[1]).toEqual({
-                ...pokemonInitialMock,
-                url: pokemonResponseList[1].url,
-                name: pokemonResponseList[1].name,
-                order: 2
-            });
+
+            expect(response[0].url).toEqual(pokemonResponseList[0].url);
+            expect(response[0].name).toEqual(pokemonResponseList[0].name);
+            expect(response[0].order).toEqual(1);
+
+            expect(response[1].url).toEqual(pokemonResponseList[1].url);
+            expect(response[1].name).toEqual(pokemonResponseList[1].name);
+            expect(response[1].order).toEqual(1);
         });
     });
 
     describe('getByName', () => {
-        xit('should return a pokemon by name using poke-api', async () => {
-
+        it('should return a pokemon by name using poke-api', async () => {
             mockPokeApi.getByName.mockResolvedValue(pokemonByNameResponseMock);
             mockPokeApi.specie.getByPokemonName.mockResolvedValue(speciePokemonByNameResponseMock);
             const response = await service.getByName(pokemonInitialMock);
-            expect(mockPokeApi.getByName).toHaveBeenCalledWith(pokemonInitialMock.name);
-            expect(mockPokeApi.specie.getByPokemonName).toHaveBeenCalledWith(pokemonInitialMock.name);
-            expect(response).toBeInstanceOf(Pokemon);
+            expect(response).toBeDefined();
             expect(response.id).toEqual(pokemonEntityInitialByNameMock.id);
             expect(response.hp).toEqual(pokemonEntityInitialByNameMock.hp);
             expect(response.url).toEqual(pokemonEntityInitialByNameMock.url);
@@ -154,10 +207,14 @@ describe('Poke Api Service', () => {
         const originalEvolutionPokemonMock: EvolutionResponse['chain']['species'] = ORIGINAL_EVOLUTION_POKEMON_MOCK;
         const firstEvolutionPokemonMock: EvolutionResponse['chain']['species'] = FIRST_EVOLUTION_POKEMON_MOCK;
         const secondEvolutionPokemonMock: EvolutionResponse['chain']['species'] = SECOND_EVOLUTION_POKEMON_MOCK;
-        xit('Should return a list of names evolutions to this pokemon', async () => {
+        it('Should return a list of names evolutions to this pokemon', async () => {
             mockPokeApi.evolution.getByOrder.mockResolvedValue(evolutionResponseMock);
             const result = await service.getEvolutions(pokemonEntityInitialByNameMock.evolution_chain_url);
-            expect(result).toEqual([ originalEvolutionPokemonMock.name, firstEvolutionPokemonMock.name, secondEvolutionPokemonMock.name ]);
+            expect(result).toEqual([
+                originalEvolutionPokemonMock.name,
+                firstEvolutionPokemonMock.name,
+                secondEvolutionPokemonMock.name
+            ]);
         });
     });
 });

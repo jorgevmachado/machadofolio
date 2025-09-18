@@ -7,8 +7,6 @@ import PokemonType from '../type';
 import type { EnsureColorParams, EnsureColorResult, TypeColor } from './types';
 
 
-
-
 const TYPE_COLORS: Array<TypeColor> = [
     { id: 1, name: 'ice', text_color: '#fff', background_color: '#51c4e7' },
     { id: 2, name: 'bug', text_color: '#b5d7a7', background_color: '#482d53' },

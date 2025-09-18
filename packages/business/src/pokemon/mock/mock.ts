@@ -1,8 +1,4 @@
-import { EStatus } from '../../enum';
-
-import type { PokemonEntity } from '../types';
-
-export const POKEMON_MOCK: PokemonEntity = {
+export const POKEMON_MOCK = {
     id: 'ac0138cd-4910-4000-8000-000000000000',
     hp: 0,
     url: 'http://pokemon-mock/1/',
@@ -12,7 +8,7 @@ export const POKEMON_MOCK: PokemonEntity = {
     moves: [],
     types: [],
     order: 1,
-    status: EStatus.COMPLETE,
+    status: 'COMPLETE',
     attack: 49,
     defense: 49,
     habitat: 'habitat',

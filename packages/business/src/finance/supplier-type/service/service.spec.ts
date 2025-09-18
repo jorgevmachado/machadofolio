@@ -1,3 +1,30 @@
+jest.mock('../../../shared', () => ({
+    BaseService: class {
+        private repo: any;
+        constructor(repo) {
+            this.repo = repo;
+        }
+        create(...args) {
+            return this.repo.create(...args);
+        }
+        update(...args) {
+            return this.repo.update(...args);
+        }
+        delete(...args) {
+            return this.repo.delete(...args);
+        }
+        remove(...args) {
+            return this.repo.delete(...args);
+        }
+        get(...args) {
+            return this.repo.getOne(...args);
+        }
+        getAll(...args) {
+            return this.repo.getAll(...args);
+        }
+    },
+}));
+
 import {
     afterEach,
     beforeEach,
@@ -10,6 +37,16 @@ import {
 import { type Nest } from '../../../api';
 
 import { SUPPLIER_TYPE_MOCK } from '../../mock';
+
+jest.mock('../supplier-type', () => ({
+    __esModule: true,
+    default: function SupplierType(response) {
+        Object.assign(this, SUPPLIER_TYPE_MOCK, response);
+    },
+    SupplierType: function SupplierType(response) {
+        Object.assign(this, SUPPLIER_TYPE_MOCK, response);
+    },
+}));
 
 import { SupplierTypeService } from './service';
 
@@ -56,20 +93,20 @@ describe('SupplierType function', () => {
 
 
     describe('create', () => {
-        xit('should successfully create an supplier type', async () => {
+        it('should successfully create an supplier type', async () => {
             mockNest.finance.supplier.type.create.mockResolvedValue(mockEntity);
 
             const result = await service.create({ name: mockEntity.name });
 
             expect(mockNest.finance.supplier.type.create).toHaveBeenCalledWith({
                 name: mockEntity.name,
-            }, undefined);
+            });
             expect(result).toEqual(mockEntity);
         });
     });
 
     describe('update', () => {
-        xit('should successfully update an supplier type', async () => {
+        it('should successfully update an supplier type', async () => {
             mockNest.finance.supplier.type.update.mockResolvedValue(mockEntity);
 
             const result = await service.update(mockEntity.id, {
@@ -78,15 +115,12 @@ describe('SupplierType function', () => {
 
             expect(mockNest.finance.supplier.type.update).toHaveBeenCalledWith(
                 mockEntity.id,
-                {
-                    name: mockEntity.name,
-                },
-                undefined,
+                { name: mockEntity.name },
             );
             expect(result).toEqual(mockEntity);
         });
 
-        xit('should throw an error if the update fails', async () => {
+        it('should throw an error if the update fails', async () => {
             const mockError = new Error('Failed to update supplier type');
             mockNest.finance.supplier.type.update.mockRejectedValue(mockError);
 
@@ -95,67 +129,61 @@ describe('SupplierType function', () => {
             ).rejects.toThrow('Failed to update supplier type');
         });
 
-        xit('should call the update method with correct arguments', async () => {
+        it('should call the update method with correct arguments', async () => {
             mockNest.finance.supplier.type.update.mockResolvedValue(mockEntity);
 
             await service.update(mockEntity.id, { name: mockEntity.name });
 
             expect(mockNest.finance.supplier.type.update).toHaveBeenCalledWith(
                 mockEntity.id,
-                {
-                    name: mockEntity.name,
-                },
-                undefined,
+                { name: mockEntity.name}
             );
             expect(mockNest.finance.supplier.type.update).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('delete', () => {
-        xit('should successfully delete an supplier type', async () => {
+        it('should successfully delete an supplier type', async () => {
             const mockResponse = { message: 'Successfully removed' };
             mockNest.finance.supplier.type.delete.mockResolvedValue(mockResponse);
             const result = await service.remove(mockEntity.id);
 
             expect(mockNest.finance.supplier.type.delete).toHaveBeenCalledWith(
-                mockEntity.id,
-                undefined,
+                mockEntity.id
             );
             expect(result).toEqual(mockResponse);
         });
     });
 
     describe('get', () => {
-        xit('should successfully get an supplier type', async () => {
+        it('should successfully get an supplier type', async () => {
             mockNest.finance.supplier.type.getOne.mockResolvedValue(mockEntity);
             const result = await service.get(mockEntity.id);
 
             expect(mockNest.finance.supplier.type.getOne).toHaveBeenCalledWith(
-                mockEntity.id,
-                undefined,
+                mockEntity.id
             );
             expect(result).toEqual(mockEntity);
         });
     });
 
     describe('getAll', () => {
-        xit('should successfully getAll supplier type list', async () => {
+        it('should successfully getAll supplier type list', async () => {
             mockNest.finance.supplier.type.getAll.mockResolvedValue(mockEntityList);
             const result = await service.getAll({});
 
-            expect(mockNest.finance.supplier.type.getAll).toHaveBeenCalledWith({}, undefined);
+            expect(mockNest.finance.supplier.type.getAll).toHaveBeenCalledWith({});
             expect(result).toEqual(mockEntityList);
         });
 
-        xit('should successfully getAll supplier type list paginate', async () => {
+        it('should successfully getAll supplier type list paginate', async () => {
             mockNest.finance.supplier.type.getAll.mockResolvedValue(
                 mockEntityPaginate,
             );
             const result = await service.getAll(mockPaginateParams);
 
             expect(mockNest.finance.supplier.type.getAll).toHaveBeenCalledWith(
-                mockPaginateParams,
-                undefined
+                mockPaginateParams
             );
             expect(result).toEqual(mockEntityPaginate);
         });

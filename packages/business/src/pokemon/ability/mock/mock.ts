@@ -1,6 +1,4 @@
-import type { PokemonAbilityEntity } from '../types';
-
-export const POKEMON_ABILITY_MOCK: PokemonAbilityEntity = {
+export const POKEMON_ABILITY_MOCK = {
     id: '01ade48b-573f-41fe-9d33-34a3cb4c0b9c',
     url: 'https://pokemon-mock/ability/1/',
     slot: 1,

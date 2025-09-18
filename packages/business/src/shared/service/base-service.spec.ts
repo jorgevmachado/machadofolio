@@ -27,6 +27,14 @@ class MockService extends BaseService<MockEntity, MockEntityParams, MockEntityPa
     }
 }
 
+jest.mock('../../paginate', () => ({
+    Paginate: jest.fn().mockImplementation((page, limit, total, results = []) => ({
+        page,
+        limit,
+        total,
+        results: Array.isArray(results) ? results : [],
+    }))
+}));
 
 describe('BaseService', () => {
     let service: MockService;
@@ -83,10 +91,15 @@ describe('BaseService', () => {
         });
 
         it('must return all entities in paginated format.', async () => {
-            const mockPaginateResponse: Paginate<MockEntity> = new Paginate(1, 10, 1, [
+            const mockPaginateResponse = new (Paginate as any)(1, 10, 1, [
                 { id: '1', name: 'Test1' },
                 { id: '2', name: 'Test2' },
             ]);
+            // Garantir que results está definido corretamente
+            mockPaginateResponse.results = [
+                { id: '1', name: 'Test1' },
+                { id: '2', name: 'Test2' },
+            ];
 
             const queryParams = { limit: 10, page: 1 };
             mockApi.getAll.mockResolvedValue(mockPaginateResponse);

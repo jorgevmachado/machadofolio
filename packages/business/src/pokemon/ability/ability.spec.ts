@@ -12,7 +12,7 @@ import PokemonAbility from './ability';
 import type { PokemonAbilityEntity } from './types';
 
 describe('Pokemon Ability', () => {
-    const entityMock: PokemonAbilityEntity = POKEMON_ABILITY_MOCK;
+    const entityMock: PokemonAbilityEntity = POKEMON_ABILITY_MOCK as unknown as PokemonAbilityEntity;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -24,7 +24,7 @@ describe('Pokemon Ability', () => {
     });
 
     describe('constructor', () => {
-        xit('should create an instance pokemon ability with all provided parameters', () => {
+        it('should create an instance pokemon ability with all provided parameters', () => {
             const entity = new PokemonAbility(entityMock);
             expect(entity).toBeInstanceOf(PokemonAbility);
             expect(entity.id).toEqual(entityMock.id);
@@ -36,7 +36,7 @@ describe('Pokemon Ability', () => {
             expect(entity.updated_at).toEqual(entityMock.updated_at);
             expect(entity.deleted_at).toEqual(entityMock.deleted_at);
         });
-        xit('should create an instance with some provided parameters', () => {
+        it('should create an instance with some provided parameters', () => {
             const entity = new PokemonAbility();
             expect(entity).toBeInstanceOf(PokemonAbility);
             expect(entity.id).toBeUndefined();

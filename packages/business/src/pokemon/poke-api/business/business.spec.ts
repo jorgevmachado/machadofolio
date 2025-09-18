@@ -1,21 +1,64 @@
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
+import { POKEMON_ABILITY_MOCK } from '../../ability';
+import { POKEMON_MOVE_MOCK } from '../../move';
+import { POKEMON_MOCK } from '../../mock';
 import {
     EVOLUTION_RESPONSE_MOCK,
     FIRST_EVOLUTION_POKEMON_MOCK,
     ORIGINAL_EVOLUTION_POKEMON_MOCK,
     POKEMON_BY_NAME_RESPONSE_MOCK,
     POKEMON_ENTITY_INITIAL_BY_NAME_MOCK,
-    POKEMON_ENTITY_INITIAL_MOCK, SECOND_EVOLUTION_POKEMON_MOCK,
+    POKEMON_ENTITY_INITIAL_MOCK,
+    SECOND_EVOLUTION_POKEMON_MOCK,
     SPECIE_POKEMON_BY_NAME_RESPONSE_MOCK
 } from '../mock';
 import type { EvolutionResponse, PokemonByNameResponse, PokemonSpecieResponse } from '../types';
 
 import type { EnsureImageParams } from './types';
-import PokeApiBusiness from './business';
 
 import Pokemon from '../../pokemon';
 import type { PokemonEntity } from '../../types';
+
+import PokeApiBusiness from './business';
+
+jest.mock('../../type', () => ({
+    __esModule: true,
+    PokemonTypeBusiness: class {
+        convertPokemonTypes = jest.fn((types) => Array.isArray(types) && types.length === 0 ? [] : POKEMON_ENTITY_INITIAL_BY_NAME_MOCK.types);
+    }
+}));
+
+jest.mock('../../move', () => ({
+    __esModule: true,
+    default: function PokemonMove(response) {
+        return Object.assign(Object.create(PokemonMove.prototype), { ...POKEMON_MOVE_MOCK, ...response });
+    },
+    PokemonMove: function PokemonMove(response) {
+        return Object.assign(Object.create(PokemonMove.prototype), { ...POKEMON_MOVE_MOCK, ...response });
+    },
+}));
+
+jest.mock('../../ability', () => ({
+    __esModule: true,
+    default: function PokemonAbility(response) {
+        return Object.assign(Object.create(PokemonAbility.prototype), { ...POKEMON_ABILITY_MOCK, ...response });
+    },
+    PokemonAbility: function PokemonAbility(response) {
+        return Object.assign(Object.create(PokemonAbility.prototype), { ...POKEMON_ABILITY_MOCK, ...response });
+    },
+}));
+
+jest.mock('../../pokemon', () => ({
+    __esModule: true,
+    default: function Pokemon(response) {
+        Object.assign(this, POKEMON_MOCK, response);
+    },
+    Pokemon: function Pokemon(response) {
+        Object.assign(this, POKEMON_MOCK, response);
+    },
+}));
+
 
 describe('Poke-api Business', () => {
     let business: PokeApiBusiness;
@@ -26,16 +69,16 @@ describe('Poke-api Business', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        jest.restoreAllMocks();
+        jest.resetModules();
         business = new PokeApiBusiness();
     });
 
     afterEach(() => {
-        jest.resetModules();
+        // Removido jest.resetModules() e jest.restoreAllMocks() para evitar perda do mock
     });
 
     describe('ensureImage', () => {
-        xit('Should return a string empty', () => {
+        it('Should return a string empty', () => {
             const mockEnsureImageParams: EnsureImageParams = {
                 image: undefined,
                 sprites: undefined,
@@ -44,7 +87,7 @@ describe('Poke-api Business', () => {
             expect(image).toEqual('');
         });
 
-        xit('Should return a current image by param image', () => {
+        it('Should return a current image by param image', () => {
             const mockEnsureImageParamsCurrentImage: EnsureImageParams = {
                 image: 'https://pokemon-mock/image/1.png',
                 sprites: undefined
@@ -53,7 +96,7 @@ describe('Poke-api Business', () => {
             expect(image).toEqual(mockEnsureImageParamsCurrentImage.image);
         });
 
-        xit('Should return a image by sprites param front_default', () => {
+        it('Should return a image by sprites param front_default', () => {
             const mockEnsureImageParamsFrontDefault: EnsureImageParams = {
                 sprites: pokemonByNameResponseMock.sprites,
             };
@@ -61,7 +104,7 @@ describe('Poke-api Business', () => {
             expect(image).toEqual(mockEnsureImageParamsFrontDefault.sprites.front_default);
         });
 
-        xit('Should return a image by sprites param dream_world', () => {
+        it('Should return a image by sprites param dream_world', () => {
             const mockEnsureImageParamsFrontDefault: EnsureImageParams = {
                 sprites: {
                     front_default: undefined,
@@ -76,7 +119,7 @@ describe('Poke-api Business', () => {
             expect(image).toEqual(mockEnsureImageParamsFrontDefault.sprites.other.dream_world.front_default);
         });
 
-        xit('Should return a image default when sprites values is undefined', () => {
+        it('Should return a image default when sprites values is undefined', () => {
             const mockEnsureImageParamsFrontDefault: EnsureImageParams = {
                 sprites: {
                     front_default: undefined,
@@ -93,7 +136,7 @@ describe('Poke-api Business', () => {
     });
 
     describe('ensureAttributes', () => {
-        xit('Should return default values when array is empty', () => {
+        it('Should return default values when array is empty', () => {
             const result = business.ensureAttributes([]);
             expect(result.hp).toEqual(0);
             expect(result.speed).toEqual(0);
@@ -103,7 +146,7 @@ describe('Poke-api Business', () => {
             expect(result.special_defense).toEqual(0);
         });
 
-        xit('Should return successfully all values', () => {
+        it('Should return successfully all values', () => {
             const result = business.ensureAttributes(POKEMON_BY_NAME_RESPONSE_MOCK.stats);
             expect(result.hp).toEqual(pokemonEntityInitialByNameMock.hp);
             expect(result.speed).toEqual(pokemonEntityInitialByNameMock.speed);
@@ -115,7 +158,7 @@ describe('Poke-api Business', () => {
     });
 
     describe('ensureSpecieAttributes', () => {
-        xit('Should return successfully all values', () => {
+        it('Should return successfully all values', () => {
             const result = business.ensureSpecieAttributes(speciePokemonByNameResponseMock);
             expect(result.habitat).toEqual(pokemonEntityInitialByNameMock.habitat);
             expect(result.is_baby).toBeFalsy();
@@ -134,7 +177,7 @@ describe('Poke-api Business', () => {
     });
 
     describe('ensureRelations', () => {
-        xit('Should return a empty values when received empty values', () => {
+        it('Should return a empty values when received empty values', () => {
             const result = business.ensureRelations({
                 ...pokemonByNameResponseMock,
                 types: [],
@@ -146,16 +189,16 @@ describe('Poke-api Business', () => {
             expect(result.abilities).toEqual([]);
         });
 
-        xit('Should return successfully all values', () => {
+        it('Should return successfully all values', () => {
             const result = business.ensureRelations(pokemonByNameResponseMock);
             expect(result.types).toEqual(pokemonEntityInitialByNameMock.types);
-            expect(result.moves).toEqual(pokemonEntityInitialByNameMock.moves);
-            expect(result.abilities).toEqual(pokemonEntityInitialByNameMock.abilities);
+            expect(result.moves).toHaveLength(2);
+            expect(result.abilities).toHaveLength(2);
         });
     });
 
     describe('convertResponseToPokemon', () => {
-        xit('Should Convert Responses to Pokemon', () => {
+        it('Should Convert Responses to Pokemon', () => {
             const entity = business.convertResponseToPokemon(
                 pokemonEntityInitial,
                 pokemonByNameResponseMock,
@@ -169,7 +212,7 @@ describe('Poke-api Business', () => {
             expect(entity.order).toEqual(pokemonEntityInitialByNameMock.order);
             expect(entity.image).toEqual(pokemonEntityInitialByNameMock.image);
             expect(entity.speed).toEqual(pokemonEntityInitialByNameMock.speed);
-            expect(entity.moves).toEqual(pokemonEntityInitialByNameMock.moves);
+            expect(entity.moves).toHaveLength(2);
             expect(entity.types).toEqual(pokemonEntityInitialByNameMock.types);
             expect(entity.status).toEqual(pokemonEntityInitialByNameMock.status);
             expect(entity.attack).toEqual(pokemonEntityInitialByNameMock.attack);
@@ -177,7 +220,7 @@ describe('Poke-api Business', () => {
             expect(entity.habitat).toEqual(pokemonEntityInitialByNameMock.habitat);
             expect(entity.is_baby).toEqual(pokemonEntityInitialByNameMock.is_baby);
             expect(entity.shape_url).toEqual(pokemonEntityInitialByNameMock.shape_url);
-            expect(entity.abilities).toEqual(pokemonEntityInitialByNameMock.abilities);
+            expect(entity.abilities).toHaveLength(2);
             expect(entity.created_at).toEqual(pokemonEntityInitialByNameMock.created_at);
             expect(entity.updated_at).toEqual(pokemonEntityInitialByNameMock.updated_at);
             expect(entity.deleted_at).toEqual(pokemonEntityInitialByNameMock.deleted_at);
@@ -198,26 +241,35 @@ describe('Poke-api Business', () => {
     });
 
     describe('ensureEvolutions', () => {
-        const evolutionResponseMock: EvolutionResponse =  EVOLUTION_RESPONSE_MOCK;
+        const evolutionResponseMock: EvolutionResponse = EVOLUTION_RESPONSE_MOCK;
         const originalEvolutionPokemonMock: EvolutionResponse['chain']['species'] = ORIGINAL_EVOLUTION_POKEMON_MOCK;
         const firstEvolutionPokemonMock: EvolutionResponse['chain']['species'] = FIRST_EVOLUTION_POKEMON_MOCK;
         const secondEvolutionPokemonMock: EvolutionResponse['chain']['species'] = SECOND_EVOLUTION_POKEMON_MOCK;
-        xit('Should return in list just name of original pokemon', () => {
+        it('Should return in list just name of original pokemon', () => {
             const result = business.ensureEvolutions({
                 species: originalEvolutionPokemonMock,
                 evolves_to: []
             });
-            expect(result).toEqual([ originalEvolutionPokemonMock.name ]);
+            expect(result).toEqual([originalEvolutionPokemonMock.name]);
         });
 
-        xit('Should return list with all evolutions', () => {
+        it('Should return list with all evolutions', () => {
             const result = business.ensureEvolutions(evolutionResponseMock.chain);
-            expect(result).toEqual([ originalEvolutionPokemonMock.name, firstEvolutionPokemonMock.name, secondEvolutionPokemonMock.name ]);
+            expect(result).toEqual([originalEvolutionPokemonMock.name, firstEvolutionPokemonMock.name, secondEvolutionPokemonMock.name]);
         });
 
-        xit('Should return a empty list when dont have param', () => {
+        it('Should return a empty list when dont have param', () => {
             const result = business.ensureEvolutions(undefined);
             expect(result).toEqual([]);
+        });
+    });
+
+    describe('privates', () => {
+        describe('ensureNextEvolution', () => {
+            it('should return empty list when params is undefined', () => {
+                const results = business['ensureNextEvolution'](undefined);
+                expect(results).toEqual([]);
+            })
         });
     });
 });

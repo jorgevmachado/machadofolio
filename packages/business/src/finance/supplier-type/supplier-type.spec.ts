@@ -10,9 +10,10 @@ import {
 import { SUPPLIER_TYPE_MOCK } from '../mock';
 
 import SupplierType from './supplier-type';
+import type { SupplierTypeEntity } from './types';
 
 describe('SupplierType', () => {
-    const supplierTypeMock = SUPPLIER_TYPE_MOCK;
+    const supplierTypeMock = SUPPLIER_TYPE_MOCK as unknown as SupplierTypeEntity;
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
@@ -23,7 +24,7 @@ describe('SupplierType', () => {
     });
 
     describe('Constructor', () => {
-        xit('should create an instance with all parameters when valid data is provided', () => {
+        it('should create an instance with all parameters when valid data is provided', () => {
             const params = supplierTypeMock;
 
             const supplierType = new SupplierType(params);
@@ -35,7 +36,7 @@ describe('SupplierType', () => {
             expect(supplierType.deleted_at).toBe(params.deleted_at);
         });
 
-        xit('should create an instance with minimal valid data', () => {
+        it('should create an instance with minimal valid data', () => {
             const params = {
                 name: 'Supplier B',
             };
@@ -49,7 +50,7 @@ describe('SupplierType', () => {
             expect(supplierType.deleted_at).toBeUndefined();
         });
 
-        xit('should allow instantiation with no parameters', () => {
+        it('should allow instantiation with no parameters', () => {
             const supplierType = new SupplierType();
 
             expect(supplierType.id).toBeUndefined();

@@ -1,3 +1,30 @@
+jest.mock('../../shared', () => ({
+    BaseService: class {
+        private repo: any;
+        constructor(repo) {
+            this.repo = repo;
+        }
+        create(...args) {
+            return this.repo.create(...args);
+        }
+        update(...args) {
+            return this.repo.update(...args);
+        }
+        delete(...args) {
+            return this.repo.delete(...args);
+        }
+        remove(...args) {
+            return this.repo.delete(...args);
+        }
+        get(...args) {
+            return this.repo.getOne(...args);
+        }
+        getAll(...args) {
+            return this.repo.getAll(...args);
+        }
+    },
+}));
+
 import {
     afterEach,
     beforeEach,
@@ -11,15 +38,26 @@ import { type Nest } from '../../api';
 
 import { POKEMON_MOCK } from '../mock';
 
-import { PokemonService } from './service';
+jest.mock('../pokemon', () => ({
+    __esModule: true,
+    default: function Pokemon(response) {
+        Object.assign(this, POKEMON_MOCK, response);
+    },
+    Pokemon: function Pokemon(response) {
+        Object.assign(this, POKEMON_MOCK, response);
+    },
+}));
 
+import type { PokemonEntity } from '../types';
+
+import { PokemonService } from './service';
 
 jest.mock('../../api');
 
 describe('Pokemon Service', () => {
     let service: PokemonService;
     let mockNest: jest.Mocked<Nest>;
-    const mockEntity = POKEMON_MOCK;
+    const mockEntity = POKEMON_MOCK as unknown as PokemonEntity;
     const mockPaginateParams = { page: 1, limit: 10 };
     const mockEntityList = [mockEntity, mockEntity];
     const mockEntityPaginate = {
@@ -50,31 +88,30 @@ describe('Pokemon Service', () => {
         jest.resetModules();
     });
     describe('get', () => {
-        xit('should successfully get an pokemon', async () => {
+        it('should successfully get an pokemon', async () => {
             mockNest.pokemon.getOne.mockResolvedValue(mockEntity);
             const result = await service.get(mockEntity.id);
 
-            expect(mockNest.pokemon.getOne).toHaveBeenCalledWith(mockEntity.id,undefined);
+            expect(mockNest.pokemon.getOne).toHaveBeenCalledWith(mockEntity.id);
             expect(result).toEqual(mockEntity);
         });
     });
 
     describe('getAll', () => {
-        xit('should successfully getAll pokemon list', async () => {
+        it('should successfully getAll pokemon list', async () => {
             mockNest.pokemon.getAll.mockResolvedValue(mockEntityList);
             const result = await service.getAll({});
 
-            expect(mockNest.pokemon.getAll).toHaveBeenCalledWith({},undefined);
+            expect(mockNest.pokemon.getAll).toHaveBeenCalledWith({});
             expect(result).toEqual(mockEntityList);
         });
 
-        xit('should successfully getAll pokemon list paginate', async () => {
+        it('should successfully getAll pokemon list paginate', async () => {
             mockNest.pokemon.getAll.mockResolvedValue(mockEntityPaginate);
             const result = await service.getAll(mockPaginateParams);
 
             expect(mockNest.pokemon.getAll).toHaveBeenCalledWith(
-                mockPaginateParams,
-                undefined
+                mockPaginateParams
             );
             expect(result).toEqual(mockEntityPaginate);
         });

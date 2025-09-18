@@ -1,6 +1,4 @@
-import type { PokemonByNameResponse } from '../../types';
-
-export const MOVES_MOCK: PokemonByNameResponse['moves'] = [
+export const MOVES_MOCK = [
     {
         move: {
             url: 'https://pokemon-mock/move/1/',

@@ -4,9 +4,19 @@ import { type PokeApi } from '../../../../api';
 
 import type { MoveResponse } from '../types';
 
-import type { PokemonMove } from '../../../move';
+import { POKEMON_MOVE_MOCK, PokemonMoveEntity } from '../../../move';
 
 import { POKEMON_ENTITY_INITIAL_BY_NAME_MOCK } from '../../mock';
+
+jest.mock('../../../move', () => ({
+    __esModule: true,
+    default: function PokemonMove(response) {
+        return Object.assign(Object.create(PokemonMove.prototype), { ...POKEMON_MOVE_MOCK, ...response });
+    },
+    PokemonMove: function PokemonMove(response) {
+        return Object.assign(Object.create(PokemonMove.prototype), { ...POKEMON_MOVE_MOCK, ...response });
+    },
+}));
 
 import { PokeApiMoveService } from './service';
 
@@ -15,7 +25,7 @@ jest.mock('../../../../api');
 describe('Pokemon Move Service', () => {
     let service: PokeApiMoveService;
     let mockPokeApi: jest.Mocked<PokeApi>;
-    const moveInitialMock: PokemonMove = POKEMON_ENTITY_INITIAL_BY_NAME_MOCK.moves[0];
+    const moveInitialMock: PokemonMoveEntity = POKEMON_ENTITY_INITIAL_BY_NAME_MOCK.moves[0];
     const effectEntryMock: MoveResponse['effect_entries'][number] = {
         effect: 'effect',
         short_effect: 'short-effect',
@@ -46,7 +56,7 @@ describe('Pokemon Move Service', () => {
         }]
     };
 
-    const moveEntityMock: PokemonMove = {
+    const moveEntityMock: PokemonMoveEntity = {
         ...moveInitialMock,
         pp: moveResponseMock.pp,
         type: moveResponseMock.type.name,
@@ -78,7 +88,7 @@ describe('Pokemon Move Service', () => {
     });
 
     describe('getOne', () => {
-       xit('Should return a move of Pokemon', async () => {
+       it('Should return a move of Pokemon', async () => {
 
             mockPokeApi.move.getByOrder.mockResolvedValue(moveResponseMock);
 
@@ -95,6 +105,30 @@ describe('Pokemon Move Service', () => {
             expect(result.priority).toEqual(moveEntityMock.priority);
             expect(result.accuracy).toEqual(moveEntityMock.accuracy);
             expect(result.short_effect).toEqual(moveEntityMock.short_effect);
+            expect(result.damage_class).toEqual(moveEntityMock.damage_class);
+            expect(result.effect_chance).toEqual(moveEntityMock.effect_chance);
+            expect(result.created_at).toEqual(moveEntityMock.created_at);
+            expect(result.updated_at).toEqual(moveEntityMock.updated_at);
+            expect(result.deleted_at).toEqual(moveEntityMock.deleted_at);
+        });
+
+        it('Should return a move of Pokemon with effect and short_effect empty', async () => {
+
+            mockPokeApi.move.getByOrder.mockResolvedValue({...moveResponseMock, effect_entries: []});
+
+            const result = await service.getOne(moveInitialMock);
+            expect(result.id).toEqual(moveEntityMock.id);
+            expect(result.pp).toEqual(moveEntityMock.pp);
+            expect(result.url).toEqual(moveEntityMock.url);
+            expect(result.type).toEqual(moveEntityMock.type);
+            expect(result.name).toEqual(moveEntityMock.name);
+            expect(result.order).toEqual(moveEntityMock.order);
+            expect(result.power).toEqual(moveEntityMock.power);
+            expect(result.target).toEqual(moveEntityMock.target);
+            expect(result.effect).toEqual('');
+            expect(result.priority).toEqual(moveEntityMock.priority);
+            expect(result.accuracy).toEqual(moveEntityMock.accuracy);
+            expect(result.short_effect).toEqual('');
             expect(result.damage_class).toEqual(moveEntityMock.damage_class);
             expect(result.effect_chance).toEqual(moveEntityMock.effect_chance);
             expect(result.created_at).toEqual(moveEntityMock.created_at);
