@@ -18,13 +18,23 @@ export type {
 
 export {
     type IBill,
-    type ICreateBillParams,
-    type IUpdateBillParams,
     type IExpense,
     type IExpenseBase,
-    type IExpenseMonthsWithPaid,
+    type IExpenseMonth,
+    type ICreateBillParams,
+    type IUpdateBillParams,
     type ICreateExpenseParams,
     type IUpdateExpenseParams,
+    type IExpenseMonthsWithPaid,
     EExpenseType,
     EBillType,
 } from './bill';
+
+export type {
+    IIncome,
+    IIncomeSource,
+    ICreateIncomeParams,
+    IUpdateIncomeParams,
+    ICreateIncomeSourceParams,
+    IUpdateIncomeSourceParams
+} from './income';

@@ -6,14 +6,14 @@ import {
     it,
     jest,
 } from '@jest/globals';
+import { INCOME_MOCK } from '../mock';
 
-import { SUPPLIER_TYPE_MOCK } from '../mock';
+import type { IncomeConstructorParams, IncomeEntity } from './types';
+import Income from './income';
 
-import SupplierType from './supplier-type';
-import type { SupplierTypeEntity } from './types';
+describe('Income', () => {
+    const mockEntity = INCOME_MOCK as unknown as IncomeEntity;
 
-describe('SupplierType', () => {
-    const supplierTypeMock = SUPPLIER_TYPE_MOCK as unknown as SupplierTypeEntity;
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
@@ -23,35 +23,44 @@ describe('SupplierType', () => {
         jest.resetModules();
     });
 
-    describe('Constructor', () => {
+    describe('constructor', () => {
         it('should create an instance with all parameters when valid data is provided', () => {
-            const params = supplierTypeMock;
+            const params: IncomeConstructorParams = mockEntity;
 
-            const result = new SupplierType(params);
+            const result = new Income(params);
 
             expect(result.id).toBe(params.id);
             expect(result.name).toBe(params.name);
             expect(result.created_at).toEqual(params.created_at);
             expect(result.updated_at).toEqual(params.updated_at);
-            expect(result.deleted_at).toBe(params.deleted_at);
-        });
-
-        it('should create an instance with minimal valid data', () => {
-            const params = {
-                name: 'Supplier B',
-            };
-
-            const result = new SupplierType(params);
-
-            expect(result.id).toBeUndefined();
-            expect(result.name).toBe(params.name);
-            expect(result.created_at).toBeUndefined();
-            expect(result.updated_at).toBeUndefined();
             expect(result.deleted_at).toBeUndefined();
         });
 
+        it('should create an instance with minimal valid data', () => {
+            const params: IncomeConstructorParams = {
+                name: 'Salary',
+                total: 100,
+                source: mockEntity.source,
+                finance: mockEntity.finance,
+                received_at: mockEntity.created_at,
+            };
+
+            const result = new Income(params);
+
+            expect(result.id).toBeUndefined();
+            expect(result.name).toBe(params.name);
+            expect(result.total).toBe(params.total);
+            expect(result.source).toBe(params.source);
+            expect(result.finance).toBe(params.finance);
+            expect(result.name_code).toBe(params.name.toLowerCase());
+            expect(result.created_at).toBeUndefined();
+            expect(result.updated_at).toBeUndefined();
+            expect(result.deleted_at).toBeUndefined();
+            expect(result.received_at).toEqual(params.received_at);
+        });
+
         it('should allow instantiation with no parameters', () => {
-            const result = new SupplierType();
+            const result = new Income();
 
             expect(result.id).toBeUndefined();
             expect(result.name).toBeUndefined();

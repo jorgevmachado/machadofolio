@@ -27,6 +27,7 @@ describe('Expense', () => {
             expect(expense.type).toBe(expenseMock.type);
             expect(expense.paid).toBe(expenseMock.paid);
             expect(expense.total).toBe(expenseMock.total);
+            expect(expense.months).toBe(expenseMock.months);
             expect(expense.supplier).toBe(expenseMock.supplier);
             expect(expense.total_paid).toBe(expenseMock.total_paid);
             expect(expense.description).toBe(expenseMock.description);
@@ -47,6 +48,7 @@ describe('Expense', () => {
 
             const expense = new Expense(params);
 
+            expect(expense.id).toBeUndefined();
             expect(expense.created_at).toBeUndefined();
             expect(expense.updated_at).toBeUndefined();
             expect(expense.deleted_at).toBeUndefined();
@@ -54,7 +56,7 @@ describe('Expense', () => {
         });
 
         it('should override default values when provided in parameters', () => {
-            const expenseToUpdate: Expense = {
+            const expenseToUpdate: ExpenseEntity = {
                 ...expenseMock,
                 year: 2030,
                 paid: undefined,
@@ -64,6 +66,7 @@ describe('Expense', () => {
                 },
                 name: 'New Bill New Supplier',
                 total: 12,
+                months: [],
                 supplier: {
                     ...expenseMock.supplier,
                     name: 'New Supplier'
@@ -74,9 +77,17 @@ describe('Expense', () => {
                 instalment_number: 12,
             };
 
-            MONTHS.forEach((month) => {
-                expenseToUpdate[month] = 1;
-                expenseToUpdate[`${month}_paid`] = true;
+            MONTHS.forEach((month, index) => {
+                expenseToUpdate.months.push({
+                    id: month,
+                    year: expenseToUpdate.year,
+                    paid: true,
+                    value: 1,
+                    month: index + 1,
+                    created_at: undefined,
+                    updated_at: undefined,
+                    expense: expenseMock,
+                });
             });
 
             const expense = new Expense({
@@ -88,16 +99,12 @@ describe('Expense', () => {
             expect(expense.bill.name).toBe(expenseToUpdate.bill.name);
             expect(expense.name).toBe(expenseToUpdate.name);
             expect(expense.total).toBe(expenseToUpdate.total);
+            expect(expense.months).toHaveLength(12);
             expect(expense.supplier.name).toBe(expenseToUpdate.supplier.name);
             expect(expense.name_code).toBe(expenseToUpdate.name_code);
             expect(expense.total_paid).toBe(expenseToUpdate.total_paid);
             expect(expense.description).toBe(expenseToUpdate.description);
             expect(expense.instalment_number).toBe(expenseToUpdate.instalment_number);
-            MONTHS.forEach((month) => {
-                expect(expense[month]).toBe(1);
-                expect(expense[`${month}_paid`]).toBeTruthy();
-            });
-
         });
 
         it('should create an instance with is_aggregate true', () => {

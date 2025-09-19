@@ -7,6 +7,7 @@ import { type ISupplier } from '../../supplier';
 import type { IBill } from '../types';
 
 import { type EExpenseType } from './enum';
+import type { INestBaseEntity } from '../../../types';
 
 export type IExpenseMonthsWithPaid = {
     january: number;
@@ -49,8 +50,9 @@ export type IExpenseBase = IFinanceBase & {
     instalment_number: number;
 };
 
-export type IExpense = IFinanceBase & IExpenseMonthsWithPaid & IExpenseBase & {
+export type IExpense = IFinanceBase & IExpenseBase & {
     parent?: IExpense;
+    months?: Array<IExpenseMonth>;
     children?: Array<IExpense>;
     is_aggregate?: boolean;
     aggregate_name?: string;
@@ -75,4 +77,12 @@ export type IUpdateExpenseParams = Partial<IExpenseMonthsWithPaid> & {
     type?: IExpense['type'];
     supplier?: string | IExpense['supplier'];
     description?: string;
+}
+
+export type IExpenseMonth = INestBaseEntity  & {
+    year: number;
+    paid: boolean;
+    value: number;
+    month: number;
+    expense: IExpense;
 }

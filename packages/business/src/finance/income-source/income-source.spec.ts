@@ -6,14 +6,13 @@ import {
     it,
     jest,
 } from '@jest/globals';
+import { INCOME_SOURCE_MOCK } from '../mock';
 
-import { SUPPLIER_TYPE_MOCK } from '../mock';
+import type { IncomeSourceEntity } from './types';
+import IncomeSource from './income-source';
 
-import SupplierType from './supplier-type';
-import type { SupplierTypeEntity } from './types';
-
-describe('SupplierType', () => {
-    const supplierTypeMock = SUPPLIER_TYPE_MOCK as unknown as SupplierTypeEntity;
+describe('IncomeSource', () => {
+    const mockEntity = INCOME_SOURCE_MOCK as unknown as IncomeSourceEntity;
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
@@ -23,11 +22,11 @@ describe('SupplierType', () => {
         jest.resetModules();
     });
 
-    describe('Constructor', () => {
+    describe('constructor', () => {
         it('should create an instance with all parameters when valid data is provided', () => {
-            const params = supplierTypeMock;
+            const params = mockEntity;
 
-            const result = new SupplierType(params);
+            const result = new IncomeSource(params);
 
             expect(result.id).toBe(params.id);
             expect(result.name).toBe(params.name);
@@ -38,10 +37,10 @@ describe('SupplierType', () => {
 
         it('should create an instance with minimal valid data', () => {
             const params = {
-                name: 'Supplier B',
+                name: 'job',
             };
 
-            const result = new SupplierType(params);
+            const result = new IncomeSource(params);
 
             expect(result.id).toBeUndefined();
             expect(result.name).toBe(params.name);
@@ -51,7 +50,7 @@ describe('SupplierType', () => {
         });
 
         it('should allow instantiation with no parameters', () => {
-            const result = new SupplierType();
+            const result = new IncomeSource();
 
             expect(result.id).toBeUndefined();
             expect(result.name).toBeUndefined();
@@ -59,5 +58,5 @@ describe('SupplierType', () => {
             expect(result.updated_at).toBeUndefined();
             expect(result.deleted_at).toBeUndefined();
         });
-    });
+    })
 });
