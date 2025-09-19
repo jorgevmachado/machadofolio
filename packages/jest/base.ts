@@ -29,7 +29,10 @@ export const config = {
         '!**/dist/**',
         '!index.ts',
         '!**/*.{enum,types,interface}.ts',
-        '!**/path/to/excluded/files/**'
+        '!**/path/to/excluded/files/**',
+        '!**/mock/**',
+        '!**/mocks/**',
+        '!**/*.mock.ts',
     ],
     moduleFileExtensions: ['js', 'ts', 'json'],
     coveragePathIgnorePatterns: [

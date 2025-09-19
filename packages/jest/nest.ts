@@ -18,5 +18,6 @@ export const config = {
         '.guards.ts',
         '.entity.ts',
         '.dto.ts',
+        '.mock.ts',
     ]
 } as const satisfies Config;
