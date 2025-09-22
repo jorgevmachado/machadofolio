@@ -5,7 +5,7 @@ export * from './bank';
 export * from './bill';
 export * from './group';
 export * from './expense';
-export * from './expense-month';
+export * from './month';
 export * from './income-source';
 export * from './income';
 export * from './supplier';

@@ -3,15 +3,17 @@ import {
     CreateDateColumn,
     DeleteDateColumn,
     Entity,
-    ManyToOne,
+    ManyToOne, OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
 import { IncomeEntity } from '@repo/business';
 
+import { DecimalTransformer } from '../../transforms/decimal';
+
 import { Finance } from './finance.entity';
 import { IncomeSource } from './income-source.entity';
-import { DecimalTransformer } from '../../transforms/decimal';
+import { Month } from './month.entity';
 
 @Entity({ name: 'incomes' })
 export class Income implements IncomeEntity {
@@ -34,17 +36,17 @@ export class Income implements IncomeEntity {
     })
     total!: number;
 
+    @OneToMany(() => Month, (expenseMonth) => expenseMonth.income)
+    months?: Array<Month>;
+
     @ManyToOne(() => IncomeSource, (source) => source.incomes, { nullable: false })
     source!: IncomeSource;
 
     @ManyToOne(() => Finance, (finance) => finance.incomes, { nullable: false })
     finance!: Finance;
 
-    @Column({ nullable: false, length: 200 })
+    @Column({ nullable: false, unique: true, length: 200 })
     name_code!: string;
-
-    @Column({ nullable: false })
-    received_at!: Date;
 
     @Column({ nullable: true })
     description?: string;

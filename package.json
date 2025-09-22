@@ -23,6 +23,7 @@
     "storybook:ui:finance": "yarn workspace @repo/ui storybook:finance",
     "build:ui": "yarn workspace @repo/ui build",
     "dev:nest": "yarn workspace nest-js start:dev",
+    "test:nest": "yarn workspace nest-js test",
     "dev:finance": "yarn workspace finance dev"
 
   },

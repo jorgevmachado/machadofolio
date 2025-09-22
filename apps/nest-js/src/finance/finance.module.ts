@@ -11,6 +11,7 @@ import { SupplierModule } from './supplier/supplier.module';
 
 import { Finance } from './entities/finance.entity';
 import { IncomeModule } from './income/income.module';
+import { MonthModule } from './month/month.module';
 
 @Module({
     controllers: [FinanceController],
@@ -22,7 +23,8 @@ import { IncomeModule } from './income/income.module';
         BillModule,
         GroupModule,
         SupplierModule,
-        IncomeModule
+        IncomeModule,
+        MonthModule
     ],
     exports: [FinanceService]
 })

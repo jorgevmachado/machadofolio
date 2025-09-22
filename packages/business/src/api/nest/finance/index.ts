@@ -20,7 +20,6 @@ export {
     type IBill,
     type IExpense,
     type IExpenseBase,
-    type IExpenseMonth,
     type ICreateBillParams,
     type IUpdateBillParams,
     type ICreateExpenseParams,
@@ -38,3 +37,9 @@ export type {
     ICreateIncomeSourceParams,
     IUpdateIncomeSourceParams
 } from './income';
+
+export type {
+    IMonth,
+    ICreateMonthParams,
+    IUpdateMonthParams
+} from './month';

@@ -8,14 +8,18 @@ import {
     UpdateDateColumn
 } from 'typeorm';
 
-import { ExpenseMonthEntity } from '@repo/business';
+import { TMonth } from '@repo/services';
+
+import { MonthEntity } from '@repo/business';
 
 import { DecimalTransformer } from '../../transforms/decimal';
 
 import { Expense } from './expense.entity';
+import { Income } from './incomes.entity';
 
-@Entity({ name: 'expense_months' })
-export class ExpenseMonth implements ExpenseMonthEntity {
+
+@Entity({ name: 'months' })
+export class Month implements MonthEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
@@ -26,7 +30,7 @@ export class ExpenseMonth implements ExpenseMonthEntity {
     year!: number;
 
     @Column({ nullable: false })
-    month!: number;
+    code!: number;
 
     @Column({
         nullable: false,
@@ -38,8 +42,14 @@ export class ExpenseMonth implements ExpenseMonthEntity {
     })
     value!: number;
 
-    @ManyToOne(() => Expense, (expense) => expense.months, { nullable: false })
-    expense!: Expense;
+    @Column({ nullable: false })
+    label!: TMonth;
+
+    @ManyToOne(() => Income, (income) => income.months, { nullable: true })
+    income?: Income;
+
+    @ManyToOne(() => Expense, (expense) => expense.months, { nullable: true })
+    expense?: Expense;
 
     @CreateDateColumn()
     created_at!: Date;
@@ -49,4 +59,7 @@ export class ExpenseMonth implements ExpenseMonthEntity {
 
     @DeleteDateColumn()
     deleted_at?: Date;
+
+    @Column({ nullable: false })
+    received_at?: Date;
 }

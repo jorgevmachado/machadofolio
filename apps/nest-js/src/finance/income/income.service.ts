@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Income as IncomeConstructor } from '@repo/business';
 
-import { Service } from '../../shared';
+import { type FilterParams, Service } from '../../shared';
 
 import type { FinanceSeederParams } from '../types';
 import { Income } from '../entities/incomes.entity';
@@ -14,6 +14,7 @@ import { Finance } from '../entities/finance.entity';
 import { IncomeSourceService } from './source/source.service';
 import { CreateIncomeDto } from './dto/create-income.dto';
 import { UpdateIncomeDto } from './dto/update-income.dto';
+import { MonthService } from '../month/month.service';
 
 type IncomeSeederParams = FinanceSeederParams & {
     finance: Finance;
@@ -27,35 +28,73 @@ export class IncomeService extends Service<Income> {
         @InjectRepository(Income)
         protected repository: Repository<Income>,
         protected sourceService: IncomeSourceService,
+        protected monthService: MonthService,
     ) {
-        super('incomes', ['source'], repository);
+        super('incomes', ['source', 'months'], repository);
     }
 
     get source(): IncomeSourceService {
         return this.sourceService;
     }
 
+    private async existIncomeCreated(name_code: string, year: number): Promise<Income | undefined> {
+        const filters: Array<FilterParams> = [
+            {
+                value: name_code,
+                param: `${this.alias}.name_code`,
+                relation: true,
+                condition: 'LIKE',
+            },
+            {
+                value: year,
+                param: `${this.alias}.year`,
+                relation: true,
+                condition: '=',
+            }
+        ];
+        const result = (await this.findAll({ filters, withRelations: true })) as Array<Income>;
+        return result[0];
+    }
+
+    private async persist(income: Income) {
+        try {
+            const existingIncome = await this.existIncomeCreated(income.name_code, income.year);
+            if (!existingIncome) {
+                const savedIncome = await this.save(income) as Income;
+                savedIncome.months = await this.monthService.createByIncome(income);
+                return await this.save(savedIncome);
+            }
+            existingIncome.months = await this.monthService.updateByIncome(existingIncome, income.months);
+            return await this.save(existingIncome);
+        } catch (error) {
+            throw this.error(error);
+        }
+    }
+
     async create(finance: Finance, body: CreateIncomeDto) {
-        const { year, name, total, source, received_at, description } = body;
+        const { year, name, month, months, total, source, received_at, description } = body;
         const incomeSource =
             await this.sourceService.treatEntityParam<IncomeSource>(
                 source,
                 'Income Source',
             ) as IncomeSource;
+
+        const currentMonths = this.monthService.treatMonths(year, month, months, total, received_at);
+        const currentTotal = currentMonths?.reduce((acc, item) => acc + item.value, 0);
         const income = new IncomeConstructor({
             name,
             year,
-            total,
+            total: currentTotal,
+            months: currentMonths,
             source: incomeSource,
             finance,
-            received_at,
             description
         });
-        return await this.save(income);
+        return await this.persist(income);
     }
 
     async update(finance: Finance, param: string, body: UpdateIncomeDto) {
-        const { year, name, total, source, received_at, description } = body;
+        const { year, name, total, source, description } = body;
         const result = await this.findOne({ value: param }) as Income;
         const incomeSource = !source
             ? result.source
@@ -70,7 +109,6 @@ export class IncomeService extends Service<Income> {
             total: !total ? result.total : total,
             source: incomeSource,
             finance,
-            received_at: !received_at ? result.received_at : received_at,
             description: !description ? result.description : description,
         });
         return await this.save(income);
@@ -104,7 +142,6 @@ export class IncomeService extends Service<Income> {
                     total: item.total,
                     source,
                     finance,
-                    received_at: item.received_at,
                     description: item.description
                 })
             },

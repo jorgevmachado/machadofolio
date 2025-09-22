@@ -17,7 +17,7 @@ import { DecimalTransformer } from '../../transforms/decimal';
 import { Supplier } from './supplier.entity';
 
 import { Bill } from './bill.entity';
-import { ExpenseMonth } from './expense-month.entity';
+import { Month } from './month.entity';
 
 
 @Entity({ name: 'expenses' })
@@ -76,8 +76,8 @@ export class Expense implements ExpenseEntity {
     })
     total_paid!: number;
 
-    @OneToMany(() => ExpenseMonth, (expenseMonth) => expenseMonth.expense)
-    months?: Array<ExpenseMonth>;
+    @OneToMany(() => Month, (expenseMonth) => expenseMonth.expense)
+    months?: Array<Month>;
 
     @Column({ nullable: true })
     description?: string;

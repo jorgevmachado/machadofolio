@@ -2,12 +2,12 @@ import { type EMonth } from '@repo/services';
 
 import type { IFinanceBase } from '../../types';
 
-import { type ISupplier } from '../../supplier';
+import type { IMonth } from '../../month';
+import type { ISupplier } from '../../supplier';
 
 import type { IBill } from '../types';
 
-import { type EExpenseType } from './enum';
-import type { INestBaseEntity } from '../../../types';
+import type { EExpenseType } from './enum';
 
 export type IExpenseMonthsWithPaid = {
     january: number;
@@ -52,7 +52,7 @@ export type IExpenseBase = IFinanceBase & {
 
 export type IExpense = IFinanceBase & IExpenseBase & {
     parent?: IExpense;
-    months?: Array<IExpenseMonth>;
+    months?: Array<IMonth>;
     children?: Array<IExpense>;
     is_aggregate?: boolean;
     aggregate_name?: string;
@@ -77,12 +77,4 @@ export type IUpdateExpenseParams = Partial<IExpenseMonthsWithPaid> & {
     type?: IExpense['type'];
     supplier?: string | IExpense['supplier'];
     description?: string;
-}
-
-export type IExpenseMonth = INestBaseEntity  & {
-    year: number;
-    paid: boolean;
-    value: number;
-    month: number;
-    expense: IExpense;
 }

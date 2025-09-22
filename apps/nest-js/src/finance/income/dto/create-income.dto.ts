@@ -1,9 +1,12 @@
-import { IsDate, IsNotEmpty, IsNumber, IsOptional, MaxLength } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsArray, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, MaxLength, ValidateNested } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+
+import { EMonth } from '@repo/services';
 
 import { type CreateIncomeParams } from '@repo/business';
 
 import { IncomeSource } from '../../entities/income-source.entity';
+import { MonthDto } from '../../month/dto/create-month.dto';
 
 export class CreateIncomeDto implements CreateIncomeParams {
 
@@ -15,15 +18,25 @@ export class CreateIncomeDto implements CreateIncomeParams {
     @MaxLength(200)
     name!: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber({ maxDecimalPlaces: 2 })
-    total!: number;
+    total?: number;
+
+    @IsOptional()
+    @IsEnum(EMonth)
+    month?: EMonth;
+
+    @IsOptional()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => MonthDto)
+    months?: Array<MonthDto>
 
     @IsNotEmpty()
     @MaxLength(200)
     source!: string | IncomeSource;
 
-    @IsNotEmpty()
+    @IsOptional()
     @Transform(({ value }) => {
         if (!value || isNaN(Date.parse(value as string))) {
             throw new Error("Invalid date format");
@@ -31,7 +44,7 @@ export class CreateIncomeDto implements CreateIncomeParams {
         return new Date(value as string);
     })
     @IsDate()
-    received_at!: Date;
+    received_at?: Date;
 
     @IsOptional()
     @MaxLength(200)

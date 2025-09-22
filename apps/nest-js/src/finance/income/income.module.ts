@@ -8,12 +8,14 @@ import { IncomeService } from './income.service';
 import { IncomeController } from './income.controller';
 
 import { SourceModule } from './source/source.module';
+import { MonthModule } from '../month/month.module';
 
 @Module({
   imports: [
       TypeOrmModule.forFeature([Income]),
       PassportModule.register({ defaultStrategy: 'jwt' }),
-      SourceModule
+      SourceModule,
+      MonthModule
   ],
   controllers: [IncomeController],
   providers: [IncomeService],

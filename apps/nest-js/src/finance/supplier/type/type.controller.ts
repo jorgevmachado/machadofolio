@@ -1,14 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 import { ERole, type QueryParameters } from '@repo/business';
 
 import { AuthRoles } from '../../../decorators/auth-role/auth-roles.decorator';
+import { AuthRoleGuard } from '../../../guards/auth-role/auth-role.guard';
+import { AuthStatusGuard } from '../../../guards/auth-status/auth-status.guard';
 
 import { CreateTypeDto } from './dto/create-type.dto';
 import { SupplierTypeService } from './type.service';
 import { UpdateTypeDto } from './dto/update-type.dto';
 
 @Controller('finance/supplier')
+@UseGuards(AuthGuard(), AuthRoleGuard, AuthStatusGuard)
 export class TypeController {
   constructor(private readonly service: SupplierTypeService) {}
 

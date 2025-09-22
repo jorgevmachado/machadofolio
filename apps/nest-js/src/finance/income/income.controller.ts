@@ -17,17 +17,17 @@ import { IncomeService } from './income.service';
 import { CreateIncomeDto } from './dto/create-income.dto';
 import { UpdateIncomeDto } from './dto/update-income.dto';
 
-@Controller('finance')
+@Controller('finance/income')
 @UseGuards(AuthGuard(), AuthRoleGuard, AuthStatusGuard, FinanceInitializeGuard)
 export class IncomeController {
   constructor(private readonly service: IncomeService) {}
 
-  @Post('/income')
+  @Post()
   create(@GetUserAuth() user: User, @Body() body: CreateIncomeDto) {
     return this.service.create(user.finance as Finance, body);
   }
 
-  @Get('/list/income')
+  @Get()
   findAll(@GetUserAuth() user: User, @Query() parameters: QueryParameters) {
       const finance = user.finance as Finance;
       const filters: ListParams['filters'] = [{
@@ -35,11 +35,11 @@ export class IncomeController {
           param: 'finance',
           condition: '='
       }]
-      return this.service.findAll({ parameters, filters });
+      return this.service.findAll({ parameters, filters, withRelations: Boolean(parameters?.withRelations) });
   }
 
-    @Get(':param/income')
-    findOne(@GetUserAuth() user: User, @Param('param') param: string) {
+  @Get(':param')
+  findOne(@GetUserAuth() user: User, @Param('param') param: string) {
         const finance = user.finance as Finance;
         const filters: ListParams['filters'] = [{
             value: finance.id,
@@ -49,12 +49,12 @@ export class IncomeController {
         return this.service.findOne({ value: param, filters });
     }
 
-  @Patch(':param/income')
+  @Patch(':param')
   update(@GetUserAuth() user: User, @Param('param') param: string, @Body() body: UpdateIncomeDto) {
     return this.service.update(user.finance as Finance, param, body);
   }
 
-  @Delete(':param/income')
+  @Delete(':param')
   remove(@GetUserAuth() user: User,@Param('param') param: string) {
       const finance = user.finance as Finance;
       const filters: ListParams['filters'] = [{

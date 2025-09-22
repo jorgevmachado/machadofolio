@@ -50,11 +50,29 @@ const INCOME_MOCK = {
     year: 2025,
     name: 'Salary',
     total: 100,
+    months: [],
     source: INCOME_SOURCE_MOCK,
     finance: FINANCE_MOCK,
     name_code: 'salary',
     received_at: new Date('2025-02-01T19:00:18.670Z'),
 }
+
+const INCOME_MONTH_MOCK = {
+    id: 'a54df7b0-e28b-4d35-a658-edbb35fcb2d0',
+    year: 2025,
+    code: 1,
+    paid: false,
+    value: 100,
+    label: 'january',
+    income: INCOME_MOCK,
+    expense: undefined,
+    created_at: new Date('2025-04-02T19:11:59.405Z'),
+    updated_at: new Date('2025-04-02T19:11:59.405Z'),
+    deleted_at: undefined,
+    received_at: new Date('2025-02-01T19:00:18.670Z'),
+}
+
+INCOME_MOCK.months = [INCOME_MONTH_MOCK];
 
 const SUPPLIER_TYPE_MOCK = {
     id: 'afdb7bc2-78ad-459c-9d1f-27b99e38f954',
@@ -192,13 +210,16 @@ const EXPENSE_CHILDREN_MOCK = {
 const EXPENSE_MONTH_MOCK = {
     id: 'f101e932-8cb4-4c05-9c76-12ccb51a55ed',
     year: 2025,
+    code: 1,
     paid: false,
     value: 100,
-    month: 1,
+    label: 'january',
+    income: undefined,
     expense: EXPENSE_MOCK,
     created_at: new Date('2025-04-02T19:11:59.405Z'),
     updated_at: new Date('2025-04-02T19:11:59.405Z'),
-    deleted_at: undefined
+    deleted_at: undefined,
+    received_at: undefined,
 }
 
 EXPENSE_MOCK.months = [EXPENSE_MONTH_MOCK];
@@ -221,5 +242,6 @@ export {
     EXPENSE_MOCK,
     EXPENSE_PARENT_MOCK,
     EXPENSE_CHILDREN_MOCK,
-    EXPENSE_MONTH_MOCK
+    EXPENSE_MONTH_MOCK,
+    INCOME_MONTH_MOCK
 };
