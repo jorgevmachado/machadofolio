@@ -1,14 +1,21 @@
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsOptional, IsUUID } from 'class-validator';
 import { Transform } from 'class-transformer';
 
-import { EMonth } from '@repo/services';
+import { type UpdateMonthParams } from '@repo/business';
 
-import { type CreateMonthParams } from '@repo/business';
+export class UpdateMonthDto implements UpdateMonthParams {
 
-export class CreateMonthDto implements CreateMonthParams {
+    @IsNotEmpty()
+    @IsUUID()
+    id!: string;
+
     @IsOptional()
     @IsNumber({ maxDecimalPlaces: 0 })
     year?: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    code!: number;
 
     @IsOptional()
     @IsBoolean()
@@ -17,10 +24,6 @@ export class CreateMonthDto implements CreateMonthParams {
     @IsNotEmpty()
     @IsNumber({ maxDecimalPlaces: 2 })
     value!: number;
-
-    @IsOptional()
-    @IsEnum(EMonth)
-    month?: EMonth;
 
     @IsOptional()
     @Transform(({ value }) => {

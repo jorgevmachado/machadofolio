@@ -1,7 +1,7 @@
 import { EMonth } from '@repo/services';
 
 import type { IFinance, IFinanceBase } from '../types';
-import type { ICreateMonthParams, IMonth } from '../month';
+import type { ICreateMonthParams, IMonth, IUpdateMonthParams } from '../month';
 
 import type { IIncomeSource } from './source';
 
@@ -35,4 +35,11 @@ export type ICreateIncomeParams = Omit<
     received_at?: Date;
 };
 
-export type IUpdateIncomeParams = ICreateIncomeParams;
+export type IUpdateIncomeParams =
+    Omit<IIncome, 'id' | 'year' | 'name' | 'total' | 'months' | 'source' | 'finance' | 'name_code' | 'created_at' | 'updated_at' | 'deleted_at'>
+    & {
+    year?: number;
+    name?: string;
+    months?: Array<IUpdateMonthParams>;
+    source?: string | IIncome['source'];
+};

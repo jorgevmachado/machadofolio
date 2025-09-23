@@ -6,7 +6,7 @@ import { EMonth } from '@repo/services';
 import { type CreateIncomeParams } from '@repo/business';
 
 import { IncomeSource } from '../../entities/income-source.entity';
-import { MonthDto } from '../../month/dto/create-month.dto';
+import { CreateMonthDto } from '../../month/dto/create-month.dto';
 
 export class CreateIncomeDto implements CreateIncomeParams {
 
@@ -29,8 +29,8 @@ export class CreateIncomeDto implements CreateIncomeParams {
     @IsOptional()
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => MonthDto)
-    months?: Array<MonthDto>
+    @Type(() => CreateMonthDto)
+    months?: Array<CreateMonthDto>
 
     @IsNotEmpty()
     @MaxLength(200)
@@ -48,5 +48,5 @@ export class CreateIncomeDto implements CreateIncomeParams {
 
     @IsOptional()
     @MaxLength(200)
-    description?: string | undefined;
+    description?: string;
 }

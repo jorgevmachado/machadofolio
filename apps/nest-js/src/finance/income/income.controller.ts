@@ -46,7 +46,7 @@ export class IncomeController {
             param: 'finance',
             condition: '='
         }]
-        return this.service.findOne({ value: param, filters });
+        return this.service.findOne({ value: param, filters, withRelations: true });
     }
 
   @Patch(':param')

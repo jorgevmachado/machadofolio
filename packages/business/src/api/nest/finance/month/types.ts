@@ -21,4 +21,7 @@ export type ICreateMonthParams = Omit<IMonth, 'id' | 'year' | 'paid' | 'code' | 
     month?: EMonth;
 };
 
-export type IUpdateMonthParams = Omit<IMonth, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>;
+export type IUpdateMonthParams = Omit<IMonth, 'year' | 'paid' | 'label'| 'created_at' | 'updated_at' | 'deleted_at'> & {
+    year?: number;
+    paid?: boolean;
+};

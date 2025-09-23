@@ -75,8 +75,8 @@ describe('IncomeController', () => {
                 year: mockEntity.year,
                 name: mockEntity.name,
                 total: mockEntity.total,
+                months: mockEntity.months,
                 source: mockEntity.source,
-                received_at: mockEntity.received_at,
                 description: mockEntity.description
             };
 
@@ -99,8 +99,9 @@ describe('IncomeController', () => {
 
             const expected: Income = {
                 ...mockEntity,
-                ...updateDto,
-                source: mockEntity.source
+                name: updateDto.name as string,
+                source: mockEntity.source,
+                description: updateDto.description,
             }
 
             jest.spyOn(service, 'update').mockResolvedValueOnce(expected);

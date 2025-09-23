@@ -14,13 +14,15 @@ import { Finance } from '../entities/finance.entity';
 import { IncomeSourceService } from './source/source.service';
 import { CreateIncomeDto } from './dto/create-income.dto';
 import { UpdateIncomeDto } from './dto/update-income.dto';
-import { MonthService } from '../month/month.service';
+import { MonthService, type CreateByIncomeParams } from '../month/month.service';
 
 type IncomeSeederParams = FinanceSeederParams & {
     finance: Finance;
 }
 
 type createToSheetParams = Record<string, string | number | boolean | object | Finance | IncomeSource>;
+
+type SaveCreateIncomeParams = Omit<CreateByIncomeParams, 'isCreate'>
 
 @Injectable()
 export class IncomeService extends Service<Income> {
@@ -56,62 +58,89 @@ export class IncomeService extends Service<Income> {
         return result[0];
     }
 
-    private async persist(income: Income) {
+    private async saveCreateIncome({
+        value,
+        month,
+        income,
+        received_at,
+        monthsToCreate
+    }: SaveCreateIncomeParams) {
         try {
             const existingIncome = await this.existIncomeCreated(income.name_code, income.year);
             if (!existingIncome) {
                 const savedIncome = await this.save(income) as Income;
-                savedIncome.months = await this.monthService.createByIncome(income);
-                return await this.save(savedIncome);
+                savedIncome.months = await this.monthService.createByIncome(income, true, value, month, monthsToCreate, received_at);
+                const total = savedIncome.months.reduce((acc, item) => acc + item.value, 0);
+                return await this.save({...savedIncome, total});
             }
-            existingIncome.months = await this.monthService.updateByIncome(existingIncome, income.months);
-            return await this.save(existingIncome);
+            existingIncome.months = await this.monthService.createByIncome(existingIncome, false, value, month, monthsToCreate, received_at);
+            const total = existingIncome.months.reduce((acc, item) => acc + item.value, 0);
+            return await this.save({...existingIncome, total});
         } catch (error) {
             throw this.error(error);
         }
     }
 
     async create(finance: Finance, body: CreateIncomeDto) {
-        const { year, name, month, months, total, source, received_at, description } = body;
+        const { year, name, month, months, total: value = 0, source, received_at, description } = body;
         const incomeSource =
             await this.sourceService.treatEntityParam<IncomeSource>(
                 source,
                 'Income Source',
             ) as IncomeSource;
 
-        const currentMonths = this.monthService.treatMonths(year, month, months, total, received_at);
-        const currentTotal = currentMonths?.reduce((acc, item) => acc + item.value, 0);
         const income = new IncomeConstructor({
             name,
             year,
-            total: currentTotal,
-            months: currentMonths,
+            total: 0,
             source: incomeSource,
             finance,
             description
         });
-        return await this.persist(income);
+        return await this.saveCreateIncome({ income, value, month, received_at, monthsToCreate: months });
     }
 
     async update(finance: Finance, param: string, body: UpdateIncomeDto) {
-        const { year, name, total, source, description } = body;
-        const result = await this.findOne({ value: param }) as Income;
+        const { year, name, source, months, description } = body;
+        const result = await this.findOne({ value: param, withRelations: true }) as Income;
         const incomeSource = !source
             ? result.source
             : await this.sourceService.treatEntityParam<IncomeSource>(
                 source,
                 'Income Source',
             ) as IncomeSource;
+        const currentMonths = !months ? result.months :  await this.monthService.updateByIncome(result, months);
 
+        const total = currentMonths?.reduce((acc, item) => acc + item.value, 0) ?? 0;
         const income = new IncomeConstructor({
+            ...result,
             name: !name ? result.name : name,
             year: !year ? result.year : year,
-            total: !total ? result.total : total,
+            total,
+            months: currentMonths,
             source: incomeSource,
             finance,
             description: !description ? result.description : description,
         });
         return await this.save(income);
+    }
+
+    async remove(param: string, filters?: Array<FilterParams>) {
+        const result = await this.findOne({
+            value: param,
+            filters,
+            withThrow: true,
+            withDeleted: true,
+            withRelations: true,
+        }) as Income;
+
+        if(result?.months?.length) {
+            await this.monthService.removeByIncome(result);
+        }
+
+        await this.repository.softRemove(result);
+
+        return { message: 'Successfully removed' };
     }
 
     async seeds({

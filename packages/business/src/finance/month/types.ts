@@ -15,6 +15,7 @@ export type MonthConstructorParams = Omit<
 > & IPartialNestBaseEntity & {
     year?: number;
     paid?: boolean;
+    code?: number;
     month?: number | string;
 };
 

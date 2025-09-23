@@ -19,6 +19,9 @@ export default class Month implements MonthEntity {
     constructor(params?: MonthConstructorParams) {
         if(params) {
             this.id = params?.id ?? this.id;
+            if(params?.code) {
+                this.code = params?.code;
+            }
             this.code = params?.month ? getCurrentMonthNumber(params?.month) : this.code;
             this.year = params?.year ?? this.year;
             this.paid = params?.paid ?? this.paid;
