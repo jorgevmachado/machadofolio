@@ -25,7 +25,7 @@ jest.mock('@repo/services', () => {
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
 import * as services from '@repo/services';
-import { type CycleOfMonths, EMonth, MONTHS, type Spreadsheet, type TMonth } from '@repo/services';
+import { type CycleOfMonths, EMonth, MONTHS, type Spreadsheet } from '@repo/services';
 
 import { BILL_MOCK, EXPENSE_MOCK } from '../../mock';
 import type { BillEntity } from '../../bill';
@@ -40,7 +40,7 @@ describe('Expense Business', () => {
     const mockBillEntity: BillEntity = BILL_MOCK as unknown as BillEntity;
 
     let spreadsheetMock: jest.Mocked<Spreadsheet>;
-    
+
     beforeEach(() => {
         spreadsheetMock = {
             addTable: jest.fn().mockImplementation(() => {
@@ -94,7 +94,7 @@ describe('Expense Business', () => {
         });
 
         it('should calculated all and return correctly values.', () => {
-            const result = business.calculateAll([mockEntity,mockEntity,mockEntity,mockEntity]);
+            const result = business.calculateAll([mockEntity, mockEntity, mockEntity, mockEntity]);
             expect(result.total).toEqual(400);
             expect(result.allPaid).toBeFalsy();
             expect(result.totalPaid).toEqual(0);
@@ -123,25 +123,21 @@ describe('Expense Business', () => {
             paid: true,
             type: 'VARIABLE' as ExpenseEntity['type'],
             total: 0,
+            months: mock.months.map((month) => ({ ...month, paid: true, value: 50 })),
             total_paid: 0,
             instalment_number: 2,
         };
-        MONTHS.forEach((month) => {
-            expense[`${month}_paid`] = true;
-            expense[`${month}`] = 50;
-        });
+
         const existingExpense: ExpenseEntity = {
             ...mock,
             paid: true,
             total: 0,
+            months: mock.months.map((month) => ({ ...month, paid: true, value: 50 })),
             total_paid: 0,
         };
-        MONTHS.forEach((month) => {
-            existingExpense[`${month}_paid`] = true;
-            existingExpense[`${month}`] = 50;
-        });
+
         it('should return a expense when existingExpense is undefined', () => {
-            const result = business.reinitialize( [], expense );
+            const result = business.reinitialize([], expense);
             expect(result.id).toBeUndefined();
             expect(result.name).toEqual(expense.name);
             expect(result.year).toEqual(expense.year);
@@ -149,8 +145,6 @@ describe('Expense Business', () => {
             expect(result.type).toEqual(expense.type);
             expect(result.paid).toBeTruthy();
             expect(result.total).toEqual(0);
-            expect(result.january).toEqual(expense.january);
-            expect(result.february).toEqual(expense.february);
             expect(result.supplier).toEqual(expense.supplier);
             expect(result.name_code).toEqual(expense.name_code);
             expect(result.total_paid).toEqual(0);
@@ -163,10 +157,9 @@ describe('Expense Business', () => {
             expect(result.year).toEqual(existingExpense.year);
             expect(result.bill).toEqual(existingExpense.bill);
             expect(result.type).toEqual(existingExpense.type);
-            expect(result.january).toEqual(100);
-            expect(result.february).toEqual(100);
             expect(result.paid).toBeTruthy();
             expect(result.total).toEqual(0);
+            expect(result.months[0].value).toEqual(100);
             expect(result.supplier).toEqual(existingExpense.supplier);
             expect(result.name_code).toEqual(existingExpense.name_code);
         });
@@ -226,15 +219,10 @@ describe('Expense Business', () => {
                 instalment_number: 12,
             };
 
-            MONTHS.forEach((month) => {
-                expenseFixed[`${month}_paid`] = true;
-                expenseFixed[`${month}`] = 93.59;
-            });
-
             const result = business.calculate(expenseFixed);
-            expect(result.paid).toBeTruthy();
-            expect(result.total).toEqual(1123.08);
-            expect(result.total_paid).toEqual(1123.08);
+            expect(result.paid).toBeFalsy();
+            expect(result.total).toEqual(100);
+            expect(result.total_paid).toEqual(0);
         });
 
         it('should calculate correctly for a variable expense', () => {
@@ -246,6 +234,11 @@ describe('Expense Business', () => {
                 type: 'VARIABLE' as ExpenseEntity['type'],
                 paid: false,
                 total: 0,
+                months: [{
+                    ...mockEntity.months[0],
+                    paid: true,
+                    value: 187.18
+                }],
                 supplier: mockEntity.supplier,
                 total_paid: 0,
                 description: undefined,
@@ -254,21 +247,11 @@ describe('Expense Business', () => {
                 deleted_at: undefined,
                 instalment_number: 2,
             };
-            MONTHS.forEach((month) => {
-                expenseVariable[`${month}_paid`] = true;
-                expenseVariable[`${month}`] = 0;
-            });
-
-            const months: Array<TMonth> = ['january', 'february'];
-            months.forEach((month) => {
-                expenseVariable[`${month}_paid`] = false;
-                expenseVariable[`${month}`] = 93.59;
-            });
 
             const result = business.calculate(expenseVariable);
-            expect(result.paid).toBeFalsy();
+            expect(result.paid).toBeTruthy();
             expect(result.total).toEqual(187.18);
-            expect(result.total_paid).toEqual(0);
+            expect(result.total_paid).toEqual(187.18);
         });
     });
 
@@ -276,7 +259,7 @@ describe('Expense Business', () => {
         const secondaryBill = { ...mockBillEntity, type: 'PIX' as BillEntity['type'] };
         const creditCardBill = { ...mockBillEntity, type: 'CREDIT_CARD' as BillEntity['type'] };
 
-        it('deve retornar array vazio se não houver bills', () => {
+        it('should return empty array if there is no bills.', () => {
             jest.spyOn(business, 'generateDetailsTable' as any).mockReturnValue({ data: [], nextRow: 10 });
             jest.spyOn(business, 'generateCreditCardTable' as any).mockReturnValue({ data: [], nextRow: 10 });
 
@@ -289,7 +272,7 @@ describe('Expense Business', () => {
             expect(result).toEqual([]);
         });
 
-        it('deve retornar uma lista de despesas', () => {
+        it('should return a list of expenses.', () => {
             const bills = [secondaryBill, creditCardBill];
 
             const generateDetailsTable = jest
@@ -323,7 +306,7 @@ describe('Expense Business', () => {
             expect(result).toEqual([{ e: 1 }, { cc: 99 }]);
         });
 
-        it('não adiciona secundário se nextRow não mudar', () => {
+        it('do not add secondary if nextRow does not change.', () => {
 
             jest
                 .spyOn(business, 'generateDetailsTable' as any)
@@ -343,7 +326,7 @@ describe('Expense Business', () => {
             expect(result).toEqual([{ cc: 24 }]);
         });
 
-        it('não adiciona creditcard se nextRow não mudar', () => {
+        it('do not add creditcard if nextRow does not change.', () => {
 
             jest
                 .spyOn(business, 'generateDetailsTable' as any)
@@ -363,7 +346,7 @@ describe('Expense Business', () => {
             expect(result).toEqual([{ e: 'x' }]);
         });
 
-        it('retorna apenas creditcard se não houver secondary', () => {
+        it('only returns creditcard if there is no secondary.', () => {
 
             jest
                 .spyOn(business, 'generateDetailsTable' as any)
@@ -383,7 +366,7 @@ describe('Expense Business', () => {
             expect(result).toEqual([{ cc: 1 }]);
         });
 
-        it('retorna apenas secondary se não houver creditcard', () => {
+        it('returns only secondary if there is no creditcard.', () => {
 
             jest
                 .spyOn(business, 'generateDetailsTable' as any)
@@ -403,7 +386,7 @@ describe('Expense Business', () => {
             expect(result).toEqual([{ s: 123 }]);
         });
 
-        it('retorna vazio se ambos não forem adicionados', () => {
+        it('returns empty if both are not added.', () => {
             jest
                 .spyOn(business, 'generateDetailsTable' as any)
                 .mockReturnValue({ data: [], nextRow: 4 });
@@ -427,7 +410,6 @@ describe('Expense Business', () => {
         it('should initialize a FIXED expense correctly', () => {
             const year = 2025;
             const type = 'FIXED' as ExpenseEntity['type'];
-            const value = 93.59;
             const instalment_number = 12;
             const expenseFixed: ExpenseEntity = {
                 ...mockEntity,
@@ -436,6 +418,7 @@ describe('Expense Business', () => {
                 paid: true,
                 name: `${mockEntity.bill.name} ${mockEntity.supplier.name}`,
                 type,
+                months: [],
                 supplier: mockEntity.supplier,
                 created_at: undefined,
                 updated_at: undefined,
@@ -449,7 +432,7 @@ describe('Expense Business', () => {
             });
 
 
-            const result = business.initialize(expenseFixed, value );
+            const result = business.initialize(expenseFixed);
 
             expect(result.nextYear).toBe(year + 1);
             expect(result.requiresNewBill).toBeFalsy();
@@ -464,30 +447,6 @@ describe('Expense Business', () => {
             expect(result.expenseForCurrentYear.supplier).toEqual(expenseFixed.supplier);
             expect(result.expenseForCurrentYear.name_code).toEqual(expenseFixed.name_code);
             expect(result.expenseForCurrentYear.total_paid).toEqual(0);
-            expect(result.expenseForCurrentYear.january).toEqual(93.59);
-            expect(result.expenseForCurrentYear.january_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.february).toEqual(93.59);
-            expect(result.expenseForCurrentYear.february_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.march).toEqual(93.59);
-            expect(result.expenseForCurrentYear.march_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.april).toEqual(93.59);
-            expect(result.expenseForCurrentYear.april_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.may).toEqual(93.59);
-            expect(result.expenseForCurrentYear.may_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.june).toEqual(93.59);
-            expect(result.expenseForCurrentYear.june_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.july).toEqual(93.59);
-            expect(result.expenseForCurrentYear.july_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.august).toEqual(93.59);
-            expect(result.expenseForCurrentYear.august_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.september).toEqual(93.59);
-            expect(result.expenseForCurrentYear.september_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.october).toEqual(93.59);
-            expect(result.expenseForCurrentYear.october_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.november).toEqual(93.59);
-            expect(result.expenseForCurrentYear.november_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.december).toEqual(93.59);
-            expect(result.expenseForCurrentYear.december_paid).toBeTruthy();
             expect(result.expenseForCurrentYear.description).toBeUndefined();
             expect(result.expenseForCurrentYear.created_at).toBeUndefined();
             expect(result.expenseForCurrentYear.updated_at).toBeUndefined();
@@ -500,7 +459,6 @@ describe('Expense Business', () => {
 
             const year = 2025;
             const type = 'VARIABLE' as ExpenseEntity['type'];
-            const value = 50;
             const instalment_number = 2;
             const expenseVariableInstalmentNumber: ExpenseEntity = {
                 ...mockEntity,
@@ -513,23 +471,13 @@ describe('Expense Business', () => {
                 total: 0,
                 supplier: mockEntity.supplier,
                 total_paid: 0,
-                january: 50,
-                february: 50,
                 created_at: undefined,
                 updated_at: undefined,
                 description: undefined,
                 instalment_number,
             };
 
-            MONTHS.forEach((month) => {
-                expenseVariableInstalmentNumber[`${month}_paid`] = true;
-                expenseVariableInstalmentNumber[`${month}`] = 0;
-            });
-
-            const result = business.initialize(
-                expenseVariableInstalmentNumber,
-                value,
-             );
+            const result = business.initialize(expenseVariableInstalmentNumber);
 
             expect(result.nextYear).toBe(2026);
             expect(result.requiresNewBill).toBeFalsy();
@@ -548,30 +496,6 @@ describe('Expense Business', () => {
                 expenseVariableInstalmentNumber.name_code,
             );
             expect(result.expenseForCurrentYear.total_paid).toEqual(0);
-            expect(result.expenseForCurrentYear.january).toEqual(50);
-            expect(result.expenseForCurrentYear.january_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.february).toEqual(50);
-            expect(result.expenseForCurrentYear.february_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.march).toEqual(0);
-            expect(result.expenseForCurrentYear.march_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.april).toEqual(0);
-            expect(result.expenseForCurrentYear.april_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.may).toEqual(0);
-            expect(result.expenseForCurrentYear.may_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.june).toEqual(0);
-            expect(result.expenseForCurrentYear.june_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.july).toEqual(0);
-            expect(result.expenseForCurrentYear.july_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.august).toEqual(0);
-            expect(result.expenseForCurrentYear.august_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.september).toEqual(0);
-            expect(result.expenseForCurrentYear.september_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.october).toEqual(0);
-            expect(result.expenseForCurrentYear.october_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.november).toEqual(0);
-            expect(result.expenseForCurrentYear.november_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.december).toEqual(0);
-            expect(result.expenseForCurrentYear.december_paid).toBeTruthy();
             expect(result.expenseForCurrentYear.description).toBeUndefined();
             expect(result.expenseForCurrentYear.created_at).toBeUndefined();
             expect(result.expenseForCurrentYear.updated_at).toBeUndefined();
@@ -581,7 +505,6 @@ describe('Expense Business', () => {
 
         it('should initialize a variable expense correctly with instalment_number equal 12 and expenseForNextYear', () => {
             const year = 2025;
-            const value = 20;
             const month = EMonth.MARCH;
             const instalment_number = 12;
             const expenseVariableWithNextYear: ExpenseEntity = {
@@ -592,7 +515,7 @@ describe('Expense Business', () => {
                 name: `${mockEntity.bill.name} ${mockEntity.supplier.name}`,
                 type: 'VARIABLE' as ExpenseEntity['type'],
                 paid: false,
-                total: 100,
+                total: 0,
                 supplier: mockEntity.supplier,
                 total_paid: 0,
                 created_at: undefined,
@@ -601,16 +524,7 @@ describe('Expense Business', () => {
                 instalment_number,
             };
 
-            MONTHS.forEach((month) => {
-                expenseVariableWithNextYear[`${month}_paid`] = true;
-                expenseVariableWithNextYear[`${month}`] = 0;
-            });
-
-            const result = business.initialize(
-                expenseVariableWithNextYear,
-                value,
-                month,
-            );
+            const result = business.initialize(expenseVariableWithNextYear, month);
 
             expect(result.nextYear).toBe(2026);
             expect(result.requiresNewBill).toBeTruthy();
@@ -620,7 +534,7 @@ describe('Expense Business', () => {
             expect(result.expenseForCurrentYear.bill).toEqual(expenseVariableWithNextYear.bill);
             expect(result.expenseForCurrentYear.type).toEqual('VARIABLE');
             expect(result.expenseForCurrentYear.paid).toBeFalsy();
-            expect(result.expenseForCurrentYear.total).toEqual(100);
+            expect(result.expenseForCurrentYear.total).toEqual(0);
             expect(result.expenseForCurrentYear.supplier).toEqual(
                 expenseVariableWithNextYear.supplier,
             );
@@ -628,30 +542,6 @@ describe('Expense Business', () => {
                 expenseVariableWithNextYear.name_code,
             );
             expect(result.expenseForCurrentYear.total_paid).toEqual(0);
-            expect(result.expenseForCurrentYear.january).toEqual(0);
-            expect(result.expenseForCurrentYear.january_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.february).toEqual(0);
-            expect(result.expenseForCurrentYear.february_paid).toBeTruthy();
-            expect(result.expenseForCurrentYear.march).toEqual(20);
-            expect(result.expenseForCurrentYear.march_paid).toBeFalsy();
-            expect(result.expenseForCurrentYear.april).toEqual(20);
-            expect(result.expenseForCurrentYear.april_paid).toBeFalsy();
-            expect(result.expenseForCurrentYear.may).toEqual(20);
-            expect(result.expenseForCurrentYear.may_paid).toBeFalsy();
-            expect(result.expenseForCurrentYear.june).toEqual(20);
-            expect(result.expenseForCurrentYear.june_paid).toBeFalsy();
-            expect(result.expenseForCurrentYear.july).toEqual(20);
-            expect(result.expenseForCurrentYear.july_paid).toBeFalsy();
-            expect(result.expenseForCurrentYear.august).toEqual(20);
-            expect(result.expenseForCurrentYear.august_paid).toBeFalsy();
-            expect(result.expenseForCurrentYear.september).toEqual(20);
-            expect(result.expenseForCurrentYear.september_paid).toBeFalsy();
-            expect(result.expenseForCurrentYear.october).toEqual(20);
-            expect(result.expenseForCurrentYear.october_paid).toBeFalsy();
-            expect(result.expenseForCurrentYear.november).toEqual(20);
-            expect(result.expenseForCurrentYear.november_paid).toBeFalsy();
-            expect(result.expenseForCurrentYear.december).toEqual(20);
-            expect(result.expenseForCurrentYear.december_paid).toBeFalsy();
             expect(result.expenseForCurrentYear.description).toBeUndefined();
             expect(result.expenseForCurrentYear.created_at).toBeUndefined();
             expect(result.expenseForCurrentYear.updated_at).toBeUndefined();
@@ -663,7 +553,7 @@ describe('Expense Business', () => {
             expect(result.expenseForNextYear?.year).toEqual(2026);
             expect(result.expenseForNextYear?.type).toEqual('VARIABLE');
             expect(result.expenseForNextYear?.paid).toBeFalsy();
-            expect(result.expenseForNextYear?.total).toEqual(100);
+            expect(result.expenseForNextYear?.total).toEqual(0);
             expect(result.expenseForNextYear?.supplier).toEqual(
                 expenseVariableWithNextYear.supplier,
             );
@@ -671,30 +561,6 @@ describe('Expense Business', () => {
                 expenseVariableWithNextYear.name_code,
             );
             expect(result.expenseForNextYear?.total_paid).toEqual(0);
-            expect(result.expenseForNextYear?.january).toEqual(20);
-            expect(result.expenseForNextYear?.january_paid).toBeFalsy();
-            expect(result.expenseForNextYear?.february).toEqual(20);
-            expect(result.expenseForNextYear?.february_paid).toBeFalsy();
-            expect(result.expenseForNextYear?.march).toEqual(0);
-            expect(result.expenseForNextYear?.march_paid).toBeTruthy();
-            expect(result.expenseForNextYear?.april).toEqual(0);
-            expect(result.expenseForNextYear?.april_paid).toBeTruthy();
-            expect(result.expenseForNextYear?.may).toEqual(0);
-            expect(result.expenseForNextYear?.may_paid).toBeTruthy();
-            expect(result.expenseForNextYear?.june).toEqual(0);
-            expect(result.expenseForNextYear?.june_paid).toBeTruthy();
-            expect(result.expenseForNextYear?.july).toEqual(0);
-            expect(result.expenseForNextYear?.july_paid).toBeTruthy();
-            expect(result.expenseForNextYear?.august).toEqual(0);
-            expect(result.expenseForNextYear?.august_paid).toBeTruthy();
-            expect(result.expenseForNextYear?.september).toEqual(0);
-            expect(result.expenseForNextYear?.september_paid).toBeTruthy();
-            expect(result.expenseForNextYear?.october).toEqual(0);
-            expect(result.expenseForNextYear?.october_paid).toBeTruthy();
-            expect(result.expenseForNextYear?.november).toEqual(0);
-            expect(result.expenseForNextYear?.november_paid).toBeTruthy();
-            expect(result.expenseForNextYear?.december).toEqual(0);
-            expect(result.expenseForNextYear?.december_paid).toBeTruthy();
             expect(result.expenseForNextYear?.description).toBeUndefined();
             expect(result.expenseForNextYear?.created_at).toBeUndefined();
             expect(result.expenseForNextYear?.updated_at).toBeUndefined();
@@ -992,42 +858,6 @@ describe('Expense Business', () => {
             });
         });
 
-        describe('handleExpenseForNextYear', () => {
-            it('should return expense for next year correctly', () => {
-                const result = business['handleExpenseForNextYear'](
-                    mockEntity,
-                     2020,
-                     100,
-                     ['january', 'february']
-                );
-                expect(result.id).toEqual('');
-                expect(result.year).toEqual(2020);
-                expect(result.january).toEqual(100);
-                expect(result.february).toEqual(100);
-                expect(result.january_paid).toBeFalsy();
-                expect(result.february_paid).toBeFalsy();
-
-            });
-        });
-
-        describe('calculateTotalAndPaid', () => {
-            it('should return total and paid correctly ', () => {
-                const result = business['calculateTotalAndPaid'](mockEntity);
-                expect(result.total).toEqual(100);
-                expect(result.total_paid).toEqual(100);
-
-            })
-        });
-
-        describe('calculateTotals', ()  => {
-            it('should return totals correctly ', () => {
-                const result = business['calculateTotals'](mockEntity);
-                expect(result.total).toEqual(100);
-                expect(result.total_paid).toEqual(100);
-                expect(result.paid).toBeTruthy();
-            })
-        });
-
         describe('splitMonthsByYear', () => {
             it('should return months correctly', () => {
                 const result = business['splitMonthsByYear'](
@@ -1154,7 +984,7 @@ describe('Expense Business', () => {
                     return acc;
                 }, {} as CycleOfMonths);
                 props.forEach((prop, i) => {
-                    const { name, supplier, is_aggregate, aggregate_name, supplierList = []  } = prop ?? {};
+                    const { name, supplier, is_aggregate, aggregate_name, supplierList = [] } = prop ?? {};
                     jest.spyOn(business as any, 'buildCreditCardBodyData').mockImplementationOnce(() => ({
                         data: {
                             ...monthsObj,
@@ -1379,8 +1209,8 @@ describe('Expense Business', () => {
             it('should set bankName to "Bank" when regex does not capture the name.', () => {
                 const originalMatch = String.prototype.match;
 
-                String.prototype.match = function(regex) {
-                    if(this === 'CREDIT_CARD(Nubank)') {
+                String.prototype.match = function (regex) {
+                    if (this === 'CREDIT_CARD(Nubank)') {
                         return [
                             'CREDIT_CARD(Nubank)',
                             'CREDIT_CARD',
@@ -1580,7 +1410,7 @@ describe('Expense Business', () => {
             });
 
             it('should recurse and accumulate correctly when the type exists and accumulateGroupTables is called.', () => {
-                const billTypeBankSlipMock = { ...mockBillEntity, type: 'BANK_SLIP' as BillEntity['type']  };
+                const billTypeBankSlipMock = { ...mockBillEntity, type: 'BANK_SLIP' as BillEntity['type'] };
                 let call = 0;
 
                 spreadsheetMock.workSheet.cell.mockImplementation((row, col) => {
@@ -1616,8 +1446,8 @@ describe('Expense Business', () => {
             });
 
             it('must handle multiple recursive calls if applicable.', () => {
-                const billTypeBankSlipMock = { ...mockBillEntity, type: 'BANK_SLIP' as BillEntity['type']  };
-                const billTypeAccountDebitMock = { ...mockBillEntity, type: 'ACCOUNT_DEBIT' as BillEntity['type']  };
+                const billTypeBankSlipMock = { ...mockBillEntity, type: 'BANK_SLIP' as BillEntity['type'] };
+                const billTypeAccountDebitMock = { ...mockBillEntity, type: 'ACCOUNT_DEBIT' as BillEntity['type'] };
 
                 const types = [
                     'BANK_SLIP' as BillEntity['type'],

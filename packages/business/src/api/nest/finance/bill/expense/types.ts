@@ -71,10 +71,11 @@ export type ICreateExpenseParams = {
     instalment_number?: number;
 }
 
-export type IUpdateExpenseParams = Partial<IExpenseMonthsWithPaid> & {
+export type IUpdateExpenseParams = {
     paid?: boolean;
     bill?: string | IExpense['bill'];
     type?: IExpense['type'];
+    months?: Array<IMonth>;
     supplier?: string | IExpense['supplier'];
     description?: string;
 }

@@ -204,7 +204,7 @@ export class BillService extends Service<Bill> {
                 withThrow: false,
             });
 
-            await this.expenseService.addExpenseForNextYear(newBill, monthsForNextYear, expenseForNextYear, existingExpense);
+            await this.expenseService.addExpenseForNextYear(newBill, monthsForNextYear, expenseForNextYear, existingExpense, createExpenseDto.value);
         }
 
         return expenseForCurrentYear;
@@ -308,7 +308,8 @@ export class BillService extends Service<Bill> {
             });
         }
 
-        return await this.expenseService.customSave(updatedExpense);
+        // return await this.expenseService.customSave(updatedExpense);
+        return updatedExpense;
     }
 
     async seeds({

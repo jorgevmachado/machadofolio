@@ -4,6 +4,7 @@ import type {
     IUpdateExpenseParams,
     IPartialNestBaseEntity
 } from '../../api';
+import { TMonth } from '@repo/services';
 
 export type ExpenseEntity = IExpense;
 
@@ -35,8 +36,8 @@ export type UpdateExpenseParams = IUpdateExpenseParams;
 export type InitializedExpense = {
     nextYear: number;
     requiresNewBill: boolean;
-    monthsForNextYear?: Array<string>;
+    monthsForNextYear?: Array<TMonth>;
     expenseForNextYear?: ExpenseEntity;
-    monthsForCurrentYear?: Array<string>;
+    monthsForCurrentYear: Array<TMonth>;
     expenseForCurrentYear: ExpenseEntity;
 }

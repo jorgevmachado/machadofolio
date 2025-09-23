@@ -56,8 +56,8 @@ describe('IncomeService', () => {
                 },
                 {
                     provide: MonthService, useValue: {
-                        createByIncome: jest.fn(),
-                        updateByIncome: jest.fn(),
+                        createByRelationship: jest.fn(),
+                        updateByRelationship: jest.fn(),
                         removeByIncome: jest.fn(),
                     }
                 }
@@ -100,7 +100,7 @@ describe('IncomeService', () => {
 
             jest.spyOn(sourceService, 'treatEntityParam').mockResolvedValueOnce(mockEntity.source);
 
-            jest.spyOn(monthService, 'createByIncome').mockReturnValue(mockEntity.months as any);
+            jest.spyOn(monthService, 'createByRelationship').mockReturnValue(mockEntity.months as any);
 
             jest
                 .spyOn(service, 'saveCreateIncome' as any)
@@ -183,7 +183,7 @@ describe('IncomeService', () => {
 
             jest.spyOn(sourceService, 'treatEntityParam').mockResolvedValueOnce(mockEntity.source);
 
-            jest.spyOn(monthService, 'updateByIncome').mockResolvedValueOnce(expected.months as any);
+            jest.spyOn(monthService, 'updateByRelationship').mockResolvedValueOnce(expected.months as any);
 
             jest
                 .spyOn(service, 'save')
@@ -300,7 +300,7 @@ describe('IncomeService', () => {
             it('should persist income when not exist income created', async () => {
                 jest.spyOn(service, 'existIncomeCreated' as any).mockReturnValueOnce(null);
                 jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
-                jest.spyOn(monthService, 'createByIncome').mockResolvedValueOnce(mockEntity.months as any);
+                jest.spyOn(monthService, 'createByRelationship').mockResolvedValueOnce(mockEntity.months as any);
                 jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
                 const result = await service['saveCreateIncome'](params as any);
                 expect(result).toEqual(mockEntity);
@@ -308,7 +308,7 @@ describe('IncomeService', () => {
 
             it('should persist income when exist income created', async () => {
                 jest.spyOn(service, 'existIncomeCreated' as any).mockReturnValueOnce(mockEntity);
-                jest.spyOn(monthService, 'createByIncome').mockResolvedValueOnce([mockEntity.months] as any);
+                jest.spyOn(monthService, 'createByRelationship').mockResolvedValueOnce([mockEntity.months] as any);
                 jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
                 const result = await service['saveCreateIncome'](params as any);
                 expect(result).toEqual(mockEntity);

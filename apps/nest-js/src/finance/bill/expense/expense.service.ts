@@ -2,9 +2,9 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { type CycleOfMonths, MONTHS, Spreadsheet, filterByCommonKeys } from '@repo/services';
+import { filterByCommonKeys, Spreadsheet } from '@repo/services';
 
-import { EExpenseType, ExpenseBusiness, Expense as ExpenseConstructor, type ExpenseEntity } from '@repo/business';
+import { EExpenseType, Expense as ExpenseConstructor, ExpenseBusiness, type ExpenseEntity } from '@repo/business';
 
 import { FilterParams, Service } from '../../../shared';
 
@@ -16,6 +16,8 @@ import { SupplierService } from '../../supplier/supplier.service';
 
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
+import { MonthService } from '../../month/month.service';
+import { TMonth } from '@repo/services/date/month/month';
 
 export type InitializeParams = {
     value?: number;
@@ -39,8 +41,9 @@ export class ExpenseService extends Service<Expense> {
         protected repository: Repository<Expense>,
         protected expenseBusiness: ExpenseBusiness,
         protected supplierService: SupplierService,
+        protected monthService: MonthService
     ) {
-        super('expenses', ['supplier', 'bill', 'children', 'parent'], repository);
+        super('expenses', ['supplier', 'bill', 'months', 'children', 'parent'], repository);
     }
 
     get business(): ExpenseBusiness {
@@ -83,8 +86,8 @@ export class ExpenseService extends Service<Expense> {
 
         await this.validateExistExpense(expenseToInitialize);
 
-        const result = this.expenseBusiness.initialize(expenseToInitialize, value, month);
-        const initializedExpense = await this.customSave(result.expenseForCurrentYear);
+        const result = this.expenseBusiness.initialize(expenseToInitialize, month);
+        const initializedExpense = await this.customSave(result.expenseForCurrentYear, result.monthsForCurrentYear, value);
 
         if (initializedExpense) {
             result.expenseForCurrentYear = initializedExpense;
@@ -93,20 +96,33 @@ export class ExpenseService extends Service<Expense> {
         return result;
     }
 
-    async addExpenseForNextYear(bill: Bill, months: Array<string> = [], expense: Expense, existingExpense?: Expense) {
+    async addExpenseForNextYear(bill: Bill, months: Array<TMonth> = [], expense: Expense, existingExpense?: Expense, value: number = 0) {
         const currentExpenseForNextYear = this.expenseBusiness.reinitialize(
             months,
             expense,
             existingExpense
         );
-        const expenseCreated = await this.customSave({ ...currentExpenseForNextYear, bill });
+        const expenseCreated = await this.customSave({ ...currentExpenseForNextYear, bill }, months, value);
         await this.validateParent(expenseCreated as Expense);
         return expenseCreated;
     }
 
-    async customSave(expense: Expense) {
-        const calculatedExpense = this.expenseBusiness.calculate(expense);
-        return await this.save(calculatedExpense);
+    async customSave(expense: Expense, months: Array<TMonth> = [], value: number = 0) {
+        const currentExpenseCalculated = this.expenseBusiness.calculate(expense);
+        const currentExpense = await this.save(currentExpenseCalculated);
+        if (currentExpense && months.length > 0) {
+            currentExpense.months = await this.monthService.createByRelationship({
+                year: currentExpense.year,
+                paid: currentExpense.paid,
+                value,
+                expense: currentExpense,
+                listOfMonths: months,
+                received_at: currentExpense.created_at
+            });
+            const expenseCalculated = this.expenseBusiness.calculate(currentExpense);
+            return await this.customSave(expenseCalculated);
+        }
+        return currentExpense;
     }
 
     async buildForUpdate(expense: Expense, updateExpenseDto: UpdateExpenseDto) {
@@ -117,11 +133,22 @@ export class ExpenseService extends Service<Expense> {
                 'Supplier',
             ) as Supplier;
 
-        return new ExpenseConstructor({
+        expense.type = !updateExpenseDto?.type ? expense.type : updateExpenseDto.type;
+        expense.paid = updateExpenseDto.paid === undefined ? expense.paid : updateExpenseDto.paid;
+        expense.description = !updateExpenseDto?.description ? expense.description : updateExpenseDto.description;
+        const months = !updateExpenseDto?.months ? expense.months : await this.monthService.updateByRelationship({
+            paid: expense.paid,
+            expense,
+            monthsToUpdate: updateExpenseDto.months
+        });
+
+        const currentExpense = new ExpenseConstructor({
             ...expense,
-            ...updateExpenseDto,
+            months,
             supplier
         });
+
+        return this.expenseBusiness.calculate(currentExpense);
     }
 
     async seeds({
@@ -256,22 +283,14 @@ export class ExpenseService extends Service<Expense> {
             ? `${bill.name} ${supplierName}`
             : `${bill.name} ${aggregate_name} ${supplierName}`;
 
-        const monthsObj = MONTHS.reduce((acc, month) => {
-            acc[month] = params[month] ? Number(params[month]) : 0;
-            acc[`${month}_paid`] = params[`${month}_paid`] ? params[`${month}_paid`] : false;
-            return acc;
-        }, {} as CycleOfMonths);
-
         const childrenParams = params?.['children'];
         const children = Array.isArray(childrenParams) && childrenParams.length
             ? childrenParams
             : undefined
 
-
         const type = params['type'] as EExpenseType ?? EExpenseType.VARIABLE;
 
         return {
-            ...monthsObj,
             year,
             bill,
             name,
@@ -300,7 +319,7 @@ export class ExpenseService extends Service<Expense> {
             withRelations: true,
         });
 
-        if(item) {
+        if (item) {
             return item;
         }
 
@@ -311,14 +330,14 @@ export class ExpenseService extends Service<Expense> {
             supplier,
         });
 
-        const parentExpense = await this.customSave({...parentExpenseConstructor, children: undefined }) as Expense;
+        const parentExpense = await this.customSave({ ...parentExpenseConstructor, children: undefined }) as Expense;
 
-        if(!parentExpenseConstructor.is_aggregate) {
-            if(parentExpenseConstructor.children) {
-                if(!parentExpense.children) {
+        if (!parentExpenseConstructor.is_aggregate) {
+            if (parentExpenseConstructor.children) {
+                if (!parentExpense.children) {
                     parentExpense.children = [];
                 }
-                for(const child of parentExpenseConstructor.children) {
+                for (const child of parentExpenseConstructor.children) {
                     const builtChildExpense = this.buildExpenseToSheet(child);
                     const item = await this.findOne({
                         value: builtChildExpense.name,
@@ -331,7 +350,7 @@ export class ExpenseService extends Service<Expense> {
                         withDeleted: true,
                         withRelations: true,
                     });
-                    if(item) {
+                    if (item) {
                         parentExpense.children.push(item);
                     }
 
@@ -343,11 +362,11 @@ export class ExpenseService extends Service<Expense> {
                     });
 
                     const expense = await this.customSave(childExpenseConstructor);
-                    if(expense) {
+                    if (expense) {
                         parentExpense.children.push(expense);
                     }
                 }
-                if(parentExpense.children.length) {
+                if (parentExpense.children.length) {
                     await this.customSave(parentExpense);
                 }
             }
@@ -364,10 +383,10 @@ export class ExpenseService extends Service<Expense> {
     ): Promise<Expense[]> {
         const expenses: Array<Expense> = [];
         const expensesData = this.expenseBusiness.parseToDetailsTable({
-                bills,
-                startRow: nextRow,
-                groupName,
-                workSheet: spreadsheet.workSheet
+            bills,
+            startRow: nextRow,
+            groupName,
+            workSheet: spreadsheet.workSheet
         });
 
         for (const itemData of expensesData) {

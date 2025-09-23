@@ -69,11 +69,27 @@ export class IncomeService extends Service<Income> {
             const existingIncome = await this.existIncomeCreated(income.name_code, income.year);
             if (!existingIncome) {
                 const savedIncome = await this.save(income) as Income;
-                savedIncome.months = await this.monthService.createByIncome(income, true, value, month, monthsToCreate, received_at);
+                savedIncome.months = await this.monthService.createByRelationship({
+                    year: savedIncome.year,
+                    value,
+                    month,
+                    income,
+                    isCreate: true,
+                    received_at,
+                    monthsToCreate,
+                });
                 const total = savedIncome.months.reduce((acc, item) => acc + item.value, 0);
                 return await this.save({...savedIncome, total});
             }
-            existingIncome.months = await this.monthService.createByIncome(existingIncome, false, value, month, monthsToCreate, received_at);
+            existingIncome.months = await this.monthService.createByRelationship({
+                year: existingIncome.year,
+                value,
+                month,
+                income,
+                isCreate: false,
+                received_at,
+                monthsToCreate,
+            });
             const total = existingIncome.months.reduce((acc, item) => acc + item.value, 0);
             return await this.save({...existingIncome, total});
         } catch (error) {
@@ -109,7 +125,10 @@ export class IncomeService extends Service<Income> {
                 source,
                 'Income Source',
             ) as IncomeSource;
-        const currentMonths = !months ? result.months :  await this.monthService.updateByIncome(result, months);
+        const currentMonths = !months ? result.months :  await this.monthService.updateByRelationship({
+            income: result,
+            monthsToUpdate: months
+        });
 
         const total = currentMonths?.reduce((acc, item) => acc + item.value, 0) ?? 0;
         const income = new IncomeConstructor({
