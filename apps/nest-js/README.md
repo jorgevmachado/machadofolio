@@ -4,52 +4,225 @@
     <br/>
 <p>
     <strong>Powered by</strong>
-
-![Yarn](https://img.shields.io/badge/yarn-2C8EBB.svg?style=falt&logo=yarn&logoColor=white)
-![Typescript](https://img.shields.io/badge/typescript-%23323330.svg?style=falt&logo=typescript&logoColor=%233178C6)
-![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=falt&logo=node.js&logoColor=white)
-![Jest](https://img.shields.io/badge/jest-C53d15.svg?style=falt&logo=jest&logoColor=white)
+    <br/>
+    <img src="https://img.shields.io/badge/yarn-2C8EBB.svg?style=flat&logo=yarn&logoColor=white" alt="Yarn Logo" />
+    <img src="https://img.shields.io/badge/typescript-%23323330.svg?style=flat&logo=typescript&logoColor=%233178C6" alt="TypeScript Logo" />
+    <img src="https://img.shields.io/badge/node.js-6DA55F?style=flat&logo=node.js&logoColor=white" alt="Node.js Logo" />
+    <img src="https://img.shields.io/badge/jest-C53d15.svg?style=flat&logo=jest&logoColor=white" alt="Jest Logo" />
 </p>
 </div>
 
+## 📚 Visão Geral
+Este é o back-end do projeto **MACHADOFOLIO**, uma API desenvolvida em NestJS, responsável por fornecer os serviços para os módulos de autenticação, gestão financeira, Pokémon e integrações futuras.
+O objetivo é oferecer uma API escalável, segura e bem estruturada, servindo como base sólida para os front-ends do monorepo.
 
-## Para que serve ?
-Este projeto é uma API desenvolvida com o framework **NestJS**,
-que é uma solução progressiva para construir aplicações server-side eficientes,
-escaláveis e confiáveis em **Node.js**. A API utiliza **TypeScript**
-seguindo testes automatizados com **Jest**.
+---
+## 🎯 Objetivos do Projeto
+- Criar uma API robusta e modular para gerenciamento financeiro.
+- Implementar autenticação segura com JWT e níveis de permissão.
+- Permitir controle total de contas fixas, despesas e receitas.
+- Oferecer endpoints documentados com Swagger.
+- Servir como portfólio profissional para demonstrar boas práticas no back-end.
 
-## Instalação do Ambiente
-### Seguir as instruções do Readme Principal no ‘item’ Instalação do Ambiente [clique aqui](../../README.md).
+---
 
-## 🏠  Comandos
+## 🏗️ Estrutura do Projeto
+    .
+    ├── apps/api
+       ├── auth           # Autenticação e gerenciamento de usuários.
+       └── finance        # Gestão financeira (Contas, despesas, receitas).
+       └── pokemon        # Gestão de Pokemons.
+       └── shared         # Módulo e serviços reutilizáveis.
+       └── decorators     # Módulo de decoradores de requisições.
+       └── guards         # Módulo de guards responsável por validar o permissionamento.
+       └── interceptors   # Módulo de interceptadores.
+       └── mocks          # Módulo de mocks para testes.
+       └── strategies     # Módulo de estratégias e validações de requisições.
+       └── transforms     # Módulo de transformação de campos nas requisições e persistencias de dados.
+       └── main.ts        # Ponto inicial da aplicação.
+       └── app.modules.ts # Módulo Raiz do NestJs. 
+---
+
+## 🚀 Tecnologias Utilizadas
+- **[NestJS](https://nestjs.com/)**
+- **[TypeScript](https://www.typescriptlang.org/)**
+- **[PostgreSQL](https://www.postgresql.org/)**
+- **[TypeORM](https://typeorm.io/)**
+- **[JWT](https://jwt.io/)**
+- **[Passport](http://www.passportjs.org/)**
+- **[Swagger](https://swagger.io/)**
+- **[class-validator](https://docs.nestjs.com/techniques/validation)**
+- **[docker](https://www.docker.com/)**
+
+---
+
+## 🔐 Segurança
+- Autenticação JWT: Cada usuário tem um token único.
+- Permissões: Níveis administrativos para usuários.
+- Proteção de rotas: Middleware para validação de permissões.
+
+---
+## 🗄️ Modelagem de Dados
+
+Principais entidades do sistema financeiro:
+
+- **Users** → Usuários com autenticação e permissão.
+- **Finances** → Gerenciamento de Controle financeiro individual por usuário.
+    - **Banks** → Gerenciamento de bancos.
+    - **Suppliers** → Gerenciamento de Fornecedores vinculados aos tipos.
+        - **Supplier Types** → Gerenciamento de Tipos de fornecedores.
+    - **Bills** → Gerenciamento de Contas fixas (ex.: luz, internet, aluguel).
+        - **Expenses** → Gerenciamento de Despesas associadas a uma conta, podendo ter subdespesas.
+    - **Incomes** → Gerenciamento de Entradas financeiras ligadas a um mês e fonte de receita.
+        - **Income Sources** → Gerenciamento de Fontes de receita (ex.: salário, freelas).
+    - **Months** → Gerenciamento de Controle mensal (Janeiro a Dezembro).
+- **Pokemons** → Gerenciamento de pokemons
+    - **Pokemons Abilities** → Gerenciamento de Habilidades de pokemons
+    - **Pokemons Moves** → Gerenciamento de Movimentações de pokemons
+    - **Pokemons Types** → Gerenciamento de tipos de pokemons
+---
+
+## 🌐 APIs Disponíveis
+A documentação completa pode ser acessada via Swagger após iniciar o projeto:
+```bash
+    http://localhost:3001/api/docs
+```
+
+### Endpoints principais
+| Módulo          | Endpoint Base                 | Status           |
+|-----------------|-------------------------------|------------------|
+| Auth            | /auth                         | ✅ Concluído      |
+| Finance         | /finance                      | 🔄 Em andamento  |
+| Bills           | /finance/bill                 | 🔄 Em andamento  |
+| Expenses        | /finance/bill/:billId/expense | 🔄 Em andamento  |
+| Income          | /finance/income               | 🔄 Em andamento  |
+| Income Source   | /finance/income/source        | ✅ Concluído      |
+| Supplier        | /finance/supplier             | ✅ Concluído      |
+| Supplier Type   | /finance/supplier/type        | ✅ Concluído      |
+| Bank            | /finance/bank                 | ✅ Concluído      |
+| Group           | /finance/group                | ✅ Concluído      |
+| pokemon         | /pokemon                      | ✅ Concluído      |
+| pokemon Ability | /pokemon/ability              | ✅ Concluído      |
+| pokemon Move    | /pokemon/move                 | ✅ Concluído      |
+| pokemon Type    | /pokemon/type                 | ✅ Concluído      |
+| seeds           | /seeds                        | 🔄 Em andamento  |
+
+---
+
+## 🗺️ Roadmap
+- Modulo de usuários	                              ✅ Concluído
+    - Cadastro (/signUp) ✅
+    - Autenticação (/signIn) ✅
+    - Buscar usuário por token (/me) ✅
+    - Edição de Usuário (/update) ✅
+    - Upload de Avatar (/upload) ✅
+    - Buscar Usuário por Id ou Nome *somente para usuários que possuem permissão administrativa* (/:id) ✅
+    - Promover Usuário para administrador *somente para usuários que possuem permissão administrativa* (/:id/promote) ✅
+- Modulo Financeiro                                  🔄 Em andamento
+    - Inicialização de finanças pelo usuário (/finance/initialize) ✅ Concluído
+    - Buscar Finanças por usuário (/finance) ✅ Concluído
+    - Gerar Planilha Excel por usuário (/finance/generate-document) 🔄 Em andamento
+    - Gerar Finanças por Planilha de Excel (/finance/upload) 🔄 Em andamento
+    - Documentação 🔄 Em andamento
+    - Modulo de Bancos ✅ Concluído
+        - Cadastro (/finance/bank) ✅
+        - Edição (/finance/:id/bank) ✅
+        - Lista (/finance/list/bank) ✅
+        - Busca por Id (/finance/:id/bank) ✅
+        - Remoção via Soft-Delete (/finance/:id/bank) ✅
+    - Modulo de Fornecedores ✅ Concluído
+        - Cadastro de Tipo de Fornecedor (/finance/supplier/type) ✅
+        - Edição de Tipo de Fornecedor (/finance/supplier/:id/type) ✅
+        - Lista de Tipo de Fornecedor (/finance/supplier/list/type) ✅
+        - Busca por Id de Tipo de Fornecedor (/finance/supplier/:id/type) ✅
+        - Remoção via Soft-Delete de Tipo de Fornecedor (/finance/supplier/:id/type) ✅
+        - Cadastro de Fornecedor (/finance/supplier) ✅
+        - Edição de Fornecedor (/finance/supplier/:id) ✅
+        - Lista de Fornecedor (/finance/supplier) ✅
+        - Busca por Id de Fornecedor (/finance/supplier/:id) ✅
+        - Remoção via Soft-Delete de Fornecedor (/finance/supplier/:id) ✅
+    - Modulo de contas 🔄 Em andamento
+        - Cadastro (/finance/bill) ✅
+        - Edição (/finance/bill/:id) ✅
+        - Lista (/finance/bill) ✅
+        - Busca por Id (/finance/bill/:id) ✅
+        - Remoção via Soft-Delete (/finance/bill/:id) ✅
+        - Cadastro de Despesas (/finance/bill/:id/expense) 🔄
+        - Lista de Despesas (/finance/bill/:id/list/expense) ✅
+        - Edição de Despesas (/finance/bill/:id/expense/:id) 🔄
+        - Buscar Despesas por id (/finance/bill/:id/expense/:id) ✅
+        - Remoção de Despesas via Soft-Delete (/finance/bill/:id/expense/:id) ✅
+    - Modulo de renda 🔄 Em andamento
+        - Cadastro de Fonte de Renda (/finance/income/source) ✅
+        - Edição de Fonte de Renda (/finance/income/:id/source) ✅
+        - Lista de Fonte de Renda (/finance/income/list/source) ✅
+        - Busca por Id de Fonte de Renda (/finance/income/:id/source) ✅
+        - Remoção via Soft-Delete de Fonte de Renda (/finance/income/:id/source) ✅
+        - Cadastro de Renda (/finance/income) 🔄
+        - Edição de Renda (/finance/income/:id) 🔄
+        - Lista de Rendas (/finance/income) 🔄
+        - Busca por Id de Renda (/finance/income/:id) 🔄
+        - Remoção via Soft-Delete de Renda (/finance/income/:id) 🔄
+- Modulo de Pokemon 🔄 Em andamento
+    - Listar Pokemons (/pokemon) ✅
+    - Buscar Pokemon por Id (/pokemon/:id) ✅
+    - Documentação 🔄
+    - Modulo de Habilidades ✅ Concluído
+        - Listar Habilidades (/pokemon/list/ability) ✅
+        - Buscar Habilidade por id (/pokemon/:id/ability) ✅
+    - Modulo de Movimentações ✅ Concluído
+        - Listar Movimentações (/pokemon/list/move) ✅
+        - Buscar Movimentação por id (/pokemon/:id/move) ✅
+    - Modulo de Tipos ✅ Concluído
+        - Listar Tipos (/pokemon/list/type) ✅
+        - Buscar Tipo por id (/pokemon/:id/type) ✅
+- Infraestrutura ⏳ Pendente
+    - Testes ⏳ Pendente
+    - Documentação	⏳ Pendente
+    - Deploy Ambiente de DEV ⏳ Pendente
+    - Deploy Ambiente de STG ⏳ Pendente
+    - Deploy Ambiente de PROD ⏳ Pendente
+
+## ⚙️ Instalação do Ambiente
+### Pré-requisitos
+#### Seguir as instruções do Readme Principal no ‘item’ Instalação do Ambiente [clique aqui](../../README.md).
+
+## 🏠 Comandos Importantes
 #### Todos os comandos aqui listados, devem ser executados na raiz do módulo (./apps/nest-js).
-### Build
+### Instalação e Build
 ```bash
-# Irá executar o build do módulo.
-yarn build
+    # Irá executar a instalação do módulo.
+    yarn install
+    # Irá executar o build do projeto nestJs.
+    yarn build
 ```
-
-### Develop
-
-```bash
-# Irá executar o módulo em modo de desenvolvimento. http://localhost:3001
-yarn dev
-```
-
 ### Lint
 ```bash
-# Irá executar o lint no módulo.
-# Veja `@repo/eslint-config` para personalizar o comportamento.
-yarn lint
+    # Irá executar o lint do projeto nestJs.
+    yarn lint    
 ```
-### test
+### Testes
 ```bash
-# Irá executar todos os testes do módulo.
-yarn test
+    # Irá executar os testes do projeto nestJs
+    yarn test    
+```
+### Develop
+```bash
+  # Irá executar o projeto nestJs em modo de desenvolvimento. http://localhost:3001
+  yarn start:dev
 ```
 
-## Módulos
+## 🐳 Docker
+### Subir os containers necessários para rodar o projeto:
+```bash    
+    docker-compose up -d    
+```
+### Encerrar os containers:
+```bash  
+    docker-compose down    
+```
+
+## 📘 Documentações Complementares
 ### **Shared**: Este módulo fornece uma coleção de classes e utilitários essenciais para esté projeto.
 #### **base**: Classe abstrata, que fornece um método utilitário para tratamento centralizado de erros.
 #### Comando para testes unitários exclusivo para esté sub-módulo.
@@ -200,108 +373,108 @@ yarn test
 #### **bank**: Conjunto de serviços relacionados a instituições bancárias.
 - **service**: Regras de négocio para o tratamento das instituições bancárias.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/bank/bank.service.spec.ts                                 
 ```
 - **controller**: Endpoints relacionados a instituições bancárias.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/bank/bank.controller.spec.ts                                 
 ```
   
 #### **bill**: Conjunto de serviços relacionados a contas a pagar.
 - **service**: Regras de négocio para o tratamento das contas a pagar.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/bill/bill.service.spec.ts                                 
 ```
 - **controller**: Endpoints relacionados a contas a pagar.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/bill/bill.controller.spec.ts                                 
 ```
 - **billCategory**: Conjunto de serviços relacionados a categoria da conta a pagar.
 - - **service**: Regras de négocio para o tratamento da categoria da conta a pagar.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/bill/category/category.service.spec.ts                                 
 ``` 
 - - **controller**: Endpoints relacionados a categoria da conta a pagar.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/bill/category/category.controller.spec.ts                                 
 ```
 - **expense**: Conjunto de serviços relacionados a despesa da conta a pagar.
 - - **service**: Regras de négocio para o tratamento de despesas da conta a pagar.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/bill/expense/expense.service.spec.ts                                 
 ```
 #### **supplier**: Conjunto de serviços relacionados a fornecedores.
 - **service**: Regras de négocio para o tratamento de fornecedores.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/bill/expense/supplier/supplier.service.spec.ts                                 
 ```
 - **controller**: Endpoints relacionados a fornecedores.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/bill/expense/supplier/supplier.controller.spec.ts                                   
 ```
 - **supplierType**: conjunto de serviços relacionados a tipos de fornecedor.
 - - **service**: Regras de négocio para o tratamento de tipos de fornecedor.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/bill/expense/supplier/type/type.service.spec.ts                    
 ```
 - - **controller**: Endpoints relacionados a tipos de fornecedor.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/bill/expense/supplier/type/type.controller.spec.ts                      
 ```
 
 ### **pokemon**: Conjunto de serviços e endpoints relacionados a pokemon.
 #### **service**: Regras de négocio para o tratamento de pokemons.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/pokemon/pokemon.service.spec.ts                                 
 ```
 #### **controller**: Endpoints relacionados a pokemon.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/finance/finance.controller.spec.ts                                 
 ```
 #### **move**: Conjunto de serviços relacionados a movimentos de pokemon.
 - **service**: Regras de négocio para o tratamento dos movimentos de pokemon.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/pokemon/move/move.service.spec.ts                                 
 ```
 - **controller**: Endpoints relacionados a movimentações de pokemon.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/pokemon/move/move.controller.spec.ts                                 
 ```
 #### **type**: Conjunto de serviços relacionados a tipos de pokemon.
 - **service**: Regras de négocio para o tratamento dos tipos de pokemon.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/pokemon/type/type.service.spec.ts                                 
 ```
 - **controller**: Endpoints relacionados a tipos de pokemon.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/pokemon/type/type.controller.spec.ts                                 
 ```
 
 #### **ability**: Conjunto de serviços relacionados a Habilidades de pokemon.
 - **service**: Regras de négocio para o tratamento de Habilidades de pokemon.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/pokemon/ability/ability.service.spec.ts                                 
 ```
 - **controller**: Endpoints relacionados a Habilidades de pokemon.
 ```bash
-  // Comando para testes unitários exclusivo para esté sub-módulo.
+  # Comando para testes unitários exclusivo para esté sub-módulo.
   yarn run test -- --findRelatedTests src/pokemon/ability/ability.controller.spec.ts                                 
 ```
