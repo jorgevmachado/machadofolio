@@ -25,3 +25,8 @@ export type IUpdateMonthParams = Omit<IMonth, 'year' | 'paid' | 'label'| 'create
     year?: number;
     paid?: boolean;
 };
+
+export type IPersistMonthParams = Partial<Omit<IMonth, 'value'>> & {
+    value: number;
+    month?: EMonth;
+};

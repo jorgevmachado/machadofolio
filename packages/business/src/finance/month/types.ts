@@ -1,4 +1,10 @@
-import type { IMonth, IPartialNestBaseEntity, ICreateMonthParams, IUpdateMonthParams } from '../../api';
+import type {
+    IMonth,
+    IPartialNestBaseEntity,
+    ICreateMonthParams,
+    IUpdateMonthParams,
+    IPersistMonthParams
+} from '../../api';
 
 export type MonthEntity = IMonth;
 
@@ -21,3 +27,4 @@ export type MonthConstructorParams = Omit<
 
 export type CreateMonthParams = ICreateMonthParams;
 export type UpdateMonthParams = IUpdateMonthParams;
+export type PersistMonthParams = IPersistMonthParams;

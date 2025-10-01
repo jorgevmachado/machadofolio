@@ -14,6 +14,8 @@ import { User } from '../auth/entities/user.entity';
 
 import { Bank } from './entities/bank.entity';
 import { BankService } from './bank/bank.service';
+import { IncomeService } from './income/income.service';
+
 import { Bill } from './entities/bill.entity';
 import { BillService } from './bill/bill.service';
 import { Expense } from './entities/expense.entity';
@@ -24,6 +26,8 @@ import { GroupService } from './group/group.service';
 import { Supplier } from './entities/supplier.entity';
 import { SupplierService } from './supplier/supplier.service';
 import { SupplierType } from './entities/type.entity';
+import { Income } from './entities/incomes.entity';
+import { IncomeSource } from './entities/income-source.entity';
 
 @Injectable()
 export class FinanceService extends Service<Finance> {
@@ -34,6 +38,7 @@ export class FinanceService extends Service<Finance> {
         protected readonly groupService: GroupService,
         protected readonly supplierService: SupplierService,
         protected readonly billService: BillService,
+        protected readonly incomeService: IncomeService,
     ) {
         super('finances', ['bills', 'groups', 'bills.expenses'], repository);
     }
@@ -91,22 +96,14 @@ export class FinanceService extends Service<Finance> {
 
     async seeds(financeSeedsParams: FinanceSeedsParams) {
         const finances = await this.seed(financeSeedsParams.financeListJson, financeSeedsParams.users) as Array<Finance>;
+
         const banks: Array<Bank> = await this.seeder.executeSeed<Bank>({
             label: 'Banks',
             seedMethod: async () => {
                 const result = await this.bankService.seeds({ bankListJson: financeSeedsParams.bankListJson });
                 return Array.isArray(result) ? result : [];
             }
-        })
-        const {
-            supplierList,
-            supplierTypeList
-        } = await this.supplierService.seeds({
-            supplierListJson: financeSeedsParams.supplierListJson,
-            supplierTypeListJson: financeSeedsParams.supplierTypeListJson
-        })
-        const suppliers: Array<Supplier> = supplierList;
-        const supplierTypes: Array<SupplierType> = supplierTypeList;
+        });
 
         const groups: Array<Group> = await this.seeder.executeSeed<Group>({
             label: 'Group',
@@ -119,17 +116,43 @@ export class FinanceService extends Service<Finance> {
             }
         });
 
+        const {
+            supplierList,
+            supplierTypeList
+        } = await this.supplierService.seeds({
+            supplierListJson: financeSeedsParams.supplierListJson,
+            supplierTypeListJson: financeSeedsParams.supplierTypeListJson
+        });
+
+        const suppliers: Array<Supplier> = supplierList;
+        const supplierTypes: Array<SupplierType> = supplierTypeList;
+
         const addedBillIds = new Set<string>();
         const bills: Array<Bill> = [];
 
         const addedExpenseIds = new Set<string>();
         const expenses: Array<Expense> = [];
 
+        const incomes: Array<Income> = [];
+        const incomeSources: Array<IncomeSource> = [];
+
         const financeListSeed = this.seeder.currentSeeds<Finance>({ seedsJson: financeSeedsParams.financeListJson });
 
         for (const finance of finances) {
             const financeSeed = financeListSeed.find((item) => item.id === finance.id);
             if (financeSeed) {
+                const {
+                    incomeList,
+                    incomeSourceList,
+                } = await this.incomeService.seeds({
+                    finance: financeSeed,
+                    incomeListJson: financeSeedsParams.incomeListJson,
+                    incomeSourceListJson: financeSeedsParams.incomeSourceListJson,
+                })
+
+                incomes.push(...incomeList);
+                incomeSources.push(...incomeSourceList);
+
                 const billList = await this.seeder.executeSeed<Bill>({
                     label: 'Bills',
                     seedMethod: async () => {
@@ -180,6 +203,8 @@ export class FinanceService extends Service<Finance> {
             finances: finances,
             suppliers: suppliers,
             supplierTypes: supplierTypes,
+            incomes: incomes,
+            incomeSources: incomeSources,
         }
     }
 

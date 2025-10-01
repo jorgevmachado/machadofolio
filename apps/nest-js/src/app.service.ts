@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import USER_LIST_FIXTURE_JSON from '@repo/mock-json/auth/users.json';
 
 import BANK_LIST_FIXTURE_JSON from '@repo/mock-json/finance/bank/banks.json';
+import INCOME_SOURCE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/income-source/income-sources.json';
+import INCOME_LIST_FIXTURE_JSON from '@repo/mock-json/finance/income/incomes.json';
 import BILL_LIST_FIXTURE_JSON from '@repo/mock-json/finance/bill/bills.json';
 import EXPENSE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/expense/expenses.json';
 import FINANCE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/finances.json';
@@ -73,22 +75,26 @@ export class AppService {
             bills,
             groups,
             banks,
+            incomes,
             expenses,
             finances,
             suppliers,
+            incomeSources,
             supplierTypes
         } = await this.financeService.seeds({
             users,
             ...financeSeederParams
         })
         return {
+            banks: banks.length,
             bills: bills.length,
             groups: groups.length,
-            banks: banks.length,
             expenses: expenses.length,
             finances: finances.length,
             suppliers: suppliers.length,
             supplierTypes: supplierTypes.length,
+            incomes: incomes.length,
+            incomeSources: incomeSources.length,
         }
     }
 
@@ -117,8 +123,10 @@ export class AppService {
 
     private createFinanceSeederParams(createFinanceSeedsDto: CreateFinanceSeedsDto) {
         const financeParams: FinanceSeederParams = {};
-        if(createFinanceSeedsDto.finance) {
-            financeParams.financeListJson = FINANCE_LIST_FIXTURE_JSON;
+        if(createFinanceSeedsDto.income) {
+            createFinanceSeedsDto.finance = true;
+            createFinanceSeedsDto.incomeSource = true;
+            financeParams.incomeListJson = INCOME_LIST_FIXTURE_JSON;
         }
 
         if (createFinanceSeedsDto.expense) {
@@ -129,22 +137,37 @@ export class AppService {
         if (createFinanceSeedsDto.bill) {
             createFinanceSeedsDto.bank = true;
             createFinanceSeedsDto.group = true;
+            createFinanceSeedsDto.finance = true;
             createFinanceSeedsDto.supplier = true;
             financeParams.billListJson = BILL_LIST_FIXTURE_JSON;
+        }
+
+        if (createFinanceSeedsDto.group) {
+            createFinanceSeedsDto.finance = true;
+            financeParams.groupListJson = GROUP_LIST_FIXTURE_JSON;
+        }
+
+        if (createFinanceSeedsDto.supplier) {
+            financeParams.supplierListJson = SUPPLIER_LIST_FIXTURE_JSON;
+            createFinanceSeedsDto.supplierType = true;
+        }
+
+        if(createFinanceSeedsDto.finance) {
+            financeParams.financeListJson = FINANCE_LIST_FIXTURE_JSON;
         }
 
         if (createFinanceSeedsDto.bank) {
             financeParams.bankListJson = BANK_LIST_FIXTURE_JSON;
         }
 
-        if (createFinanceSeedsDto.supplier) {
-            financeParams.supplierListJson = SUPPLIER_LIST_FIXTURE_JSON;
+        if(createFinanceSeedsDto.supplierType) {
             financeParams.supplierTypeListJson = SUPPLIER_TYPE_LIST_FIXTURE_JSON;
         }
 
-        if (createFinanceSeedsDto.group) {
-            financeParams.groupListJson = GROUP_LIST_FIXTURE_JSON;
+        if(createFinanceSeedsDto.incomeSource) {
+            financeParams.incomeSourceListJson = INCOME_SOURCE_LIST_FIXTURE_JSON;
         }
+
         return financeParams;
     }
 

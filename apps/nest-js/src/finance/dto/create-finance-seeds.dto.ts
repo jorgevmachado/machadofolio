@@ -15,6 +15,10 @@ export class CreateFinanceSeedsDto {
 
     @IsBoolean()
     @IsOptional()
+    income?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
     expense?: boolean;
 
     @IsBoolean()
@@ -24,4 +28,12 @@ export class CreateFinanceSeedsDto {
     @IsBoolean()
     @IsOptional()
     finance?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    supplierType?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    incomeSource?: boolean;
 }

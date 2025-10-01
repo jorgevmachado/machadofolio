@@ -294,22 +294,8 @@ export class BillService extends Service<Bill> {
     }
 
     async updateExpense(param: string, expenseId: string, updateExpenseDto: UpdateExpenseDto) {
-        const expense = await this.findOneExpense(param, expenseId) as Expense;
-        const updatedExpense = await this.expenseService.buildForUpdate(
-            expense,
-            updateExpenseDto,
-        );
-
-        if (expense.name_code !== updatedExpense.name_code) {
-            await this.existExpenseInBill({
-                year: updatedExpense.year,
-                nameCode: updatedExpense.name_code,
-                fallBackMessage: `You cannot update this expense with this (supplier) ${updatedExpense.supplier.name} because there is already an expense linked to this supplier.`,
-            });
-        }
-
-        // return await this.expenseService.customSave(updatedExpense);
-        return updatedExpense;
+        const bill = await this.findOne({ value: param }) as Bill;
+        return await this.expenseService.update(bill, expenseId, updateExpenseDto);
     }
 
     async seeds({

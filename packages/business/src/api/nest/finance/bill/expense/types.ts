@@ -2,7 +2,7 @@ import { type EMonth } from '@repo/services';
 
 import type { IFinanceBase } from '../../types';
 
-import type { IMonth } from '../../month';
+import type { IMonth, IPersistMonthParams } from '../../month';
 import type { ISupplier } from '../../supplier';
 
 import type { IBill } from '../types';
@@ -75,7 +75,7 @@ export type IUpdateExpenseParams = {
     paid?: boolean;
     bill?: string | IExpense['bill'];
     type?: IExpense['type'];
-    months?: Array<IMonth>;
+    months?: Array<IPersistMonthParams>;
     supplier?: string | IExpense['supplier'];
     description?: string;
 }

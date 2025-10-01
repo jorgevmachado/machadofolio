@@ -4,7 +4,7 @@ import { Type } from 'class-transformer';
 import { type UpdateIncomeParams } from '@repo/business';
 
 import { IncomeSource } from '../../entities/income-source.entity';
-import { UpdateMonthDto } from '../../month/dto/update-month.dto';
+import { PersistMonthDto } from '../../month/dto/persist-month.dto';
 
 export class UpdateIncomeDto implements UpdateIncomeParams {
     @IsOptional()
@@ -22,8 +22,8 @@ export class UpdateIncomeDto implements UpdateIncomeParams {
     @IsOptional()
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => UpdateMonthDto)
-    months?: Array<UpdateMonthDto>;
+    @Type(() => PersistMonthDto)
+    months?: Array<PersistMonthDto>;
 
     @IsOptional()
     @MaxLength(200)

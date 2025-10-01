@@ -14,15 +14,13 @@ import { Finance } from '../entities/finance.entity';
 import { IncomeSourceService } from './source/source.service';
 import { CreateIncomeDto } from './dto/create-income.dto';
 import { UpdateIncomeDto } from './dto/update-income.dto';
-import { MonthService, type CreateByIncomeParams } from '../month/month.service';
+import { MonthService } from '../month/month.service';
 
 type IncomeSeederParams = FinanceSeederParams & {
     finance: Finance;
 }
 
 type createToSheetParams = Record<string, string | number | boolean | object | Finance | IncomeSource>;
-
-type SaveCreateIncomeParams = Omit<CreateByIncomeParams, 'isCreate'>
 
 @Injectable()
 export class IncomeService extends Service<Income> {
@@ -39,8 +37,14 @@ export class IncomeService extends Service<Income> {
         return this.sourceService;
     }
 
-    private async existIncomeCreated(name_code: string, year: number): Promise<Income | undefined> {
+    private async existIncome(finance: Finance, name_code: string, year: number): Promise<Income | undefined> {
         const filters: Array<FilterParams> = [
+            {
+                value: finance.id,
+                param: `${this.alias}.finance`,
+                relation: true,
+                condition: '=',
+            },
             {
                 value: name_code,
                 param: `${this.alias}.name_code`,
@@ -58,90 +62,84 @@ export class IncomeService extends Service<Income> {
         return result[0];
     }
 
-    private async saveCreateIncome({
-        value,
-        month,
-        income,
-        received_at,
-        monthsToCreate
-    }: SaveCreateIncomeParams) {
+    async create(finance: Finance, body: CreateIncomeDto) {
         try {
-            const existingIncome = await this.existIncomeCreated(income.name_code, income.year);
-            if (!existingIncome) {
-                const savedIncome = await this.save(income) as Income;
-                savedIncome.months = await this.monthService.createByRelationship({
-                    year: savedIncome.year,
-                    value,
-                    month,
-                    income,
-                    isCreate: true,
-                    received_at,
-                    monthsToCreate,
-                });
-                const total = savedIncome.months.reduce((acc, item) => acc + item.value, 0);
-                return await this.save({...savedIncome, total});
-            }
-            existingIncome.months = await this.monthService.createByRelationship({
-                year: existingIncome.year,
-                value,
-                month,
-                income,
-                isCreate: false,
-                received_at,
-                monthsToCreate,
+            const incomeSource =
+                await this.sourceService.treatEntityParam<IncomeSource>(
+                    body.source,
+                    'Income Source',
+                ) as IncomeSource;
+
+            const income = new IncomeConstructor({
+                name: body.name,
+                year: body.year,
+                total: 0,
+                source: incomeSource,
+                finance,
+                description: body.description,
             });
-            const total = existingIncome.months.reduce((acc, item) => acc + item.value, 0);
-            return await this.save({...existingIncome, total});
+
+            const existingIncome = await this.existIncome(finance, income.name_code, income.year);
+            const params = !existingIncome ? income : { ...existingIncome, ...income };
+            const savedIncome = await this.save(params) as Income;
+
+            const months = this.monthService.business.generateMonthListCreationParameters({
+                year: savedIncome.year,
+                paid: body.paid,
+                value: body.total,
+                received_at: body.received_at ?? savedIncome?.created_at,
+                month: body.month,
+                months: body.months,
+            });
+
+            if (months.length > 0) {
+                savedIncome.months = await this.monthService.persistList(months, { income: savedIncome })
+                savedIncome.total = savedIncome.months.reduce((acc, item) => acc + item.value, 0);
+                return await this.save(savedIncome);
+            }
+            return savedIncome;
         } catch (error) {
             throw this.error(error);
         }
     }
 
-    async create(finance: Finance, body: CreateIncomeDto) {
-        const { year, name, month, months, total: value = 0, source, received_at, description } = body;
-        const incomeSource =
-            await this.sourceService.treatEntityParam<IncomeSource>(
-                source,
-                'Income Source',
-            ) as IncomeSource;
-
-        const income = new IncomeConstructor({
-            name,
-            year,
-            total: 0,
-            source: incomeSource,
-            finance,
-            description
-        });
-        return await this.saveCreateIncome({ income, value, month, received_at, monthsToCreate: months });
-    }
-
     async update(finance: Finance, param: string, body: UpdateIncomeDto) {
-        const { year, name, source, months, description } = body;
-        const result = await this.findOne({ value: param, withRelations: true }) as Income;
-        const incomeSource = !source
-            ? result.source
-            : await this.sourceService.treatEntityParam<IncomeSource>(
-                source,
-                'Income Source',
-            ) as IncomeSource;
-        const currentMonths = !months ? result.months :  await this.monthService.updateByRelationship({
-            income: result,
-            monthsToUpdate: months
-        });
+        try {
+            const result = await this.findOne({
+                value: param, withRelations: true, filters: [{
+                    value: finance.id,
+                    param: `${this.alias}.finance`,
+                    relation: true,
+                    condition: '=',
+                }]
+            }) as Income;
+            const incomeSource = !body?.source
+                ? result.source
+                : await this.sourceService.treatEntityParam<IncomeSource>(
+                    body.source,
+                    'Income Source',
+                ) as IncomeSource;
 
-        const total = currentMonths?.reduce((acc, item) => acc + item.value, 0) ?? 0;
-        const income = new IncomeConstructor({
-            ...result,
-            name: !name ? result.name : name,
-            year: !year ? result.year : year,
-            total,
-            months: currentMonths,
-            source: incomeSource,
-            finance,
-            description: !description ? result.description : description,
-        });
-        return await this.save(income);
+            const income = new IncomeConstructor({
+                ...result,
+                name: body?.name || result.name,
+                year: body?.year || result.year,
+                source: incomeSource,
+                finance,
+                description: body?.description || result.description,
+
+            })
+
+            const monthsToPersist = this.monthService.business.generateMonthListUpdateParameters(result.months, body.months);
+            if (monthsToPersist && monthsToPersist.length > 0) {
+                income.months = await this.monthService.persistList(monthsToPersist, { income });
+                income.total = income.months.reduce((acc, item) => acc + item.value, 0);
+            }
+            return await this.save(income);
+
+        } catch (error) {
+            throw this.error(error);
+        }
     }
 
     async remove(param: string, filters?: Array<FilterParams>) {
@@ -153,9 +151,7 @@ export class IncomeService extends Service<Income> {
             withRelations: true,
         }) as Income;
 
-        if(result?.months?.length) {
-            await this.monthService.removeByIncome(result);
-        }
+        await this.monthService.removeList({ income: result });
 
         await this.repository.softRemove(result);
 
@@ -188,15 +184,29 @@ export class IncomeService extends Service<Income> {
                     name: item.name,
                     year: item.year,
                     total: item.total,
+                    months: item.months,
                     source,
                     finance,
                     description: item.description
                 })
             },
         }) as Array<Income>;
+        const incomeList: Array<Income> = []
+        const incomes = this.seeder.currentSeeds<Income>({ seedsJson })
+        for(const income of list) {
+            const currentIncome = incomes.find((item) => item.name_code === income.name_code);
+            if(currentIncome) {
+                income.months = await this.monthService.persistList(currentIncome?.months ?? [], { income });
+                income.total = income.months.reduce((acc, item) => acc + item.value, 0);
+                const savedIncome = await this.save(income) as Income;
+                incomeList.push(savedIncome);
+                continue;
+            }
+            incomeList.push(income);
+        }
 
         return {
-            incomeList: list,
+            incomeList,
             incomeSourceList: listSource
         };
     }

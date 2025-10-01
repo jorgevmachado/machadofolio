@@ -1,17 +1,25 @@
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsUUID, MaxLength } from 'class-validator';
 import { Transform } from 'class-transformer';
 
-import { EMonth } from '@repo/services';
+import { EMonth, TMonth } from '@repo/services';
 
-import { type CreateMonthParams } from '@repo/business';
+import { PersistMonthParams } from '@repo/business';
 
 import { Expense } from '../../entities/expense.entity';
 import { Income } from '../../entities/incomes.entity';
 
-export class CreateMonthDto implements CreateMonthParams {
+export class PersistMonthDto implements PersistMonthParams {
+    @IsOptional()
+    @IsUUID()
+    id?: string;
+
     @IsOptional()
     @IsNumber({ maxDecimalPlaces: 0 })
     year?: number;
+
+    @IsOptional()
+    @IsNumber({ maxDecimalPlaces: 0 })
+    code?: number;
 
     @IsOptional()
     @IsBoolean()
@@ -20,6 +28,10 @@ export class CreateMonthDto implements CreateMonthParams {
     @IsNotEmpty()
     @IsNumber({ maxDecimalPlaces: 2 })
     value!: number;
+
+    @IsOptional()
+    @MaxLength(200)
+    label?: TMonth;
 
     @IsOptional()
     @IsEnum(EMonth)

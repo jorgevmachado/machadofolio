@@ -41,5 +41,6 @@ export type {
 export type {
     IMonth,
     ICreateMonthParams,
-    IUpdateMonthParams
+    IUpdateMonthParams,
+    IPersistMonthParams
 } from './month';

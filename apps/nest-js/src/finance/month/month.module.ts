@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
 import { PassportModule } from '@nestjs/passport';
+
+import { MonthBusiness } from '@repo/business';
 
 import { Month } from '../entities/month.entity';
 
@@ -12,7 +13,7 @@ import { MonthService } from './month.service';
         TypeOrmModule.forFeature([Month]),
         PassportModule.register({ defaultStrategy: 'jwt' }),
     ],
-    providers: [MonthService],
+    providers: [MonthService, MonthBusiness],
     exports: [MonthService],
 })
 export class MonthModule {}

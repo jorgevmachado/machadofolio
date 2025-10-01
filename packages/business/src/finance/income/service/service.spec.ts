@@ -1,3 +1,5 @@
+import { EMonth } from '@repo/services';
+
 jest.mock('../../../shared', () => ({
     BaseService: class {
         private repo: any;
@@ -100,22 +102,22 @@ describe('Group Service', () => {
             const result = await service.create({
                 name: mockEntity.name,
                 total: 100,
+                month: EMonth.JANUARY,
                 source: mockEntity.source,
-                received_at: mockEntity.received_at,
             });
 
             expect(mockNest.finance.income.create).toHaveBeenCalledWith({
                 name: mockEntity.name,
                 total: 100,
+                month: EMonth.JANUARY,
                 source: mockEntity.source,
-                received_at: mockEntity.received_at,
             });
             expect(result.id).toEqual(mockEntity.id);
             expect(result.name).toEqual(mockEntity.name);
             expect(result.total).toEqual(100);
             expect(result.name_code).toEqual(mockEntity.name_code);
             expect(result.finance.id).toEqual(mockEntity.finance.id);
-            expect(result.received_at).toEqual(mockEntity.received_at);
+            expect(result.months).toHaveLength(1);
         });
     });
 
@@ -126,9 +128,8 @@ describe('Group Service', () => {
             const result = await service.update(mockEntity.id, {
                 year: mockEntity.year,
                 name: mockEntity.name,
-                total: mockEntity.total,
+                months: mockEntity.months,
                 source: mockEntity.source,
-                received_at: mockEntity.received_at,
             });
 
             expect(mockNest.finance.income.update).toHaveBeenCalledWith(
@@ -136,9 +137,8 @@ describe('Group Service', () => {
                 {
                     year: mockEntity.year,
                     name: mockEntity.name,
-                    total: mockEntity.total,
+                    months: mockEntity.months,
                     source: mockEntity.source,
-                    received_at: mockEntity.received_at,
                 }
             );
             expect(result.id).toEqual(mockEntity.id);
@@ -147,7 +147,7 @@ describe('Group Service', () => {
             expect(result.total).toEqual(mockEntity.total);
             expect(result.name_code).toEqual(mockEntity.name_code);
             expect(result.finance.id).toEqual(mockEntity.finance.id);
-            expect(result.received_at).toEqual(mockEntity.received_at);
+            expect(result.months).toHaveLength(mockEntity.months.length);
         });
 
         it('should throw an error if the update fails', async () => {
@@ -157,9 +157,7 @@ describe('Group Service', () => {
             await expect(
                 service.update(mockEntity.id, {
                     name: mockEntity.name,
-                    total: mockEntity.total,
                     source: mockEntity.source,
-                    received_at: mockEntity.received_at
                 }),
             ).rejects.toThrow('Failed to update group');
         });
@@ -169,18 +167,14 @@ describe('Group Service', () => {
 
             await service.update(mockEntity.id, {
                 name: mockEntity.name,
-                total: mockEntity.total,
                 source: mockEntity.source,
-                received_at: mockEntity.received_at
             })
 
             expect(mockNest.finance.income.update).toHaveBeenCalledWith(
                 mockEntity.id,
                 {
                     name: mockEntity.name,
-                    total: mockEntity.total,
                     source: mockEntity.source,
-                    received_at: mockEntity.received_at
                 },
             );
             expect(mockNest.finance.income.update).toHaveBeenCalledTimes(1);
@@ -214,7 +208,7 @@ describe('Group Service', () => {
             expect(result.total).toEqual(mockEntity.total);
             expect(result.name_code).toEqual(mockEntity.name_code);
             expect(result.finance.id).toEqual(mockEntity.finance.id);
-            expect(result.received_at).toEqual(mockEntity.received_at);
+            expect(result.months).toEqual(mockEntity.months);
         });
     });
 

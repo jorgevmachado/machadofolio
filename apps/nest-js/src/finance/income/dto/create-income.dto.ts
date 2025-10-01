@@ -1,4 +1,14 @@
-import { IsArray, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, MaxLength, ValidateNested } from 'class-validator';
+import {
+    IsArray,
+    IsBoolean,
+    IsDate,
+    IsEnum,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    MaxLength,
+    ValidateNested
+} from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 
 import { EMonth } from '@repo/services';
@@ -6,13 +16,17 @@ import { EMonth } from '@repo/services';
 import { type CreateIncomeParams } from '@repo/business';
 
 import { IncomeSource } from '../../entities/income-source.entity';
-import { CreateMonthDto } from '../../month/dto/create-month.dto';
+import { PersistMonthDto } from '../../month/dto/persist-month.dto';
 
 export class CreateIncomeDto implements CreateIncomeParams {
 
     @IsOptional()
     @IsNumber({ maxDecimalPlaces: 0 })
     year?: number;
+
+    @IsOptional()
+    @IsBoolean()
+    paid?: boolean;
 
     @IsNotEmpty()
     @MaxLength(200)
@@ -29,8 +43,8 @@ export class CreateIncomeDto implements CreateIncomeParams {
     @IsOptional()
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => CreateMonthDto)
-    months?: Array<CreateMonthDto>
+    @Type(() => PersistMonthDto)
+    months?: Array<PersistMonthDto>
 
     @IsNotEmpty()
     @MaxLength(200)

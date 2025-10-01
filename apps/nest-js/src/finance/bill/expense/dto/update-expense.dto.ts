@@ -5,7 +5,7 @@ import { EExpenseType, type UpdateExpenseParams } from '@repo/business';
 
 import { Supplier } from '../../../entities/supplier.entity';
 
-import { UpdateMonthDto } from '../../../month/dto/update-month.dto';
+import { PersistMonthDto } from '../../../month/dto/persist-month.dto';
 
 export class UpdateExpenseDto implements UpdateExpenseParams {
     @IsOptional()
@@ -27,6 +27,6 @@ export class UpdateExpenseDto implements UpdateExpenseParams {
     @IsOptional()
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => UpdateMonthDto)
-    months?: Array<UpdateMonthDto>;
+    @Type(() => PersistMonthDto)
+    months?: Array<PersistMonthDto>;
 }
