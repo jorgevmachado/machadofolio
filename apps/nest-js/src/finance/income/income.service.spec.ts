@@ -1,9 +1,31 @@
+import { Repository } from 'typeorm';
+
+import { Test, type TestingModule } from '@nestjs/testing';
+import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 import { ConflictException } from '@nestjs/common';
+import { getRepositoryToken } from '@nestjs/typeorm';
+
+import { EMonth } from '@repo/services';
+
+import { type IncomeEntity, type MonthEntity } from '@repo/business';
+
+import { INCOME_MOCK, INCOME_MONTH_MOCK } from '../../mocks/income.mock';
+
+import { Income } from '../entities/incomes.entity';
+import { MonthService } from '../month/month.service';
+
+import { type CreateIncomeDto } from './dto/create-income.dto';
+
+import { IncomeSourceService } from './source/source.service';
+
+import { IncomeService } from './income.service';
+
+import { type UpdateIncomeDto } from './dto/update-income.dto';
 
 jest.mock('../../shared', () => {
     class ServiceMock {
         save = jest.fn();
-        error = jest.fn().mockImplementationOnce(() => { throw new ConflictException(); });
+        error = jest.fn().mockImplementation((err) => { throw err; });
         seeder = {
             entities: jest.fn(),
             getRelation: jest.fn(),
@@ -14,23 +36,6 @@ jest.mock('../../shared', () => {
     }
     return { Service: ServiceMock }
 });
-
-import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Test, TestingModule } from '@nestjs/testing';
-import { Repository } from 'typeorm';
-
-import { IncomeEntity, MonthEntity } from '@repo/business';
-
-import { INCOME_MOCK, INCOME_MONTH_MOCK } from '../../mocks/income.mock';
-
-import { Income } from '../entities/incomes.entity';
-
-import { CreateIncomeDto } from './dto/create-income.dto';
-import { UpdateIncomeDto } from './dto/update-income.dto';
-import { IncomeSourceService } from './source/source.service';
-import { IncomeService } from './income.service';
-import { MonthService } from '../month/month.service';
 
 describe('IncomeService', () => {
     let service: IncomeService;
@@ -56,9 +61,12 @@ describe('IncomeService', () => {
                 },
                 {
                     provide: MonthService, useValue: {
-                        createByRelationship: jest.fn(),
-                        updateByRelationship: jest.fn(),
-                        removeByIncome: jest.fn(),
+                        persistList: jest.fn(),
+                        removeList: jest.fn(),
+                        business: {
+                            generateMonthListUpdateParameters: jest.fn(),
+                            generateMonthListCreationParameters: jest.fn()
+                        }
                     }
                 }
             ],
@@ -100,36 +108,85 @@ describe('IncomeService', () => {
 
             jest.spyOn(sourceService, 'treatEntityParam').mockResolvedValueOnce(mockEntity.source);
 
-            jest.spyOn(monthService, 'createByRelationship').mockReturnValue(mockEntity.months as any);
+            jest.spyOn(service, 'existIncome' as any).mockResolvedValueOnce(undefined);
 
-            jest
-                .spyOn(service, 'saveCreateIncome' as any)
-                .mockResolvedValueOnce(mockEntity);
+            jest.spyOn(monthService.business, 'generateMonthListCreationParameters').mockReturnValue([]);
 
-            expect(await service.create(mockEntity.finance, createDto)).toEqual(
-                mockEntity,
-            );
+            jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
+
+            expect(await service.create(mockEntity.finance, createDto)).toEqual(mockEntity);
         });
 
-        it('should create a new income with income source string and save it', async () => {
+        it('should update a income when exist and save it', async () => {
             const createDto: CreateIncomeDto = {
                 year: mockEntity.year,
                 name: mockEntity.name,
                 total: mockEntity.total,
-                source: mockEntity.source.name,
+                source: mockEntity.source,
+                description: mockEntity.description
+            };
+
+            jest.spyOn(sourceService, 'treatEntityParam').mockResolvedValueOnce(mockEntity.source);
+
+            jest.spyOn(service, 'existIncome' as any).mockResolvedValueOnce(mockEntity);
+
+            jest.spyOn(monthService.business, 'generateMonthListCreationParameters').mockReturnValue([]);
+
+            jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
+
+            expect(await service.create(mockEntity.finance, createDto)).toEqual(mockEntity);
+        });
+
+        it('should create a new income and save it with month', async () => {
+            const createDto: CreateIncomeDto = {
+                year: mockEntity.year,
+                name: mockEntity.name,
+                total: mockEntity.total,
+                month: EMonth.JANUARY,
+                source: mockEntity.source,
                 received_at: mockEntity.created_at,
                 description: mockEntity.description
             };
 
             jest.spyOn(sourceService, 'treatEntityParam').mockResolvedValueOnce(mockEntity.source);
 
-            jest
-                .spyOn(service, 'saveCreateIncome' as any)
-                .mockResolvedValueOnce(mockEntity);
+            jest.spyOn(service, 'existIncome' as any).mockResolvedValueOnce(undefined);
 
-            expect(await service.create(mockEntity.finance, createDto)).toEqual(
-                mockEntity,
-            );
+            jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
+
+            jest.spyOn(monthService.business, 'generateMonthListCreationParameters').mockReturnValue([mockMonthEntity]);
+            jest.spyOn(monthService, 'persistList').mockResolvedValueOnce([{ ...mockMonthEntity, income: undefined, expense: undefined }]);
+
+            jest.spyOn(service, 'save').mockResolvedValueOnce({ ...mockEntity, months: [mockMonthEntity] });
+
+            const result = await service.create(mockEntity.finance, createDto) as Income
+
+            expect(result.id).toEqual(mockEntity.id);
+            expect(result.total).toEqual(mockMonthEntity.value);
+            expect(result.months).toEqual([mockMonthEntity]);
+        });
+
+        it('should return error when try to save months', async () => {
+            const createDto: CreateIncomeDto = {
+                year: mockEntity.year,
+                name: mockEntity.name,
+                total: mockEntity.total,
+                month: EMonth.JANUARY,
+                source: mockEntity.source,
+                received_at: mockEntity.created_at,
+                description: mockEntity.description
+            };
+
+            jest.spyOn(sourceService, 'treatEntityParam').mockResolvedValueOnce(mockEntity.source);
+
+            jest.spyOn(service, 'existIncome' as any).mockResolvedValueOnce(undefined);
+
+            jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
+
+            jest.spyOn(monthService.business, 'generateMonthListCreationParameters').mockReturnValue([mockMonthEntity]);
+            jest.spyOn(monthService, 'persistList').mockRejectedValueOnce(new ConflictException);
+
+            await expect(service.create(mockEntity.finance, createDto)).rejects.toThrowError(ConflictException);
         });
     });
 
@@ -149,6 +206,8 @@ describe('IncomeService', () => {
             jest.spyOn(service, 'findOne').mockResolvedValueOnce({...mockEntity, months: undefined });
 
             jest.spyOn(sourceService, 'treatEntityParam').mockResolvedValueOnce(mockEntity.source);
+
+            jest.spyOn(monthService.business, 'generateMonthListUpdateParameters').mockReturnValue([]);
 
             jest
                 .spyOn(service, 'save')
@@ -183,7 +242,9 @@ describe('IncomeService', () => {
 
             jest.spyOn(sourceService, 'treatEntityParam').mockResolvedValueOnce(mockEntity.source);
 
-            jest.spyOn(monthService, 'updateByRelationship').mockResolvedValueOnce(expected.months as any);
+            jest.spyOn(monthService.business, 'generateMonthListUpdateParameters').mockReturnValue([month]);
+
+            jest.spyOn(monthService, 'persistList').mockResolvedValueOnce([{...month, income: undefined, expense: undefined }]);
 
             jest
                 .spyOn(service, 'save')
@@ -195,11 +256,38 @@ describe('IncomeService', () => {
                 expected,
             );
         });
+
+        it('should return error when try to update months', async () => {
+            const month = {
+                ...mockMonthEntity,
+                paid: true,
+                value: 1000,
+            }
+            const updateDto: UpdateIncomeDto = {
+                year: 2025,
+                source: mockEntity.source.name,
+                months: [month]
+            };
+
+
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
+
+            jest.spyOn(sourceService, 'treatEntityParam').mockResolvedValueOnce(mockEntity.source);
+
+            jest.spyOn(monthService.business, 'generateMonthListUpdateParameters').mockReturnValue([month]);
+
+            jest.spyOn(monthService, 'persistList').mockRejectedValueOnce(new ConflictException);
+
+            await expect(
+                service.update(mockEntity.finance, mockEntity.id, updateDto)
+            ).rejects.toThrowError(ConflictException);
+        });
     });
 
     describe('remove', () => {
         it('should remove a income without months', async () => {
             jest.spyOn(service, 'findOne').mockResolvedValueOnce({...mockEntity, months: undefined });
+            jest.spyOn(monthService, 'removeList').mockResolvedValueOnce({ message: 'No months found in income to remove'});
             jest.spyOn(repository, 'softRemove').mockResolvedValueOnce(mockEntity);
             const result = await service.remove(mockEntity.id);
             expect(result).toEqual({ message: 'Successfully removed' });
@@ -207,7 +295,7 @@ describe('IncomeService', () => {
 
         it('should remove a income with months', async () => {
             jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
-            jest.spyOn(monthService, 'removeByIncome').mockResolvedValueOnce(mockEntity.months as any);
+            jest.spyOn(monthService, 'removeList').mockResolvedValueOnce({ message: 'All Months by income Successfully removed'});
             jest.spyOn(repository, 'softRemove').mockResolvedValueOnce(mockEntity);
             const result = await service.remove(mockEntity.id);
             expect(result).toEqual({ message: 'Successfully removed' });
@@ -225,6 +313,35 @@ describe('IncomeService', () => {
                 createdEntityFn(mockEntity);
                 return [mockEntity];
             });
+
+            jest.spyOn(service.seeder, 'currentSeeds').mockReturnValueOnce([{ ...mockEntity, months: [mockMonthEntity] }]);
+
+            jest.spyOn(monthService, 'persistList').mockResolvedValueOnce([{ ...mockMonthEntity, income: undefined, expense: undefined }]);
+
+            jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
+
+            expect(await service.seeds({
+                finance: mockEntity.finance,
+                incomeListJson: [mockEntity],
+                incomeSourceListJson: [mockEntity.source],
+            })).toEqual({
+                incomeList: [mockEntity],
+                incomeSourceList: [mockEntity.source]
+            });
+        });
+
+        it('should seed without months', async () => {
+            jest.spyOn(sourceService, 'seeds').mockResolvedValueOnce([mockEntity.source]);
+
+            jest.spyOn(service.seeder, 'getRelation').mockReturnValueOnce(mockEntity.source);
+
+
+            jest.spyOn(service.seeder, 'entities').mockImplementation(async ({ createdEntityFn }: any) => {
+                createdEntityFn(mockEntity);
+                return [mockEntity];
+            });
+
+            jest.spyOn(service.seeder, 'currentSeeds').mockReturnValueOnce([]);
 
             expect(await service.seeds({
                 finance: mockEntity.finance,
@@ -273,44 +390,15 @@ describe('IncomeService', () => {
     });
 
     describe('privates', () => {
-        describe('existIncomeCreated', () => {
+        describe('existIncome', () => {
             it('should return undefined when dont exist income created', async () => {
                 jest.spyOn(service, 'findAll').mockResolvedValueOnce([]);
-                const result = await service['existIncomeCreated'](mockEntity.name, mockEntity.year);
+                const result = await service['existIncome'](mockEntity.finance, mockEntity.name, mockEntity.year);
                 expect(result).toBeUndefined();
             });
             it('should return income when exist income created', async () => {
                 jest.spyOn(service, 'findAll').mockResolvedValueOnce([mockEntity]);
-                const result = await service['existIncomeCreated'](mockEntity.name, mockEntity.year);
-                expect(result).toEqual(mockEntity);
-            });
-        });
-
-        describe('saveCreateIncome', () => {
-            const params = {
-                value: 100,
-                month: 'JANUARY',
-                income: mockEntity,
-                received_at: mockEntity.created_at,
-            }
-            it('should throw error when persist income return error', async () => {
-                await expect(service['saveCreateIncome'](params as any)).rejects.toThrowError(ConflictException);
-            });
-
-            it('should persist income when not exist income created', async () => {
-                jest.spyOn(service, 'existIncomeCreated' as any).mockReturnValueOnce(null);
-                jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
-                jest.spyOn(monthService, 'createByRelationship').mockResolvedValueOnce(mockEntity.months as any);
-                jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
-                const result = await service['saveCreateIncome'](params as any);
-                expect(result).toEqual(mockEntity);
-            });
-
-            it('should persist income when exist income created', async () => {
-                jest.spyOn(service, 'existIncomeCreated' as any).mockReturnValueOnce(mockEntity);
-                jest.spyOn(monthService, 'createByRelationship').mockResolvedValueOnce([mockEntity.months] as any);
-                jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
-                const result = await service['saveCreateIncome'](params as any);
+                const result = await service['existIncome'](mockEntity.finance,mockEntity.name, mockEntity.year);
                 expect(result).toEqual(mockEntity);
             });
         });

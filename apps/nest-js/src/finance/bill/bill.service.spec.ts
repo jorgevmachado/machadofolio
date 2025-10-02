@@ -60,7 +60,7 @@ import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/global
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { type CycleOfMonths, MONTHS, filterByCommonKeys } from '@repo/services';
+import { type CycleOfMonths, MONTHS, type TMonth, filterByCommonKeys } from '@repo/services';
 
 import { BillBusiness, EBillType, EExpenseType } from '@repo/business';
 
@@ -83,7 +83,6 @@ import { GroupService } from '../group/group.service';
 
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { type UpdateBillDto } from './dto/update-bill.dto';
-import { type UpdateExpenseDto } from './expense/dto/update-expense.dto';
 
 describe('BillService', () => {
     let service: BillService;
@@ -130,7 +129,7 @@ describe('BillService', () => {
                         customSave: jest.fn(),
                         findOne: jest.fn(),
                         buildForCreation: jest.fn(),
-                        buildForUpdate: jest.fn(),
+                        update: jest.fn(),
                         addExpenseForNextYear: jest.fn(),
                         treatEntitiesParams: jest.fn(),
                         findAll: jest.fn(),
@@ -370,7 +369,7 @@ describe('BillService', () => {
         };
         const nextYear = mockEntity.year + 1;
         const requiresNewBill = true;
-        const monthsForNextYear = ['january', 'february', 'march'];
+        const monthsForNextYear: Array<TMonth> = ['january', 'february', 'march'];
         const expenseForNextYear = { ...expenseMockEntity };
         monthsForNextYear.forEach((month) => {
             expenseForNextYear[month] = 93.59;
@@ -390,7 +389,8 @@ describe('BillService', () => {
                 requiresNewBill: false,
                 monthsForNextYear: undefined,
                 expenseForNextYear: undefined,
-                expenseForCurrentYear,
+                monthsForCurrentYear: ['january'],
+                expenseForCurrentYear
             });
 
             const result = await service.addExpense(mockEntity.id, expenseParams);
@@ -409,6 +409,7 @@ describe('BillService', () => {
                 requiresNewBill,
                 monthsForNextYear,
                 expenseForNextYear,
+                monthsForCurrentYear: ['january'],
                 expenseForCurrentYear,
             });
 
@@ -434,6 +435,7 @@ describe('BillService', () => {
                 requiresNewBill,
                 monthsForNextYear,
                 expenseForNextYear,
+                monthsForCurrentYear: ['january'],
                 expenseForCurrentYear,
             });
 
@@ -483,44 +485,19 @@ describe('BillService', () => {
 
     describe('updateExpense', () => {
         it('should update a expense successfully', async () => {
-            const updateExpenseParams: UpdateExpenseDto = {
-                january: 100
-            };
-            const expectedExpense: Expense = {...expenseMockEntity, january: 100 };
 
-            jest.spyOn(service, 'findOneExpense').mockResolvedValueOnce(expenseMockEntity);
+            jest.spyOn(expenseService, 'update').mockResolvedValueOnce(expenseMockEntity);
 
-            jest.spyOn(expenseService, 'buildForUpdate').mockResolvedValueOnce(expectedExpense);
-            jest.spyOn(expenseService, 'customSave').mockResolvedValueOnce(expectedExpense);
-
-            const result = await service.updateExpense(mockEntity.id, expenseMockEntity.id, updateExpenseParams) as Expense;
-            expect(result.january).toEqual(expectedExpense.january);
+            const result = await service.updateExpense(mockEntity.id, expenseMockEntity.id, expenseMockEntity) as Expense;
+            expect(result).toEqual(expenseMockEntity);
         });
 
         it('should return an error when trying to update an expense with an existing name', async () => {
-            const newSupplier: Supplier = {
-                ...expenseMockEntity.supplier,
-                name: 'New Supplier',
-                name_code: 'new_supplier'
-            }
-            const updateExpenseParams: UpdateExpenseDto = {
-                supplier: 'New Supplier',
-            };
-
-            const expectedExpense: Expense = {
-                ...expenseMockEntity,
-                supplier: newSupplier,
-                name: `${mockEntity.name} ${newSupplier.name}`,
-                name_code: `${mockEntity.name_code}_${newSupplier.name_code}`,
-            };
-
             jest.spyOn(service, 'findOneExpense').mockResolvedValueOnce(expenseMockEntity);
 
-            jest.spyOn(expenseService, 'buildForUpdate').mockResolvedValueOnce(expectedExpense);
+            jest.spyOn(expenseService, 'update').mockRejectedValueOnce(new ConflictException);
 
-            jest.spyOn(service, 'existExpenseInBill' as any).mockImplementationOnce(() => { throw new ConflictException(); });
-
-            await expect(service.updateExpense(mockEntity.id, expenseMockEntity.id, updateExpenseParams)).rejects.toThrowError(ConflictException);
+            await expect(service.updateExpense(mockEntity.id, expenseMockEntity.id, expenseMockEntity)).rejects.toThrowError(ConflictException);
         });
     });
 

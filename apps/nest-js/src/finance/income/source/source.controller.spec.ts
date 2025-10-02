@@ -1,14 +1,16 @@
+import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
-import { Test, TestingModule } from '@nestjs/testing';
 
 import { INCOME_SOURCE_MOCK } from '../../../mocks/income-source.mock';
 
-import { IncomeSource } from '../../entities/income-source.entity';
+import { type IncomeSource } from '../../entities/income-source.entity';
 
-import { SourceController } from './source.controller';
-import { IncomeSourceService } from './source.service';
 import type { CreateTypeDto } from '../../supplier/type/dto/create-type.dto';
-import { UpdateSourceDto } from './dto/update-source.dto';
+
+import { IncomeSourceService } from './source.service';
+import { SourceController } from './source.controller';
+
+import { type UpdateSourceDto } from './dto/update-source.dto';
 
 describe('SourceController', () => {
   let controller: SourceController;

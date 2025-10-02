@@ -1,14 +1,14 @@
+import { Test, type TestingModule } from '@nestjs/testing';
 import { describe, expect, it, jest } from '@jest/globals';
-import { Test, TestingModule } from '@nestjs/testing';
 
 import { INCOME_MOCK } from '../../mocks/income.mock';
 import { USER_MOCK } from '../../mocks/user.mock';
-import { Income } from '../entities/incomes.entity';
 
-import { User } from '../../auth/entities/user.entity';
+import { type Income } from '../entities/incomes.entity';
+import { type User } from '../../auth/entities/user.entity';
 
-import { CreateIncomeDto } from './dto/create-income.dto';
-import { UpdateIncomeDto } from './dto/update-income.dto';
+import { type CreateIncomeDto } from './dto/create-income.dto';
+import { type UpdateIncomeDto } from './dto/update-income.dto';
 
 import { IncomeController } from './income.controller';
 import { IncomeService } from './income.service';

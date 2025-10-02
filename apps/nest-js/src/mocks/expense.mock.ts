@@ -2,9 +2,10 @@ import { type Expense } from '../finance/entities/expense.entity';
 
 import { EExpenseType } from '@repo/business';
 
+import { type Month } from '../finance/entities/month.entity';
+
 import { BILL_MOCK } from './bill.mock';
 import { SUPPLIER_MOCK } from './supplier.mock';
-import { Month } from '../finance/entities/month.entity';
 
 const EXPENSE_MOCK: Expense = {
     id: 'e8ff59cb-6702-43f3-9a08-1f1c68324eac',

@@ -8,9 +8,10 @@ import { Service } from '../../../shared';
 
 import { IncomeSource } from '../../entities/income-source.entity';
 
+import { FinanceSeederParams } from '../../types';
+
 import { CreateSourceDto } from './dto/create-source.dto';
 import { UpdateSourceDto } from './dto/update-source.dto';
-import { FinanceSeederParams } from '../../types';
 
 @Injectable()
 export class IncomeSourceService extends Service<IncomeSource>{

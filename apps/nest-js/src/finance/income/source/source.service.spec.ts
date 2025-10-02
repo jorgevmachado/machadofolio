@@ -11,20 +11,22 @@ jest.mock('../../../shared', () => {
     }
     return { Service: ServiceMock }
 });
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { INCOME_SOURCE_MOCK } from '../../../mocks/income-source.mock';
-import { INCOME_MOCK } from '../../../mocks/income.mock';
+import { ConflictException, NotFoundException } from '@nestjs/common';
+import { Test, type TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
+import { INCOME_MOCK } from '../../../mocks/income.mock';
+import { INCOME_SOURCE_MOCK } from '../../../mocks/income-source.mock';
+
+import { type Income } from '../../entities/incomes.entity';
 import { IncomeSource } from '../../entities/income-source.entity';
-import { Income } from '../../entities/incomes.entity';
 
 import { IncomeSourceService } from './source.service';
-import { CreateSourceDto } from './dto/create-source.dto';
-import { UpdateSourceDto } from './dto/update-source.dto';
+
+import { type CreateSourceDto } from './dto/create-source.dto';
+import { type UpdateSourceDto } from './dto/update-source.dto';
 
 describe('SourceService', () => {
   let service: IncomeSourceService;
@@ -122,7 +124,6 @@ describe('SourceService', () => {
                     source: mockEntity,
                     finance: mockIncomeEntity.finance,
                     name_code: mockIncomeEntity.name_code,
-                    received_at: mockIncomeEntity.received_at,
                     created_at: mockIncomeEntity.created_at,
                     updated_at: mockIncomeEntity.updated_at
                 }],

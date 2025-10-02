@@ -1,21 +1,19 @@
 import { Injectable } from '@nestjs/common';
 
-import USER_LIST_FIXTURE_JSON from '@repo/mock-json/auth/users.json';
-
 import BANK_LIST_FIXTURE_JSON from '@repo/mock-json/finance/bank/banks.json';
-import INCOME_SOURCE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/income-source/income-sources.json';
-import INCOME_LIST_FIXTURE_JSON from '@repo/mock-json/finance/income/incomes.json';
 import BILL_LIST_FIXTURE_JSON from '@repo/mock-json/finance/bill/bills.json';
 import EXPENSE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/expense/expenses.json';
 import FINANCE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/finances.json';
 import GROUP_LIST_FIXTURE_JSON from '@repo/mock-json/finance/group/groups.json';
-import SUPPLIER_LIST_FIXTURE_JSON from '@repo/mock-json/finance/supplier/suppliers.json';
-import SUPPLIER_TYPE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/supplier-type/supplier-types.json';
-
+import INCOME_LIST_FIXTURE_JSON from '@repo/mock-json/finance/income/incomes.json';
+import INCOME_SOURCE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/income-source/income-sources.json';
 import POKEMON_ABILITY_LIST_FIXTURE_JSON from '@repo/mock-json/pokemon/ability/pokemon-abilities.json';
 import POKEMON_LIST_FIXTURE_JSON from '@repo/mock-json/pokemon/pokemons.json';
 import POKEMON_MOVE_LIST_FIXTURE_JSON from '@repo/mock-json/pokemon/move/pokemon-moves.json';
 import POKEMON_TYPE_LIST_FIXTURE_JSON from '@repo/mock-json/pokemon/type/pokemon-types.json';
+import SUPPLIER_LIST_FIXTURE_JSON from '@repo/mock-json/finance/supplier/suppliers.json';
+import SUPPLIER_TYPE_LIST_FIXTURE_JSON from '@repo/mock-json/finance/supplier-type/supplier-types.json';
+import USER_LIST_FIXTURE_JSON from '@repo/mock-json/auth/users.json';
 
 import { AuthService } from './auth/auth.service';
 import { USER_PASSWORD } from './mocks/user.mock';

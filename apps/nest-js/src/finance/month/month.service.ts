@@ -1,17 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { EMonth, getCurrentMonthNumber } from '@repo/services';
 
-import { Month as MonthConstructor, MonthBusiness } from '@repo/business';
+import { MonthBusiness, Month as MonthConstructor } from '@repo/business';
 
 import { type FilterParams, Service } from '../../shared';
 
-import { Month } from '../entities/month.entity';
-import { Income } from '../entities/incomes.entity';
-
 import { Expense } from '../entities/expense.entity';
+import { Income } from '../entities/incomes.entity';
+import { Month } from '../entities/month.entity';
+
 import { PersistMonthDto } from './dto/persist-month.dto';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class MonthService extends Service<Month> {
         return this.monthBusiness;
     }
 
-    async listByRelationship(id: string, relationship: 'income' | 'expense') {
+    async findAllByRelationship(id: string, relationship: 'income' | 'expense') {
         const filters: Array<FilterParams> = [{
             value: id,
             param: `${this.alias}.${relationship}`,
@@ -36,37 +36,20 @@ export class MonthService extends Service<Month> {
             condition: '=',
         }];
 
-        return await this.findAll({ filters, withRelations: true });
-    }
-
-    async removeByIncome(income: Income) {
-        const monthsToRemove = await this.listByRelationship(income.id, 'income') as Array<Month>;
-
-        for (const month of monthsToRemove) {
-            await this.remove(month.id);
-        }
-
-        return { message: 'All Months by Income Successfully removed' };
+        return await this.findAll({ filters, withRelations: true }) as Array<Month>;
     }
 
     async persistList(months: Array<PersistMonthDto>, relation: { income?: Income, expense?: Expense }) {
         if ((!relation.income && !relation.expense) || (relation.income && relation.expense)) {
-            throw new Error('Enter only income or expenses to associate with the months.');
+            throw new BadRequestException('Enter only income or expenses to associate with the months.');
         }
 
         const id = (!relation.income ? relation.expense?.id : relation.income?.id) as string;
         const relationship = !relation.income ? 'expense' : 'income';
 
-        const existingMonths = await this.findAll({
-            filters: [{
-                value: id,
-                param: `${this.alias}.${relationship}`,
-                relation: true,
-                condition: '=',
-            }], withRelations: true
-        }) as Array<Month>;
+        const existingMonths = await this.findAllByRelationship(id, relationship);
         const monthsToPersist = months.map((item) => {
-            const code = !item?.code ? this.currentMonthNumber(item.month) : item.code;
+            const code = !item?.code ? this.currentMonthNumber(item.month?.toLowerCase()) : item.code;
             const existingMonth = existingMonths?.find(m => m.code === code);
             return new MonthConstructor({
                 ...existingMonth,
@@ -107,22 +90,15 @@ export class MonthService extends Service<Month> {
 
     async removeList(relation: { income?: Income, expense?: Expense }) {
         if ((!relation.income && !relation.expense) || (relation.income && relation.expense)) {
-            throw new Error('Report only income or expenses to dissociate them from the months.');
+            throw new BadRequestException('Report only income or expenses to dissociate them from the months.');
         }
 
         const id = (!relation.income ? relation.expense?.id : relation.income?.id) as string;
         const relationship = !relation.income ? 'expense' : 'income';
 
-        const existingMonths = await this.findAll({
-            filters: [{
-                value: id,
-                param: `${this.alias}.${relationship}`,
-                relation: true,
-                condition: '=',
-            }], withRelations: true
-        }) as Array<Month>;
+        const existingMonths = await this.findAllByRelationship(id, relationship);
 
-        if (!existingMonths) {
+        if (!existingMonths || existingMonths.length === 0) {
             return { message: `No months found in ${relationship} to remove.` };
         }
         for (const month of existingMonths) {

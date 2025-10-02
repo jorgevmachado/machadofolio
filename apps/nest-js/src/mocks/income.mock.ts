@@ -1,6 +1,5 @@
-import { INCOME_SOURCE_MOCK } from './income-source.mock';
 import { FINANCE_MOCK } from './finance.mock';
-
+import { INCOME_SOURCE_MOCK } from './income-source.mock';
 
 const MOCK = {
     id: '7360e3be-20a7-4814-866e-fff660ce9d8e',
@@ -38,6 +37,9 @@ const INCOME_MOCK = {
     source: INCOME_SOURCE_MOCK,
     finance: FINANCE_MOCK,
     name_code: 'salary',
+    created_at: new Date('2025-04-02T19:11:59.405Z'),
+    updated_at: new Date('2025-04-02T19:11:59.405Z'),
+    deleted_at: undefined,
     received_at: new Date('2025-02-01T19:00:18.670Z'),
 }
 

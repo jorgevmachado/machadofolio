@@ -1,20 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 
 import { Income as IncomeConstructor } from '@repo/business';
 
 import { type FilterParams, Service } from '../../shared';
 
 import type { FinanceSeederParams } from '../types';
+
+import { Finance } from '../entities/finance.entity';
 import { Income } from '../entities/incomes.entity';
 import { IncomeSource } from '../entities/income-source.entity';
-import { Finance } from '../entities/finance.entity';
+
+import { MonthService } from '../month/month.service';
 
 import { IncomeSourceService } from './source/source.service';
+
 import { CreateIncomeDto } from './dto/create-income.dto';
 import { UpdateIncomeDto } from './dto/update-income.dto';
-import { MonthService } from '../month/month.service';
 
 type IncomeSeederParams = FinanceSeederParams & {
     finance: Finance;
@@ -194,9 +198,9 @@ export class IncomeService extends Service<Income> {
         const incomeList: Array<Income> = []
         const incomes = this.seeder.currentSeeds<Income>({ seedsJson })
         for(const income of list) {
-            const currentIncome = incomes.find((item) => item.name_code === income.name_code);
-            if(currentIncome) {
-                income.months = await this.monthService.persistList(currentIncome?.months ?? [], { income });
+            const currentIncome = incomes?.find((item) => item.name_code === income.name_code);
+            if(currentIncome && currentIncome?.months && currentIncome?.months?.length > 0) {
+                income.months = await this.monthService.persistList(currentIncome.months, { income });
                 income.total = income.months.reduce((acc, item) => acc + item.value, 0);
                 const savedIncome = await this.save(income) as Income;
                 incomeList.push(savedIncome);

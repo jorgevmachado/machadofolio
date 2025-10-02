@@ -43,6 +43,7 @@ describe('Month', () => {
         });
 
         it('should create an instance when receiving only mandatory parameters', () => {
+            mockGetMonthByIndex.mockReturnValue('january');
             const result = new Month({ value: 100 });
             expect(result).toBeInstanceOf(Month);
             expect(result.id).toBeUndefined();
@@ -61,6 +62,7 @@ describe('Month', () => {
 
         it('should create an instance when receiving expense in parameters', () => {
             mockGetCurrentMonthNumber.mockReturnValue(1);
+            mockGetMonthByIndex.mockReturnValue('january');
             const result = new Month(mockExpenseMonthEntity);
             expect(result).toBeInstanceOf(Month);
             expect(result.id).toBe(mockExpenseMonthEntity.id);
@@ -74,10 +76,11 @@ describe('Month', () => {
             expect(result.created_at).toBe(mockExpenseMonthEntity.created_at);
             expect(result.updated_at).toBe(mockExpenseMonthEntity.updated_at);
             expect(result.deleted_at).toBe(mockExpenseMonthEntity.deleted_at);
-            expect(result.received_at).toBe(mockExpenseMonthEntity.deleted_at);
+            expect(result.received_at).toBe(mockExpenseMonthEntity.received_at);
         });
 
         it('should create an instance when receiving income in parameters', () => {
+            mockGetMonthByIndex.mockReturnValue('january');
             mockGetCurrentMonthNumber.mockReturnValue(1);
             const result = new Month(mockIncomeMonthEntity);
             expect(result).toBeInstanceOf(Month);
@@ -92,7 +95,7 @@ describe('Month', () => {
             expect(result.created_at).toBe(mockIncomeMonthEntity.created_at);
             expect(result.updated_at).toBe(mockIncomeMonthEntity.updated_at);
             expect(result.deleted_at).toBe(mockIncomeMonthEntity.deleted_at);
-            expect(result.received_at).toBe(mockIncomeMonthEntity.deleted_at);
+            expect(result.received_at).toBe(mockIncomeMonthEntity.received_at);
         });
     });
 })

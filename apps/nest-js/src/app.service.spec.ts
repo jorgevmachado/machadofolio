@@ -28,6 +28,8 @@ import { BILL_MOCK } from './mocks/bill.mock';
 import { EXPENSE_MOCK } from './mocks/expense.mock';
 import { FINANCE_MOCK } from './mocks/finance.mock';
 import { GROUP_MOCK } from './mocks/group.mock';
+import { INCOME_MOCK } from './mocks/income.mock';
+import { INCOME_SOURCE_MOCK } from './mocks/income-source.mock';
 import { POKEMON_ABILITY_MOCK } from './pokemon/mocks/ability.mock';
 import { POKEMON_MOCK } from './pokemon/mocks/pokemon';
 import { POKEMON_MOVE_MOCK } from './pokemon/mocks/move.mock';
@@ -44,6 +46,8 @@ jest.mock('@repo/mock-json/finance/finances.json', () => [FINANCE_MOCK]);
 jest.mock('@repo/mock-json/finance/group/groups.json', () => [GROUP_MOCK]);
 jest.mock('@repo/mock-json/finance/supplier/suppliers.json', () => [SUPPLIER_MOCK]);
 jest.mock( '@repo/mock-json/finance/supplier-type/supplier-types.json', () => [SUPPLIER_TYPE_MOCK]);
+jest.mock( '@repo/mock-json/finance/income/incomes.json', () => [INCOME_MOCK]);
+jest.mock( '@repo/mock-json/finance/income-source/income-sources.json', () => [INCOME_SOURCE_MOCK]);
 
 jest.mock('@repo/mock-json/pokemon/ability/pokemon-abilities.json', () => [POKEMON_ABILITY_MOCK]);
 jest.mock('@repo/mock-json/pokemon/pokemons.json', () => [POKEMON_MOCK]);
@@ -61,11 +65,10 @@ import { FinanceService } from './finance/finance.service';
 import { PokemonService } from './pokemon/pokemon.service';
 
 import { type CreateFinanceSeedsDto } from './finance/dto/create-finance-seeds.dto';
-import { type FinanceSeederParams } from './finance/types';
 import { type CreatePokemonSeedsDto } from './pokemon/dto/create-pokemon-seeds.dto';
 import { type CreateSeedDto } from './dto/create-seed.dto';
-
-
+import { type FinanceSeederParams } from './finance/types';
+import { type Income } from './finance/entities/incomes.entity';
 
 describe('AppService', () => {
     let service: AppService;
@@ -80,6 +83,8 @@ describe('AppService', () => {
         financeListJson: [FINANCE_MOCK],
         expenseListJson: [EXPENSE_MOCK],
         supplierListJson: [SUPPLIER_MOCK],
+        incomeListJson: [INCOME_MOCK],
+        incomeSourceListJson: [INCOME_SOURCE_MOCK],
         supplierTypeListJson: [SUPPLIER_TYPE_MOCK],
     };
 
@@ -90,6 +95,9 @@ describe('AppService', () => {
         expense: true,
         supplier: true,
         finance: true,
+        income: true,
+        incomeSource: true,
+        supplierType: true,
     };
 
     const pokemonSeederParams: PokemonSeederParams = {
@@ -191,6 +199,7 @@ describe('AppService', () => {
         });
 
         describe('financeSeeds', () => {
+            const incomeMockList: Array<Income> = [INCOME_MOCK] as unknown as Array<Income>;
 
             it('Should return undefine when createFinanceSeedsDto is empty.', async () => {
                 const result = await service['financeSeeds']([USER_MOCK]);
@@ -206,6 +215,8 @@ describe('AppService', () => {
                     finances: [FINANCE_MOCK],
                     expenses: [EXPENSE_MOCK],
                     suppliers: [SUPPLIER_MOCK],
+                    incomes: incomeMockList,
+                    incomeSources: [INCOME_SOURCE_MOCK],
                     supplierTypes: [SUPPLIER_TYPE_MOCK],
                 })
                 const result = await service['financeSeeds']([USER_MOCK], createFinanceSeedsDto);
@@ -216,6 +227,8 @@ describe('AppService', () => {
                     expenses: 1,
                     finances: 1,
                     suppliers: 1,
+                    incomes: 1,
+                    incomeSources: 1,
                     supplierTypes: 1,
                 });
             });

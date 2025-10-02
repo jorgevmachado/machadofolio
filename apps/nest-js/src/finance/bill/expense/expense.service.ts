@@ -2,28 +2,30 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { EMonth, filterByCommonKeys, getCurrentMonthNumber, MONTHS, Spreadsheet } from '@repo/services';
+import { EMonth, MONTHS, Spreadsheet, type TMonth, filterByCommonKeys, getCurrentMonthNumber } from '@repo/services';
 
 import {
     EExpenseType,
-    Expense as ExpenseConstructor,
     ExpenseBusiness,
+    Expense as ExpenseConstructor,
     type ExpenseEntity
 } from '@repo/business';
 
 import { FilterParams, Service } from '../../../shared';
 
+import type { FinanceSeederParams } from '../../types';
+
 import { Bill } from '../../entities/bill.entity';
 import { Expense } from '../../entities/expense.entity';
-import type { FinanceSeederParams } from '../../types';
 import { Supplier } from '../../entities/supplier.entity';
+
 import { SupplierService } from '../../supplier/supplier.service';
+
+import { MonthService } from '../../month/month.service';
+import { PersistMonthDto } from '../../month/dto/persist-month.dto';
 
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
-import { MonthService } from '../../month/month.service';
-import { TMonth } from '@repo/services/date/month/month';
-import { PersistMonthDto } from '../../month/dto/persist-month.dto';
 
 export type InitializeParams = {
     value?: number;
@@ -130,7 +132,7 @@ export class ExpenseService extends Service<Expense> {
             months: monthList,
             received_at: expense.created_at
         })
-        if(expenseMonths.length > 0) {
+        if(expenseMonths?.length > 0) {
             savedExpense.months = await this.monthService.persistList(expenseMonths, { expense: savedExpense });
             const savedExpenseCalculated = this.expenseBusiness.calculate(savedExpense);
             return await this.save(savedExpenseCalculated);
@@ -186,9 +188,13 @@ export class ExpenseService extends Service<Expense> {
         const monthsToPersist = this.monthService.business.generateMonthListUpdateParameters(result?.months, body.months);
         if(monthsToPersist &&  monthsToPersist?.length > 0) {
             const months = await this.monthService.persistList(monthsToPersist, { expense: result });
-            return {...updatedExpense, months };
+            const expenseCalculated = this.expenseBusiness.calculate(updatedExpense);
+            expenseCalculated.months = months;
+            const savedExpense = await this.save(expenseCalculated);
+            return {...savedExpense, months };
         }
-        return updatedExpense;
+        const expenseCalculated = this.expenseBusiness.calculate(updatedExpense);
+        return await this.save(expenseCalculated);
     }
 
     async seeds({

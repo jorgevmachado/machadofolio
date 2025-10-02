@@ -4,11 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Income } from '../entities/incomes.entity';
 
-import { IncomeService } from './income.service';
 import { IncomeController } from './income.controller';
+import { IncomeService } from './income.service';
 
-import { SourceModule } from './source/source.module';
 import { MonthModule } from '../month/month.module';
+import { SourceModule } from './source/source.module';
 
 @Module({
   imports: [

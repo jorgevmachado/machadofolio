@@ -23,11 +23,11 @@ import { Finance } from './entities/finance.entity';
 import { FinanceSeedsParams } from './types';
 import { Group } from './entities/group.entity';
 import { GroupService } from './group/group.service';
+import { Income } from './entities/incomes.entity';
+import { IncomeSource } from './entities/income-source.entity';
 import { Supplier } from './entities/supplier.entity';
 import { SupplierService } from './supplier/supplier.service';
 import { SupplierType } from './entities/type.entity';
-import { Income } from './entities/incomes.entity';
-import { IncomeSource } from './entities/income-source.entity';
 
 @Injectable()
 export class FinanceService extends Service<Finance> {
@@ -250,6 +250,8 @@ export class FinanceService extends Service<Finance> {
         const banks = await this.bankService.findAll({}) as Array<Bank>;
         const suppliers = await this.supplierService.findAll({ withRelations: true }) as Array<Supplier>;
         const supplierTypes = await this.supplierService.type.findAll({}) as Array<SupplierType>;
+        const incomes = await this.incomeService.findAll({ withRelations: true }) as Array<Income>;
+        const incomeSources = await this.incomeService.source.findAll({}) as Array<IncomeSource>;
         return {
             finance,
             groups,
@@ -258,6 +260,8 @@ export class FinanceService extends Service<Finance> {
             suppliers,
             supplierTypes,
             expenses,
+            incomes,
+            incomeSources,
             total,
             allPaid,
             totalPaid,
