@@ -14,5 +14,6 @@ export type FinanceSeederParams = {
 }
 
 export type FinanceSeedsParams = FinanceSeederParams & {
+    user?: User;
     users: Array<User>;
 }

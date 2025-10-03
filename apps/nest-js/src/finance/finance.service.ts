@@ -95,7 +95,7 @@ export class FinanceService extends Service<Finance> {
     }
 
     async seeds(financeSeedsParams: FinanceSeedsParams) {
-        const finances = await this.seed(financeSeedsParams.financeListJson, financeSeedsParams.users) as Array<Finance>;
+        const finances = await this.seed(financeSeedsParams.financeListJson, financeSeedsParams.users, financeSeedsParams.user) as Array<Finance>;
 
         const banks: Array<Bank> = await this.seeder.executeSeed<Bank>({
             label: 'Banks',
@@ -208,7 +208,17 @@ export class FinanceService extends Service<Finance> {
         }
     }
 
-    private async seed(seedsJson: Array<unknown> = [], users: Array<User>) {
+    private async seed(seedsJson: Array<unknown> = [], users: Array<User> = [], user?: User) {
+        if (user && seedsJson.length > 0) {
+            const firstSeedsJson = seedsJson[0];
+            const firstSeedJsonIndex = seedsJson.findIndex((item) => item === firstSeedsJson);
+            if(firstSeedsJson?.['user']) {
+                firstSeedsJson['user'] = user;
+                seedsJson[firstSeedJsonIndex] = firstSeedsJson;
+                users.push(user);
+            }
+        }
+
         return this.seeder.entities({
             by: 'id',
             key: 'all',

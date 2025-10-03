@@ -37,34 +37,48 @@ export class AppService {
     ) {
     }
 
-    async seeds(body: CreateSeedDto) {
-        const users: Array<User> = await this.userSeeds(body);
+    async seeds(body: CreateSeedDto, user?: User) {
+        const users: Array<User> = await this.userSeeds(body, user);
+        if(user) {
+            users.push(user);
+        }
         return {
             users: users.length,
-            finances: await this.financeSeeds(users, body.finance),
+            finances: await this.financeSeeds(users, body.finance, user),
             pokemons: await this.pokemonSeeds(users, body.pokemon),
             message: 'Seeds successfully',
         }
     }
 
-    private async userSeeds(body: CreateSeedDto) {
+    private async userSeeds(body: CreateSeedDto, user?: User) {
         const users: Array<User> = [];
+        const userListFixtureJson = USER_LIST_FIXTURE_JSON as unknown as Array<User>;
+        const userLIst = userListFixtureJson.map((item) =>  {
+            if(user) {
+                item.finance = undefined;
+            }
+            return item;
+        });
 
         if (body.auth) {
-            const auth = await this.authService.seeds(USER_LIST_FIXTURE_JSON, USER_PASSWORD) as Array<User>;
+            const auth = await this.authService.seeds(userLIst, USER_PASSWORD) as Array<User>;
             users.push(...auth);
         }
 
-        if (body.finance && users.length === 0) {
-            const userFinanceJson = USER_LIST_FIXTURE_JSON.find((item) => item['finance'] !== undefined);
+        if (!user && body.finance && users.length === 0) {
+            const userFinanceJson = userLIst.find((item) => item['finance'] !== undefined);
             const user = await this.authService.seed(userFinanceJson, USER_PASSWORD) as User;
+            users.push(user);
+        }
+
+        if(user) {
             users.push(user);
         }
 
         return users;
     }
 
-    private async financeSeeds(users: Array<User>, createFinanceSeedsDto?: CreateFinanceSeedsDto) {
+    private async financeSeeds(users: Array<User>, createFinanceSeedsDto?: CreateFinanceSeedsDto, user?: User) {
         if (!createFinanceSeedsDto) {
             return;
         }
@@ -80,6 +94,7 @@ export class AppService {
             incomeSources,
             supplierTypes
         } = await this.financeService.seeds({
+            user,
             users,
             ...financeSeederParams
         })
