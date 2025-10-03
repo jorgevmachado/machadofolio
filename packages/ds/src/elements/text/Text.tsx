@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { isObject } from '@repo/services';
 
@@ -38,7 +38,12 @@ export default function Text({
 }: TextProps) {
     const CustomTag = tag as React.ElementType;
 
-    const componentId = id ? id : generateComponentId('ds-text');
+    const [componentId, setComponentId] = useState<string | undefined>(id);
+    useEffect(() => {
+        if (!id) {
+            setComponentId(generateComponentId('ds-text'));
+        }
+    }, [id]);
 
     const tagProps = CustomTag === 'label' ? { htmlFor } : {};
 

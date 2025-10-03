@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -78,7 +78,7 @@ export class FinanceService extends Service<Finance> {
 
     private validateFinance(user: User): Finance {
         if (!user?.finance) {
-            throw new ConflictException('Finance not found');
+            throw new NotFoundException('Finance not found');
         }
         return user.finance;
     }

@@ -13,10 +13,8 @@ export class Nest {
         if (!baseUrl) {
             throw new Error('baseUrl is required.');
         }
-        if (!token) {
-            throw new Error('token is required.');
-        }
-        const headers = {
+
+        const headers = !token ? {} : {
             Authorization: `Bearer ${token}`,
         };
         this.authModule = new Auth({ baseUrl, headers });

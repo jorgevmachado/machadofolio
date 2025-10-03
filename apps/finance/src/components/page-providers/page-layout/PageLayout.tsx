@@ -9,8 +9,9 @@ import { Page, useAlert, useLoading, UserProvider } from '@repo/ui';
 
 import { authService, getAccessToken, removeAccessToken } from '../../../shared';
 
-import { privateRoutes, publicRoutes } from '../../../routes';
+import { publicRoutes } from '../../../routes';
 import { FinanceProvider } from '../../../hooks';
+import FinancePageLayout from '../finance-page-layout';
 
 type PageLayoutProps = {
     children: React.ReactNode;
@@ -23,13 +24,12 @@ export default function PageLayout({ children }: PageLayoutProps) {
     const { show, hide } = useLoading();
 
     const [user, setUser] = useState<UserEntity | undefined>(undefined);
+    const [token, setToken] = useState<string | undefined>(getAccessToken());
 
     const isAuthenticationRoute = useMemo(
         () => publicRoutes.some((route) => route.path === pathname),
         [pathname],
     );
-
-    const token = useMemo(() => getAccessToken() || '', []);
 
     const fetchUser = useCallback(async () => {
         try {
@@ -45,16 +45,16 @@ export default function PageLayout({ children }: PageLayoutProps) {
         }
     }, [router, addAlert, show, hide]);
 
-    const handleLinkClick = useCallback(
-        (path: string) => {
-            router.push(path);
-        },
-        [router],
-    );
+
+    useEffect(() => {
+        setToken(getAccessToken());
+    }, []);
 
     useEffect(() => {
         if (token && !isAuthenticationRoute) {
             fetchUser().then();
+        } else if(!token) {
+            setUser(undefined);
         }
     }, [token]);
 
@@ -62,23 +62,12 @@ export default function PageLayout({ children }: PageLayoutProps) {
         return (<Page isAuthenticated={false}>{children}</Page>)
     }
 
-    const loadMenu = () => {
-        if (!user?.finance) {
-            return privateRoutes.filter((item) => item.key === 'dashboard' || item.key === 'profile');
-        }
-        return privateRoutes;
-    }
-
     return user ? (
         <UserProvider user={user}>
             <FinanceProvider>
-                <Page
-                    menu={loadMenu()}
-                    userName={user?.name}
-                    navbarTitle="Finance"
-                    onLinkClick={handleLinkClick}
-                    isAuthenticated={Boolean(user)}
-                >{children}</Page>
+                <FinancePageLayout>
+                    {children}
+                </FinancePageLayout>
             </FinanceProvider>
         </UserProvider>
     ) : null;
