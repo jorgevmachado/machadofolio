@@ -65,7 +65,7 @@ O banco de dados foi estruturado com foco em:
 ## Link Interativo
 
 Você pode visualizar o diagrama completo de forma interativa e navegar pelos relacionamentos diretamente no dbdiagram.io:
-[![Visualizar DB](./docs/db/db_v1.png)](https://dbdiagram.io/d/68dab323d2b621e42270472d)
+[![Visualizar DB](db/db_v1.png)](https://dbdiagram.io/d/68dab323d2b621e42270472d)
 
 ---
 
@@ -89,4 +89,4 @@ Você pode visualizar o diagrama completo de forma interativa e navegar pelos re
 - [DBML Documentation](https://dbml.dbdiagram.io/docs)
 
 ## 📊 Diagrama
-[![Diagrama do Banco](./docs/db/db_v1.png)](https://dbdiagram.io/d/68dab323d2b621e42270472d)
+[![Diagrama do Banco](db/db_v1.png)](https://dbdiagram.io/d/68dab323d2b621e42270472d)

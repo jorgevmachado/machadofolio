@@ -25,7 +25,10 @@ async function bootstrap() {
     prefix: '/uploads/',
   });
 
-  await app.listen(process.env.PORT ?? 3001);
+  const port = process.env.API_PORT ?? 3001;
+
+  await app.listen(port);
+    console.info(`API running on port ${port}`);
 }
 
 bootstrap();
