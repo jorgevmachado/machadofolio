@@ -48,6 +48,7 @@ export default function Persist({
         event.preventDefault();
         handleValidatorForm();
         const fields = persistForm.fields;
+        console.log('# => fields => ', fields);
         const parent = fields?.parent ? parents?.find((item) => item.id === fields.parent) : undefined;
         const create: CreateExpenseParams = {
             type: fields?.type as EExpenseType,
@@ -67,11 +68,13 @@ export default function Persist({
             supplier: fields?.supplier ?? expense?.supplier,
             description: fields?.description ?? expense?.description,
         }
-
-        MONTHS.forEach((month) => {
-            update[month] = convertToNumber(fields[month] as string);
-            update[`${month}_paid`] = fields[`${month}_paid` as keyof PersistForm['fields']] === 'true';
-        });
+        if(expense?.months && expense?.months?.length > 0) {
+            update.months = expense.months.map((item) => {
+                item.value = convertToNumber(fields[item.label] as string);
+                item.paid = fields[`${item.label}_paid` as keyof PersistForm['fields']] === 'true';
+                return item;
+            })
+        }
         onSubmit?.({ create, update, expense });
         onClose();
     };

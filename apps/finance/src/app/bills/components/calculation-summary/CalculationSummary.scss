@@ -1,0 +1,18 @@
+.calculation-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  &__text {
+    gap: 1rem;
+    display: flex;
+    &--item {
+      gap: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+  }
+  &__action {
+    margin-bottom: 1rem;
+  }
+}

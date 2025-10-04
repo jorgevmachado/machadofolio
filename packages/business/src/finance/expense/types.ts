@@ -1,8 +1,9 @@
 import type {
-    IExpense,
     ICreateExpenseParams,
-    IUpdateExpenseParams,
-    IPartialNestBaseEntity
+    IExpense,
+    IExpenseMonthsWithPaid,
+    IPartialNestBaseEntity,
+    IUpdateExpenseParams
 } from '../../api';
 import { TMonth } from '@repo/services';
 
@@ -41,3 +42,10 @@ export type InitializedExpense = {
     monthsForCurrentYear: Array<TMonth>;
     expenseForCurrentYear: ExpenseEntity;
 }
+
+export type ExpenseMonthsWithPaid = IExpenseMonthsWithPaid;
+
+export type ExpenseWithMonthsAndPaid = ExpenseMonthsWithPaid & Omit<ExpenseEntity, 'parent' | 'children'> & {
+    parent?: ExpenseWithMonthsAndPaid;
+    children?: Array<ExpenseWithMonthsAndPaid>;
+};

@@ -1,19 +1,21 @@
 import {
+    cleanTextByListText,
     type CycleOfMonths,
     DEFAULT_TABLES_PARAMS,
-    MONTHS,
-    type TablesParams,
-    cleanTextByListText,
     getCurrentMonth,
+    getCurrentMonthNumber,
     getMonthByIndex,
     getMonthIndex,
     isMonthValid,
-    snakeCaseToNormal, TMonth, getCurrentMonthNumber
+    MONTHS,
+    snakeCaseToNormal,
+    type TablesParams,
+    TMonth
 } from '@repo/services';
 
 import { EBillType, EExpenseType } from '../../../api';
 
-import type { ExpenseEntity, InitializedExpense } from '../types';
+import { ExpenseEntity, ExpenseMonthsWithPaid, ExpenseWithMonthsAndPaid, InitializedExpense } from '../types';
 import type Expense from '../expense';
 
 import type {
@@ -546,10 +548,72 @@ export default class ExpenseBusiness {
     }
 
     public calculateAll(expenses: Array<Expense> = []): AllExpensesCalculated {
-        const total = expenses.reduce((acc, expense) => acc + expense.total, 0);
-        const allPaid = expenses.every((expense) => expense.paid);
-        const totalPaid = expenses.reduce((acc, expense) => acc + (expense.paid ? expense.total : 0), 0);
-        const totalPending = total - totalPaid;
+        const rawTotal = expenses.reduce((acc, expense) => {
+            const total = expense?.months?.reduce((acc, item) => acc + item.value, 0) || 0;
+            return acc + total;
+        }, 0);
+        const allPaid = expenses.every((expense) => expense.months.every((month) => month.paid));
+        const rawTotalPaid = expenses.reduce((acc, expense) => {
+            const total = expense?.months?.reduce((acc, item) => acc + (item.paid ? item.value : 0), 0) || 0;
+            return acc + total;
+        }, 0);
+        const total = Number(rawTotal.toFixed(2));
+        const totalPaid = Number(rawTotalPaid.toFixed(2));
+        const rawTotalPending = total - totalPaid;
+        const totalPending = Number(rawTotalPending.toFixed(2))
         return { total, allPaid, totalPaid, totalPending };
+    }
+
+    public convertMonthsToObject(expense: Expense): ExpenseWithMonthsAndPaid {
+        const initialObjectMonths: ExpenseMonthsWithPaid = {
+            january: 0,
+            january_paid: false,
+            february: 0,
+            february_paid: false,
+            march: 0,
+            march_paid: false,
+            april: 0,
+            april_paid: false,
+            may: 0,
+            may_paid: false,
+            june: 0,
+            june_paid: false,
+            july: 0,
+            july_paid: false,
+            august: 0,
+            august_paid: false,
+            september: 0,
+            september_paid: false,
+            october: 0,
+            october_paid: false,
+            november: 0,
+            november_paid: false,
+            december: 0,
+            december_paid: false,
+        };
+        const objectMonths = expense?.months?.reduce((acc, month) => {
+            const currentMonth = month.label.toLowerCase() as TMonth;
+            acc[currentMonth] = month.value;
+            acc[`${currentMonth}_paid`] = month.paid;
+            return acc;
+        }, initialObjectMonths);
+
+        const result: ExpenseWithMonthsAndPaid = {
+            ...objectMonths,
+            ...expense,
+            parent: undefined,
+            children: undefined,
+        }
+
+        if(expense.parent) {
+            result.parent = this.convertMonthsToObject(expense.parent);
+        }
+
+        if(expense.children && expense.children.length) {
+            result.children = expense.children.map((child) => this.convertMonthsToObject(child));
+        }
+
+        return result;
+
     }
 }

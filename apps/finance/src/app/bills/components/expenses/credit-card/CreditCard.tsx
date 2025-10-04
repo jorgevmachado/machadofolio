@@ -10,6 +10,7 @@ import { Accordion, ETypeTableHeader, Table, type TColors } from '@repo/ds';
 import Summary from '../summary';
 
 import './CreditCard.scss';
+import { expenseBusiness } from '../../../../../shared';
 
 type CreditCardProps = {
     items: Array<Expense>;
@@ -50,9 +51,14 @@ export default function CreditCard({ items, action, loading }: CreditCardProps) 
     }, [items]);
 
     const handleOnRowClick = (expense: Expense) => {
-        if (!isParent) {
+        if (expense?.children && expense?.children?.length > 0 && !isParent) {
             return;
         }
+        if(!isParent) {
+            action?.(expense, undefined, expenses);
+            return;
+        }
+
         setChildrenOpenAccordion((prev) => prev === expense.id ? undefined : expense.id);
 
     }
@@ -62,23 +68,24 @@ export default function CreditCard({ items, action, loading }: CreditCardProps) 
     }
 
     const calculateExpenseParentBusiness = (expenses: Array<Expense>) => {
-        expenses.forEach((expense) => {
-            expense.total = expense?.children?.reduce((acc, expense) => acc + expense.total, 0) ?? 0;
-            expense.paid = expense?.children?.every((expense) => expense.paid) ?? false;
-            expense.total_paid = expense?.children?.reduce((acc, expense) => acc + (expense.paid ? expense.total : 0), 0) ?? 0;
-            MONTHS.forEach((month) => {
-                expense[month] = expense?.children?.reduce((acc, expense) => acc + expense[month], 0) ?? 0;
-                expense[`${month}_paid`] = expense?.children?.every((expense) => expense[`${month}_paid`]) ?? false;
-            })
+        return expenses.map((expense) => {
+            const { total, allPaid, totalPaid } =  expenseBusiness.calculateAll(expense.children);
+            expense.total = total;
+            expense.paid = allPaid;
+            expense.total_paid = totalPaid;
+            return expenseBusiness.convertMonthsToObject(expense);
         });
-        return expenses;
     }
 
     const calculatedExpenses = (expenses: Array<Expense>, isParent: boolean) => {
         if (!isParent) {
-            return expenses;
+            return convertListOfMonthsToObject(expenses);
         }
         return calculateExpenseParentBusiness(expenses);
+    }
+
+    const convertListOfMonthsToObject = (expenses: Array<Expense>) => {
+        return expenses?.map((expense) => expenseBusiness.convertMonthsToObject(expense));
     }
 
     return (

@@ -36,7 +36,7 @@ export class BillService extends Service<Bill> {
     ) {
         super(
             'bills',
-            ['bank', 'group', 'finance', 'expenses', 'expenses.supplier', 'expenses.bill', 'expenses.children', 'expenses.children.supplier'],
+            ['bank', 'group', 'finance', 'expenses', 'expenses.months', 'expenses.supplier', 'expenses.bill', 'expenses.children', 'expenses.children.supplier'],
             repository,
         );
     }

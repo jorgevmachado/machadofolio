@@ -110,6 +110,15 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
             hide();
         }
     }
+
+    const generateExpenseWithMonthsAndPaid = (expenses: Array<Expense>) => {
+        return expenses?.map((expense) => expenseBusiness.convertMonthsToObject(expense));
+    }
+
+    useEffect(() => {
+        setBill(billData);
+    }, [billData]);
+
     useEffect(() => {
         const calculatedExpenses = calculateExpenses(bill?.expenses ?? []);
         setCalculatedExpenses((calculatedExpenses as Expense[]) || []);
@@ -131,7 +140,7 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
                         <div className="expenses__table">
                             <Table
                                 headers={generateHeaders()}
-                                items={calculatedExpenses}
+                                items={generateExpenseWithMonthsAndPaid(calculatedExpenses)}
                                 onRowClick={(item) => handleOpenFormModal({ expense: item as Expense })}
                                 loading={isLoading}
                             />

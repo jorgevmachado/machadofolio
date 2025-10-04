@@ -67,6 +67,10 @@ export default function Table({
     };
 
     useEffect(() => {
+        setSortedItems([...items]);
+    }, [items]);
+
+    useEffect(() => {
         updateTable(false);
     }, [items]);
 

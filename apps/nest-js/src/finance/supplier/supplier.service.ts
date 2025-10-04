@@ -52,6 +52,7 @@ export class SupplierService extends Service<Supplier> {
             ) as SupplierType;
         const currentName = !name ? result.name : name;
         const supplier = new SupplierConstructor({
+            ...result,
             name: currentName,
             type: supplierType,
         });
