@@ -76,6 +76,16 @@ export class Expense implements ExpenseEntity {
     })
     total_paid!: number;
 
+    @Column({
+        nullable: true,
+        type: 'decimal',
+        precision: 10,
+        scale: 2,
+        default: 0.0,
+        transformer: new DecimalTransformer(),
+    })
+    total_pending?: number;
+
     @OneToMany(() => Month, (expenseMonth) => expenseMonth.expense)
     months?: Array<Month>;
 

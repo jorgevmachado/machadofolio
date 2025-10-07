@@ -21,6 +21,7 @@ export default class Expense implements ExpenseEntity {
     deleted_at?: ExpenseEntity['deleted_at'];
     description?: ExpenseEntity['description'];
     is_aggregate?: ExpenseEntity['is_aggregate'] = false;
+    total_pending?: ExpenseEntity['total_pending'] = 0;
     aggregate_name?: ExpenseEntity['aggregate_name'];
     instalment_number: ExpenseEntity['instalment_number'] = 1;
 
@@ -33,6 +34,7 @@ export default class Expense implements ExpenseEntity {
         this.total = params?.total ?? this.total;
         this.supplier = params.supplier;
         this.total_paid = params?.total_paid ?? this.total_paid;
+        this.total_pending = params?.total_pending ?? this.total_pending;
 
         this.name = !params?.is_aggregate
             ? `${params.bill.name} ${params.supplier.name}`

@@ -1,6 +1,6 @@
-import { EMonth, getCurrentMonthNumber, MONTHS } from '@repo/services';
+import { EMonth, getCurrentMonthNumber, MONTHS, TMonth } from '@repo/services';
 
-import type { PersistMonthParams } from '../types';
+import { MonthsCalculated, MonthsObject, PersistMonthParams } from '../types';
 import Month from '../month';
 
 
@@ -88,5 +88,95 @@ export default class MonthBusiness {
             }
             return monthParams;
         })
+    }
+
+    public calculateAll(months?: Array<Month>): MonthsCalculated {
+        const monthsCalculated: MonthsCalculated = {
+            total: 0,
+            allPaid: false,
+            totalPaid: 0,
+            totalPending: 0
+        }
+
+        if(!months || months?.length <= 0) {
+            return monthsCalculated;
+        }
+
+        monthsCalculated.allPaid = months.every((month) => month.paid);
+        const total = months.reduce((acc, item) => acc + item.value, 0);
+        const total_paid = months.reduce((acc, item) => acc + (item.paid ? item.value : 0), 0);
+        monthsCalculated.total = Number(total.toFixed(2));
+        monthsCalculated.totalPaid = Number(total_paid.toFixed(2));
+        const totalPending = total - total_paid;
+        monthsCalculated.totalPending = Number(totalPending.toFixed(2));
+        return monthsCalculated;
+    }
+
+    public convertMonthsToObject(months?: Array<Month>): MonthsObject {
+        const initialObjectMonths: MonthsObject = {
+            january: 0,
+            january_paid: false,
+            february: 0,
+            february_paid: false,
+            march: 0,
+            march_paid: false,
+            april: 0,
+            april_paid: false,
+            may: 0,
+            may_paid: false,
+            june: 0,
+            june_paid: false,
+            july: 0,
+            july_paid: false,
+            august: 0,
+            august_paid: false,
+            september: 0,
+            september_paid: false,
+            october: 0,
+            october_paid: false,
+            november: 0,
+            november_paid: false,
+            december: 0,
+            december_paid: false,
+        };
+
+        if(!months || months?.length <= 0) {
+            return initialObjectMonths;
+        }
+
+        return months?.reduce((acc, month) => {
+            const currentMonth = month.label.toLowerCase() as TMonth;
+            acc[currentMonth] = month.value;
+            acc[`${currentMonth}_paid`] = month.paid;
+            return acc;
+        }, initialObjectMonths);
+    }
+
+    public calculateByMonth(month: Month, months?: Array<Month>): Month {
+        if(!months || months?.length <= 0) {
+            return month;
+        }
+        const currentMonths = months.filter((m) => m.label === month.label);
+
+        if(currentMonths.length <= 0) {
+            return month;
+        }
+
+        const { total, allPaid } = this.calculateAll(currentMonths);
+        return {
+            ...month,
+            paid: allPaid,
+            value: total,
+        };
+    }
+
+    public totalByMonth(month: string = 'january', months: Array<Month> = []): number {
+        if(!months || months?.length <= 0) {
+            return 0;
+        }
+        const code = getCurrentMonthNumber(month);
+        const foundMonths = months.filter(m => m.code === code);
+        const { total } = this.calculateAll(foundMonths);
+        return total;
     }
 }

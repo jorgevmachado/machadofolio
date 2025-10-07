@@ -360,7 +360,7 @@ export class BillService extends Service<Bill> {
             detailTablesHeader: ['month', 'value', 'paid'],
             summaryTableHeader: ['type', 'bank', ...MONTHS, 'paid', 'total'],
             allExpensesHaveBeenPaid: this.expenseService.business.allHaveBeenPaid,
-            buildExpensesTablesParams: this.expenseService.business.buildTablesParams
+            buildExpensesTablesParams: this.expenseService.business.spreadsheet.buildTablesParams
         })
     }
 

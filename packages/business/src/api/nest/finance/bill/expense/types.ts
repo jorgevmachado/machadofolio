@@ -9,33 +9,6 @@ import type { IBill } from '../types';
 
 import type { EExpenseType } from './enum';
 
-export type IExpenseMonthsWithPaid = {
-    january: number;
-    january_paid: boolean;
-    february: number;
-    february_paid: boolean;
-    march: number;
-    march_paid: boolean;
-    april: number;
-    april_paid: boolean;
-    may: number;
-    may_paid: boolean;
-    june: number;
-    june_paid: boolean;
-    july: number;
-    july_paid: boolean;
-    august: number;
-    august_paid: boolean;
-    september: number;
-    september_paid: boolean;
-    october: number;
-    october_paid: boolean;
-    november: number;
-    november_paid: boolean;
-    december: number;
-    december_paid: boolean;
-}
-
 export type IExpenseBase = IFinanceBase & {
     year: number;
     bill: IBill;
@@ -47,6 +20,7 @@ export type IExpenseBase = IFinanceBase & {
     supplier: ISupplier;
     total_paid: number;
     description?: string;
+    total_pending?: number;
     instalment_number: number;
 };
 

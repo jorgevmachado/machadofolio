@@ -21,12 +21,12 @@ export class ExpenseService extends BaseService<Expense, CreateExpenseParams, Up
             .getAllByBill(billId, parameters)
             .then((response) => {
                 if (Array.isArray(response)) {
-                    return response.map((result) => this.transformResponse(result));
+                    return response.map((result) => new Expense(result));
                 }
                 const responsePaginate = response as Paginate<Expense>;
                 return {
                     ...responsePaginate,
-                    results: responsePaginate.results.map((result) => this.transformResponse(result)),
+                    results: responsePaginate.results.map((result) => new Expense(result)),
                 };
             });
     }

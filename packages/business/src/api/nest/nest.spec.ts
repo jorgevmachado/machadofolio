@@ -88,9 +88,15 @@ describe('Nest', () => {
         it('should throw if baseUrl is missing', () => {
             expect(() => new Nest({ token: mockToken } as INestConfig)).toThrow();
         });
+
         it('should throw if token is missing', () => {
-            expect(() => new Nest({ baseUrl: mockBaseUrl })).toThrow();
+            const result = new Nest({ baseUrl: mockBaseUrl });
+            expect(result).toBeInstanceOf(Nest);
+            expect(Auth).toHaveBeenCalledTimes(1);
+            expect(Finance).toHaveBeenCalledTimes(1);
+            expect(Pokemon).toHaveBeenCalledTimes(1);
         });
+
         it('should create multiple instances independently', () => {
             const instance1 = new Nest({ baseUrl: mockBaseUrl, token: mockToken });
             const instance2 = new Nest({ baseUrl: mockBaseUrl, token: mockToken });

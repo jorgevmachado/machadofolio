@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import { snakeCaseToNormal } from '@repo/services';
 
-import { Bill } from '@repo/business';
+import { Bill, Expense } from '@repo/business';
 
 import { Tabs } from '@repo/ds';
 
-import { billBusiness } from '../../../../shared';
+import { billBusiness, expenseBusiness } from '../../../../shared';
 import { ListCard } from '../index';
 import CalculationSummary, { AllCalculatedSummary } from '../calculation-summary';
 
@@ -21,11 +21,18 @@ export default function SubTab({ list, handleOpenDeleteModal }: SubTabProps) {
     const [allCalculatedSummary, setAllCalculatedSummary] = useState<AllCalculatedSummary | undefined>(undefined);
 
     const billBusinessCalculatedAll = (bills: Array<Bill>) => {
-        // AllCalculated expense
-        // AllCalculated expense parent
-        // AllCalculated expense children
-        // AllCalculated expense bill
-        return { total: 0, allPaid: false, totalPaid: 0, totalPending: 0 };
+        return bills.reduce((acc, bill) => {
+            if(!bill?.expenses || !bill?.expenses?.length) {
+                return acc;
+            }
+            const expenses = bill.expenses.map((expense) => expenseBusiness.calculate(expense));
+            const expensesCalculated = expenseBusiness.calculateAll(expenses);
+            acc.total = acc.total + expensesCalculated.total;
+            acc.allPaid = acc.allPaid && expensesCalculated.allPaid;
+            acc.totalPaid = acc.totalPaid + expensesCalculated.totalPaid;
+            acc.totalPending = acc.totalPending + expensesCalculated.totalPending;
+            return acc;
+        }, { total: 0, allPaid: true, totalPaid: 0, totalPending: 0 } as AllCalculatedSummary);
     }
 
     useEffect(() => {

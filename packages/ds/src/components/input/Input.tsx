@@ -14,7 +14,7 @@ import {
     type TContext,
     type TInputType,
     type ValidatedProps,
-    generateComponentId, joinClass
+    generateComponentId, joinClass, type OptionsProps
 } from '../../utils';
 
 import { type TGenericIconProps, Text } from '../../elements';
@@ -43,7 +43,7 @@ type TextProps = React.ComponentProps<typeof Text>;
 
 type ContentProps = React.ComponentProps<typeof Content>;
 
-interface InputProps extends Omit<InputPropsItem, 'onInput'>, HostProps {
+interface InputProps extends Omit<InputPropsItem, 'onInput'>, Omit<HostProps, 'autoComplete'> {
     tip?: string;
     type: TInputType;
     icon?: TGenericIconProps;
@@ -65,6 +65,10 @@ interface InputProps extends Omit<InputPropsItem, 'onInput'>, HostProps {
     helperText?: TextProps;
     appearance?: TAppearance;
     withPreview?: boolean;
+    autoComplete?: boolean;
+    fallbackLabel?: string;
+    filterFunction?: (input: string, option: OptionsProps) => boolean;
+    fallbackAction?: ContentProps['fallbackAction'];
     defaultValidator?: boolean;
     defaultFormatter?: boolean;
 }
@@ -112,6 +116,9 @@ export default function Input({
     placeholder = '',
     withPreview = false,
     autoComplete,
+    fallbackLabel,
+    filterFunction,
+    fallbackAction,
     defaultValidator = true,
     defaultFormatter = true,
     ...props
@@ -222,6 +229,9 @@ export default function Input({
                             placeholder={placeholder}
                             withPreview={withPreview}
                             autoComplete={autoComplete}
+                            filterFunction={filterFunction}
+                            fallbackLabel={fallbackLabel}
+                            fallbackAction={fallbackAction}
                             defaultFormatter={defaultFormatter}
                         />
                     </InputProvider>

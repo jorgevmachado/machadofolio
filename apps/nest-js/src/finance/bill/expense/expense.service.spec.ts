@@ -67,10 +67,12 @@ describe('ExpenseService', () => {
                 {
                     provide: ExpenseBusiness,
                     useValue: {
+                        spreadsheet: {
+                            parseToDetailsTable: jest.fn(),
+                        },
                         initialize: jest.fn(),
                         reinitialize: jest.fn(),
                         calculate: jest.fn(),
-                        parseToDetailsTable: jest.fn(),
                     }
                 },
                 { provide: getRepositoryToken(Expense), useClass: Repository },
@@ -619,7 +621,7 @@ describe('ExpenseService', () => {
     describe('getExpensesFromSheet', () => {
         it('Should return empty list of expense when received an empty list.', async () => {
 
-            jest.spyOn(expenseBusiness, 'parseToDetailsTable').mockReturnValue([]);
+            jest.spyOn(expenseBusiness.spreadsheet, 'parseToDetailsTable').mockReturnValue([]);
 
             const result = await service['getExpensesFromSheet'](
                 2025,
@@ -634,7 +636,7 @@ describe('ExpenseService', () => {
 
         it('Should return list of expense with successfully.', async () => {
 
-            jest.spyOn(expenseBusiness, 'parseToDetailsTable').mockReturnValue([mockEntity as any]);
+            jest.spyOn(expenseBusiness.spreadsheet, 'parseToDetailsTable').mockReturnValue([mockEntity as any]);
             jest.spyOn(service, 'createToSheet' as any).mockResolvedValueOnce(mockEntity);
 
             const result = await service['getExpensesFromSheet'](
@@ -848,7 +850,7 @@ describe('ExpenseService', () => {
             const mockExpense2 = { ...mockEntity, id: '2' };
 
             it('should return an array of correct expenses for each item returned by parseToDetailsTable', async () => {
-                jest.spyOn(expenseBusiness, 'parseToDetailsTable').mockReturnValueOnce(mockParsedItems);
+                jest.spyOn(expenseBusiness.spreadsheet, 'parseToDetailsTable').mockReturnValueOnce(mockParsedItems);
                 jest.spyOn(service, 'createToSheet' as any).mockResolvedValueOnce(mockExpense1);
                 jest.spyOn(service, 'createToSheet' as any).mockResolvedValueOnce(mockExpense2);
 
@@ -860,7 +862,7 @@ describe('ExpenseService', () => {
                     22
                 );
 
-                expect(expenseBusiness.parseToDetailsTable).toHaveBeenCalledWith({
+                expect(expenseBusiness.spreadsheet.parseToDetailsTable).toHaveBeenCalledWith({
                     bills: [mockEntity.bill],
                     startRow: 22,
                     groupName: 'Personal',
@@ -873,7 +875,7 @@ describe('ExpenseService', () => {
             });
 
             it('should skip null expenses returned by createToSheet', async () => {
-                jest.spyOn(expenseBusiness, 'parseToDetailsTable').mockReturnValueOnce(mockParsedItems);
+                jest.spyOn(expenseBusiness.spreadsheet, 'parseToDetailsTable').mockReturnValueOnce(mockParsedItems);
                 jest.spyOn(service, 'createToSheet' as any).mockResolvedValueOnce(null);
                 jest.spyOn(service, 'createToSheet' as any).mockResolvedValueOnce(mockExpense2);
 
@@ -890,7 +892,7 @@ describe('ExpenseService', () => {
             });
 
             it('should return an empty array if parseToDetailsTable returns an empty array', async () => {
-                jest.spyOn(expenseBusiness, 'parseToDetailsTable').mockReturnValueOnce([]);
+                jest.spyOn(expenseBusiness.spreadsheet, 'parseToDetailsTable').mockReturnValueOnce([]);
 
                 const result = await service.getExpensesFromSheet(
                     2025,

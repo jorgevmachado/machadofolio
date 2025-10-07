@@ -27,14 +27,19 @@ class MockService extends BaseService<MockEntity, MockEntityParams, MockEntityPa
     }
 }
 
-jest.mock('../../paginate', () => ({
-    Paginate: jest.fn().mockImplementation((page, limit, total, results = []) => ({
-        page,
-        limit,
-        total,
-        results: Array.isArray(results) ? results : [],
-    }))
-}));
+// jest.mock('../../paginate', () => ({
+//     Paginate: jest.fn().mockImplementation((page, limit, total, results = []) => ({
+//         page,
+//         limit,
+//         total,
+//         results: Array.isArray(results) ? results : [],
+//     }))
+// }));
+
+jest.mock('../../paginate', () => {
+    class PaginateMock {}
+    return { Paginate: PaginateMock };
+});
 
 describe('BaseService', () => {
     let service: MockService;
@@ -95,7 +100,7 @@ describe('BaseService', () => {
                 { id: '1', name: 'Test1' },
                 { id: '2', name: 'Test2' },
             ]);
-            // Garantir que results está definido corretamente
+
             mockPaginateResponse.results = [
                 { id: '1', name: 'Test1' },
                 { id: '2', name: 'Test2' },

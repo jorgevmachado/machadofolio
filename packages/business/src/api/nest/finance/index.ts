@@ -24,7 +24,6 @@ export {
     type IUpdateBillParams,
     type ICreateExpenseParams,
     type IUpdateExpenseParams,
-    type IExpenseMonthsWithPaid,
     EExpenseType,
     EBillType,
 } from './bill';
@@ -40,6 +39,7 @@ export type {
 
 export type {
     IMonth,
+    IMonthsObject,
     ICreateMonthParams,
     IUpdateMonthParams,
     IPersistMonthParams

@@ -16,6 +16,8 @@ import './Content.scss';
 
 type DateInputProps = React.ComponentProps<typeof DateInput>;
 
+type SelectInputProps = React.ComponentProps<typeof SelectInput>;
+
 export type OnInputParams = {
     name: string;
     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>;
@@ -23,7 +25,7 @@ export type OnInputParams = {
     invalid: boolean;
 }
 
-interface ContentProps extends Omit<React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>, 'value' | 'onInput'> {
+interface ContentProps extends Omit<React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>, 'value' | 'onInput' | 'autoComplete'> {
     icon?: TGenericIconProps;
     rows?: number;
     fluid?: boolean;
@@ -38,6 +40,10 @@ interface ContentProps extends Omit<React.InputHTMLAttributes<HTMLInputElement |
     formatter?: (value?: string) => string;
     appearance: TAppearance;
     withPreview?: boolean;
+    autoComplete?: boolean;
+    fallbackLabel?: string;
+    filterFunction?: (input: string, option: OptionsProps) => boolean;
+    fallbackAction?: SelectInputProps['fallbackAction'];
     defaultFormatter?: boolean;
 }
 
@@ -63,6 +69,10 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         formatter,
         appearance,
         withPreview = true,
+        autoComplete = false,
+        fallbackLabel,
+        filterFunction,
+        fallbackAction,
         defaultFormatter = true,
         ...props
     },
@@ -315,6 +325,10 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         disabled={disabled}
                         className={joinClass(defaultClassNameInputList)}
                         placeholder={props?.placeholder}
+                        autoComplete={autoComplete}
+                        fallbackLabel={fallbackLabel}
+                        fallbackAction={fallbackAction}
+                        filterFunction={filterFunction}
                     />
                 )}
                 {isDefault && (

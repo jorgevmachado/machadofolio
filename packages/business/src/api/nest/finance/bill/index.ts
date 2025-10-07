@@ -8,7 +8,6 @@ export * from './enum';
 export {
     type IExpense,
     type IExpenseBase,
-    type IExpenseMonthsWithPaid,
     type ICreateExpenseParams,
     type IUpdateExpenseParams,
     EExpenseType

@@ -21,6 +21,7 @@ const meta = {
         required: true,
         helperText: { children: 'Helper Text' },
         placeholder: 'Placeholder',
+        autoComplete: false,
         defaultFormatter: true,
     },
     title: 'Components/Input',
@@ -259,6 +260,28 @@ export const Select: Story = {
         ],
         placeholder: 'Input Select',
         helperText: undefined,
+    },
+    render: (args) => <Template {...args} />,
+};
+
+export const SelectAutoComplete: Story = {
+    args: {
+        type: 'select',
+        name: 'select',
+        label: 'Select',
+        options: [
+            { value: 'br', label: 'Brasil' },
+            { value: 'ar', label: 'Argentina' },
+            { value: 'cl', label: 'Chile' },
+            { value: 'co', label: 'Colômbia' },
+            { value: 'us', label: 'Estados Unidos' },
+            { value: 'fr', label: 'França' },
+            { value: 'de', label: 'Alemanha' },
+            { value: 'jp', label: 'Japão' },
+        ],
+        placeholder: 'Input Select AutoComplete',
+        helperText: undefined,
+        autoComplete: true,
     },
     render: (args) => <Template {...args} />,
 };

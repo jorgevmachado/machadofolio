@@ -452,7 +452,7 @@ export class ExpenseService extends Service<Expense> {
         nextRow: number
     ): Promise<Expense[]> {
         const expenses: Array<Expense> = [];
-        const expensesData = this.expenseBusiness.parseToDetailsTable({
+        const expensesData = this.expenseBusiness.spreadsheet.parseToDetailsTable({
             bills,
             startRow: nextRow,
             groupName,

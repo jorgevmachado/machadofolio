@@ -1,64 +1,43 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-
 import { joinClass, type OptionsProps } from '../../../../../utils';
 import { Icon } from '../../../../../elements';
+import '../select/Select.scss';
 
-import './Select.scss';
-
-type SelectProps = {
+type AutocompleteProps = {
     id: string;
     name?: string;
     value?: string;
-    onInput?: (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, value?: string) => void;
+    onInput?: (event: React.FormEvent<HTMLInputElement>, value?: string) => void;
     options?: Array<OptionsProps>;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>, value?: string ) => void;
     disabled?: boolean;
     className?: string;
     placeholder?: string;
-    autoComplete?: boolean;
-    fallbackLabel?: string;
-    fallbackAction?: (name: string, value?: string) => void;
     filterFunction?: (input: string, option: OptionsProps) => boolean;
 }
 
-export default function Select({
+export default function Autocomplete({
     id,
-    name = 'select',
+    name = 'autocomplete',
     value,
     onInput,
     options = [],
     disabled,
     className,
-    placeholder = 'Select...',
+    placeholder = 'Type to search...',
     onChange,
-    autoComplete = false,
-    fallbackAction,
-    fallbackLabel,
-    filterFunction
-}: SelectProps) {
+    filterFunction,
+}: AutocompleteProps) {
     const [open, setOpen] = useState(false);
     const [focused, setFocused] = useState(-1);
-    const [selectedValue, setSelectedValue] = useState(value ?? '');
+    const [inputValue, setInputValue] = useState(value ?? '');
     const [closing, setClosing] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const optionsList = useMemo(() => options, [options]);
-    const filteredOptions = useMemo(() => {
-        if(!autoComplete) {
-            return optionsList;
-        }
-        if(!selectedValue) {
-            return optionsList;
-        }
-        if(filterFunction) {
-            return optionsList.filter(opt => filterFunction(selectedValue, opt));
-        }
-        return optionsList.filter(opt => opt.label.toLowerCase().includes(selectedValue?.toLowerCase()));
-    }, [optionsList, autoComplete, selectedValue, filterFunction]);
 
     useEffect(() => {
-        if (value !== undefined && value !== selectedValue) {
-            setSelectedValue(value);
+        if (value !== undefined && value !== inputValue) {
+            setInputValue(value);
         }
     }, [value]);
 
@@ -75,17 +54,21 @@ export default function Select({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [open, disabled]);
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (disabled) {
-            return;
+    const filteredOptions = useMemo(() => {
+        if (!inputValue) return options;
+        if (filterFunction) {
+            return options.filter(opt => filterFunction(inputValue, opt));
         }
+        return options.filter(opt => opt.label.toLowerCase().includes(inputValue.toLowerCase()));
+    }, [inputValue, options, filterFunction]);
 
+    function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (disabled) return;
         switch (e.key) {
             case 'ArrowDown':
                 e.preventDefault();
-                e.preventDefault();
                 setOpen(true);
-                setFocused((prev) => Math.min(prev + 1, optionsList.length - 1));
+                setFocused((prev) => Math.min(prev + 1, filteredOptions.length - 1));
                 break;
             case 'ArrowUp':
                 e.preventDefault();
@@ -93,8 +76,8 @@ export default function Select({
                 setFocused((prev) => Math.max(prev - 1, 0));
                 break;
             case 'Enter':
-                if(open && focused >= 0 && optionsList[focused] ) {
-                    selectOption(optionsList[focused].value);
+                if(open && focused >= 0 && filteredOptions[focused]) {
+                    selectOption(filteredOptions[focused].value);
                     return;
                 }
                 setOpen((o) => !o);
@@ -108,18 +91,16 @@ export default function Select({
     }
 
     const selectOption = (value: string) => {
-        setSelectedValue(value);
+        setInputValue(options.find(opt => opt.value === value)?.label || value);
         const event = {
             target: {
                 value: value,
                 name: name,
             }
         } as React.ChangeEvent<HTMLInputElement>;
-
         if (onChange) {
             onChange(event, value);
         }
-
         if(onInput) {
             onInput(event, value);
         }
@@ -131,25 +112,12 @@ export default function Select({
         }, 200);
     }
 
-    const selectedLabel = useMemo(
-        () => optionsList.find(opt => opt.value === selectedValue)?.label || '',
-        [optionsList, selectedValue]
-    );
-
-    const handleOnClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        if(!disabled) {
-            setOpen((prev) => !prev);
-        }
-    }
-
-    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setSelectedValue(value);
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(e.target.value);
         setOpen(true);
         setFocused(-1);
-        if(onInput) {
-            onInput(e, value);
+        if (onInput) {
+            onInput(e, e.target.value);
         }
     }
 
@@ -160,64 +128,39 @@ export default function Select({
         }
     }
 
-    const treatValue = (value: string) => {
-        if(autoComplete) {
-            const option = optionsList.find(opt => opt.value === value || opt.label === value);
-            return option ? option.label : value;
-        }
-        return value;
-    }
-
-    const onClickFallback = (e: React.MouseEvent<HTMLLIElement>) => {
-        e.preventDefault();
-        if(fallbackAction) {
-            fallbackAction(name, selectedValue);
-            setSelectedValue('');
-        }
-    }
-
     return (
-        <div className="ds-select" ref={wrapperRef} data-testid="ds-select">
+        <div className="ds-select" ref={wrapperRef} data-testid="ds-autocomplete">
             <div
-                role="combobox"
-                onClick={handleOnClick}
-                tabIndex={disabled ? -1 : 0}
-                onKeyDown={handleKeyDown}
                 className={joinClass([
                     "ds-select__control",
                     open && "ds-select__control--open",
-                    !autoComplete && className
+                    className
                 ])}
-                aria-label={selectedLabel || placeholder}
+                role="combobox"
+                aria-label={inputValue || placeholder}
                 aria-expanded={open}
                 aria-controls={open ? `${id}-dropdown` : undefined}
                 aria-disabled={disabled}
                 aria-activedescendant={open && focused >= 0 ? `${id}-option-${focused}` : undefined}
             >
-                {autoComplete
-                    ? (
-                        <input
-                            ref={inputRef}
-                            type="text"
-                            value={treatValue(selectedValue)}
-                            onFocus={() => setOpen(true)}
-                            onChange={handleOnChange}
-                            disabled={disabled}
-                            autoComplete="off"
-                            className={className}
-                            placeholder={placeholder}
-                            data-testid="ds-autocomplete-input"
-                            aria-autocomplete="list"
-                            aria-controls={open ? `${id}-dropdown` : undefined}
-                            aria-activedescendant={open && focused >= 0 ? `${id}-option-${focused}` : undefined}
-
-                        />
-                    )
-                    : (
-                    <span className={selectedValue ? "" : "ds-select__placeholder"} data-testid="ds-select-placeholder">
-                    {selectedLabel || placeholder}
-                </span>
-                )}
+                <input
+                    id={id}
+                    name={name}
+                    ref={inputRef}
+                    className="ds-select__input"
+                    type="text"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onFocus={() => setOpen(true)}
+                    onKeyDown={handleKeyDown}
+                    placeholder={placeholder}
+                    disabled={disabled}
+                    autoComplete="off"
+                    aria-autocomplete="list"
+                    aria-controls={open ? `${id}-dropdown` : undefined}
+                    aria-activedescendant={open && focused >= 0 ? `${id}-option-${focused}` : undefined}
+                    data-testid="ds-autocomplete-input"
+                />
                 <Icon icon="chevron-down" color="primary-80" size="20" className={joinClass(["ds-select__arrow", open && "ds-select__arrow--open"])} />
                 {open || closing ? (
                     <ul
@@ -230,12 +173,8 @@ export default function Select({
                         aria-labelledby={id}
                     >
                         {filteredOptions.length === 0 ? (
-                            <li
-                                role="option"
-                                onClick={onClickFallback}
-                                tabIndex={-1}
-                                className="ds-select__option ds-select__option--empty" >
-                                {fallbackAction ? fallbackLabel ?? 'Add' : 'No options'}
+                            <li className="ds-select__option ds-select__option--empty" role="option" tabIndex={-1}>
+                                Nenhuma opção encontrada
                             </li>
                         ) : filteredOptions.map((option, idx) => (
                             <li
@@ -243,11 +182,11 @@ export default function Select({
                                 id={`${id}-option-${idx}`}
                                 className={joinClass([
                                     'ds-select__option',
-                                    selectedValue.toLowerCase() === option.label.toLowerCase() && 'ds-select__option--selected',
+                                    inputValue === option.label && 'ds-select__option--selected',
                                     focused === idx && 'ds-select__option--focused',
                                 ])}
                                 role="option"
-                                aria-selected={selectedValue === option.label}
+                                aria-selected={inputValue === option.label}
                                 tabIndex={-1}
                                 onClick={() => handleOptionClick(option.value)}
                                 onMouseEnter={() => setFocused(idx)}
@@ -261,3 +200,4 @@ export default function Select({
         </div>
     );
 }
+

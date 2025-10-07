@@ -106,6 +106,7 @@ export const GROUPS: Array<InputGroup> = [
               needType: false,
               required: true,
               placeholder: 'Choose a Supplier',
+              autoComplete: true
           },
       ]
     },

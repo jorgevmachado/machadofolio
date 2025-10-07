@@ -1,9 +1,10 @@
 import type {
-    IMonth,
-    IPartialNestBaseEntity,
     ICreateMonthParams,
-    IUpdateMonthParams,
-    IPersistMonthParams
+    IMonth,
+    IMonthsObject,
+    IPartialNestBaseEntity,
+    IPersistMonthParams,
+    IUpdateMonthParams
 } from '../../api';
 
 export type MonthEntity = IMonth;
@@ -28,3 +29,11 @@ export type MonthConstructorParams = Omit<
 export type CreateMonthParams = ICreateMonthParams;
 export type UpdateMonthParams = IUpdateMonthParams;
 export type PersistMonthParams = IPersistMonthParams;
+
+export type MonthsCalculated = {
+    total: number;
+    allPaid: boolean;
+    totalPaid: number;
+    totalPending: number;
+}
+export type MonthsObject = IMonthsObject;

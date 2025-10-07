@@ -8,7 +8,7 @@ import MonthBusiness from './business';
 
 describe('Month Business', () => {
     let business: MonthBusiness;
-    const mockMonth: MonthEntity = {
+    const mockEntity: MonthEntity = {
         id: 'a54df7b0-e28b-4d35-a658-edbb35fcb2d0',
         year: 2025,
         code: 1,
@@ -23,7 +23,7 @@ describe('Month Business', () => {
         received_at: new Date('2025-02-01T19:00:18.670Z'),
     }
 
-    const mockMonthList: Array<MonthEntity> = [mockMonth];
+    const mockMonthList: Array<MonthEntity> = [mockEntity];
 
     beforeEach(() => {
         jest.resetModules();
@@ -65,29 +65,36 @@ describe('Month Business', () => {
         });
 
         it('should generate month list update parameters undefined when received list of months with list of mothsToPersist without code param', () => {
-            const result = business.generateMonthListUpdateParameters(mockMonthList, mockMonthList.map((m) => ({ ...m, code: undefined })));
+            const result = business.generateMonthListUpdateParameters(mockMonthList, mockMonthList.map((m) => ({
+                ...m,
+                code: undefined
+            })));
             expect(result).toBeUndefined();
         });
 
         it('should generate month list update parameters undefined when received list of months with list of mothsToPersist without code param and have month', () => {
-            const result = business.generateMonthListUpdateParameters(mockMonthList, mockMonthList.map((m) => ({ ...m, code: undefined, month: EMonth.MAY })));
+            const result = business.generateMonthListUpdateParameters(mockMonthList, mockMonthList.map((m) => ({
+                ...m,
+                code: undefined,
+                month: EMonth.MAY
+            })));
             expect(result).toBeUndefined();
         });
 
         it('should generate month list update parameters when received list of months different of list of mothsToPersist', () => {
-            const expectedMonths =  mockMonthList.map((m) => ({ ...m, code: 2 }));
+            const expectedMonths = mockMonthList.map((m) => ({ ...m, code: 2 }));
             const result = business.generateMonthListUpdateParameters(mockMonthList, expectedMonths);
             expect(result).toEqual(expectedMonths);
         });
 
         it('should generate month list update parameters when received list of months with value different of list of mothsToPersist', () => {
-            const expectedMonths =  mockMonthList.map((m) => ({ ...m, value: 200 }));
+            const expectedMonths = mockMonthList.map((m) => ({ ...m, value: 200 }));
             const result = business.generateMonthListUpdateParameters(mockMonthList, expectedMonths);
             expect(result).toEqual(expectedMonths);
         });
 
         it('should generate month list update parameters when received list of months with paid different of list of mothsToPersist', () => {
-            const expectedMonths =  mockMonthList.map((m) => ({ ...m, paid: true }));
+            const expectedMonths = mockMonthList.map((m) => ({ ...m, paid: true }));
             const result = business.generateMonthListUpdateParameters(mockMonthList, expectedMonths);
             expect(result).toEqual(expectedMonths);
         });
@@ -192,7 +199,7 @@ describe('Month Business', () => {
 
     describe('generateMonthListCreationParameters', () => {
         it('should generate month list creation parameters successfully with default props.', () => {
-            const result = business.generateMonthListCreationParameters({ });
+            const result = business.generateMonthListCreationParameters({});
             expect(result).toHaveLength(MONTHS.length);
 
             MONTHS.forEach((month, index) => {
@@ -273,5 +280,192 @@ describe('Month Business', () => {
                 expect(persistMonthParams.received_at.getFullYear()).toEqual(2026);
             });
         });
-    })
+    });
+
+    describe('calculateAll', () => {
+        it('should return default when dont received months', () => {
+            const result = business.calculateAll(undefined);
+            expect(result.total).toEqual(0);
+            expect(result.allPaid).toBeFalsy();
+            expect(result.totalPaid).toEqual(0);
+            expect(result.totalPending).toEqual(0);
+        });
+
+        it('should return default when received list of months empty', () => {
+            const result = business.calculateAll([]);
+            expect(result.total).toEqual(0);
+            expect(result.allPaid).toBeFalsy();
+            expect(result.totalPaid).toEqual(0);
+            expect(result.totalPending).toEqual(0);
+        });
+
+        it('should return the calculation of the list of months', () => {
+            const months: Array<MonthEntity> = [];
+            MONTHS.forEach((month, index) => {
+                const code = index + 1;
+                months.push({
+                    ...mockEntity,
+                    paid: code > 6,
+                    code,
+                    value: 100,
+                    label: month,
+                });
+            });
+            const result = business.calculateAll(months);
+            expect(result.total).toEqual(1200);
+            expect(result.allPaid).toBeFalsy();
+            expect(result.totalPaid).toEqual(600);
+            expect(result.totalPending).toEqual(600);
+        });
+    });
+
+    describe('convertMonthsToObject', () => {
+        it('should return default when dont received months', () => {
+            const result = business.convertMonthsToObject(undefined);
+            expect(result.january).toEqual(0);
+            expect(result.january_paid).toBeFalsy();
+            expect(result.february).toEqual(0);
+            expect(result.february_paid).toBeFalsy();
+            expect(result.march).toEqual(0);
+            expect(result.march_paid).toBeFalsy();
+            expect(result.april).toEqual(0);
+            expect(result.april_paid).toBeFalsy();
+            expect(result.may).toEqual(0);
+            expect(result.may_paid).toBeFalsy();
+            expect(result.june).toEqual(0);
+            expect(result.june_paid).toBeFalsy();
+            expect(result.july).toEqual(0);
+            expect(result.july_paid).toBeFalsy();
+            expect(result.august).toEqual(0);
+            expect(result.august_paid).toBeFalsy();
+            expect(result.september).toEqual(0);
+            expect(result.september_paid).toBeFalsy();
+            expect(result.october).toEqual(0);
+            expect(result.october_paid).toBeFalsy();
+            expect(result.november).toEqual(0);
+            expect(result.november_paid).toBeFalsy();
+            expect(result.december).toEqual(0);
+            expect(result.december_paid).toBeFalsy();
+        });
+
+        it('should return default when received empty list of months', () => {
+            const result = business.convertMonthsToObject([]);
+            expect(result.january).toEqual(0);
+            expect(result.january_paid).toBeFalsy();
+            expect(result.february).toEqual(0);
+            expect(result.february_paid).toBeFalsy();
+            expect(result.march).toEqual(0);
+            expect(result.march_paid).toBeFalsy();
+            expect(result.april).toEqual(0);
+            expect(result.april_paid).toBeFalsy();
+            expect(result.may).toEqual(0);
+            expect(result.may_paid).toBeFalsy();
+            expect(result.june).toEqual(0);
+            expect(result.june_paid).toBeFalsy();
+            expect(result.july).toEqual(0);
+            expect(result.july_paid).toBeFalsy();
+            expect(result.august).toEqual(0);
+            expect(result.august_paid).toBeFalsy();
+            expect(result.september).toEqual(0);
+            expect(result.september_paid).toBeFalsy();
+            expect(result.october).toEqual(0);
+            expect(result.october_paid).toBeFalsy();
+            expect(result.november).toEqual(0);
+            expect(result.november_paid).toBeFalsy();
+            expect(result.december).toEqual(0);
+            expect(result.december_paid).toBeFalsy();
+        });
+
+        it('should return the conversion from list of months to object.', () => {
+            const months: Array<MonthEntity> = [];
+            MONTHS.forEach((month, index) => {
+                const code = index + 1;
+                months.push({
+                    ...mockEntity,
+                    paid: code <= 6,
+                    code,
+                    value: 100,
+                    label: month,
+                });
+            });
+            const result = business.convertMonthsToObject(months);
+            expect(result.january).toEqual(100);
+            expect(result.january_paid).toBeTruthy();
+            expect(result.february).toEqual(100);
+            expect(result.february_paid).toBeTruthy();
+            expect(result.march).toEqual(100);
+            expect(result.march_paid).toBeTruthy();
+            expect(result.april).toEqual(100);
+            expect(result.april_paid).toBeTruthy();
+            expect(result.may).toEqual(100);
+            expect(result.may_paid).toBeTruthy();
+            expect(result.june).toEqual(100);
+            expect(result.june_paid).toBeTruthy();
+            expect(result.july).toEqual(100);
+            expect(result.july_paid).toBeFalsy();
+            expect(result.august).toEqual(100);
+            expect(result.august_paid).toBeFalsy();
+            expect(result.september).toEqual(100);
+            expect(result.september_paid).toBeFalsy();
+            expect(result.october).toEqual(100);
+            expect(result.october_paid).toBeFalsy();
+            expect(result.november).toEqual(100);
+            expect(result.november_paid).toBeFalsy();
+            expect(result.december).toEqual(100);
+            expect(result.december_paid).toBeFalsy();
+        });
+    });
+
+    describe('calculateByMonth', () => {
+        it('should return default when dont received months', () => {
+            const result = business.calculateByMonth(mockEntity);
+            expect(result).toEqual(mockEntity);
+        });
+
+        it('should return default when received a empty list of months', () => {
+            const result = business.calculateByMonth(mockEntity, []);
+            expect(result).toEqual(mockEntity);
+        });
+
+        it('should return default when the list of months dont have a month equal', () => {
+            const months: Array<MonthEntity> = [
+                { ...mockEntity, value: 100, paid: true },
+                { ...mockEntity, value: 200, paid: true },
+                { ...mockEntity, value: 300, paid: true },
+                { ...mockEntity, value: 400, paid: true },
+            ];
+            const result = business.calculateByMonth({ ...mockEntity, label: 'february' }, months);
+            expect(result).toEqual({ ...mockEntity, label: 'february' });
+        })
+
+        it('should return the calculation of the list of months', () => {
+            jest.spyOn(business, 'calculateAll').mockReturnValue({
+                total: 1000,
+                allPaid: true,
+                totalPaid: 1000,
+                totalPending: 0,
+            })
+            const months: Array<MonthEntity> = [
+                { ...mockEntity, value: 100, paid: true },
+                { ...mockEntity, value: 200, paid: true },
+                { ...mockEntity, value: 300, paid: true },
+                { ...mockEntity, value: 400, paid: true },
+            ];
+            const result = business.calculateByMonth(mockEntity, months);
+            expect(result.paid).toBeTruthy();
+            expect(result.value).toEqual(1000);
+        })
+    });
+
+    describe('totalByMonth', () => {
+        it('should return 0 when dont received list of months', () => {
+            const result = business.totalByMonth();
+            expect(result).toEqual(0);
+        });
+
+        it('should return total by month when received list of months', () => {
+            const result = business.totalByMonth('january', [mockEntity]);
+            expect(result).toEqual(100);
+        });
+    });
 })
