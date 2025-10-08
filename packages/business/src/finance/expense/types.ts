@@ -3,7 +3,8 @@ import type {
     IExpense,
     IMonthsObject,
     IPartialNestBaseEntity,
-    IUpdateExpenseParams
+    IUpdateExpenseParams,
+    IUploadExpenseParams
 } from '../../api';
 import { TMonth } from '@repo/services';
 
@@ -33,6 +34,8 @@ export type ExpenseConstructorParams = Omit<
 export type CreateExpenseParams = ICreateExpenseParams;
 
 export type UpdateExpenseParams = IUpdateExpenseParams;
+
+export type UploadExpenseParams = IUploadExpenseParams;
 
 export type InitializedExpense = {
     nextYear: number;

@@ -1,5 +1,5 @@
 import type * as ExcelJS from 'exceljs';
-import type { Cell, CellBorderStyle, CellParams, CellStyles, MergeCell, MergeParams, Positions } from './types';
+import { Cell, CellBorderStyle, CellParams, CellStyles, GetCell, MergeCell, MergeParams, Positions } from './types';
 import { ECellType } from './enum';
 
 export class WorkSheet {
@@ -205,5 +205,21 @@ export class WorkSheet {
 
     public get rowCount(): number {
         return this.workSheetInstance.rowCount;
+    }
+
+    public getCell(row: string | number, col: string | number): GetCell {
+        const cell = this.cell(row, col);
+        const value = cell?.value?.toString()?.trim() || '';
+        const nextRow = Number(cell?.row || 1) + 1;
+        const totalRows = Array.from(
+            { length: this.rowCount -  nextRow + 1 },
+            (_, idx) => idx + nextRow
+        );
+        return {
+            cell,
+            value,
+            nextRow,
+            totalRows: totalRows.length,
+        }
     }
 }

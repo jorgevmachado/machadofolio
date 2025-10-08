@@ -53,3 +53,8 @@ export type IUpdateExpenseParams = {
     supplier?: string | IExpense['supplier'];
     description?: string;
 }
+
+export type IUploadExpenseParams = {
+    paid?: boolean;
+    month?: EMonth;
+}

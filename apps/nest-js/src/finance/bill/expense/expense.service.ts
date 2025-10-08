@@ -2,14 +2,17 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { EMonth, MONTHS, Spreadsheet, type TMonth, filterByCommonKeys, getCurrentMonthNumber } from '@repo/services';
-
 import {
-    EExpenseType,
-    ExpenseBusiness,
-    Expense as ExpenseConstructor,
-    type ExpenseEntity
-} from '@repo/business';
+    EMonth,
+    filterByCommonKeys,
+    getCurrentMonthNumber,
+    MONTHS,
+    Spreadsheet,
+    type TMonth,
+    WorkSheet
+} from '@repo/services';
+
+import { EExpenseType, Expense as ExpenseConstructor, ExpenseBusiness, type ExpenseEntity } from '@repo/business';
 
 import { FilterParams, Service } from '../../../shared';
 
@@ -26,6 +29,7 @@ import { PersistMonthDto } from '../../month/dto/persist-month.dto';
 
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
+import { UploadExpenseDto } from './dto/upload-expense.dto';
 
 export type InitializeParams = {
     value?: number;
@@ -64,9 +68,10 @@ export class ExpenseService extends Service<Expense> {
             'Supplier',
         ) as Supplier;
 
-        const parent = !createExpenseDto.parent
-            ? undefined
-            : await this.findOne({ value: createExpenseDto.parent, withRelations: true }) as Expense;
+        const parent = await this.treatEntityParam<Expense>(
+            createExpenseDto.parent,
+            'Expense Parent',
+        ) as Expense;
 
         return new ExpenseConstructor({
             supplier,
@@ -470,5 +475,21 @@ export class ExpenseService extends Service<Expense> {
         }
 
         return expenses;
+    }
+
+    async buildForCreationBySpreadsheet(workSheet: WorkSheet, uploadExpenseDto: UploadExpenseDto) {
+        const createdExpenses = this.expenseBusiness.spreadsheet.buildForCreation(workSheet, uploadExpenseDto);
+        const listCreateExpenseDto: Array<CreateExpenseDto> = [];
+
+        for(const createExpenseDto of createdExpenses) {
+            if(createExpenseDto?.supplier) {
+                const supplier = await this.supplierService.createToSheet(createExpenseDto.supplier as string) as Supplier;
+                listCreateExpenseDto.push({
+                    ...createExpenseDto,
+                    supplier,
+                });
+            }
+        }
+        return listCreateExpenseDto;
     }
 }

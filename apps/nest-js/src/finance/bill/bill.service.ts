@@ -21,6 +21,7 @@ import { ExpenseService } from './expense/expense.service';
 import { GroupService } from '../group/group.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
+import { UploadExpenseDto } from './expense/dto/upload-expense.dto';
 
 import type { BillSeederParams, CreateToSheetParams, ExistExpenseInBill, SpreadsheetProcessingParams } from './types';
 
@@ -156,8 +157,8 @@ export class BillService extends Service<Bill> {
         return { message: 'Successfully removed' };
     }
 
-    async addExpense(param: string, createExpenseDto: CreateExpenseDto) {
-        const bill = await this.findOne({ value: param, withRelations: true }) as Bill;
+    async addExpense(param: string, createExpenseDto: CreateExpenseDto, billEntity?: Bill) {
+        const bill = !billEntity ?  await this.findOne({ value: param, withRelations: true }) as Bill : billEntity;
         const createdExpense = await this.expenseService.buildForCreation(
             bill,
             createExpenseDto,
@@ -528,5 +529,41 @@ export class BillService extends Service<Bill> {
         }
 
         return { bills, nextRow };
+    }
+
+    async persistExpenseByUpload(file: Express.Multer.File, param: string, uploadExpenseDto: UploadExpenseDto) {
+        if (!file?.buffer) {
+            throw new ConflictException('File not sent or invalid.');
+        }
+
+        const bill = await this.findOne({ value: param, withRelations: true }) as Bill;
+
+        const spreadsheet = new Spreadsheet();
+
+        const worksheets = await spreadsheet.loadFile(file.buffer);
+
+        const expenses: Array<Expense> = [];
+
+        for (const worksheet of worksheets) {
+            if (!worksheet) {
+                throw new ConflictException('The Excel file does not contain any worksheets.');
+            }
+            spreadsheet.updateWorkSheet(worksheet);
+            const workSheet = spreadsheet.workSheet;
+            const listCreateExpenseDto = await this.expenseService.buildForCreationBySpreadsheet(workSheet, uploadExpenseDto);
+            const listExpense = await this.addExpensesByUpload(bill, listCreateExpenseDto);
+            expenses.push(...listExpense);
+        }
+
+        return expenses;
+    }
+
+    private async addExpensesByUpload(bill: Bill, listCreateExpenseDto: Array<CreateExpenseDto>) {
+        const expenses: Array<Expense> = [];
+        for(const createExpenseDto of listCreateExpenseDto) {
+            const expense = await this.addExpense(bill.id, createExpenseDto, bill) as Expense;
+            expenses.push(expense);
+        }
+        return expenses;
     }
 }

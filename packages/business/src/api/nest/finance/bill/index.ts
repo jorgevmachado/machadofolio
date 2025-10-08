@@ -10,5 +10,6 @@ export {
     type IExpenseBase,
     type ICreateExpenseParams,
     type IUpdateExpenseParams,
+    type IUploadExpenseParams,
     EExpenseType
 } from './expense';

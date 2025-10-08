@@ -1,0 +1,15 @@
+import { IsBoolean, IsEnum, IsOptional } from 'class-validator';
+
+import { EMonth } from '@repo/services';
+
+import { UploadExpenseParams } from '@repo/business';
+
+export class UploadExpenseDto implements UploadExpenseParams {
+    @IsOptional()
+    @IsBoolean()
+    paid?: boolean;
+
+    @IsOptional()
+    @IsEnum(EMonth)
+    month?: EMonth;
+}

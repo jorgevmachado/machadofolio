@@ -7,6 +7,7 @@ import  { type CreateExpenseParams, EExpenseType } from '@repo/business';
 import { IsNameDependingOnParent } from '../../../../decorators/name-depending-parent/name-depending-parent.decorator';
 
 import { Supplier } from '../../../entities/supplier.entity';
+import { Expense } from '../../../entities/expense.entity';
 
 export class CreateExpenseDto implements CreateExpenseParams {
     @IsNotEmpty()
@@ -38,7 +39,7 @@ export class CreateExpenseDto implements CreateExpenseParams {
     instalment_number?: number | undefined;
 
     @IsOptional()
-    parent?: string;
+    parent?: string | Expense;
 
     @IsNameDependingOnParent()
     aggregate_name?:string;

@@ -1,10 +1,13 @@
 import {
     cleanTextByListText,
     CycleOfMonths,
-    DEFAULT_TABLES_PARAMS,
+    DEFAULT_TABLES_PARAMS, EMonth,
+    Error,
+    ERROR_STATUS_CODE, getMonthByIndex,
     MONTHS,
     snakeCaseToNormal,
-    TablesParams
+    TablesParams,
+    WorkSheet
 } from '@repo/services';
 
 import { Bill, EBillType } from '../../../bill';
@@ -17,7 +20,7 @@ import {
     BuildCreditCardBodyData,
     BuildCreditCardBodyDataParams,
     BuildDetailData,
-    BuildDetailDataParams,
+    BuildDetailDataParams, BuildFromCreditCardSheet,
     BuildGroupTable,
     BuildGroupTableParams,
     DataAccumulator,
@@ -26,8 +29,12 @@ import {
     GenerateDetailsTable,
     GenerateDetailsTableParams,
     ParseToDetailsTable,
-    ParseToDetailsTableParams
+    ParseToDetailsTableParams,
+    ValidateWorkSheetToBuild
 } from './types';
+import { CreateExpenseParams, UploadExpenseParams } from '../../types';
+import { CreateExpenseDto } from 'nest-js/dist/src/finance/bill/expense/dto/create-expense.dto';
+import { EExpenseType } from '../../../../api';
 
 export default class SpreadsheetBusiness {
     public buildTablesParams(expenses: Array<Expense> = [], tableWidth: number, headers: Array<string> = ['month', 'value', 'paid']): TablesParams {
@@ -427,5 +434,154 @@ export default class SpreadsheetBusiness {
 
         return expensesData;
 
+    }
+
+    public buildForCreation(workSheet: WorkSheet, uploadExpenseParams: UploadExpenseParams): Array<CreateExpenseParams> {
+        const { totalRows, nextRow } = this.validateWorkSheetToBuild(workSheet);
+        const listCreateExpenseParams: Array<CreateExpenseParams> = [];
+        for(let i = 0; i < totalRows; i++) {
+            const cellDate = workSheet.cell(nextRow + i, 1)?.value?.toString()?.trim() || '';
+            const supplier = workSheet.cell(nextRow + i, 2)?.value?.toString()?.trim() || '';
+            const cellAmount = workSheet.cell(nextRow + i, 3)?.value?.toString()?.trim() || '';
+
+            if(supplier !== '' && supplier.toLowerCase() !== 'pagamento recebido') {
+                const result = this.buildFromCreditCardSheet(cellDate, cellAmount, supplier);
+
+                const createExpenseDto: CreateExpenseDto = {
+                    type: EExpenseType.VARIABLE,
+                    paid: false,
+                    value: result.value,
+                    month: uploadExpenseParams?.month,
+                    supplier,
+                    description: 'Create by Document Import',
+                    instalment_number: result.instalment_number,
+                }
+
+                listCreateExpenseParams.push(createExpenseDto);
+            }
+        }
+
+        return this.mapperBuildForCreation(listCreateExpenseParams.filter((item) => item.value && item.value > 0));
+    }
+
+    private validateWorkSheetToBuild(workSheet: WorkSheet): ValidateWorkSheetToBuild {
+        const { totalRows, nextRow } = workSheet.getCell(1, 1);
+
+        const { totalRows: cellSupplierRows } = workSheet.getCell(1, 2);
+
+        if(totalRows <= 0) {
+            throw new Error({
+                message: 'The Excel file does not have any rows for Date column.',
+                statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION,
+            });
+        }
+
+        if(totalRows !== cellSupplierRows) {
+            throw new Error({
+                message: 'The Excel file does not have the same number of rows for Date and Supplier columns.',
+                statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION,
+            });
+        }
+
+        const { totalRows: cellAmountRows } = workSheet.getCell(1, 2);
+
+        if(totalRows !== cellAmountRows) {
+            throw new Error({
+                message: 'The Excel file does not have the same number of rows for Date and Amount columns.',
+                statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION,
+            });
+        }
+
+        if(cellSupplierRows !== cellAmountRows) {
+            throw new Error({
+                message: 'The Excel file does not have the same number of rows for Supplier and Amount columns.',
+                statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION,
+            });
+        }
+        return {
+            nextRow,
+            totalRows,
+        };
+    }
+
+    private buildFromCreditCardSheet(cellDate: string, cellAmount: string, cellSupplier: string): BuildFromCreditCardSheet {
+        const date = new Date(cellDate);
+        const year = date.getFullYear();
+        const month = getMonthByIndex(date.getMonth());
+
+        const amount = Number(cellAmount);
+        const value = !isNaN(amount) ? Number(amount.toFixed(2)) : 0;
+
+        const { supplier, instalment_number } = this.treatSupplierInstallmentNumber(cellSupplier);
+
+        return {
+            year,
+            value,
+            month: month.toUpperCase() as EMonth,
+            supplier,
+            instalment_number,
+        }
+    }
+
+    private treatSupplierInstallmentNumber(supplier: string) {
+        const result = {
+            supplier,
+            instalment_number: 1,
+        }
+
+        const supplierSplit = supplier.split('Parcela');
+
+        if(supplierSplit.length > 1) {
+            const installmentStr  = supplierSplit[supplierSplit.length - 1];
+            if(installmentStr) {
+                const installmentStrSplit = installmentStr.split('/');
+                if(installmentStrSplit.length > 1) {
+                    const currentMonth = Number(installmentStrSplit[0] || '1');
+                    const nextMonths = Number(installmentStrSplit[1] || '1');
+                    if(!isNaN(currentMonth) && !isNaN(nextMonths)) {
+                        result.instalment_number = (nextMonths - currentMonth) + 1;
+                    }
+                }
+            }
+        }
+
+        result.supplier = this.mapperSuppliers(supplier);
+        return result;
+    }
+
+    private mapperSuppliers(supplier: string): string {
+        const result = supplier
+            .replace(/\s*-\s*/g, ' ')
+            .replace(/Parcela/gi, '')
+            .replace(/\b\d+\/\d+\b/g, '')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+
+        if(result.toLowerCase().includes('pao de acucar')) {
+            return 'Pão de Açúcar';
+        }
+        return result;
+    }
+
+    private mapperBuildForCreation(createExpenseParams: Array<CreateExpenseParams>): Array<CreateExpenseParams> {
+        return Object.values(
+            createExpenseParams.reduce((acc, createExpenseDto) => {
+                const supplierName = typeof createExpenseDto.supplier === 'string'
+                    ? createExpenseDto.supplier
+                    : createExpenseDto.supplier.name;
+
+                if (!supplierName) {
+                    return acc;
+                }
+
+                if (!acc[supplierName]) {
+                    acc[supplierName] = <CreateExpenseDto>{ ...createExpenseDto };
+                    return acc;
+                }
+                const value = (acc[supplierName].value || 0) + (createExpenseDto.value || 0);
+                acc[supplierName].value = Number(value.toFixed(2));
+                return acc;
+            }, {} as Record<string, CreateExpenseDto>)
+        );
     }
 }

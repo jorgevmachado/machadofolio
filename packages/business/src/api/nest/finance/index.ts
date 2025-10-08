@@ -24,6 +24,7 @@ export {
     type IUpdateBillParams,
     type ICreateExpenseParams,
     type IUpdateExpenseParams,
+    type IUploadExpenseParams,
     EExpenseType,
     EBillType,
 } from './bill';
