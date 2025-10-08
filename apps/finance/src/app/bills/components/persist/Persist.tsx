@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { snakeCaseToNormal } from '@repo/services';
 
@@ -9,6 +10,7 @@ import { Bank, Bill, CreateBillParams, EBillType, Group } from '@repo/business';
 import { Button, Input, OnInputParams } from '@repo/ds';
 
 import './Persist.scss';
+
 
 
 type PersistProps = {
@@ -22,6 +24,7 @@ type PersistProps = {
 type PersistFields = CreateBillParams;
 
 export default function Persist({ bill, banks, groups, onClose, onSubmit }: PersistProps) {
+    const router = useRouter();
     const [fields, setFields] = useState<PersistFields>({
         year: new Date().getFullYear(),
         type: '' as EBillType,
@@ -136,6 +139,9 @@ export default function Persist({ bill, banks, groups, onClose, onSubmit }: Pers
                     onInput={handleOnInput}
                     className="bill-persist__row--item"
                     placeholder="Choose a Group"
+                    autoComplete
+                    fallbackLabel="Add Group"
+                    fallbackAction={() => router.push('/groups')}
                 />
                 <Input
                     id="bill-persist-bank"
@@ -150,6 +156,9 @@ export default function Persist({ bill, banks, groups, onClose, onSubmit }: Pers
                     onInput={handleOnInput}
                     className="bill-persist__row--item"
                     placeholder="Choose a Bank"
+                    autoComplete
+                    fallbackLabel="Add Bank"
+                    fallbackAction={() => router.push('/banks')}
                 />
             </div>
             <div className="bill-persist__actions">

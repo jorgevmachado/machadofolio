@@ -50,7 +50,6 @@ export default function Persist({
         event.preventDefault();
         handleValidatorForm();
         const fields = persistForm.fields;
-        console.log('# => fields => ', fields);
         const parent = fields?.parent ? parents?.find((item) => item.id === fields.parent) : undefined;
         const create: CreateExpenseParams = {
             type: fields?.type as EExpenseType,
@@ -261,13 +260,6 @@ export default function Persist({
         }
     }
 
-    const fallbackLabel = (name?: string) => {
-        if(name === 'supplier') {
-            return 'Add Supplier';
-        }
-        return;
-    }
-
     useEffect(() => {
         if(!isMounted.current) {
             isMounted.current = true;
@@ -294,7 +286,6 @@ export default function Persist({
                                     onInput={handleOnInput}
                                     className={input.className ?? 'persist__row--item'}
                                     validator={(params) => handleValidator(input, params)}
-                                    fallbackLabel={fallbackLabel(input?.name)}
                                     fallbackAction={fallbackAction}
                                 />
                             )}

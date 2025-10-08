@@ -118,7 +118,10 @@ export default function SuppliersPage() {
                             list: supplierTypes,
                             options: supplierTypes.map((type) => ({ value: type.id, label: type.name })),
                             required: true,
-                            placeholder: 'Enter a supplier type'
+                            placeholder: 'Enter a supplier type',
+                            autoComplete: true,
+                            fallbackLabel: 'Add Supplier type',
+                            fallbackAction: () => router.push('/suppliers/types'),
                         },
                         {
                             fluid: true,

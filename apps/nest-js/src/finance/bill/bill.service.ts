@@ -56,7 +56,7 @@ export class BillService extends Service<Bill> {
             'Group'
         ) as Group;
 
-        const name = `${group.name} ${snakeCaseToNormal(createBillDto.type)}`;
+        const name = `${group.name} ${snakeCaseToNormal(createBillDto.type)} ${bank.name}`;
 
         const type = createBillDto.type;
 
@@ -103,7 +103,7 @@ export class BillService extends Service<Bill> {
         const name =
             !updateBillDto.group && !updateBillDto.type
                 ? result.name
-                : type === EBillType.CREDIT_CARD ? `${group.name} ${snakeCaseToNormal(type)} ${bank.name}` : `${group.name} ${snakeCaseToNormal(type)}`;
+                : `${group.name} ${snakeCaseToNormal(type)} ${bank.name}`;
 
         const updatedBill = new BillConstructor({
             ...result,

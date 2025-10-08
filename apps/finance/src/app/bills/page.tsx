@@ -80,7 +80,6 @@ export default function BillsPage() {
     }
 
     const handleOpenPersistModal = (bill?: Bill) => {
-        console.log('# => fuck')
         openModal({
             width: '799px',
             title: `${bill ? 'Edit' : 'Create'} Bill`,
