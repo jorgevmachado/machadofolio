@@ -1,10 +1,15 @@
 import {
     cleanTextByListText,
     CycleOfMonths,
-    DEFAULT_TABLES_PARAMS, EMonth,
+    DEFAULT_TABLES_PARAMS,
+    EMonth,
     Error,
-    ERROR_STATUS_CODE, getMonthByIndex,
+    ERROR_STATUS_CODE,
+    getMonthByIndex,
+    matchesRepeatWords,
     MONTHS,
+    replaceWords,
+    ReplaceWordsParam,
     snakeCaseToNormal,
     TablesParams,
     WorkSheet
@@ -14,13 +19,16 @@ import { Bill, EBillType } from '../../../bill';
 
 import Expense from '../../expense';
 
+import type { CreateExpenseParams, UploadExpenseParams } from '../../types';
+
 import {
     AccumulateGroupTables,
     AccumulateGroupTablesParams,
     BuildCreditCardBodyData,
     BuildCreditCardBodyDataParams,
     BuildDetailData,
-    BuildDetailDataParams, BuildFromCreditCardSheet,
+    BuildDetailDataParams,
+    BuildFromCreditCardSheet,
     BuildGroupTable,
     BuildGroupTableParams,
     DataAccumulator,
@@ -32,9 +40,18 @@ import {
     ParseToDetailsTableParams,
     ValidateWorkSheetToBuild
 } from './types';
-import { CreateExpenseParams, UploadExpenseParams } from '../../types';
-import { CreateExpenseDto } from 'nest-js/dist/src/finance/bill/expense/dto/create-expense.dto';
-import { EExpenseType } from '../../../../api';
+
+const DEFAULT_REPLACE_WORDS: ReplaceWordsParam = [
+    {
+        after: 'Pão de Açúcar',
+        before: 'Pao de Acucar',
+    }
+];
+
+const DEFAULT_REPEAT_WORDS: Array<string> = [
+    'Pagamento recebido',
+    'Estorno de *'
+];
 
 export default class SpreadsheetBusiness {
     public buildTablesParams(expenses: Array<Expense> = [], tableWidth: number, headers: Array<string> = ['month', 'value', 'paid']): TablesParams {
@@ -439,19 +456,25 @@ export default class SpreadsheetBusiness {
     public buildForCreation(workSheet: WorkSheet, uploadExpenseParams: UploadExpenseParams): Array<CreateExpenseParams> {
         const { totalRows, nextRow } = this.validateWorkSheetToBuild(workSheet);
         const listCreateExpenseParams: Array<CreateExpenseParams> = [];
-        for(let i = 0; i < totalRows; i++) {
+        const { paid, month, replaceWords, repeatedWords } = uploadExpenseParams;
+        for (let i = 0; i < totalRows; i++) {
             const cellDate = workSheet.cell(nextRow + i, 1)?.value?.toString()?.trim() || '';
             const supplier = workSheet.cell(nextRow + i, 2)?.value?.toString()?.trim() || '';
             const cellAmount = workSheet.cell(nextRow + i, 3)?.value?.toString()?.trim() || '';
 
-            if(supplier !== '' && supplier.toLowerCase() !== 'pagamento recebido') {
-                const result = this.buildFromCreditCardSheet(cellDate, cellAmount, supplier);
+            const rulesRepeatedWords = !repeatedWords ? DEFAULT_REPEAT_WORDS : repeatedWords;
 
-                const createExpenseDto: CreateExpenseDto = {
-                    type: EExpenseType.VARIABLE,
-                    paid: false,
+            const isRepeatWord = supplier !== '' && matchesRepeatWords(supplier, rulesRepeatedWords);
+
+            // Deve receber o ignoreSuppliers?: Array<string>; colocando como padrão o pagamento recebido
+            if (!isRepeatWord) {
+                const result = this.buildFromCreditCardSheet(cellDate, cellAmount, supplier, replaceWords);
+
+                const createExpenseDto: CreateExpenseParams = {
+                    type: 'VARIABLE' as CreateExpenseParams['type'],
+                    paid,
                     value: result.value,
-                    month: uploadExpenseParams?.month,
+                    month,
                     supplier,
                     description: 'Create by Document Import',
                     instalment_number: result.instalment_number,
@@ -467,44 +490,38 @@ export default class SpreadsheetBusiness {
     private validateWorkSheetToBuild(workSheet: WorkSheet): ValidateWorkSheetToBuild {
         const { totalRows, nextRow } = workSheet.getCell(1, 1);
 
-        const { totalRows: cellSupplierRows } = workSheet.getCell(1, 2);
-
-        if(totalRows <= 0) {
+        if (totalRows <= 0) {
             throw new Error({
                 message: 'The Excel file does not have any rows for Date column.',
                 statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION,
             });
         }
 
-        if(totalRows !== cellSupplierRows) {
+        const { totalRows: cellSupplierRows } = workSheet.getCell(1, 2);
+
+        if (totalRows !== cellSupplierRows) {
             throw new Error({
                 message: 'The Excel file does not have the same number of rows for Date and Supplier columns.',
                 statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION,
             });
         }
 
-        const { totalRows: cellAmountRows } = workSheet.getCell(1, 2);
+        const { totalRows: cellAmountRows } = workSheet.getCell(1, 3);
 
-        if(totalRows !== cellAmountRows) {
+        if (totalRows !== cellAmountRows) {
             throw new Error({
                 message: 'The Excel file does not have the same number of rows for Date and Amount columns.',
                 statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION,
             });
         }
 
-        if(cellSupplierRows !== cellAmountRows) {
-            throw new Error({
-                message: 'The Excel file does not have the same number of rows for Supplier and Amount columns.',
-                statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION,
-            });
-        }
         return {
             nextRow,
             totalRows,
         };
     }
 
-    private buildFromCreditCardSheet(cellDate: string, cellAmount: string, cellSupplier: string): BuildFromCreditCardSheet {
+    private buildFromCreditCardSheet(cellDate: string, cellAmount: string, cellSupplier: string, replaceWordsParams?: ReplaceWordsParam): BuildFromCreditCardSheet {
         const date = new Date(cellDate);
         const year = date.getFullYear();
         const month = getMonthByIndex(date.getMonth());
@@ -512,7 +529,7 @@ export default class SpreadsheetBusiness {
         const amount = Number(cellAmount);
         const value = !isNaN(amount) ? Number(amount.toFixed(2)) : 0;
 
-        const { supplier, instalment_number } = this.treatSupplierInstallmentNumber(cellSupplier);
+        const { supplier, instalment_number } = this.treatSupplierInstallmentNumber(cellSupplier, replaceWordsParams);
 
         return {
             year,
@@ -523,44 +540,36 @@ export default class SpreadsheetBusiness {
         }
     }
 
-    private treatSupplierInstallmentNumber(supplier: string) {
-        const result = {
-            supplier,
-            instalment_number: 1,
-        }
+    private treatSupplierInstallmentNumber(supplier: string, replaceWordsParams?: ReplaceWordsParam) {
+        const match = supplier.match(/Parcela\s*(\d+)\s*\/\s*(\d+)/i);
+        const instalment_number = match
+            ? (() => {
+                const current = Number(match[1]);
+                const total = Number(match[2]);
+                return (!isNaN(current) && !isNaN(total) && total >= current)
+                    ? (total - current) + 1
+                    : 1;
+            })()
+            : 1;
 
-        const supplierSplit = supplier.split('Parcela');
-
-        if(supplierSplit.length > 1) {
-            const installmentStr  = supplierSplit[supplierSplit.length - 1];
-            if(installmentStr) {
-                const installmentStrSplit = installmentStr.split('/');
-                if(installmentStrSplit.length > 1) {
-                    const currentMonth = Number(installmentStrSplit[0] || '1');
-                    const nextMonths = Number(installmentStrSplit[1] || '1');
-                    if(!isNaN(currentMonth) && !isNaN(nextMonths)) {
-                        result.instalment_number = (nextMonths - currentMonth) + 1;
-                    }
-                }
-            }
-        }
-
-        result.supplier = this.mapperSuppliers(supplier);
-        return result;
+        return {
+            supplier: this.mapperText(supplier, replaceWordsParams),
+            instalment_number,
+        };
     }
 
-    private mapperSuppliers(supplier: string): string {
-        const result = supplier
+    private mapperText(text: string, replaceWordsParams?: ReplaceWordsParam): string {
+        const rulesReplaceWords = !replaceWordsParams ? DEFAULT_REPLACE_WORDS : replaceWordsParams;
+
+        const result = text
             .replace(/\s*-\s*/g, ' ')
             .replace(/Parcela/gi, '')
             .replace(/\b\d+\/\d+\b/g, '')
+            .replace(/\b\d+\b$/g, '')
             .replace(/\s{2,}/g, ' ')
             .trim();
 
-        if(result.toLowerCase().includes('pao de acucar')) {
-            return 'Pão de Açúcar';
-        }
-        return result;
+        return replaceWords(result, rulesReplaceWords);
     }
 
     private mapperBuildForCreation(createExpenseParams: Array<CreateExpenseParams>): Array<CreateExpenseParams> {
@@ -568,20 +577,20 @@ export default class SpreadsheetBusiness {
             createExpenseParams.reduce((acc, createExpenseDto) => {
                 const supplierName = typeof createExpenseDto.supplier === 'string'
                     ? createExpenseDto.supplier
-                    : createExpenseDto.supplier.name;
+                    : createExpenseDto.supplier?.name;
 
                 if (!supplierName) {
                     return acc;
                 }
 
                 if (!acc[supplierName]) {
-                    acc[supplierName] = <CreateExpenseDto>{ ...createExpenseDto };
+                    acc[supplierName] = <CreateExpenseParams>{ ...createExpenseDto };
                     return acc;
                 }
                 const value = (acc[supplierName].value || 0) + (createExpenseDto.value || 0);
                 acc[supplierName].value = Number(value.toFixed(2));
                 return acc;
-            }, {} as Record<string, CreateExpenseDto>)
+            }, {} as Record<string, CreateExpenseParams>)
         );
     }
 }

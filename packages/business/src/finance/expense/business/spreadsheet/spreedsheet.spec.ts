@@ -32,7 +32,7 @@ import type { BillEntity } from '../../../bill';
 
 import { BILL_MOCK, EXPENSE_MOCK } from '../../../mock';
 
-import { ExpenseEntity } from '../../types';
+import { CreateExpenseParams, ExpenseEntity } from '../../types';
 
 import  SpreadsheetBusiness from './spreadsheet';
 
@@ -53,6 +53,7 @@ describe('Expense Spreadsheet Business', () => {
             }),
             workSheet: {
                 cell: jest.fn(),
+                getCell: jest.fn(),
                 addCell: jest.fn(),
             },
             createWorkSheet: jest.fn(),
@@ -240,6 +241,8 @@ describe('Expense Spreadsheet Business', () => {
             expect(result).toEqual([]);
         });
     });
+
+    describe('buildForCreation', () => {});
 
     describe('private', () => {
         describe('buildDetailData', () => {
@@ -1136,6 +1139,248 @@ describe('Expense Spreadsheet Business', () => {
                 expect(result.data).toEqual([]);
             });
 
+        });
+
+        describe('mapperBuildForCreation', () => {
+            it('should map correctly received an list of expenses with supplier is a string', () => {
+                const createExpenseParams: CreateExpenseParams = {
+                    type: 'VARIABLE' as CreateExpenseParams['type'],
+                    paid: false,
+                    value: 100,
+                    month: 'JANUARY' as CreateExpenseParams['month'],
+                    supplier: 'Supplier 1',
+                    instalment_number: 1,
+                };
+
+                const listCreateExpenseParams: Array<CreateExpenseParams> = [
+                    createExpenseParams,
+                    createExpenseParams,
+                    createExpenseParams,
+                    {...createExpenseParams, supplier: 'Supplier 2' },
+                ];
+
+                const result = business['mapperBuildForCreation'](listCreateExpenseParams);
+                expect(result).toHaveLength(2);
+                expect(result[0].value).toEqual(300);
+            });
+
+            it('should map correctly received an list of expenses with supplier is a object', () => {
+                const createExpenseParams: CreateExpenseParams = {
+                    type: 'VARIABLE' as CreateExpenseParams['type'],
+                    paid: false,
+                    value: 100,
+                    month: 'JANUARY' as CreateExpenseParams['month'],
+                    supplier: mockEntity.supplier,
+                    instalment_number: 1,
+                };
+
+                const listCreateExpenseParams: Array<CreateExpenseParams> = [
+                    createExpenseParams,
+                    createExpenseParams,
+                    createExpenseParams,
+                    {...createExpenseParams, supplier: {...mockEntity.supplier, name: 'Supplier 2'} },
+                ];
+
+                const result = business['mapperBuildForCreation'](listCreateExpenseParams);
+                expect(result).toHaveLength(2);
+                expect(result[0].value).toEqual(300);
+            });
+
+            it('should map empty received an list of expenses with supplier without value', () => {
+                const createExpenseParams: CreateExpenseParams = {
+                    type: 'VARIABLE' as CreateExpenseParams['type'],
+                    paid: false,
+                    value: undefined as number,
+                    month: 'JANUARY' as CreateExpenseParams['month'],
+                    supplier: 'Supplier 1',
+                    instalment_number: 1,
+                };
+
+                const listCreateExpenseParams: Array<CreateExpenseParams> = [ createExpenseParams, createExpenseParams ];
+
+                const result = business['mapperBuildForCreation'](listCreateExpenseParams);
+                expect(result).toHaveLength(1);
+            });
+
+            it('should map empty received an list of expenses with supplier without supplier', () => {
+                const createExpenseParams: CreateExpenseParams = {
+                    type: 'VARIABLE' as CreateExpenseParams['type'],
+                    paid: false,
+                    value: 100,
+                    month: 'JANUARY' as CreateExpenseParams['month'],
+                    supplier: undefined as CreateExpenseParams['supplier'],
+                    instalment_number: 1,
+                };
+
+                const listCreateExpenseParams: Array<CreateExpenseParams> = [ createExpenseParams];
+
+                const result = business['mapperBuildForCreation'](listCreateExpenseParams);
+                expect(result).toHaveLength(0);
+            });
+        });
+
+        describe('mapperText', () => {
+            it('Should not return surrounding hyphens and spaces.', () => {
+                const result = business['mapperText']('Sugar Loaf-2372');
+                expect(result).toEqual('Sugar Loaf');
+            });
+
+            it('Should not return The word Parcela should not be returned, whether upper or lower case..', () => {
+                const result = business['mapperText']('Sugar Loaf Parcela 1/2');
+                expect(result).toEqual('Sugar Loaf');
+            });
+
+            it('Should return default replace words.', () => {
+                const result = business['mapperText']('Pao de Acucar-2372');
+                expect(result).toEqual('Pão de Açúcar');
+            });
+
+            it('Should return custom replace words.', () => {
+                const result = business['mapperText']('Pao de Acucar-2372', [{ after: 'Sugar Loaf', before: 'Pao de Acucar'}]);
+                expect(result).toEqual('Sugar Loaf');
+            });
+        });
+
+        describe('treatSupplierInstallmentNumber', () => {
+            it('Should return supplier and installment number when dont has word parcela', () => {
+                jest.spyOn(business, 'mapperText' as any).mockReturnValue('Sugar Loaf');
+                const result = business['treatSupplierInstallmentNumber']('Sugar Loaf');
+                expect(result.supplier).toEqual('Sugar Loaf');
+                expect(result.instalment_number).toEqual(1);
+            });
+
+            it('Should return supplier and installment number when has word Parcela', () => {
+                jest.spyOn(business, 'mapperText' as any).mockReturnValue('Sugar Loaf');
+                const result = business['treatSupplierInstallmentNumber']('Sugar Loaf Parcela 1/3');
+                expect(result.supplier).toEqual('Sugar Loaf');
+                expect(result.instalment_number).toEqual(3);
+            });
+
+            it('Should return supplier and installment number when has word Parcela and dont have numbers', () => {
+                jest.spyOn(business, 'mapperText' as any).mockReturnValue('Sugar Loaf');
+                const result = business['treatSupplierInstallmentNumber']('Sugar Loaf Parcela /');
+                expect(result.supplier).toEqual('Sugar Loaf');
+                expect(result.instalment_number).toEqual(1);
+            });
+
+            it('Should return supplier and installment number when has word Parcela and with total minor', () => {
+                jest.spyOn(business, 'mapperText' as any).mockReturnValue('Sugar Loaf');
+                const result = business['treatSupplierInstallmentNumber']('Sugar Loaf Parcela 2/1');
+                expect(result.supplier).toEqual('Sugar Loaf');
+                expect(result.instalment_number).toEqual(1);
+            });
+        });
+
+        describe('buildFromCreditCardSheet', () => {
+            it('Should build object correctly from worksheet', () => {
+                jest.spyOn(business, 'treatSupplierInstallmentNumber' as any).mockReturnValue({
+                    supplier: 'Sugar Loaf',
+                    instalment_number: 1
+                });
+                const result = business['buildFromCreditCardSheet'](
+                    '2025-01-01T17:37:47.783Z',
+                    '99.99',
+                    'Sugar Loaf',
+                );
+                expect(result.year).toEqual(2025);
+                expect(result.value).toEqual(99.99);
+                expect(result.month).toEqual('JANUARY');
+                expect(result.supplier).toEqual('Sugar Loaf');
+                expect(result.instalment_number).toEqual(1);
+
+            });
+
+            it('Should build object correctly from worksheet with value equal 0', () => {
+                jest.spyOn(business, 'treatSupplierInstallmentNumber' as any).mockReturnValue({
+                    supplier: 'Sugar Loaf',
+                    instalment_number: 1
+                });
+                const result = business['buildFromCreditCardSheet'](
+                    '2025-01-01T17:37:47.783Z',
+                    'A',
+                    'Sugar Loaf',
+                );
+                expect(result.year).toEqual(2025);
+                expect(result.value).toEqual(0);
+                expect(result.month).toEqual('JANUARY');
+                expect(result.supplier).toEqual('Sugar Loaf');
+                expect(result.instalment_number).toEqual(1);
+
+            });
+        });
+
+        describe('validateWorkSheetToBuild', () => {
+            it('should return error when totalRows is less than 0', () => {
+                spreadsheetMock.workSheet.getCell.mockReturnValue({
+                    cell: undefined,
+                    value: 'A',
+                    nextRow: 0,
+                    totalRows: 0,
+                })
+
+                expect(
+                    () => business['validateWorkSheetToBuild'](spreadsheetMock.workSheet))
+                    .toThrowError('The Excel file does not have any rows for Date column.');
+            });
+
+            it('should return error when totalRows is different with cellSupplierRows.', () => {
+                spreadsheetMock.workSheet.getCell.mockImplementation((row: number, col: number) => {
+                    const result = {
+                        cell: undefined,
+                        value: 'A',
+                        nextRow: 2,
+                        totalRows: 50,
+                    }
+                    if (col === 1) {
+                        return result;
+                    }
+
+                    if(col === 2) {
+                        return { ...result, totalRows: 30 };
+                    }
+                    return result;
+                })
+
+                expect(
+                    () => business['validateWorkSheetToBuild'](spreadsheetMock.workSheet))
+                    .toThrowError('The Excel file does not have the same number of rows for Date and Supplier columns.');
+            });
+
+            it('should return error when totalRows is different with cellAmountRows.', () => {
+                spreadsheetMock.workSheet.getCell.mockImplementation((row: number, col: number) => {
+                    const result = {
+                        cell: undefined,
+                        value: 'A',
+                        nextRow: 2,
+                        totalRows: 50,
+                    }
+                    if (col === 1 || col === 2) {
+                        return result;
+                    }
+
+                    if(col === 3) {
+                        return { ...result, totalRows: 30 };
+                    }
+
+                    return result;
+                })
+
+                expect(
+                    () => business['validateWorkSheetToBuild'](spreadsheetMock.workSheet))
+                    .toThrowError('The Excel file does not have the same number of rows for Date and Amount columns.');
+            });
+
+            it('should return successfully.', () => {
+                spreadsheetMock.workSheet.getCell.mockImplementation(() => ({
+                    cell: undefined,
+                    value: 'A',
+                    nextRow: 2,
+                    totalRows: 50,
+                }));
+                const result = business['validateWorkSheetToBuild'](spreadsheetMock.workSheet);
+                expect(result.nextRow).toBe(2);
+                expect(result.totalRows).toBe(50);
+            });
         });
     });
 });

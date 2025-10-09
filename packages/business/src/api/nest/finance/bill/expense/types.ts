@@ -1,4 +1,4 @@
-import { type EMonth } from '@repo/services';
+import { type EMonth, ReplaceWordsParam } from '@repo/services';
 
 import type { IFinanceBase } from '../../types';
 
@@ -54,7 +54,14 @@ export type IUpdateExpenseParams = {
     description?: string;
 }
 
+export type IReplaceWord = {
+    after: string;
+    before: string;
+}
+
 export type IUploadExpenseParams = {
     paid?: boolean;
     month?: EMonth;
+    replaceWords?: ReplaceWordsParam;
+    repeatedWords?: Array<string>;
 }

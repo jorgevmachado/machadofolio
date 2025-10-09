@@ -17,7 +17,12 @@ import {
     snakeCaseToNormal,
     toCamelCase,
     toSnakeCase,
-    truncateString, validatePath,
+    truncateString,
+    validatePath,
+    replaceWords,
+    type ReplaceWordsParam,
+    validateText,
+    matchesRepeatWords
 } from './string';
 
 jest.mock('uuid');
@@ -426,4 +431,93 @@ describe('String function', () => {
         });
     });
 
+    describe('replaceWords', () => {
+        it('must replace a simple word.', () => {
+            const rules: ReplaceWordsParam = [{ before: 'foo', after: 'bar' }];
+            expect(replaceWords('foo baz', rules)).toBe('bar baz');
+        });
+
+        it('must replace multiple occurrences.', () => {
+            const rules: ReplaceWordsParam = [{ before: 'a', after: 'b' }];
+            expect(replaceWords('a a a', rules)).toBe('b b b');
+        });
+
+        it('must replace several different words.', () => {
+            const rules: ReplaceWordsParam = [
+                { before: 'foo', after: 'bar' },
+                { before: 'baz', after: 'qux' },
+            ];
+            expect(replaceWords('foo and baz', rules)).toBe('bar and qux');
+        });
+
+        it('must handle special characters in the before.', () => {
+            const rules: ReplaceWordsParam = [{ before: 'a+b', after: 'c' }];
+            expect(replaceWords('a+b a+b', rules)).toBe('c c');
+        });
+
+        it('should return the original string if there are no rules.', () => {
+            expect(replaceWords('abc', [])).toBe('abc');
+        });
+
+        it('should work with empty string.', () => {
+            const rules: ReplaceWordsParam = [{ before: 'foo', after: 'bar' }];
+            expect(replaceWords('', rules)).toBe('');
+        });
+
+        it('should replace correctly when after is empty string.', () => {
+            const rules: ReplaceWordsParam = [{ before: 'foo', after: '' }];
+            expect(replaceWords('foo bar foo', rules)).toBe(' bar ');
+        });
+
+        it('must be case sensitive.', () => {
+            const rules: ReplaceWordsParam = [{ before: 'Foo', after: 'Bar' }];
+            expect(replaceWords('foo Foo', rules)).toBe('foo Bar');
+        });
+
+        it('should replace correctly when received words Pao de Acucar', () => {
+            const rules: ReplaceWordsParam = [{ before: 'Pao de Acucar', after: 'Pão de Açúcar' }];
+            expect(replaceWords('Pao de Acucar', rules)).toBe('Pão de Açúcar');
+        });
+    });
+
+    describe('validateText', () => {
+        it('should return the original string if it is valid.', () => {
+            const result = validateText('text');
+            expect(result).toEqual('text');
+        });
+
+        it('should return default fallback when dont received value.', () => {
+            const result = validateText(undefined);
+            expect(result).toEqual('');
+        });
+
+        it('should return custom fallback when received value empty.', () => {
+            const result = validateText(' ', 'fallback');
+            expect(result).toEqual('fallback');
+        });
+    });
+
+    describe('matchesRepeatWords', () => {
+        const DEFAULT_REPEAT_WORDS = [
+            'Pagamento recebido',
+            'Estorno de *'
+        ];
+        it('Should return true when text contains any of the patterns', () => {
+            expect(matchesRepeatWords('Pagamento recebido', DEFAULT_REPEAT_WORDS)).toBeTruthy();
+            expect(matchesRepeatWords('Estorno de Petz', DEFAULT_REPEAT_WORDS)).toBeTruthy();
+            expect(matchesRepeatWords('Estorno de Venda', DEFAULT_REPEAT_WORDS)).toBeTruthy();
+            expect(matchesRepeatWords('Other', DEFAULT_REPEAT_WORDS)).toBeFalsy();
+        });
+
+        it('Should return true when text contains any of the patterns with custom list', () => {
+            const customListRepeatWords = [
+                'Refunded *',
+                'House'
+            ]
+            expect(matchesRepeatWords('Refunded House', customListRepeatWords)).toBeTruthy();
+            expect(matchesRepeatWords('house', customListRepeatWords)).toBeFalsy();
+            expect(matchesRepeatWords('House', customListRepeatWords)).toBeTruthy();
+            expect(matchesRepeatWords('Home', customListRepeatWords)).toBeFalsy();
+        });
+    });
 });

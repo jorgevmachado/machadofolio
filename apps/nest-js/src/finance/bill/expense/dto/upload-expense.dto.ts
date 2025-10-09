@@ -1,6 +1,6 @@
-import { IsBoolean, IsEnum, IsOptional } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsOptional } from 'class-validator';
 
-import { EMonth } from '@repo/services';
+import { EMonth, ReplaceWordsParam } from '@repo/services';
 
 import { UploadExpenseParams } from '@repo/business';
 
@@ -12,4 +12,12 @@ export class UploadExpenseDto implements UploadExpenseParams {
     @IsOptional()
     @IsEnum(EMonth)
     month?: EMonth;
+
+    @IsOptional()
+    @IsArray()
+    replaceWords?: ReplaceWordsParam;
+
+    @IsOptional()
+    @IsArray()
+    repeatedWords?: Array<string>;
 }

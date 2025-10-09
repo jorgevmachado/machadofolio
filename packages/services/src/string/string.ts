@@ -1,5 +1,12 @@
 import { serialize } from '../object';
 
+type ReplaceWordParam = {
+ before: string;
+ after: string;
+}
+
+export type ReplaceWordsParam = Array<ReplaceWordParam>;
+
 export const linkingWords: Array<string> = ['de', 'da', 'do', 'das', 'dos'];
 
 export function normalize(value: string): string {
@@ -197,4 +204,33 @@ export function cleanTextByListText(listText: Array<string>, text: string): stri
  }, text);
 
  return result.trim().replace(/\s{2,}/g, ' ');
+}
+
+export function replaceWords(value: string, replaceWordsParam: ReplaceWordsParam): string {
+    return replaceWordsParam.reduce((acc, { before, after }) => {
+        const regex = new RegExp(before.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+        return acc.replace(regex, after);
+    }, value);
+}
+
+export function validateText(value?: string, fallback: string = ''): string {
+    if(!value) {
+        return fallback;
+    }
+
+    if(value.trim() === '') {
+        return fallback;
+    }
+
+    return value;
+}
+
+export function matchesRepeatWords(text: string, patterns: Array<string>): boolean {
+    return patterns.some(pattern => {
+        if (pattern.includes('*')) {
+            const prefix = pattern.split('*')[0].trim();
+            return text.trim().startsWith(prefix);
+        }
+        return text.trim() === pattern.trim();
+    });
 }
