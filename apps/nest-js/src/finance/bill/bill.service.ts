@@ -157,7 +157,7 @@ export class BillService extends Service<Bill> {
         return { message: 'Successfully removed' };
     }
 
-    async addExpense(param: string, createExpenseDto: CreateExpenseDto, billEntity?: Bill) {
+    async addExpense(param: string, createExpenseDto: CreateExpenseDto, billEntity?: Bill, fromWorkSheet?: boolean) {
         const bill = !billEntity ?  await this.findOne({ value: param, withRelations: true }) as Bill : billEntity;
         const createdExpense = await this.expenseService.buildForCreation(
             bill,
@@ -190,6 +190,7 @@ export class BillService extends Service<Bill> {
             value,
             month,
             expense: !currentExistExpense ? createdExpense : currentExistExpense,
+            fromWorkSheet,
             instalment_number,
         });
 
@@ -561,7 +562,7 @@ export class BillService extends Service<Bill> {
     private async addExpensesByUpload(bill: Bill, listCreateExpenseDto: Array<CreateExpenseDto>) {
         const expenses: Array<Expense> = [];
         for(const createExpenseDto of listCreateExpenseDto) {
-            const expense = await this.addExpense(bill.id, createExpenseDto, bill) as Expense;
+            const expense = await this.addExpense(bill.id, createExpenseDto, bill, true) as Expense;
             expenses.push(expense);
         }
         return expenses;

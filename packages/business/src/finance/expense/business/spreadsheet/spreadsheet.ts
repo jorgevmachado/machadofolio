@@ -456,25 +456,23 @@ export default class SpreadsheetBusiness {
     public buildForCreation(workSheet: WorkSheet, uploadExpenseParams: UploadExpenseParams): Array<CreateExpenseParams> {
         const { totalRows, nextRow } = this.validateWorkSheetToBuild(workSheet);
         const listCreateExpenseParams: Array<CreateExpenseParams> = [];
-        const { paid, month, replaceWords, repeatedWords } = uploadExpenseParams;
         for (let i = 0; i < totalRows; i++) {
             const cellDate = workSheet.cell(nextRow + i, 1)?.value?.toString()?.trim() || '';
             const supplier = workSheet.cell(nextRow + i, 2)?.value?.toString()?.trim() || '';
             const cellAmount = workSheet.cell(nextRow + i, 3)?.value?.toString()?.trim() || '';
 
-            const rulesRepeatedWords = !repeatedWords ? DEFAULT_REPEAT_WORDS : repeatedWords;
+            const rulesRepeatedWords = !uploadExpenseParams?.repeatedWords ? DEFAULT_REPEAT_WORDS : uploadExpenseParams.repeatedWords;
 
             const isRepeatWord = supplier !== '' && matchesRepeatWords(supplier, rulesRepeatedWords);
 
-            // Deve receber o ignoreSuppliers?: Array<string>; colocando como padrão o pagamento recebido
             if (!isRepeatWord) {
-                const result = this.buildFromCreditCardSheet(cellDate, cellAmount, supplier, replaceWords);
+                const result = this.buildFromCreditCardSheet(cellDate, cellAmount, supplier, uploadExpenseParams?.replaceWords);
 
                 const createExpenseDto: CreateExpenseParams = {
                     type: 'VARIABLE' as CreateExpenseParams['type'],
-                    paid,
+                    paid: uploadExpenseParams?.paid,
                     value: result.value,
-                    month,
+                    month: uploadExpenseParams?.month,
                     supplier,
                     description: 'Create by Document Import',
                     instalment_number: result.instalment_number,
@@ -534,7 +532,7 @@ export default class SpreadsheetBusiness {
         return {
             year,
             value,
-            month: month.toUpperCase() as EMonth,
+            month: month?.toUpperCase() as EMonth,
             supplier,
             instalment_number,
         }

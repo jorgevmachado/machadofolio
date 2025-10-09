@@ -36,6 +36,7 @@ export type InitializeParams = {
     type?: ExpenseEntity['type'];
     month?: ExpenseEntity['month'];
     expense: Expense;
+    fromWorkSheet?: boolean;
     instalment_number?: number;
 }
 
@@ -62,16 +63,24 @@ export class ExpenseService extends Service<Expense> {
         return this.expenseBusiness;
     }
 
+    private async treatEntityParentParam(value?: string | Expense): Promise<Expense | undefined> {
+        try {
+            return await this.treatEntityParam<Expense>(
+                value,
+                'Expense Parent',
+            ) as Expense;
+        } catch (error) {
+            return;
+        }
+    }
+
     async buildForCreation(bill: Bill, createExpenseDto: CreateExpenseDto) {
         const supplier = await this.supplierService.treatEntityParam<Supplier>(
             createExpenseDto.supplier,
             'Supplier',
         ) as Supplier;
 
-        const parent = await this.treatEntityParam<Expense>(
-            createExpenseDto.parent,
-            'Expense Parent',
-        ) as Expense;
+        const parent = await this.treatEntityParentParam(createExpenseDto.parent);
 
         return new ExpenseConstructor({
             supplier,
@@ -89,7 +98,7 @@ export class ExpenseService extends Service<Expense> {
         });
     }
 
-    async initialize({ type, expense, value = 0, month, instalment_number }: InitializeParams) {
+    async initialize({ type, expense, value = 0, month, fromWorkSheet, instalment_number }: InitializeParams) {
 
         const expenseToInitialize = new ExpenseConstructor({
             ...expense,
@@ -97,10 +106,11 @@ export class ExpenseService extends Service<Expense> {
             instalment_number: instalment_number ?? expense.instalment_number,
         })
 
-        await this.validateExistExpense(expenseToInitialize);
+        const existExpense =  await this.validateExistExpense(expenseToInitialize, fromWorkSheet);
 
         const result = this.expenseBusiness.initialize(expenseToInitialize, month);
-        const initializedExpense = await this.create(result.expenseForCurrentYear, result.monthsForCurrentYear, value);
+        const currentExpense  = !existExpense ? result.expenseForCurrentYear : { ...existExpense, ...result.expenseForCurrentYear };
+        const initializedExpense = await this.create(currentExpense, result.monthsForCurrentYear, value);
 
         if (initializedExpense) {
             result.expenseForCurrentYear = initializedExpense;
@@ -324,7 +334,7 @@ export class ExpenseService extends Service<Expense> {
         }
     }
 
-    private async validateExistExpense(expense: Expense) {
+    private async validateExistExpense(expense: Expense, fromWorkSheet?: boolean) {
         const filters: Array<FilterParams> = [
             {
                 value: expense.name_code,
@@ -341,9 +351,11 @@ export class ExpenseService extends Service<Expense> {
         ];
         const result = await this.findAll({ withRelations: true, filters }) as Array<Expense>;
 
-        if (result.length) {
+        if (result.length && !fromWorkSheet) {
             throw this.error(new ConflictException('Expense already exists'));
         }
+
+        return result[0];
 
     }
 

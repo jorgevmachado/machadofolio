@@ -32,9 +32,10 @@ import type { BillEntity } from '../../../bill';
 
 import { BILL_MOCK, EXPENSE_MOCK } from '../../../mock';
 
-import { CreateExpenseParams, ExpenseEntity } from '../../types';
+import { CreateExpenseParams, ExpenseEntity, UploadExpenseParams } from '../../types';
 
 import  SpreadsheetBusiness from './spreadsheet';
+import type * as ExcelJS from 'exceljs';
 
 describe('Expense Spreadsheet Business', () => {
     let business: SpreadsheetBusiness;
@@ -242,7 +243,194 @@ describe('Expense Spreadsheet Business', () => {
         });
     });
 
-    describe('buildForCreation', () => {});
+    describe('buildForCreation', () => {
+        beforeEach(() => {
+            const mockCell = {
+                value: undefined,
+                font: undefined,
+                alignment: undefined,
+                fill: undefined,
+                border: undefined,
+                worksheet: undefined,
+                workbook: spreadsheetMock.workBook,
+                effectiveType: 0,
+                isMerged: false,
+                master: undefined,
+                isHyperlink: false,
+                hyperlink: '',
+                text: '',
+                fullAddress: {
+                    sheetName: '',
+                    address: '',
+                    row: 0,
+                    col: 0
+                },
+                model: undefined,
+                name: '',
+                names: [],
+                dataValidation: undefined,
+                note: '',
+                formula: '',
+                result: '',
+                type: null,
+                formulaType: 0,
+                style: undefined,
+                addName: function (name: string): void {
+                    throw new Error('Function not implemented.');
+                },
+                removeName: function (name: string): void {
+                    throw new Error('Function not implemented.');
+                },
+                removeAllNames: function (): void {
+                    throw new Error('Function not implemented.');
+                },
+                destroy: function (): void {
+                    throw new Error('Function not implemented.');
+                },
+                toCsvString: function (): string {
+                    throw new Error('Function not implemented.');
+                },
+                release: function (): void {
+                    throw new Error('Function not implemented.');
+                },
+                addMergeRef: function (): void {
+                    throw new Error('Function not implemented.');
+                },
+                releaseMergeRef: function (): void {
+                    throw new Error('Function not implemented.');
+                },
+                merge: function (master: ExcelJS.Cell, ignoreStyle?: boolean): void {
+                    throw new Error('Function not implemented.');
+                },
+                unmerge: function (): void {
+                    throw new Error('Function not implemented.');
+                },
+                isMergedTo: function (master: ExcelJS.Cell): boolean {
+                    throw new Error('Function not implemented.');
+                },
+                numFmt: '',
+                protection: undefined,
+                address: '',
+                col: '',
+                row: '',
+                $col$row: ''
+            }
+            spreadsheetMock.workSheet.cell.mockImplementation((row, col) => {
+                const cell = {...mockCell};
+                if(row ===  1 && col === 1) {
+                    cell.value = 'date';
+                    return cell;
+                }
+                if(row === 1 && col === 2) {
+                    cell.value = 'title';
+                    return cell;
+                }
+                if(row === 1 && col === 3) {
+                    cell.value = 'amount';
+                    return cell;
+                }
+
+                if(row ===  2 && col === 1) {
+                    cell.value = '2025-01-02';
+                    return cell;
+                }
+                if(row === 2 && col === 2) {
+                    cell.value = 'Supplier';
+                    return cell;
+                }
+                if(row === 2 && col === 3) {
+                    cell.value = '100';
+                    return cell;
+                }
+
+                if(row ===  3 && col === 1) {
+                    cell.value = '2025-01-03';
+                    return cell;
+                }
+                if(row === 3 && col === 2) {
+                    cell.value = 'Supplier 2';
+                    return cell;
+                }
+                if(row === 3 && col === 3) {
+                    cell.value = '300';
+                    return cell;
+                }
+
+                return cell
+            });
+        })
+
+        it('should return empty list when dont received valid data', () => {
+            jest.spyOn(business, 'validateWorkSheetToBuild' as any).mockReturnValue({
+                nextRow: 2,
+                totalRows: 0
+            })
+            const result =  business.buildForCreation(
+                spreadsheetMock.workSheet,
+                undefined
+            )
+            expect(result).toHaveLength(0);
+        });
+
+        it('should return a list successfully', () => {
+            jest.spyOn(business, 'validateWorkSheetToBuild' as any).mockReturnValue({
+                nextRow: 2,
+                totalRows: 2
+            })
+            const result =  business.buildForCreation(
+                spreadsheetMock.workSheet,
+                {
+                    paid: true,
+                    month: 'JANUARY' as UploadExpenseParams['month'],
+                }
+            )
+            expect(result).toHaveLength(2);
+            expect(result[0].type).toEqual('VARIABLE');
+            expect(result[0].paid).toBeTruthy();
+            expect(result[0].value).toEqual(100);
+            expect(result[0].month).toEqual('JANUARY');
+            expect(result[0].supplier).toEqual('Supplier');
+            expect(result[0].description).toEqual('Create by Document Import');
+            expect(result[0].instalment_number).toEqual(1);
+
+            expect(result[1].type).toEqual('VARIABLE');
+            expect(result[1].paid).toBeTruthy();
+            expect(result[1].value).toEqual(300);
+            expect(result[1].month).toEqual('JANUARY');
+            expect(result[1].supplier).toEqual('Supplier 2');
+            expect(result[1].description).toEqual('Create by Document Import');
+            expect(result[1].instalment_number).toEqual(1);
+        });
+
+        it('should return a list successfully with repeatedWords', () => {
+            jest.spyOn(business, 'validateWorkSheetToBuild' as any).mockReturnValue({
+                nextRow: 2,
+                totalRows: 3
+            })
+            const result =  business.buildForCreation(
+                spreadsheetMock.workSheet,
+                {
+                    repeatedWords: ['Supplier 3']
+                }
+            )
+            expect(result).toHaveLength(2);
+            expect(result[0].type).toEqual('VARIABLE');
+            expect(result[0].paid).toBeFalsy();
+            expect(result[0].value).toEqual(100);
+            expect(result[0].month).toBeUndefined();
+            expect(result[0].supplier).toEqual('Supplier');
+            expect(result[0].description).toEqual('Create by Document Import');
+            expect(result[0].instalment_number).toEqual(1);
+
+            expect(result[1].type).toEqual('VARIABLE');
+            expect(result[1].paid).toBeFalsy();
+            expect(result[1].value).toEqual(300);
+            expect(result[1].month).toBeUndefined()
+            expect(result[1].supplier).toEqual('Supplier 2');
+            expect(result[1].description).toEqual('Create by Document Import');
+            expect(result[1].instalment_number).toEqual(1);
+        });
+    });
 
     describe('private', () => {
         describe('buildDetailData', () => {
