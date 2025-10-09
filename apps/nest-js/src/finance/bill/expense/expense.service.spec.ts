@@ -68,6 +68,7 @@ describe('ExpenseService', () => {
                     provide: ExpenseBusiness,
                     useValue: {
                         spreadsheet: {
+                            buildForCreation: jest.fn(),
                             parseToDetailsTable: jest.fn(),
                         },
                         initialize: jest.fn(),
@@ -647,6 +648,15 @@ describe('ExpenseService', () => {
                 22
             );
 
+            expect(result).toHaveLength(1);
+        });
+    });
+
+    describe('buildForCreationBySpreadsheet', () => {
+        it('should return a list of create expense dto ', async () => {
+            jest.spyOn(expenseBusiness.spreadsheet, 'buildForCreation').mockReturnValue([mockEntity]);
+            jest.spyOn(supplierService, 'createToSheet').mockResolvedValue(mockEntity.supplier);
+            const result = await service.buildForCreationBySpreadsheet([mockEntity]);
             expect(result).toHaveLength(1);
         });
     });

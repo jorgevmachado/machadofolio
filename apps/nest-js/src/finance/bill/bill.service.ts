@@ -551,8 +551,9 @@ export class BillService extends Service<Bill> {
             }
             spreadsheet.updateWorkSheet(worksheet);
             const workSheet = spreadsheet.workSheet;
-            const listCreateExpenseDto = await this.expenseService.buildForCreationBySpreadsheet(workSheet, uploadExpenseDto);
-            const listExpense = await this.addExpensesByUpload(bill, listCreateExpenseDto);
+            const createdExpenses = this.expenseService.business.spreadsheet.buildForCreation(workSheet, uploadExpenseDto);
+            const listOfCreatedExpensesBuilt = await this.expenseService.buildForCreationBySpreadsheet(createdExpenses);
+            const listExpense = await this.addExpensesByUpload(bill, listOfCreatedExpensesBuilt);
             expenses.push(...listExpense);
         }
 

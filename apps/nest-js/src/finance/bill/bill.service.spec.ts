@@ -1,3 +1,5 @@
+import { Readable } from 'stream';
+
 jest.mock('../../shared', () => {
     class ServiceMock {
         save = jest.fn();
@@ -83,6 +85,7 @@ import { GroupService } from '../group/group.service';
 
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { type UpdateBillDto } from './dto/update-bill.dto';
+import { Buffer } from 'buffer';
 
 describe('BillService', () => {
     let service: BillService;
@@ -137,8 +140,10 @@ describe('BillService', () => {
                         softRemove: jest.fn(),
                         supplierSeeds: jest.fn(),
                         getExpensesFromSheet: jest.fn(),
+                        buildForCreationBySpreadsheet: jest.fn(),
                         business: {
                             allHaveBeenPaid: jest.fn(),
+                            buildForCreation: jest.fn(),
                             buildTablesParams: jest.fn(),
                         }
                     },
@@ -579,6 +584,18 @@ describe('BillService', () => {
                 .spyOn(service as any, 'findAllByGroupYear')
                 .mockResolvedValue(bills);
 
+            Object.defineProperty(expenseService, 'business', {
+                get: () => ({
+                    allHaveBeenPaid: jest.fn().mockReturnValue(true),
+                    spreadsheet: {
+                        buildTablesParams: jest.fn().mockReturnValue({
+                            columns: ['col1', 'col2'],
+                            rows: [{ id: 1, value: 'foo' }],
+                        }),
+                    },
+                }),
+            });
+
             await service.spreadsheetProcessing(params);
 
             expect(findAllByGroupYearMock).toHaveBeenCalledWith('grp1', 2025);
@@ -589,6 +606,17 @@ describe('BillService', () => {
             const mockDate = new Date(2023, 6, 1);
             jest.spyOn(global, 'Date').mockImplementation(() => mockDate as unknown as Date);
             jest.spyOn(service as any, 'findAllByGroupYear').mockResolvedValue(bills);
+            Object.defineProperty(expenseService, 'business', {
+                get: () => ({
+                    allHaveBeenPaid: jest.fn().mockReturnValue(true),
+                    spreadsheet: {
+                        buildTablesParams: jest.fn().mockReturnValue({
+                            columns: ['col1', 'col2'],
+                            rows: [{ id: 1, value: 'foo' }],
+                        }),
+                    },
+                }),
+            });
 
             await service.spreadsheetProcessing({...params, year: undefined });
 
@@ -597,6 +625,17 @@ describe('BillService', () => {
 
         it('must pass empty array if findAllByGroupYear returns empty.', async () => {
             jest.spyOn(service as any, 'findAllByGroupYear').mockResolvedValue([]);
+            Object.defineProperty(expenseService, 'business', {
+                get: () => ({
+                    allHaveBeenPaid: jest.fn().mockReturnValue(true),
+                    spreadsheet: {
+                        buildTablesParams: jest.fn().mockReturnValue({
+                            columns: ['col1', 'col2'],
+                            rows: [{ id: 1, value: 'foo' }],
+                        }),
+                    },
+                }),
+            });
 
             await service.spreadsheetProcessing(params);
 
@@ -628,6 +667,53 @@ describe('BillService', () => {
                 expenses: 1,
                 groupName: 'Personal',
             }]);
+        });
+    });
+
+    describe('persistExpenseByUpload', () => {
+        const mockedStream = new Readable();
+        mockedStream.push('mock stream content');
+        mockedStream.push(null);
+        const mockFile: Express.Multer.File = {
+            fieldname: 'file',
+            originalname: 'test-image.jpeg',
+            encoding: '7bit',
+            mimetype: 'image/jpeg',
+            size: 1024,
+            buffer: Buffer.from('mock file content'),
+            destination: 'uploads/',
+            filename: 'test-image.jpeg',
+            path: 'uploads/test-image.jpeg',
+            stream: mockedStream,
+        };
+
+        it('Should return trow error when dont have file', async () => {
+            await expect(
+                service.persistExpenseByUpload({ ...mockFile, buffer: undefined } as any, mockEntity.id, {})
+            ).rejects.toThrowError(ConflictException);
+        });
+
+        it('Should return trow error when dont worksheet', async () => {
+            spreadsheetMock.loadFile.mockReturnValueOnce([undefined] as any);
+            await expect(
+                service.persistExpenseByUpload(mockFile, mockEntity.id, {})
+            ).rejects.toThrowError(ConflictException);
+        });
+
+        it('Should persist expense from upload file', async () => {
+            jest.spyOn(service, 'findOne').mockResolvedValueOnce(mockEntity);
+            spreadsheetMock.loadFile.mockReturnValueOnce([spreadsheetMock.workSheet] as any);
+            Object.defineProperty(expenseService, 'business', {
+                get: () => ({
+                    spreadsheet: {
+                        buildForCreation: jest.fn().mockReturnValue([expenseMockEntity]),
+                    },
+                }),
+            });
+            jest.spyOn(expenseService, 'buildForCreationBySpreadsheet').mockResolvedValueOnce([expenseMockEntity]);
+            jest.spyOn(service, 'addExpensesByUpload' as any).mockResolvedValueOnce([expenseMockEntity]);
+            const result = await service.persistExpenseByUpload(mockFile, mockEntity.id, { month: 'JANUARY' as any });
+            expect(result).toHaveLength(1);
         });
     });
 
@@ -872,6 +958,14 @@ describe('BillService', () => {
                 const result = await service['createNewBillForNextYear'](2025,mockEntity);
                 expect(result).toEqual(mockEntity);
             });
-        })
+        });
+
+        describe('addExpensesByUpload', () => {
+            it('Should return a list of expenses after persist', async () => {
+                jest.spyOn(service, 'addExpense').mockResolvedValueOnce(expenseMockEntity);
+                const result = await service['addExpensesByUpload'](mockEntity, [expenseMockEntity]);
+                expect(result).toHaveLength(1);
+            });
+        });
     });
 });

@@ -9,7 +9,6 @@ import {
     MONTHS,
     Spreadsheet,
     type TMonth,
-    WorkSheet
 } from '@repo/services';
 
 import { EExpenseType, Expense as ExpenseConstructor, ExpenseBusiness, type ExpenseEntity } from '@repo/business';
@@ -29,7 +28,6 @@ import { PersistMonthDto } from '../../month/dto/persist-month.dto';
 
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
-import { UploadExpenseDto } from './dto/upload-expense.dto';
 
 export type InitializeParams = {
     value?: number;
@@ -489,8 +487,7 @@ export class ExpenseService extends Service<Expense> {
         return expenses;
     }
 
-    async buildForCreationBySpreadsheet(workSheet: WorkSheet, uploadExpenseDto: UploadExpenseDto) {
-        const createdExpenses = this.expenseBusiness.spreadsheet.buildForCreation(workSheet, uploadExpenseDto);
+    async buildForCreationBySpreadsheet(createdExpenses: Array<CreateExpenseDto>) {
         const listCreateExpenseDto: Array<CreateExpenseDto> = [];
 
         for(const createExpenseDto of createdExpenses) {

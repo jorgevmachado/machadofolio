@@ -16,6 +16,7 @@ import { type CreateBillDto } from './dto/create-bill.dto';
 import { type CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { type UpdateBillDto } from './dto/update-bill.dto';
 import { type UpdateExpenseDto } from './expense/dto/update-expense.dto';
+import { Readable } from 'stream';
 
 describe('BillController', () => {
     let controller: BillController;
@@ -43,6 +44,7 @@ describe('BillController', () => {
                         removeExpense: jest.fn(),
                         findOneExpense: jest.fn(),
                         findAllExpense: jest.fn(),
+                        persistExpenseByUpload: jest.fn(),
                     },
                 },
             ],
@@ -146,7 +148,6 @@ describe('BillController', () => {
         });
     });
 
-
     describe('findAllExpense', () => {
         it('should find a list of expense by bill', async () => {
             jest.spyOn(service, 'findAllExpense').mockResolvedValue([expenseMockEntity]);
@@ -177,5 +178,28 @@ describe('BillController', () => {
             await controller.updateExpense(mockEntity.id, expenseMockEntity.id, updateExpense),
         ).toEqual(expenseMockEntity);
       });
+    });
+
+    describe('persistExpenseByUpload', () => {
+        const mockedStream = new Readable();
+        mockedStream.push('mock stream content');
+        mockedStream.push(null);
+        const mockFile: Express.Multer.File = {
+            fieldname: 'file',
+            originalname: 'test-image.jpeg',
+            encoding: '7bit',
+            mimetype: 'image/jpeg',
+            size: 1024,
+            buffer: Buffer.from('mock file content'),
+            destination: 'uploads/',
+            filename: 'test-image.jpeg',
+            path: 'uploads/test-image.jpeg',
+            stream: mockedStream,
+        };
+
+        it('should persist expenses by upload', async () => {
+            jest.spyOn(service, 'persistExpenseByUpload').mockResolvedValue([expenseMockEntity]);
+            expect(await controller.persistExpenseByUpload(mockFile, mockEntity.id, {})).toHaveLength(1);
+        });
     });
 });

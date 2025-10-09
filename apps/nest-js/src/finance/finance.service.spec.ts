@@ -3,7 +3,7 @@ import { spreadsheetMock } from '../../jest.setup';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 import { Buffer } from 'buffer';
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Readable } from 'stream';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -442,7 +442,7 @@ describe('FinanceService', () => {
                 expect(() => service['validateFinance']({
                     ...mockUser,
                     finance: undefined
-                })).toThrow(ConflictException);
+                })).toThrow(NotFoundException);
             });
 
             it('should return finance when user has finance.', () => {
