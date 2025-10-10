@@ -1,0 +1,53 @@
+[
+  {
+    "id": "b23098de-c1be-45a0-9cdf-97b150ddad03",
+    "bills": [
+      {
+        "id": "a770611b-fb9f-4ffa-9be6-6aa0e71f2cca",
+        "name": "Personal Credit Card Nubank Nubank",
+        "year": 2025,
+        "type": "CREDIT_CARD",
+        "total": 0,
+        "expenses": [
+          {
+            "id": "2fcc8018-2605-42ea-b6cf-1aa6f2d58aa6",
+            "name": "Personal Credit Card Nubank Nubank Vivo",
+            "year": 2025,
+            "type": "VARIABLE",
+            "paid": false,
+            "total": 100,
+            "name_code": "personal_credit_card_nubank_nubank_vivo",
+            "total_paid": 0,
+            "total_pending": 100,
+            "description": null,
+            "instalment_number": 2,
+            "is_aggregate": false,
+            "aggregate_name": null,
+            "created_at": "2025-10-10T18:34:43.040Z",
+            "updated_at": "2025-10-10T18:34:43.140Z",
+            "deleted_at": null
+          }
+        ],
+        "all_paid": false,
+        "name_code": "personal_credit_card_nubank_nubank",
+        "created_at": "2025-10-10T18:34:14.238Z",
+        "updated_at": "2025-10-10T18:34:14.238Z",
+        "deleted_at": null,
+        "total_paid": 0
+      }
+    ],
+    "groups": [
+      {
+        "id": "31c93cff-3a8d-4763-9cef-b418f6cb263e",
+        "name": "Personal",
+        "name_code": "personal",
+        "created_at": "2025-10-10T17:13:06.176Z",
+        "updated_at": "2025-10-10T17:13:06.176Z",
+        "deleted_at": null
+      }
+    ],
+    "created_at": "2025-10-10T17:12:46.421Z",
+    "updated_at": "2025-10-10T17:12:46.421Z",
+    "deleted_at": null
+  }
+]

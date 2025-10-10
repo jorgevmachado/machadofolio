@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1cb769ac-a180-4788-bca6-3a737fd73c95",
+    "name": "Nubank",
+    "name_code": "nubank",
+    "created_at": "2025-10-10T17:12:59.707Z",
+    "updated_at": "2025-10-10T17:12:59.707Z",
+    "deleted_at": null
+  },
+  {
+    "id": "aa3f3de4-4365-45e5-8f64-a8fa66f5b129",
+    "name": "Caixa",
+    "name_code": "caixa",
+    "created_at": "2025-10-10T21:17:32.218Z",
+    "updated_at": "2025-10-10T21:17:32.218Z",
+    "deleted_at": null
+  }
+]

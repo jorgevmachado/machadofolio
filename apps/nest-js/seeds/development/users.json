@@ -1,0 +1,21 @@
+[
+  {
+    "id": "0eb883a4-2130-4b32-ac64-9654c8aad8b6",
+    "cpf": "00256337160",
+    "role": "USER",
+    "salt": "$2b$10$ODAMlPrFy2zUR.AC/TWYzu",
+    "name": "Jorge Machado",
+    "email": "jorge.vmachado@gmail.com",
+    "gender": "MALE",
+    "status": "INCOMPLETE",
+    "avatar": null,
+    "whatsapp": "61996230790",
+    "password": "$2b$10$ODAMlPrFy2zUR.AC/TWYzupVfqv3Cbvc790LIcgKyFH7.U72cpNyK",
+    "created_at": "2025-10-10T16:57:05.865Z",
+    "updated_at": "2025-10-10T17:12:46.421Z",
+    "deleted_at": null,
+    "date_of_birth": "1990-07-20T00:00:00.000Z",
+    "recover_token": null,
+    "confirmation_token": "8efbf7ba9a3b35605b8281aa3cf2750e7e5ec66000ac3be432b0dfc314f074df"
+  }
+]

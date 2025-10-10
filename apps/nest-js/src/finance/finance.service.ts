@@ -8,7 +8,11 @@ import { Spreadsheet } from '@repo/services';
 
 import { Finance as FinanceConstructor } from '@repo/business';
 
-import { Service } from '../shared';
+import FINANCE_LIST_DEVELOPMENT_JSON from '../../seeds/development/finance/finances.json';
+import FINANCE_LIST_STAGING_JSON from '../../seeds/staging/finance/finances.json';
+import FINANCE_LIST_PRODUCTION_JSON from '../../seeds/production/finance/finances.json';
+
+import { GenerateSeeds, Service } from '../shared';
 
 import { User } from '../auth/entities/user.entity';
 
@@ -28,6 +32,21 @@ import { IncomeSource } from './entities/income-source.entity';
 import { Supplier } from './entities/supplier.entity';
 import { SupplierService } from './supplier/supplier.service';
 import { SupplierType } from './entities/type.entity';
+import { CreateFinanceSeedsDto } from './dto/create-finance-seeds.dto';
+import { Month } from './entities/month.entity';
+
+type GenerateSeedsResult = {
+    bills: GenerateSeeds<Bill>;
+    banks: GenerateSeeds<Bank>;
+    months: GenerateSeeds<Month>;
+    groups: GenerateSeeds<Group>;
+    incomes: GenerateSeeds<Income>;
+    expenses: GenerateSeeds<Expense>;
+    finances: GenerateSeeds<Finance>;
+    suppliers: GenerateSeeds<Supplier>;
+    supplierTypes: GenerateSeeds<SupplierType>;
+    incomeSources: GenerateSeeds<IncomeSource>;
+}
 
 @Injectable()
 export class FinanceService extends Service<Finance> {
@@ -288,5 +307,158 @@ export class FinanceService extends Service<Finance> {
             }],
             withRelations: true
         }) as Array<Bill>;
+    }
+
+    public async generateSeeds(createFinanceSeedsDto: CreateFinanceSeedsDto): Promise<GenerateSeedsResult> {
+        const seedsDto = this.validateFinanceSeedsDto(createFinanceSeedsDto);
+        const result: GenerateSeedsResult = {
+            bills: {
+                list: [],
+                added: []
+            },
+            banks: {
+                list: [],
+                added: []
+            },
+            months:{
+                list: [],
+                added: []
+            },
+            groups:{
+                list: [],
+                added: []
+            },
+            incomes:{
+                list: [],
+                added: []
+            },
+            expenses:{
+                list: [],
+                added: []
+            },
+            finances:{
+                list: [],
+                added: []
+            },
+            suppliers:{
+                list: [],
+                added: []
+            },
+            supplierTypes:{
+                list: [],
+                added: []
+            },
+            incomeSources:{
+                list: [],
+                added: []
+            }
+        }
+
+        const rootSeedsDir = this.file.getSeedsDirectory();
+        const financeSeedsDir = this.file.createDirectory('finance', rootSeedsDir);
+
+        if(seedsDto.bank) {
+            result.banks = await this.bankService.generateSeeds(financeSeedsDir);
+        }
+
+        if(seedsDto.supplier || seedsDto.supplierType) {
+            const {
+                suppliers,
+                supplierTypes
+            } = await this.supplierService.generateSeeds(Boolean(seedsDto.supplierType), Boolean(seedsDto.supplier), financeSeedsDir);
+            result.suppliers = suppliers;
+            result.supplierTypes = supplierTypes
+        }
+
+        if(seedsDto.finance) {
+            const financeList = await this.findAll({ withRelations: true, withDeleted: true }) as Array<Finance>;
+            const listJson = this.getListJson<Finance>({
+                staging: FINANCE_LIST_STAGING_JSON,
+                production: FINANCE_LIST_PRODUCTION_JSON,
+                development: FINANCE_LIST_DEVELOPMENT_JSON
+            });
+            const added = financeList.filter((item) => !listJson.find((json) => json.id === item.id));
+            const list = [...listJson, ...added];
+            if(added.length > 0) {
+                this.file.writeFile('finances.json', financeSeedsDir, list);
+            }
+            result.finances = { added, list};
+        }
+
+        if(seedsDto.income || seedsDto.incomeSource) {
+            const {
+                months: incomeMonths,
+                incomes,
+                incomeSources
+            } = await this.incomeService.generateSeeds(Boolean(seedsDto.incomeSource), Boolean(seedsDto.income), financeSeedsDir);
+            result.incomes = incomes;
+            result.incomeSources = incomeSources;
+
+            if(incomeMonths.list.length > 0) {
+                result.months.list.push(...incomeMonths.list);
+            }
+
+            if(incomeMonths.added.length > 0) {
+                result.months.added.push(...incomeMonths.added);
+            }
+        }
+
+        if(seedsDto.group) {
+            result.groups =  await this.groupService.generateSeeds(financeSeedsDir);
+        }
+
+        if(seedsDto.bill || seedsDto.expense) {
+            const {
+                bills,
+                months: expenseMonths,
+                expenses
+            } = await this.billService.generateSeeds(Boolean(seedsDto.bill), Boolean(seedsDto.expense), financeSeedsDir);
+
+            result.bills = bills;
+            result.expenses = expenses;
+
+            if(expenseMonths.list.length > 0) {
+                result.months.list.push(...expenseMonths.list);
+            }
+
+            if(expenseMonths.added.length > 0) {
+                result.months.added.push(...expenseMonths.added);
+            }
+        }
+
+        if(result.months.added.length > 0) {
+            this.file.writeFile('months.json', financeSeedsDir, result.months.list);
+        }
+
+        return result;
+    }
+
+    private validateFinanceSeedsDto(createFinanceSeedsDto: CreateFinanceSeedsDto) {
+        const seedsDto = { ...createFinanceSeedsDto };
+        if(createFinanceSeedsDto.income) {
+            seedsDto.finance = true;
+            seedsDto.incomeSource = true;
+        }
+
+        if (createFinanceSeedsDto.expense) {
+            seedsDto.bill = true;
+        }
+
+        if (createFinanceSeedsDto.bill) {
+            seedsDto.bank = true;
+            seedsDto.group = true;
+            seedsDto.finance = true;
+            seedsDto.supplier = true;
+        }
+
+        if (createFinanceSeedsDto.group) {
+            seedsDto.finance = true;
+        }
+
+        if (createFinanceSeedsDto.supplier) {
+            seedsDto.supplierType = true;
+        }
+
+        return seedsDto;
     }
 }

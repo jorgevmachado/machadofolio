@@ -1,0 +1,18 @@
+[
+  {
+    "id": "5908511c-0aa9-4156-95a7-8cd00f7e5aaf",
+    "name": "Vivo",
+    "type": {
+      "id": "395c1feb-6ce7-40dd-b1c2-cb4448d03e00",
+      "name": "Housing",
+      "name_code": "housing",
+      "created_at": "2025-10-10T17:13:15.953Z",
+      "updated_at": "2025-10-10T17:13:15.953Z",
+      "deleted_at": null
+    },
+    "name_code": "vivo",
+    "created_at": "2025-10-10T17:13:21.015Z",
+    "updated_at": "2025-10-10T17:13:21.015Z",
+    "deleted_at": null
+  }
+]

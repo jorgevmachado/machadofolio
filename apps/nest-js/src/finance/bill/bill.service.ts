@@ -6,13 +6,18 @@ import { MONTHS, Spreadsheet, filterByCommonKeys, snakeCaseToNormal, toSnakeCase
 
 import { BillBusiness, Bill as BillConstructor, EBillType } from '@repo/business';
 
-import { FilterParams, ListParams, Service } from '../../shared';
+import BILL_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/bills.json';
+import BILL_LIST_STAGING_JSON from '../../../seeds/staging/finance/bills.json';
+import BILL_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/bills.json';
+
+import { FilterParams, GenerateSeeds, ListParams, Service } from '../../shared';
 
 import { Bank } from '../entities/bank.entity';
 import { Bill } from '../entities/bill.entity';
 import { Expense } from '../entities/expense.entity';
 import { Finance } from '../entities/finance.entity';
 import { Group } from '../entities/group.entity';
+import { Month } from '../entities/month.entity';
 
 import { BankService } from '../bank/bank.service';
 import { CreateBillDto } from './dto/create-bill.dto';
@@ -24,6 +29,12 @@ import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
 import { UploadExpenseDto } from './expense/dto/upload-expense.dto';
 
 import type { BillSeederParams, CreateToSheetParams, ExistExpenseInBill, SpreadsheetProcessingParams } from './types';
+
+type BillGenerateSeeds = {
+    bills: GenerateSeeds<Bill>;
+    months: GenerateSeeds<Month>;
+    expenses: GenerateSeeds<Expense>;
+}
 
 @Injectable()
 export class BillService extends Service<Bill> {
@@ -567,5 +578,28 @@ export class BillService extends Service<Bill> {
             expenses.push(expense);
         }
         return expenses;
+    }
+
+    async generateSeeds(withBill: boolean, withExpense: boolean, financeSeedsDir: string): Promise<BillGenerateSeeds> {
+        const bills = (!withBill && !withExpense) ? [] : await this.findAll({ withRelations: true, withDeleted: true }) as Array<Bill>;
+        const listJson = this.getListJson<Bill>({
+            staging: BILL_LIST_STAGING_JSON,
+            production: BILL_LIST_PRODUCTION_JSON,
+            development: BILL_LIST_DEVELOPMENT_JSON,
+        });
+
+        const { months, expenses } = await this.expenseService.generateSeeds(withExpense, financeSeedsDir);
+
+        const added = bills.filter((item) => !listJson.find((json) => json.id === item.id || json.name === item.name || json.name_code === item.name_code));
+        const list = [...listJson, ...added];
+        if (added.length > 0) {
+            this.file.writeFile('bills.json', financeSeedsDir, list);
+        }
+
+        return {
+            bills: { list, added },
+            months,
+            expenses
+        }
     }
 }

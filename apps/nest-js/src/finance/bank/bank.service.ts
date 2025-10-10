@@ -4,6 +4,10 @@ import { Repository } from 'typeorm';
 
 import { Bank as BankConstructor } from '@repo/business';
 
+import BANK_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/banks.json';
+import BANK_LIST_STAGING_JSON from '../../../seeds/staging/finance/banks.json';
+import BANK_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/banks.json';
+
 import { Service } from '../../shared';
 
 import type { FinanceSeederParams } from '../types';
@@ -60,5 +64,29 @@ export class BankService extends Service<Bank> {
       }
 
       return this.create({ name: value });
+    }
+
+    async generateSeeds(financeSeedsDir: string) {
+      const banks = await this.findAll({ withDeleted: true }) as Array<Bank>;
+      const listJson = this.getListJson<Bank>({
+            staging: BANK_LIST_STAGING_JSON,
+            production: BANK_LIST_PRODUCTION_JSON,
+            development: BANK_LIST_DEVELOPMENT_JSON,
+      });
+
+      const added = banks.filter((bank) => {
+          return !listJson.find((json) => json.name === bank.name || json.name_code === bank.name_code);
+      });
+
+      const list = [...listJson, ...added];
+
+      if(added.length > 0) {
+          this.file.writeFile('banks.json', financeSeedsDir, list);
+      }
+
+      return {
+          list,
+          added,
+      };
     }
 }

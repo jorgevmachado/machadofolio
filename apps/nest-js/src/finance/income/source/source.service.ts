@@ -4,7 +4,11 @@ import { Repository } from 'typeorm';
 
 import { IncomeSource as IncomeSourceConstructor } from '@repo/business';
 
-import { Service } from '../../../shared';
+import INCOME_SOURCE_LIST_DEVELOPMENT_JSON from '../../../../seeds/development/finance/income-sources.json';
+import INCOME_SOURCE_LIST_STAGING_JSON from '../../../../seeds/staging/finance/income-sources.json';
+import INCOME_SOURCE_LIST_PRODUCTION_JSON from '../../../../seeds/production/finance/income-sources.json';
+
+import { GenerateSeeds, Service } from '../../../shared';
 
 import { IncomeSource } from '../../entities/income-source.entity';
 
@@ -78,5 +82,31 @@ export class IncomeSourceService extends Service<IncomeSource>{
         }
 
         return this.create({ name: value });
+    }
+
+    async generateSeeds(returnEmpty: boolean, financeSeedsDir: string): Promise<GenerateSeeds<IncomeSource>> {
+        if(returnEmpty) {
+            return {
+                list: [],
+                added: []
+            };
+        }
+        const incomeSources = await this.findAll({ withDeleted: true }) as Array<IncomeSource>;
+        const listJson = this.getListJson<IncomeSource>({
+            staging: INCOME_SOURCE_LIST_STAGING_JSON,
+            production: INCOME_SOURCE_LIST_PRODUCTION_JSON,
+            development: INCOME_SOURCE_LIST_DEVELOPMENT_JSON,
+        });
+        const added = incomeSources.filter((item) => !listJson.find((json) => json.id === item.id || json.name === item.name || json.name_code === item.name_code));
+        const list = [...listJson, ...added];
+
+        if(added.length > 0) {
+            this.file.writeFile('income-sources.json', financeSeedsDir, list);
+        }
+
+        return {
+            list,
+            added
+        }
     }
 }

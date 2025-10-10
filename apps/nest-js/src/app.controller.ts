@@ -17,4 +17,11 @@ export class AppController {
   seeds(@Body() body: CreateSeedDto, @GetUserAuth() user?: User) {
     return this.service.seeds(body, user);
   }
+
+    @Post('generate-seeds')
+    generateSeeds(@Body() body: CreateSeedDto) {
+        return this.service.generateSeeds(body);
+    }
+
+
 }

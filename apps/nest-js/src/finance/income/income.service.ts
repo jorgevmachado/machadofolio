@@ -5,11 +5,16 @@ import { Injectable } from '@nestjs/common';
 
 import { Income as IncomeConstructor } from '@repo/business';
 
-import { type FilterParams, Service } from '../../shared';
+import INCOME_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/incomes.json';
+import INCOME_LIST_STAGING_JSON from '../../../seeds/staging/finance/incomes.json';
+import INCOME_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/incomes.json';
+
+import { type FilterParams, GenerateSeeds, Service } from '../../shared';
 
 import type { FinanceSeederParams } from '../types';
 
 import { Finance } from '../entities/finance.entity';
+import { Month } from '../entities/month.entity';
 import { Income } from '../entities/incomes.entity';
 import { IncomeSource } from '../entities/income-source.entity';
 
@@ -20,11 +25,18 @@ import { IncomeSourceService } from './source/source.service';
 import { CreateIncomeDto } from './dto/create-income.dto';
 import { UpdateIncomeDto } from './dto/update-income.dto';
 
+
 type IncomeSeederParams = FinanceSeederParams & {
     finance: Finance;
 }
 
 type createToSheetParams = Record<string, string | number | boolean | object | Finance | IncomeSource>;
+
+type IncomeGenerateSeeds = {
+    months: GenerateSeeds<Month>;
+    incomes: GenerateSeeds<Income>;
+    incomeSources: GenerateSeeds<IncomeSource>;
+}
 
 @Injectable()
 export class IncomeService extends Service<Income> {
@@ -246,5 +258,42 @@ export class IncomeService extends Service<Income> {
             received_at: builtIncome.received_at ? new Date(builtIncome?.received_at as string) : new Date(),
             description: builtIncome.description,
         });
+    }
+
+    async generateSeeds(withIncomeSource: boolean, withIncome: boolean, financeSeedsDir: string): Promise<IncomeGenerateSeeds> {
+        const incomeMonths: Array<Month> = [];
+        const incomeSources = await this.sourceService.generateSeeds(!withIncomeSource && !withIncome, financeSeedsDir);
+        const incomes = !withIncome ? [] : await this.findAll({ withRelations: true, withDeleted: true }) as Array<Income>;
+
+        const listJson = this.getListJson<Income>({
+            staging: INCOME_LIST_STAGING_JSON,
+            production: INCOME_LIST_PRODUCTION_JSON,
+            development: INCOME_LIST_DEVELOPMENT_JSON,
+        });
+        const added = incomes.filter((item) => !listJson.find((json) => json.id === item.id || json.name === item.name || json.name_code === item.name_code));
+        const list = [...listJson, ...added];
+        if(added.length > 0) {
+            this.file.writeFile('incomes.json', financeSeedsDir, list);
+        }
+
+        if(added.length > 0) {
+            added.forEach((income) => {
+                const months = income?.months ?? [];
+                if(months.length > 0) {
+                    incomeMonths.push(...months);
+                }
+            })
+        }
+
+        const months = await this.monthService.generateSeeds(incomeMonths);
+
+        return {
+            months,
+            incomes: {
+                list: [...listJson, ...added],
+                added
+            },
+            incomeSources
+        }
     }
 }

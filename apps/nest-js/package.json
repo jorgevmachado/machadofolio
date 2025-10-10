@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "dev": "cross-env NODE_ENV=development nest start --watch",
     "dev:stg": "cross-env NODE_ENV=staging nest start --watch",
-    "dev:prod": "cross-env NODE_ENV=production nest start --watch"
+    "dev:prod": "cross-env NODE_ENV=production nest start --watch",
+    "db:seed:dev": "ts-node scripts/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

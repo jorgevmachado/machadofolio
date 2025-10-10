@@ -4,7 +4,11 @@ import { Repository } from 'typeorm';
 
 import { Group as GroupConstructor } from '@repo/business';
 
-import { ListParams, Service } from '../../shared';
+import GROUP_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/groups.json';
+import GROUP_LIST_STAGING_JSON from '../../../seeds/staging/finance/groups.json';
+import GROUP_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/groups.json';
+
+import { GenerateSeeds, ListParams, Service } from '../../shared';
 
 import { Finance } from '../entities/finance.entity';
 import type { FinanceSeederParams } from '../types';
@@ -84,5 +88,23 @@ export class GroupService extends Service<Group> {
         }
 
         return this.create(finance, { name: value });
+    }
+
+    async generateSeeds(financeSeedsDir: string): Promise<GenerateSeeds<Group>> {
+        const groups = await this.findAll({ withDeleted: true }) as Array<Group>;
+        const listJson = this.getListJson<Group>({
+            staging: GROUP_LIST_STAGING_JSON,
+            production: GROUP_LIST_PRODUCTION_JSON,
+            development: GROUP_LIST_DEVELOPMENT_JSON,
+        });
+        const added = groups.filter((item) => !listJson.find((json) => json.id === item.id || json.name === item.name || json.name_code === item.name_code));
+        const list = [...listJson, ...added];
+        if(added.length > 0) {
+            this.file.writeFile('groups.json', financeSeedsDir, list);
+        }
+        return {
+            list,
+            added
+        }
     }
 }

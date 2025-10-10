@@ -4,6 +4,10 @@ import { Repository } from 'typeorm';
 
 import { Supplier as SupplierConstructor } from '@repo/business';
 
+import SUPPLIER_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/suppliers.json';
+import SUPPLIER_LIST_STAGING_JSON from '../../../seeds/staging/finance/suppliers.json';
+import SUPPLIER_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/suppliers.json';
+
 import { ListParams, Service } from '../../shared';
 
 import type { FinanceSeederParams } from '../types';
@@ -124,5 +128,28 @@ export class SupplierService extends Service<Supplier> {
         const supplierType = await this.supplierTypeService.createToSheet('Unknown') as SupplierType;
 
         return this.create({ name: value, type: supplierType });
+    }
+
+    async generateSeeds(withSupplierType: boolean, withSupplier: boolean, financeSeedsDir: string) {
+        const supplierTypes = (!withSupplierType && !withSupplier) ? { list: [], added: []} : await this.supplierTypeService.generateSeeds(financeSeedsDir);
+        const suppliers = !withSupplier ? [] : await this.findAll({ withRelations: true, withDeleted: true }) as Array<Supplier>;
+        const listJson = this.getListJson<Supplier>({
+            staging: SUPPLIER_LIST_STAGING_JSON,
+            production: SUPPLIER_LIST_PRODUCTION_JSON,
+            development: SUPPLIER_LIST_DEVELOPMENT_JSON,
+        });
+        const added = suppliers.filter((item) => !listJson.find((json) => json.id === item.id || json.name === item.name || json.name_code === item.name_code));
+        const list = [...listJson, ...added];
+        if(added.length > 0) {
+            this.file.writeFile('suppliers.json', financeSeedsDir, list);
+        }
+
+        return {
+            suppliers: {
+                list,
+                added,
+            },
+            supplierTypes
+        }
     }
 }

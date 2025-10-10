@@ -9,7 +9,11 @@ import { transformObjectDateAndNulls } from '@repo/services';
 
 import { ERole, EStatus, User as UserConstructor } from '@repo/business';
 
-import { Service, type TBy } from '../../shared';
+import USER_LIST_DEVELOPMENT_JSON from '../../../seeds/development/users.json';
+import USER_LIST_STAGING_JSON from '../../../seeds/staging/users.json';
+import USER_LIST_PRODUCTION_JSON from '../../../seeds/production/users.json';
+
+import { GenerateSeeds, Service, type TBy } from '../../shared';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { CredentialsUserDto } from './dto/credentials-user.dto';
@@ -185,5 +189,21 @@ export class UsersService extends Service<User>{
     async seeds(listJson: Array<unknown>, password: string) {
         const seeds = listJson.map((item) => transformObjectDateAndNulls<User, unknown>(item));
         return await Promise.all(seeds.map( async (item) => await this.seed(item, password)));
+    }
+
+    async generateSeed(): Promise<GenerateSeeds<User>> {
+        const rootSeedsDir = this.file.getSeedsDirectory();
+        const users = await this.findAll({ withDeleted: true }) as Array<User>;
+        const listJson = this.getListJson<User>({
+            staging: USER_LIST_STAGING_JSON,
+            production: USER_LIST_PRODUCTION_JSON,
+            development: USER_LIST_DEVELOPMENT_JSON,
+        });
+        const added = users.filter((user) => !listJson.some((json) => json.id === user.id || json.cpf === user.cpf));
+        const list = [...listJson, ...added];
+        if(added.length > 0) {
+            this.file.writeFile('users.json', rootSeedsDir, list);
+        }
+        return { list, added };
     }
 }

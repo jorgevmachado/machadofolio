@@ -204,4 +204,152 @@ export class AppService {
         }
         return pokemonSeederParams;
     }
+
+    async generateSeeds(body: CreateSeedDto) {
+        const hasAnySeed = this.hasAnySeed(body);
+
+        if (!hasAnySeed) {
+            return { message: 'Nenhum dado foi selecionado para gerar o Seed' };
+        }
+
+        const result = {
+            auth: {
+                    list: 0,
+                    added: 0
+                },
+            finance: {
+                bill: {
+                    list: 0,
+                    added: 0
+                },
+                bank: {
+                    list: 0,
+                    added: 0
+                },
+                group: {
+                    list: 0,
+                    added: 0
+                },
+                income: {
+                    list: 0,
+                    added: 0
+                },
+                finance: {
+                    list: 0,
+                    added: 0
+                },
+                expense: {
+                    list: 0,
+                    added: 0
+                },
+                supplier: {
+                    list: 0,
+                    added: 0
+                },
+                supplierType: {
+                    list: 0,
+                    added: 0
+                },
+                incomeSource: {
+                    list: 0,
+                    added: 0
+                },
+            },
+            pokemon: {
+                move: {
+                    list: 0,
+                    added: 0
+                },
+                type: {
+                    list: 0,
+                    added: 0
+                },
+                ability: {
+                    list: 0,
+                    added: 0
+                },
+                pokemon: {
+                    list: 0,
+                    added: 0
+                },
+            }
+        }
+
+        if(body.auth) {
+            const auth = await this.authService.generateSeed();
+            result.auth = {
+                list: auth.list.length,
+                added: auth.added.length,
+            }
+        }
+
+        if(body.finance) {
+            result.finance = await this.generateFinanceSeeds(body.finance);
+        }
+
+        return { ...result, message: 'Seed Generate Successfully'};
+    }
+
+    private hasAnySeed(body: CreateSeedDto): boolean {
+        return Object.values(body).some(value => {
+            if (typeof value === 'object' && value !== null) {
+                return Object.values(value).some(v => v);
+            }
+            return !!value;
+        });
+    }
+
+    private async generateFinanceSeeds(seedsDto: CreateFinanceSeedsDto) {
+        const {
+            bills,
+            banks,
+            groups,
+            incomes,
+            expenses,
+            finances,
+            suppliers,
+            supplierTypes,
+            incomeSources,
+        } = await this.financeService.generateSeeds(seedsDto);
+
+        return {
+            bill: {
+                list: bills.list.length,
+                added: bills.added.length
+            },
+            bank: {
+                list: banks.list.length,
+                added: banks.added.length
+            },
+            group: {
+                list: groups.list.length,
+                added: groups.added.length
+            },
+            income: {
+                list: incomes.list.length,
+                added: incomes.added.length
+            },
+            finance: {
+                list: finances.list.length,
+                added: finances.added.length
+            },
+            expense: {
+                list: expenses.list.length,
+                added: expenses.added.length
+            },
+            supplier: {
+                list: suppliers.list.length,
+                added: suppliers.added.length
+            },
+            supplierType: {
+                list: supplierTypes.list.length,
+                added: supplierTypes.added.length
+            },
+            incomeSource: {
+                list: incomeSources.list.length,
+                added: incomeSources.added.length
+            },
+        }
+
+    }
 }

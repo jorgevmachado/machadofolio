@@ -1,0 +1,18 @@
+[
+  {
+    "id": "3b8de88e-1b86-4758-bc7e-79149070a692",
+    "name": "Save Money",
+    "name_code": "save_money",
+    "created_at": "2025-10-10T17:13:41.497Z",
+    "updated_at": "2025-10-10T17:13:41.497Z",
+    "deleted_at": null
+  },
+  {
+    "id": "0667de3e-0871-48d0-ab7b-2dcc2e983f2b",
+    "name": "Job",
+    "name_code": "job",
+    "created_at": "2025-10-10T17:14:07.793Z",
+    "updated_at": "2025-10-10T17:14:07.793Z",
+    "deleted_at": null
+  }
+]

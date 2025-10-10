@@ -6,7 +6,11 @@ import { EMonth, getCurrentMonthNumber } from '@repo/services';
 
 import { MonthBusiness, Month as MonthConstructor } from '@repo/business';
 
-import { type FilterParams, Service } from '../../shared';
+import MONTH_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/months.json';
+import MONTH_LIST_STAGING_JSON from '../../../seeds/staging/finance/months.json';
+import MONTH_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/months.json';
+
+import { type FilterParams, GenerateSeeds, Service } from '../../shared';
 
 import { Expense } from '../entities/expense.entity';
 import { Income } from '../entities/incomes.entity';
@@ -21,7 +25,7 @@ export class MonthService extends Service<Month> {
         protected repository: Repository<Month>,
         protected monthBusiness: MonthBusiness
     ) {
-        super('months', [], repository);
+        super('months', ['expense', 'income'], repository);
     }
 
     get business(): MonthBusiness {
@@ -114,5 +118,39 @@ export class MonthService extends Service<Month> {
         } catch (error) {
             throw this.error(error);
         }
+    }
+
+    async generateSeeds(months: Array<Month>): Promise<GenerateSeeds<Month>> {
+        if(months.length <= 0) {
+            return {
+                list: [],
+                added: []
+            }
+        }
+
+        const monthsFromDataBase: Array<Month> = [];
+
+        for( const month of months) {
+            const monthInDataBase = await this.findOne({ value: month.id, withRelations: true, withDeleted: true, withThrow: false });
+            if(monthInDataBase) {
+                monthsFromDataBase.push(month);
+            }
+        }
+
+        if(monthsFromDataBase.length <= 0) {
+            return {
+                list: [],
+                added: []
+            }
+        }
+
+        const listJson = this.getListJson<Month>({
+            staging: MONTH_LIST_STAGING_JSON,
+            production: MONTH_LIST_PRODUCTION_JSON,
+            development: MONTH_LIST_DEVELOPMENT_JSON,
+        });
+        const added = monthsFromDataBase.filter((item) => !listJson.find((json) => json.id === item.id || json.label === item.label || json.code === item.code));
+
+        return { list: monthsFromDataBase, added };
     }
 }

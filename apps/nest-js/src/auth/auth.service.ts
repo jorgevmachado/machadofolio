@@ -93,4 +93,8 @@ export class AuthService {
         }
         return { message: 'Seeding list of user Completed Successfully!' };
     }
+
+    async generateSeed() {
+        return await this.userService.generateSeed();
+    }
 }
