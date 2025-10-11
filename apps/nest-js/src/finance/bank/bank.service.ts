@@ -66,27 +66,23 @@ export class BankService extends Service<Bank> {
       return this.create({ name: value });
     }
 
-    async generateSeeds(financeSeedsDir: string) {
-      const banks = await this.findAll({ withDeleted: true }) as Array<Bank>;
-      const listJson = this.getListJson<Bank>({
-            staging: BANK_LIST_STAGING_JSON,
-            production: BANK_LIST_PRODUCTION_JSON,
-            development: BANK_LIST_DEVELOPMENT_JSON,
+    async generateSeeds(withSeed: boolean, financeSeedsDir: string) {
+      return await this.generateEntitySeeds({
+          withSeed,
+          seedsDir: financeSeedsDir,
+          staging: BANK_LIST_STAGING_JSON,
+          production: BANK_LIST_PRODUCTION_JSON,
+          development: BANK_LIST_DEVELOPMENT_JSON,
+          filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code
       });
+    }
 
-      const added = banks.filter((bank) => {
-          return !listJson.find((json) => json.name === bank.name || json.name_code === bank.name_code);
+    async persistSeeds(withSeed?: boolean) {
+      return await this.persistEntitySeeds({
+          withSeed,
+          staging: BANK_LIST_STAGING_JSON,
+          production: BANK_LIST_PRODUCTION_JSON,
+          development: BANK_LIST_DEVELOPMENT_JSON,
       });
-
-      const list = [...listJson, ...added];
-
-      if(added.length > 0) {
-          this.file.writeFile('banks.json', financeSeedsDir, list);
-      }
-
-      return {
-          list,
-          added,
-      };
     }
 }

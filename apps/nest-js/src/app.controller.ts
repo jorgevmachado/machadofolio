@@ -23,5 +23,10 @@ export class AppController {
         return this.service.generateSeeds(body);
     }
 
+    @Post('persist-seeds')
+    persistSeeds(@Body() body: CreateSeedDto) {
+        return this.service.persistSeeds(body);
+    }
+
 
 }

@@ -22,14 +22,111 @@ import { User } from './auth/entities/user.entity';
 import { CreateFinanceSeedsDto } from './finance/dto/create-finance-seeds.dto';
 import { CreateSeedDto } from './dto/create-seed.dto';
 import { FinanceSeederParams } from './finance/types';
-import { FinanceService } from './finance/finance.service';
+import { FinanceService, type FinanceGenerateSeeds  } from './finance/finance.service';
 
 import { CreatePokemonSeedsDto } from './pokemon/dto/create-pokemon-seeds.dto';
 import { PokemonSeederParams } from './pokemon/types';
-import { PokemonService } from './pokemon/pokemon.service';
+import { PokemonService, type PokemonGenerateSeeds } from './pokemon/pokemon.service';
+
+type SeedsResultItem = {
+    list: number;
+    added: number;
+}
+
+type FinanceSeedsResult = {
+    bank: SeedsResultItem;
+    bill: SeedsResultItem;
+    group: SeedsResultItem;
+    months: SeedsResultItem;
+    income: SeedsResultItem;
+    expense: SeedsResultItem;
+    finance: SeedsResultItem;
+    supplier: SeedsResultItem;
+    incomeSource: SeedsResultItem;
+    supplierType: SeedsResultItem;
+}
+
+type PokemonSeedsResult = {
+    move: SeedsResultItem;
+    type: SeedsResultItem;
+    ability: SeedsResultItem;
+    pokemon: SeedsResultItem;
+}
+
+type SeedsResult = {
+    auth: SeedsResultItem;
+    finance: FinanceSeedsResult;
+    pokemon: PokemonSeedsResult;
+}
 
 @Injectable()
 export class AppService {
+    private DEFAULT_SEEDS: SeedsResult = {
+        auth: {
+            list: 0,
+            added: 0
+        },
+        finance: {
+            bill: {
+                list: 0,
+                added: 0
+            },
+            bank: {
+                list: 0,
+                added: 0
+            },
+            group: {
+                list: 0,
+                added: 0
+            },
+            months: {
+                list: 0,
+                added: 0
+            },
+            income: {
+                list: 0,
+                added: 0
+            },
+            finance: {
+                list: 0,
+                added: 0
+            },
+            expense: {
+                list: 0,
+                added: 0
+            },
+            supplier: {
+                list: 0,
+                added: 0
+            },
+            supplierType: {
+                list: 0,
+                added: 0
+            },
+            incomeSource: {
+                list: 0,
+                added: 0
+            },
+        },
+        pokemon: {
+            move: {
+                list: 0,
+                added: 0
+            },
+            type: {
+                list: 0,
+                added: 0
+            },
+            ability: {
+                list: 0,
+                added: 0
+            },
+            pokemon: {
+                list: 0,
+                added: 0
+            },
+        }
+    };
     constructor(
         private authService: AuthService,
         private financeService: FinanceService,
@@ -209,78 +306,15 @@ export class AppService {
         const hasAnySeed = this.hasAnySeed(body);
 
         if (!hasAnySeed) {
-            return { message: 'Nenhum dado foi selecionado para gerar o Seed' };
+            return { message: 'No data was selected to generate the Seed.' };
         }
 
-        const result = {
-            auth: {
-                    list: 0,
-                    added: 0
-                },
-            finance: {
-                bill: {
-                    list: 0,
-                    added: 0
-                },
-                bank: {
-                    list: 0,
-                    added: 0
-                },
-                group: {
-                    list: 0,
-                    added: 0
-                },
-                income: {
-                    list: 0,
-                    added: 0
-                },
-                finance: {
-                    list: 0,
-                    added: 0
-                },
-                expense: {
-                    list: 0,
-                    added: 0
-                },
-                supplier: {
-                    list: 0,
-                    added: 0
-                },
-                supplierType: {
-                    list: 0,
-                    added: 0
-                },
-                incomeSource: {
-                    list: 0,
-                    added: 0
-                },
-            },
-            pokemon: {
-                move: {
-                    list: 0,
-                    added: 0
-                },
-                type: {
-                    list: 0,
-                    added: 0
-                },
-                ability: {
-                    list: 0,
-                    added: 0
-                },
-                pokemon: {
-                    list: 0,
-                    added: 0
-                },
-            }
-        }
+        const result = this.DEFAULT_SEEDS;
 
-        if(body.auth) {
-            const auth = await this.authService.generateSeed();
-            result.auth = {
-                list: auth.list.length,
-                added: auth.added.length,
-            }
+        const auth = await this.authService.generateSeed(Boolean(body.auth));
+        result.auth = {
+            list: auth.list.length,
+            added: auth.added.length,
         }
 
         if(body.finance) {
@@ -300,9 +334,42 @@ export class AppService {
     }
 
     private async generateFinanceSeeds(seedsDto: CreateFinanceSeedsDto) {
+        const result = await this.financeService.generateSeeds(seedsDto);
+        return this.mapperFinanceSeedsResult(result);
+    }
+
+    async persistSeeds(body: CreateSeedDto) {
+        const hasAnySeed = this.hasAnySeed(body);
+
+        if (!hasAnySeed) {
+            return { message: 'No data was selected to persist the Seed.' };
+        }
+
+        const result = this.DEFAULT_SEEDS;
+
+        if(body.finance) {
+            result.finance = await this.persistFinanceSeeds(body.finance);
+        }
+
+        const auth = await this.authService.persistSeed(Boolean(body.auth));
+        result.auth = {
+            list: auth.list.length,
+            added: auth.added.length,
+        }
+
+        return { ...result, message: 'Seed Persist Successfully'};
+    }
+
+    private async persistFinanceSeeds(seedsDto: CreateFinanceSeedsDto) {
+        const result = await this.financeService.persistSeeds(seedsDto);
+        return this.mapperFinanceSeedsResult(result);
+    }
+
+    private mapperFinanceSeedsResult(generateSeeds: FinanceGenerateSeeds): FinanceSeedsResult {
         const {
             bills,
             banks,
+            months,
             groups,
             incomes,
             expenses,
@@ -310,8 +377,7 @@ export class AppService {
             suppliers,
             supplierTypes,
             incomeSources,
-        } = await this.financeService.generateSeeds(seedsDto);
-
+        } = generateSeeds;
         return {
             bill: {
                 list: bills.list.length,
@@ -325,6 +391,7 @@ export class AppService {
                 list: groups.list.length,
                 added: groups.added.length
             },
+            months: {list: months.list.length, added: months.added.length},
             income: {
                 list: incomes.list.length,
                 added: incomes.added.length
@@ -350,6 +417,33 @@ export class AppService {
                 added: incomeSources.added.length
             },
         }
+    }
 
+    private mapperPokemonSeedsResult(generateSeeds: PokemonGenerateSeeds): PokemonSeedsResult {
+        const {
+            types,
+            moves,
+            pokemons,
+            abilities,
+        } = generateSeeds;
+
+        return {
+            type: {
+                list: types.list.length,
+                added: types.added.length
+            },
+            move: {
+                list: moves.list.length,
+                added: moves.added.length
+            },
+            ability: {
+                list: abilities.list.length,
+                added: abilities.added.length
+            },
+            pokemon: {
+                list: pokemons.list.length,
+                added: pokemons.added.length
+            },
+        }
     }
 }

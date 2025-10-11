@@ -33,7 +33,7 @@ type IncomeSeederParams = FinanceSeederParams & {
 type createToSheetParams = Record<string, string | number | boolean | object | Finance | IncomeSource>;
 
 type IncomeGenerateSeeds = {
-    months: GenerateSeeds<Month>;
+    months: Array<Month>;
     incomes: GenerateSeeds<Income>;
     incomeSources: GenerateSeeds<IncomeSource>;
 }
@@ -46,7 +46,7 @@ export class IncomeService extends Service<Income> {
         protected sourceService: IncomeSourceService,
         protected monthService: MonthService,
     ) {
-        super('incomes', ['source', 'months'], repository);
+        super('incomes', ['source', 'months', 'finance'], repository);
     }
 
     get source(): IncomeSourceService {
@@ -261,39 +261,56 @@ export class IncomeService extends Service<Income> {
     }
 
     async generateSeeds(withIncomeSource: boolean, withIncome: boolean, financeSeedsDir: string): Promise<IncomeGenerateSeeds> {
-        const incomeMonths: Array<Month> = [];
         const incomeSources = await this.sourceService.generateSeeds(!withIncomeSource && !withIncome, financeSeedsDir);
-        const incomes = !withIncome ? [] : await this.findAll({ withRelations: true, withDeleted: true }) as Array<Income>;
 
-        const listJson = this.getListJson<Income>({
+        const incomes = await this.generateEntitySeeds({
+            staging: INCOME_LIST_STAGING_JSON,
+            seedsDir: financeSeedsDir,
+            withSeed: withIncome,
+            production: INCOME_LIST_PRODUCTION_JSON,
+            development: INCOME_LIST_DEVELOPMENT_JSON,
+            withRelations: true,
+            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.source.name_code === item.source.name_code,
+        });
+
+        return {
+            months: this.mapperMonthsSeeds(incomes.added),
+            incomes,
+            incomeSources
+        }
+    }
+
+    async persistSeeds(withIncomeSource: boolean, withIncome: boolean) {
+
+        const incomeSources = await this.sourceService.persistSeeds(!withIncomeSource && !withIncome);
+        const incomes = await this.persistEntitySeeds({
+            withSeed: withIncome,
             staging: INCOME_LIST_STAGING_JSON,
             production: INCOME_LIST_PRODUCTION_JSON,
             development: INCOME_LIST_DEVELOPMENT_JSON,
-        });
-        const added = incomes.filter((item) => !listJson.find((json) => json.id === item.id || json.name === item.name || json.name_code === item.name_code));
-        const list = [...listJson, ...added];
-        if(added.length > 0) {
-            this.file.writeFile('incomes.json', financeSeedsDir, list);
-        }
-
-        if(added.length > 0) {
-            added.forEach((income) => {
-                const months = income?.months ?? [];
-                if(months.length > 0) {
-                    incomeMonths.push(...months);
-                }
-            })
-        }
-
-        const months = await this.monthService.generateSeeds(incomeMonths);
+        })
 
         return {
-            months,
-            incomes: {
-                list: [...listJson, ...added],
-                added
-            },
+            months: this.mapperMonthsSeeds(incomes.added),
+            incomes,
             incomeSources
         }
+    }
+
+    private mapperMonthsSeeds(incomes: Array<Income>): Array<Month> {
+        const incomeMonths: Array<Month> = [];
+
+        if(incomes.length === 0) {
+            return incomeMonths;
+        }
+
+        incomes.forEach((income) => {
+            const months = income?.months ?? [];
+            if(months.length > 0) {
+                incomeMonths.push(...months);
+            }
+        });
+
+        return incomeMonths;
     }
 }

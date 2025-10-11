@@ -94,7 +94,11 @@ export class AuthService {
         return { message: 'Seeding list of user Completed Successfully!' };
     }
 
-    async generateSeed() {
-        return await this.userService.generateSeed();
+    async generateSeed(withSeed: boolean) {
+        return await this.userService.generateSeed(withSeed);
+    }
+
+    async persistSeed(withSeed: boolean) {
+        return await this.userService.persistSeed(withSeed);
     }
 }

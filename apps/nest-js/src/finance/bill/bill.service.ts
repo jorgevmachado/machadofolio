@@ -32,7 +32,7 @@ import type { BillSeederParams, CreateToSheetParams, ExistExpenseInBill, Spreads
 
 type BillGenerateSeeds = {
     bills: GenerateSeeds<Bill>;
-    months: GenerateSeeds<Month>;
+    months: Array<Month>;
     expenses: GenerateSeeds<Expense>;
 }
 
@@ -581,23 +581,32 @@ export class BillService extends Service<Bill> {
     }
 
     async generateSeeds(withBill: boolean, withExpense: boolean, financeSeedsDir: string): Promise<BillGenerateSeeds> {
-        const bills = (!withBill && !withExpense) ? [] : await this.findAll({ withRelations: true, withDeleted: true }) as Array<Bill>;
-        const listJson = this.getListJson<Bill>({
+        const { months, expenses } = await this.expenseService.generateSeeds(withExpense, financeSeedsDir);
+        const bills = await this.generateEntitySeeds({
+            seedsDir: financeSeedsDir,
+            staging: BILL_LIST_STAGING_JSON,
+            withSeed: !(!withBill && !withExpense),
+            production: BILL_LIST_PRODUCTION_JSON,
+            development: BILL_LIST_DEVELOPMENT_JSON,
+            withRelations: true,
+            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.expenses === item.expenses
+        })
+
+        return { bills, months, expenses }
+    }
+
+    async persistSeeds(withBill: boolean, withExpense: boolean) {
+        const bills = await this.persistEntitySeeds({
+            withSeed: !(!withBill && !withExpense),
             staging: BILL_LIST_STAGING_JSON,
             production: BILL_LIST_PRODUCTION_JSON,
             development: BILL_LIST_DEVELOPMENT_JSON,
-        });
+        })
 
-        const { months, expenses } = await this.expenseService.generateSeeds(withExpense, financeSeedsDir);
-
-        const added = bills.filter((item) => !listJson.find((json) => json.id === item.id || json.name === item.name || json.name_code === item.name_code));
-        const list = [...listJson, ...added];
-        if (added.length > 0) {
-            this.file.writeFile('bills.json', financeSeedsDir, list);
-        }
+        const { months, expenses } = await this.expenseService.persistSeeds(withExpense);
 
         return {
-            bills: { list, added },
+            bills,
             months,
             expenses
         }

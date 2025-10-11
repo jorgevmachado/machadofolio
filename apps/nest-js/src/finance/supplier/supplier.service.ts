@@ -131,24 +131,30 @@ export class SupplierService extends Service<Supplier> {
     }
 
     async generateSeeds(withSupplierType: boolean, withSupplier: boolean, financeSeedsDir: string) {
-        const supplierTypes = (!withSupplierType && !withSupplier) ? { list: [], added: []} : await this.supplierTypeService.generateSeeds(financeSeedsDir);
-        const suppliers = !withSupplier ? [] : await this.findAll({ withRelations: true, withDeleted: true }) as Array<Supplier>;
-        const listJson = this.getListJson<Supplier>({
+        const supplierTypes = await this.supplierTypeService.generateSeeds(!withSupplierType && !withSupplier, financeSeedsDir);
+        const suppliers = await this.generateEntitySeeds({
+            withSeed: withSupplier,
+            seedsDir: financeSeedsDir,
             staging: SUPPLIER_LIST_STAGING_JSON,
             production: SUPPLIER_LIST_PRODUCTION_JSON,
             development: SUPPLIER_LIST_DEVELOPMENT_JSON,
-        });
-        const added = suppliers.filter((item) => !listJson.find((json) => json.id === item.id || json.name === item.name || json.name_code === item.name_code));
-        const list = [...listJson, ...added];
-        if(added.length > 0) {
-            this.file.writeFile('suppliers.json', financeSeedsDir, list);
-        }
+            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.type.name_code === item.type.name_code
+        })
+
+        return { suppliers, supplierTypes }
+    }
+
+    async persistSeeds(withSupplierType: boolean, withSupplier: boolean) {
+        const supplierTypes = await this.supplierTypeService.persistSeeds(!withSupplierType && !withSupplier);
+        const suppliers = await this.persistEntitySeeds({
+                withSeed: withSupplier,
+                staging: SUPPLIER_LIST_STAGING_JSON,
+                production: SUPPLIER_LIST_PRODUCTION_JSON,
+                development: SUPPLIER_LIST_DEVELOPMENT_JSON,
+        })
 
         return {
-            suppliers: {
-                list,
-                added,
-            },
+            suppliers,
             supplierTypes
         }
     }

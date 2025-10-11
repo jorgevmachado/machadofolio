@@ -191,19 +191,25 @@ export class UsersService extends Service<User>{
         return await Promise.all(seeds.map( async (item) => await this.seed(item, password)));
     }
 
-    async generateSeed(): Promise<GenerateSeeds<User>> {
+    async generateSeed(withSeed: boolean): Promise<GenerateSeeds<User>> {
         const rootSeedsDir = this.file.getSeedsDirectory();
-        const users = await this.findAll({ withDeleted: true }) as Array<User>;
-        const listJson = this.getListJson<User>({
+        return await this.generateEntitySeeds({
+            staging: USER_LIST_STAGING_JSON,
+            seedsDir: rootSeedsDir,
+            withSeed,
+            production: USER_LIST_PRODUCTION_JSON,
+            development: USER_LIST_DEVELOPMENT_JSON,
+            withRelations: true,
+            filterGenerateEntitySeedsFn: (json, item) => json.cpf === item.cpf || json.email === item.email,
+        });
+    }
+
+    async persistSeed(withSeed: boolean) {
+        return await this.persistEntitySeeds({
+            withSeed,
             staging: USER_LIST_STAGING_JSON,
             production: USER_LIST_PRODUCTION_JSON,
             development: USER_LIST_DEVELOPMENT_JSON,
         });
-        const added = users.filter((user) => !listJson.some((json) => json.id === user.id || json.cpf === user.cpf));
-        const list = [...listJson, ...added];
-        if(added.length > 0) {
-            this.file.writeFile('users.json', rootSeedsDir, list);
-        }
-        return { list, added };
     }
 }

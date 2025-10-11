@@ -90,21 +90,25 @@ export class GroupService extends Service<Group> {
         return this.create(finance, { name: value });
     }
 
-    async generateSeeds(financeSeedsDir: string): Promise<GenerateSeeds<Group>> {
-        const groups = await this.findAll({ withDeleted: true }) as Array<Group>;
-        const listJson = this.getListJson<Group>({
+    async generateSeeds(withSeed: boolean, financeSeedsDir: string): Promise<GenerateSeeds<Group>> {
+        return await this.generateEntitySeeds({
+            seedsDir: financeSeedsDir,
+            staging: GROUP_LIST_STAGING_JSON,
+            withSeed,
+            production: GROUP_LIST_PRODUCTION_JSON,
+            development: GROUP_LIST_DEVELOPMENT_JSON,
+            withRelations: true,
+            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code
+
+        })
+    }
+
+    async persistSeeds(withSeed?: boolean) {
+        return await this.persistEntitySeeds({
+            withSeed,
             staging: GROUP_LIST_STAGING_JSON,
             production: GROUP_LIST_PRODUCTION_JSON,
             development: GROUP_LIST_DEVELOPMENT_JSON,
         });
-        const added = groups.filter((item) => !listJson.find((json) => json.id === item.id || json.name === item.name || json.name_code === item.name_code));
-        const list = [...listJson, ...added];
-        if(added.length > 0) {
-            this.file.writeFile('groups.json', financeSeedsDir, list);
-        }
-        return {
-            list,
-            added
-        }
     }
 }

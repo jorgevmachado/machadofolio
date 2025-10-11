@@ -4,9 +4,9 @@ import { Repository } from 'typeorm';
 
 import { SupplierType as SupplierTypeConstructor } from '@repo/business';
 
-import SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON from '../../../../seeds/development/finance/supplier-types.json';
-import SUPPLIER_TYPE_LIST_STAGING_JSON from '../../../../seeds/staging/finance/supplier-types.json';
-import SUPPLIER_TYPE_LIST_PRODUCTION_JSON from '../../../../seeds/production/finance/supplier-types.json';
+import SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON from '../../../../seeds/development/finance/supplier_types.json';
+import SUPPLIER_TYPE_LIST_STAGING_JSON from '../../../../seeds/staging/finance/supplier_types.json';
+import SUPPLIER_TYPE_LIST_PRODUCTION_JSON from '../../../../seeds/production/finance/supplier_types.json';
 
 import { Service } from '../../../shared';
 
@@ -89,22 +89,23 @@ export class SupplierTypeService extends Service<SupplierType> {
         return this.create({ name: value });
     }
 
-    async generateSeeds(financeSeedsDir: string) {
-      const supplierTypes = await this.findAll({ withDeleted: true }) as Array<SupplierType>;
-      const listJson = this.getListJson<SupplierType>({
+    async generateSeeds(withoutSupplierType: boolean, financeSeedsDir: string) {
+      return await this.generateEntitySeeds({
+          withSeed: !withoutSupplierType,
+          seedsDir: financeSeedsDir,
+          staging: SUPPLIER_TYPE_LIST_STAGING_JSON,
+          production: SUPPLIER_TYPE_LIST_PRODUCTION_JSON,
+          development: SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON,
+          filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code
+      });
+    }
+
+    async persistSeeds(withoutSupplierType: boolean) {
+      return await this.persistEntitySeeds({
+          withSeed: !withoutSupplierType,
           staging: SUPPLIER_TYPE_LIST_STAGING_JSON,
           production: SUPPLIER_TYPE_LIST_PRODUCTION_JSON,
           development: SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON,
       });
-      const added = supplierTypes.filter((item) => !listJson.find((json) => json.id === item.id || json.name === item.name || json.name_code === item.name_code));
-      const list = [...listJson, ...added];
-
-      if(added.length > 0) {
-          this.file.writeFile('supplier-types.json', financeSeedsDir, list);
-      }
-      return  {
-          list,
-          added
-      }
     }
 }

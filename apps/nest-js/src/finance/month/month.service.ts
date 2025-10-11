@@ -120,37 +120,30 @@ export class MonthService extends Service<Month> {
         }
     }
 
-    async generateSeeds(months: Array<Month>): Promise<GenerateSeeds<Month>> {
-        if(months.length <= 0) {
-            return {
-                list: [],
-                added: []
+    async generateSeeds(listMonth: Array<Month>, financeSeedsDir: string): Promise<GenerateSeeds<Month>> {
+        return await this.generateEntitySeeds({
+            staging: MONTH_LIST_STAGING_JSON,
+            seedsDir: financeSeedsDir,
+            withSeed: listMonth.length > 0,
+            production: MONTH_LIST_PRODUCTION_JSON,
+            development: MONTH_LIST_DEVELOPMENT_JSON,
+            withRelations: true,
+            filterGenerateEntitySeedsFn: (json, item) => {
+                if(json.label === item.label || json.code === item.code) {
+                    return json.expense?.name_code === item.expense?.name_code || json.income?.name_code === item.income?.name_code;
+                } else {
+                    return false;
+                }
             }
-        }
+        });
+    }
 
-        const monthsFromDataBase: Array<Month> = [];
-
-        for( const month of months) {
-            const monthInDataBase = await this.findOne({ value: month.id, withRelations: true, withDeleted: true, withThrow: false });
-            if(monthInDataBase) {
-                monthsFromDataBase.push(month);
-            }
-        }
-
-        if(monthsFromDataBase.length <= 0) {
-            return {
-                list: [],
-                added: []
-            }
-        }
-
-        const listJson = this.getListJson<Month>({
+    async persistSeeds(listMonth: Array<Month>) {
+        return await this.persistEntitySeeds({
+            withSeed: listMonth.length > 0,
             staging: MONTH_LIST_STAGING_JSON,
             production: MONTH_LIST_PRODUCTION_JSON,
             development: MONTH_LIST_DEVELOPMENT_JSON,
         });
-        const added = monthsFromDataBase.filter((item) => !listJson.find((json) => json.id === item.id || json.label === item.label || json.code === item.code));
-
-        return { list: monthsFromDataBase, added };
     }
 }

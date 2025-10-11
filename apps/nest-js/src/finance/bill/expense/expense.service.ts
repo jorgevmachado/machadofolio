@@ -51,7 +51,7 @@ export type ExpenseSeederParams = Pick<FinanceSeederParams, 'expenseListJson' | 
 export type createToSheetParams = Record<string, string | number | boolean | object | Bill>;
 
 type ExpenseGenerateSeeds = {
-    months: GenerateSeeds<Month>;
+    months: Array<Month>;
     expenses: GenerateSeeds<Expense>;
 }
 
@@ -513,48 +513,60 @@ export class ExpenseService extends Service<Expense> {
     }
 
     async generateSeeds(withExpense: boolean, financeSeedsDir: string): Promise<ExpenseGenerateSeeds> {
-        const expenseMonths: Array<Month> = [];
-        if(!withExpense) {
-            return {
-                months: { list: [], added: [] },
-                expenses: { list: [], added: [] },
-            };
+        const expenses = await this.generateEntitySeeds({
+            seedsDir: financeSeedsDir,
+            staging: EXPENSE_LIST_STAGING_JSON,
+            withSeed: withExpense,
+            production:  EXPENSE_LIST_PRODUCTION_JSON,
+            development: EXPENSE_LIST_DEVELOPMENT_JSON,
+            withRelations: true,
+            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.bill.name_code === item.bill.name_code,
+        });
+
+        return {
+            months: this.mapperMonthsSeeds(expenses.added),
+            expenses
         }
-        const expenses = await this.findAll({ withRelations: true, withDeleted: true }) as Array<Expense>;
-        const listJson = this.getListJson<Expense>({
+    }
+
+    async persistSeeds(withSeed: boolean) {
+        const expenses = await this.persistEntitySeeds({
+            withSeed,
             staging: EXPENSE_LIST_STAGING_JSON,
             production:  EXPENSE_LIST_PRODUCTION_JSON,
             development: EXPENSE_LIST_DEVELOPMENT_JSON,
-        });
-        const added = expenses.filter((item) => !listJson.find((json) => json.id === item.id || json.name === item.name || json.name_code === item.name_code));
-        const list = [...listJson, ...added];
-        if(added.length > 0) {
-            this.file.writeFile('expenses.json', financeSeedsDir, list);
-        }
-
-        if(added.length > 0) {
-            added.forEach((expense) => {
-                const months = expense?.months ?? [];
-                if(months.length > 0) {
-                    expenseMonths.push(...months);
-                }
-                const expenseChildren = expense?.children ?? [];
-                if(expenseChildren.length > 0) {
-                    expenseChildren.forEach((child) => {
-                        const childMonths = child?.months ?? [];
-                        if(childMonths.length > 0) {
-                            expenseMonths.push(...childMonths);
-                        }
-                    });
-                }
-            });
-        }
-
-        const months = await this.monthService.generateSeeds(expenseMonths);
+        })
 
         return {
-            months,
-            expenses: { list, added }
+            months: this.mapperMonthsSeeds(expenses.added),
+            expenses
         }
+    }
+
+    private mapperMonthsSeeds(expenses: Array<Expense>): Array<Month> {
+        const expenseMonths: Array<Month> = [];
+
+        if(expenses.length === 0) {
+            return expenseMonths;
+        }
+
+        expenses.forEach((expense) => {
+            const months = expense?.months ?? [];
+            if(months.length > 0) {
+                expenseMonths.push(...months);
+            }
+            const expenseChildren = expense?.children ?? [];
+            if(expenseChildren.length > 0) {
+                expenseChildren.forEach((child) => {
+                    const childMonths = child?.months ?? [];
+                    if(childMonths.length > 0) {
+                        expenseMonths.push(...childMonths);
+                    }
+                });
+            }
+        });
+
+
+        return expenseMonths;
     }
 }

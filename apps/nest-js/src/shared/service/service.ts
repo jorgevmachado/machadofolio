@@ -11,6 +11,7 @@ import { Base } from '../base';
 import { File } from '../file';
 import { Seeder } from '../seeder';
 import { Validate } from '../validate';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 type GetListJsonParams = {
     env?: string;
@@ -22,6 +23,25 @@ type GetListJsonParams = {
 export interface GenerateSeeds<T> {
     list: Array<T>;
     added: Array<T>;
+}
+
+export interface PersistEntitySeedsParams<T> {
+    staging: unknown;
+    withSeed?: boolean;
+    production: unknown;
+    development: unknown;
+    withRelations?: boolean;
+    persistEntitySeedsFn?: (item: T) => T;
+}
+
+export interface GenerateEntitySeedsParams<T> {
+    staging: unknown;
+    seedsDir: string;
+    withSeed?: boolean;
+    production: unknown;
+    development: unknown;
+    withRelations?: boolean;
+    filterGenerateEntitySeedsFn: (json: T, item: T) => boolean;
 }
 
 export abstract class Service<T extends BasicEntity> extends Base {
@@ -144,5 +164,77 @@ export abstract class Service<T extends BasicEntity> extends Base {
             default:
                 return development as unknown as Array<T>;
         }
+    }
+    
+    async persistEntitySeeds({
+            withSeed,
+            staging,
+            production,
+            development,
+            withRelations,
+            persistEntitySeedsFn,
+    }: PersistEntitySeedsParams<T>): Promise<GenerateSeeds<T>> {
+        if(!withSeed) {
+            return {
+                list: [],
+                added: []
+            }
+        }
+        const list = await this.findAll({ withDeleted: true, withRelations }) as unknown as Array<T>;
+        const listJson = this.getListJson<T>({
+            staging,
+            production,
+            development,
+        });
+        
+        const added: Array<T> = [];
+        
+        for(const json of listJson) {
+            const entity = await this.findOne({ value: json['id'], withThrow: false });
+            if(!entity) {
+                const toInsert = persistEntitySeedsFn ? persistEntitySeedsFn(json) : json;
+                await this.repository.insert(toInsert as QueryDeepPartialEntity<T>);
+                added.push(json);
+            }
+        }
+        
+        return {
+            list: [...list, ...added],
+            added
+        }
+    }
+
+    async generateEntitySeeds({
+            seedsDir,
+            withSeed,
+            staging,
+            production,
+            development,
+            withRelations,
+            filterGenerateEntitySeedsFn,
+    }: GenerateEntitySeedsParams<T>): Promise<GenerateSeeds<T>> {
+        if(!withSeed) {
+            return {
+                list: [],
+                added: []
+            }
+        }
+
+        const entities = await this.findAll({ withDeleted: true, withRelations }) as unknown as Array<T>;
+
+        const listJson = this.getListJson<T>({
+            staging,
+            production,
+            development,
+        });
+
+        const added = entities.filter((entity) => !listJson.find((json) => filterGenerateEntitySeedsFn(json, entity)));
+        const list = [...listJson, ...added];
+
+        if(added.length > 0) {
+            this.file.writeFile(`${this.alias}.json`, seedsDir, list)
+        }
+
+        return { list, added }
     }
 }

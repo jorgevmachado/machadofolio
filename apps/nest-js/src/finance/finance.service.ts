@@ -34,8 +34,9 @@ import { SupplierService } from './supplier/supplier.service';
 import { SupplierType } from './entities/type.entity';
 import { CreateFinanceSeedsDto } from './dto/create-finance-seeds.dto';
 import { Month } from './entities/month.entity';
+import { MonthService } from './month/month.service';
 
-type GenerateSeedsResult = {
+export type FinanceGenerateSeeds = {
     bills: GenerateSeeds<Bill>;
     banks: GenerateSeeds<Bank>;
     months: GenerateSeeds<Month>;
@@ -50,6 +51,48 @@ type GenerateSeedsResult = {
 
 @Injectable()
 export class FinanceService extends Service<Finance> {
+    private DEFAULT_SEEDS_RESULT: FinanceGenerateSeeds = {
+        bills: {
+            list: [],
+            added: []
+        },
+        banks: {
+            list: [],
+            added: []
+        },
+        months:{
+            list: [],
+            added: []
+        },
+        groups:{
+            list: [],
+            added: []
+        },
+        incomes:{
+            list: [],
+            added: []
+        },
+        expenses:{
+            list: [],
+            added: []
+        },
+        finances:{
+            list: [],
+            added: []
+        },
+        suppliers:{
+            list: [],
+            added: []
+        },
+        supplierTypes:{
+            list: [],
+            added: []
+        },
+        incomeSources:{
+            list: [],
+            added: []
+        }
+    }
     constructor(
         @InjectRepository(Finance)
         protected repository: Repository<Finance>,
@@ -58,6 +101,7 @@ export class FinanceService extends Service<Finance> {
         protected readonly supplierService: SupplierService,
         protected readonly billService: BillService,
         protected readonly incomeService: IncomeService,
+        protected readonly  monthService: MonthService,
     ) {
         super('finances', ['bills', 'groups', 'bills.expenses'], repository);
     }
@@ -309,126 +353,60 @@ export class FinanceService extends Service<Finance> {
         }) as Array<Bill>;
     }
 
-    public async generateSeeds(createFinanceSeedsDto: CreateFinanceSeedsDto): Promise<GenerateSeedsResult> {
+    public async generateSeeds(createFinanceSeedsDto: CreateFinanceSeedsDto): Promise<FinanceGenerateSeeds> {
         const seedsDto = this.validateFinanceSeedsDto(createFinanceSeedsDto);
-        const result: GenerateSeedsResult = {
-            bills: {
-                list: [],
-                added: []
-            },
-            banks: {
-                list: [],
-                added: []
-            },
-            months:{
-                list: [],
-                added: []
-            },
-            groups:{
-                list: [],
-                added: []
-            },
-            incomes:{
-                list: [],
-                added: []
-            },
-            expenses:{
-                list: [],
-                added: []
-            },
-            finances:{
-                list: [],
-                added: []
-            },
-            suppliers:{
-                list: [],
-                added: []
-            },
-            supplierTypes:{
-                list: [],
-                added: []
-            },
-            incomeSources:{
-                list: [],
-                added: []
-            }
-        }
+        const result: FinanceGenerateSeeds = this.DEFAULT_SEEDS_RESULT;
 
         const rootSeedsDir = this.file.getSeedsDirectory();
         const financeSeedsDir = this.file.createDirectory('finance', rootSeedsDir);
 
-        if(seedsDto.bank) {
-            result.banks = await this.bankService.generateSeeds(financeSeedsDir);
+        result.banks = await this.bankService.generateSeeds(Boolean(seedsDto.bank), financeSeedsDir);
+
+        const {
+            suppliers,
+            supplierTypes
+        } = await this.supplierService.generateSeeds(Boolean(seedsDto.supplierType), Boolean(seedsDto.supplier), financeSeedsDir);
+        result.suppliers = suppliers;
+        result.supplierTypes = supplierTypes
+
+        result.finances = await this.generateEntitySeeds({
+            seedsDir: financeSeedsDir,
+            staging: FINANCE_LIST_STAGING_JSON,
+            withSeed: seedsDto.finance,
+            production: FINANCE_LIST_PRODUCTION_JSON,
+            development: FINANCE_LIST_DEVELOPMENT_JSON,
+            withRelations: true,
+            filterGenerateEntitySeedsFn: (json, item) => json.id === item.id || json.bills === item.bills || json.groups === item.groups
+        });
+
+        const {
+            months: incomeMonths,
+            incomes,
+            incomeSources
+        } = await this.incomeService.generateSeeds(Boolean(seedsDto.incomeSource), Boolean(seedsDto.income), financeSeedsDir);
+        result.incomes = incomes;
+        result.incomeSources = incomeSources;
+
+        if(incomeMonths.length > 0) {
+            result.months.list.push(...incomeMonths);
         }
 
-        if(seedsDto.supplier || seedsDto.supplierType) {
-            const {
-                suppliers,
-                supplierTypes
-            } = await this.supplierService.generateSeeds(Boolean(seedsDto.supplierType), Boolean(seedsDto.supplier), financeSeedsDir);
-            result.suppliers = suppliers;
-            result.supplierTypes = supplierTypes
+        result.groups =  await this.groupService.generateSeeds(Boolean(seedsDto.group), financeSeedsDir);
+
+        const {
+            bills,
+            months: expenseMonths,
+            expenses
+        } = await this.billService.generateSeeds(Boolean(seedsDto.bill), Boolean(seedsDto.expense), financeSeedsDir);
+
+        result.bills = bills;
+        result.expenses = expenses;
+
+        if(expenseMonths.length > 0) {
+            result.months.list.push(...expenseMonths);
         }
 
-        if(seedsDto.finance) {
-            const financeList = await this.findAll({ withRelations: true, withDeleted: true }) as Array<Finance>;
-            const listJson = this.getListJson<Finance>({
-                staging: FINANCE_LIST_STAGING_JSON,
-                production: FINANCE_LIST_PRODUCTION_JSON,
-                development: FINANCE_LIST_DEVELOPMENT_JSON
-            });
-            const added = financeList.filter((item) => !listJson.find((json) => json.id === item.id));
-            const list = [...listJson, ...added];
-            if(added.length > 0) {
-                this.file.writeFile('finances.json', financeSeedsDir, list);
-            }
-            result.finances = { added, list};
-        }
-
-        if(seedsDto.income || seedsDto.incomeSource) {
-            const {
-                months: incomeMonths,
-                incomes,
-                incomeSources
-            } = await this.incomeService.generateSeeds(Boolean(seedsDto.incomeSource), Boolean(seedsDto.income), financeSeedsDir);
-            result.incomes = incomes;
-            result.incomeSources = incomeSources;
-
-            if(incomeMonths.list.length > 0) {
-                result.months.list.push(...incomeMonths.list);
-            }
-
-            if(incomeMonths.added.length > 0) {
-                result.months.added.push(...incomeMonths.added);
-            }
-        }
-
-        if(seedsDto.group) {
-            result.groups =  await this.groupService.generateSeeds(financeSeedsDir);
-        }
-
-        if(seedsDto.bill || seedsDto.expense) {
-            const {
-                bills,
-                months: expenseMonths,
-                expenses
-            } = await this.billService.generateSeeds(Boolean(seedsDto.bill), Boolean(seedsDto.expense), financeSeedsDir);
-
-            result.bills = bills;
-            result.expenses = expenses;
-
-            if(expenseMonths.list.length > 0) {
-                result.months.list.push(...expenseMonths.list);
-            }
-
-            if(expenseMonths.added.length > 0) {
-                result.months.added.push(...expenseMonths.added);
-            }
-        }
-
-        if(result.months.added.length > 0) {
-            this.file.writeFile('months.json', financeSeedsDir, result.months.list);
-        }
+        result.months = await this.monthService.generateSeeds(result.months.list, financeSeedsDir);
 
         return result;
     }
@@ -460,5 +438,62 @@ export class FinanceService extends Service<Finance> {
         }
 
         return seedsDto;
+    }
+
+    async persistSeeds(createFinanceSeedsDto: CreateFinanceSeedsDto) {
+        const seedsDto = this.validateFinanceSeedsDto(createFinanceSeedsDto);
+        const result: FinanceGenerateSeeds = this.DEFAULT_SEEDS_RESULT;
+
+        result.banks = await this.bankService.persistSeeds(seedsDto?.bank);
+
+        const {
+            suppliers,
+            supplierTypes
+        } = await this.supplierService.persistSeeds(Boolean(seedsDto.supplierType), Boolean(seedsDto.supplier));
+        result.suppliers = suppliers;
+        result.supplierTypes = supplierTypes
+
+        result.finances = await this.persistEntitySeeds({
+            withSeed: seedsDto.finance,
+            staging: FINANCE_LIST_STAGING_JSON,
+            production: FINANCE_LIST_PRODUCTION_JSON,
+            development: FINANCE_LIST_DEVELOPMENT_JSON,
+            persistEntitySeedsFn: (item) => ({
+                ...item,
+                bills: undefined,
+                groups: undefined,
+            })
+        });
+
+        result.groups =  await this.groupService.persistSeeds(seedsDto?.group);
+
+        const {
+            months: incomeMonths,
+            incomes,
+            incomeSources
+        } = await this.incomeService.persistSeeds(Boolean(seedsDto.incomeSource), Boolean(seedsDto.income));
+        result.incomes = incomes;
+        result.incomeSources = incomeSources;
+
+        if(incomeMonths.length > 0) {
+            result.months.list.push(...incomeMonths);
+        }
+
+        const {
+            bills,
+            months: expenseMonths,
+            expenses
+        } = await this.billService.persistSeeds(Boolean(seedsDto.bill), Boolean(seedsDto.expense));
+
+        result.bills = bills;
+        result.expenses = expenses;
+
+        if(expenseMonths.length > 0) {
+            result.months.list.push(...expenseMonths);
+        }
+
+        result.months = await this.monthService.persistSeeds(result.months.list);
+
+        return result;
     }
 }
