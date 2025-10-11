@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "id": "9bef9bdf-c365-49bf-8c32-52753fdd47ff",
+    "cpf": "00256337160",
+    "role": "ADMIN",
+    "salt": "$2b$10$/rdBgAXVYl.5Ti9WVw.c9O",
+    "name": "Jorge Machado",
+    "email": "jorge.vmachado@gmail.com",
+    "gender": "MALE",
+    "status": "INCOMPLETE",
+    "avatar": null,
+    "whatsapp": "61996230790",
+    "password": "$2b$10$/rdBgAXVYl.5Ti9WVw.c9OvyujLK5feBL2ySRmLnqUJ4EiWvCL/k6",
+    "finance": {
+      "id": "b30c1ea0-8bb5-436c-af73-93dd04f8e06a",
+      "created_at": "2025-10-11T21:45:32.029Z",
+      "updated_at": "2025-10-11T21:45:32.029Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-10T15:55:09.095Z",
+    "updated_at": "2025-10-11T21:45:32.029Z",
+    "deleted_at": null,
+    "date_of_birth": "1990-07-20T00:00:00.000Z",
+    "recover_token": null,
+    "confirmation_token": "657c2ef23adc37dee0c246be55bfdcf3a24953a80953699584d516f4aabedefb"
+  }
+]
