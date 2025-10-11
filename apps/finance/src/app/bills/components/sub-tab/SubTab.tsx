@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { snakeCaseToNormal } from '@repo/services';
 
-import { Bill, Expense } from '@repo/business';
+import { Bill } from '@repo/business';
 
 import { Tabs } from '@repo/ds';
 
@@ -13,9 +13,10 @@ import CalculationSummary, { AllCalculatedSummary } from '../calculation-summary
 type SubTabProps = {
     list: Array<Bill>;
     handleOpenDeleteModal: (item?: Bill) => void;
+    handleUploadFileModal: (item: Bill) => void;
 };
 
-export default function SubTab({ list, handleOpenDeleteModal }: SubTabProps) {
+export default function SubTab({ list, handleOpenDeleteModal, handleUploadFileModal }: SubTabProps) {
     const currentList = billBusiness.mapBillListByFilter(list, 'type');
 
     const [allCalculatedSummary, setAllCalculatedSummary] = useState<AllCalculatedSummary | undefined>(undefined);
@@ -54,7 +55,7 @@ export default function SubTab({ list, handleOpenDeleteModal }: SubTabProps) {
                 fluid
                 items={currentList.map((item) => ({
                     title: snakeCaseToNormal(item.title),
-                    children: (<ListCard list={item.list} handleOpenDeleteModal={handleOpenDeleteModal}/>),
+                    children: (<ListCard list={item.list} handleOpenDeleteModal={handleOpenDeleteModal} handleUploadFileModal={handleUploadFileModal}/>),
                 }))}
             />
         </>

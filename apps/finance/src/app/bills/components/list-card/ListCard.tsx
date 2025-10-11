@@ -13,8 +13,9 @@ import './ListCard.scss';
 type ListCardProps = {
     list: Array<Bill>;
     handleOpenDeleteModal: (item?: Bill) => void;
+    handleUploadFileModal: (item: Bill) => void;
 }
-export default function ListCard({ list, handleOpenDeleteModal }: ListCardProps) {
+export default function ListCard({ list, handleOpenDeleteModal, handleUploadFileModal }: ListCardProps) {
     const currentList = billBusiness.mapBillListByFilter(list, 'bank');
 
     const renderChildrenTitle = (bill: Bill) => {
@@ -26,6 +27,13 @@ export default function ListCard({ list, handleOpenDeleteModal }: ListCardProps)
                     onClick={(e) => {
                         e.stopPropagation();
                         handleOpenDeleteModal(bill);
+                    }}
+                />
+                <Icon
+                    icon="upload"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleUploadFileModal(bill);
                     }}
                 />
             </div>

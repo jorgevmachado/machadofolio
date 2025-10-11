@@ -118,6 +118,7 @@ export default function FileInput({
             )}
             <div className={inputFieldClassName}>
                 <Button
+                    type="button"
                     size="small"
                     onClick={() => inputRef.current?.click()}
                     context={context}

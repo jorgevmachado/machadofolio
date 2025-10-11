@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react';
 
-import { Bill, type BillList, CreateBillParams } from '@repo/business';
+import { Bill, type BillList, CreateBillParams, UploadExpenseParams } from '@repo/business';
 
 import { Tabs } from '@repo/ds';
 
@@ -9,12 +9,12 @@ import { useAlert, useLoading, useModal } from '@repo/ui';
 
 import { ModalDelete, PageHeader } from '../../components';
 
-import { billBusiness, billService } from '../../shared';
+import { billBusiness, billService, expenseService } from '../../shared';
 
 import { useFinance } from '../../hooks';
 
 import { Fallback, Persist, SubTab } from './components';
-
+import ModalUpload from './components/modal-upload';
 
 export default function BillsPage() {
     const isMounted = useRef(false);
@@ -76,6 +76,22 @@ export default function BillsPage() {
             refresh();
         } catch (error) {
             addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error deleting Bill' });
+        } finally {
+            hide();
+        }
+    }
+
+    const handleUploadExpense = async (bill: Bill, file: any, params: UploadExpenseParams) => {
+        show();
+        try {
+            await expenseService.upload(bill.id, file, params);
+            addAlert({ type: 'success', message: 'Expenses uploaded successfully!' });
+            await fetchItems();
+            refresh();
+        } catch (error) {
+            addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error upload Bill expense' });
+        } finally {
+            hide();
         }
     }
 
@@ -98,6 +114,19 @@ export default function BillsPage() {
             title: `Are you sure you want to delete Bill`,
             body: (
                 <ModalDelete item={bill} onClose={closeModal} onDelete={(item) => handleOnDelete(item as Bill)}/>
+            ),
+            closeOnEsc: true,
+            closeOnOutsideClick: true,
+            removeBackgroundScroll: true,
+        })
+    }
+
+    const handleUploadFileModal = (bill: Bill) => {
+        openModal({
+            width: '799px',
+            title: `Cadastrar Despesa por Arquivo`,
+            body: (
+                <ModalUpload bill={bill} onClose={closeModal} onSubmit={handleUploadExpense} />
             ),
             closeOnEsc: true,
             closeOnOutsideClick: true,
@@ -134,6 +163,7 @@ export default function BillsPage() {
                             key={item.title}
                             list={item.list}
                             handleOpenDeleteModal={handleOpenDeleteModal}
+                            handleUploadFileModal={handleUploadFileModal}
                         />,
                     }))}/>
                 </>
