@@ -14,6 +14,8 @@ class ReplaceWordItemDTO implements ReplaceWordParam {
 }
 
 export class UploadExpenseDto implements UploadExpenseParams {
+    file: string = '';
+
     @IsOptional()
     @IsBoolean()
     @Transform(({ value }) => {
@@ -50,6 +52,7 @@ export class UploadExpenseDto implements UploadExpenseParams {
     @IsArray()
     @Transform(({ value }) => {
         if(value && ((value) as Array<string>).length === 1) {
+            console.log('# => repeatedWords => ', value);
             return value[0].split(',');
         }
         return value;

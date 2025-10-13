@@ -26,6 +26,7 @@ export const ciGroup: TIconGroupIcons = {
   user: <CiUser />,
   edit: <CiEdit />,
   lamp: undefined,
+  plus: undefined,
   star: <CiStar />,
   bolt: undefined,
   book: undefined,

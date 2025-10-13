@@ -31,8 +31,8 @@ export class ExpenseService extends BaseService<Expense, CreateExpenseParams, Up
             });
     }
 
-    async upload(billId: string, file: string, params: UploadExpenseParams): Promise<Array<Expense>> {
-        return await this.nest.finance.bill.expense.upload(billId, file, params).then((response) => {
+    async upload(billId: string, params: UploadExpenseParams): Promise<Array<Expense>> {
+        return await this.nest.finance.bill.expense.upload(billId, params).then((response) => {
             const expenses = response as unknown as Array<Expense>;
             return expenses.map((result) => new Expense(result))
         });

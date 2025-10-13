@@ -88,6 +88,7 @@ export const giGroup: TIconGroupIcons = {
   user: <GiPerson />,
   edit: <GiPencil />,
   lamp: <GiLightBulb />,
+  plus: undefined,
   star: undefined,
   bolt: <GiThunderStruck />,
   book: <GiBookCover />,

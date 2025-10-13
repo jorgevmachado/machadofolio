@@ -60,6 +60,7 @@ export type IReplaceWord = {
 }
 
 export type IUploadExpenseParams = {
+    file: string;
     paid?: boolean;
     month?: EMonth;
     replaceWords?: ReplaceWordsParam;

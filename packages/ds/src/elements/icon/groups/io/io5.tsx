@@ -95,6 +95,7 @@ export const io5Group: TIconGroupIcons = {
   edit: undefined,
   user: <IoPerson/>,
   lamp: <IoBulb/>,
+  plus: undefined,
   star: <IoStarOutline/>,
   bolt: <IoFlash/>,
   book: <IoBook/>,

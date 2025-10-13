@@ -81,10 +81,10 @@ export default function BillsPage() {
         }
     }
 
-    const handleUploadExpense = async (bill: Bill, file: any, params: UploadExpenseParams) => {
+    const handleUploadExpense = async (bill: Bill, params: UploadExpenseParams) => {
         show();
         try {
-            await expenseService.upload(bill.id, file, params);
+            await expenseService.upload(bill.id, params);
             addAlert({ type: 'success', message: 'Expenses uploaded successfully!' });
             await fetchItems();
             refresh();
