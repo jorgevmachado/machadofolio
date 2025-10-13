@@ -30,13 +30,5 @@
     "created_at": "2025-10-11T22:21:47.611Z",
     "updated_at": "2025-10-11T22:21:47.611Z",
     "deleted_at": null
-  },
-  {
-    "id": "0c8aa323-83c7-475e-a7de-924a2db13987",
-    "name": "Pessoa Física",
-    "name_code": "pessoa_fisica",
-    "created_at": "2025-10-11T22:26:16.832Z",
-    "updated_at": "2025-10-11T22:26:16.832Z",
-    "deleted_at": null
   }
 ]

@@ -522,7 +522,7 @@ export class ExpenseService extends Service<Expense> {
             production:  EXPENSE_LIST_PRODUCTION_JSON,
             development: EXPENSE_LIST_DEVELOPMENT_JSON,
             withRelations: true,
-            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.bill.name_code === item.bill.name_code,
+            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code,
         });
 
         return {

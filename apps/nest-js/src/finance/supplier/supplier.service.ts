@@ -138,6 +138,7 @@ export class SupplierService extends Service<Supplier> {
             staging: SUPPLIER_LIST_STAGING_JSON,
             production: SUPPLIER_LIST_PRODUCTION_JSON,
             development: SUPPLIER_LIST_DEVELOPMENT_JSON,
+            withRelations: true,
             filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.type.name_code === item.type.name_code
         })
 
