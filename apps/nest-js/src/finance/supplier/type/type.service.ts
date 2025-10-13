@@ -80,7 +80,7 @@ export class SupplierTypeService extends Service<SupplierType> {
         if(!value || value === '') {
             throw new NotFoundException(`${this.alias} not found`);
         }
-        const item = await this.findOne({ value, withDeleted: true, withThrow: false });
+        const item = await this.findOne({ value, withRelations: true, withDeleted: true, withThrow: false });
 
         if(item) {
             return item;

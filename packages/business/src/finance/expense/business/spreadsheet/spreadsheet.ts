@@ -473,7 +473,7 @@ export default class SpreadsheetBusiness {
                     paid: uploadExpenseParams?.paid,
                     value: result.value,
                     month: uploadExpenseParams?.month,
-                    supplier,
+                    supplier: result.supplier,
                     description: 'Create by Document Import',
                     instalment_number: result.instalment_number,
                 }

@@ -122,7 +122,7 @@ export default class ExpenseBusiness {
     public calculate(expense: Expense): Expense {
         const expenseToCalculate = expense.children?.length > 0 ? this.calculateParent(expense) : expense;
         const monthsCalculated = this.monthsBusiness.calculateAll(expenseToCalculate?.months);
-        expenseToCalculate.paid = monthsCalculated.allPaid;
+        expenseToCalculate.paid = (!expenseToCalculate?.months || expenseToCalculate?.months?.length === 0) ? expense.paid : monthsCalculated.allPaid;
         expenseToCalculate.total = monthsCalculated.total;
         expenseToCalculate.total_paid = monthsCalculated.totalPaid;
         expenseToCalculate.total_pending = monthsCalculated.totalPending;

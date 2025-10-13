@@ -35,8 +35,9 @@ import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { Month } from '../../entities/month.entity';
 
 export type InitializeParams = {
-    value?: number;
+    paid?: ExpenseEntity['paid'];
     type?: ExpenseEntity['type'];
+    value?: number;
     month?: ExpenseEntity['month'];
     expense: Expense;
     fromWorkSheet?: boolean;
@@ -106,10 +107,11 @@ export class ExpenseService extends Service<Expense> {
         });
     }
 
-    async initialize({ type, expense, value = 0, month, fromWorkSheet, instalment_number }: InitializeParams) {
+    async initialize({ paid, type, expense, value = 0, month, fromWorkSheet, instalment_number }: InitializeParams) {
 
         const expenseToInitialize = new ExpenseConstructor({
             ...expense,
+            paid,
             type: type ?? expense.type,
             instalment_number: instalment_number ?? expense.instalment_number,
         })
@@ -142,18 +144,18 @@ export class ExpenseService extends Service<Expense> {
         const currentExpenseCalculated = this.expenseBusiness.calculate(expense);
         const savedExpense = await this.save(currentExpenseCalculated) as Expense;
         const monthList: Array<PersistMonthDto> = months.map((m) => this.monthService.business.generatePersistMonthParams({
-            year: expense?.year,
-            paid: expense?.paid,
+            year: savedExpense?.year,
+            paid: savedExpense?.paid,
             value: value,
             month: m.toUpperCase() as EMonth,
             received_at: expense.created_at
         }))
         const expenseMonths = this.monthService.business.generateMonthListCreationParameters({
-            year: expense?.year,
-            paid: expense?.paid,
+            year: savedExpense?.year,
+            paid: savedExpense?.paid,
             value: value,
             months: monthList,
-            received_at: expense.created_at
+            received_at: savedExpense.created_at
         })
         if(expenseMonths?.length > 0) {
             savedExpense.months = await this.monthService.persistList(expenseMonths, { expense: savedExpense });

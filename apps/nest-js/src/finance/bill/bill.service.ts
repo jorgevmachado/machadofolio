@@ -188,7 +188,7 @@ export class BillService extends Service<Bill> {
             aggregate_name: createdExpense?.aggregate_name,
         }
 
-        const { type, value, month, instalment_number } = createExpenseDto;
+        const { paid, type, value, month, instalment_number } = createExpenseDto;
 
         const {
             nextYear,
@@ -197,6 +197,7 @@ export class BillService extends Service<Bill> {
             expenseForNextYear,
             expenseForCurrentYear,
         } = await this.expenseService.initialize({
+            paid,
             type,
             value,
             month,

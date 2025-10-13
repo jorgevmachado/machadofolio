@@ -1,6 +1,6 @@
 import { serialize } from '../object';
 
-type ReplaceWordParam = {
+export type ReplaceWordParam = {
  before: string;
  after: string;
 }
