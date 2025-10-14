@@ -19,7 +19,7 @@ type GeneratePersistListMonthParams = GeneratePersistMonthParams & {
 type GenerateMonthListCreationParams = GeneratePersistListMonthParams;
 
 export default class MonthBusiness {
-    public generateMonthListUpdateParameters(months?: Array<Month>, monthsToPersist?: Array<PersistMonthParams>): Array<PersistMonthParams> | undefined {
+    public generateMonthListUpdateParameters(months?: Array<Month>, monthsToPersist?: Array<PersistMonthParams>, paid?: boolean): Array<PersistMonthParams> | undefined {
         if ((months && months?.length > 0) && (monthsToPersist && monthsToPersist?.length > 0)) {
             const monthList = monthsToPersist?.filter((m) => {
                 if (!m.code && !m.month) {
@@ -35,7 +35,10 @@ export default class MonthBusiness {
             if (monthList.length <= 0) {
                 return;
             }
-            return monthList;
+            return monthList.map((month) => ({
+                ...month,
+                paid: paid !== undefined ? paid : month.paid
+            }));
         }
         return;
 

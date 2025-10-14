@@ -134,18 +134,18 @@ export class AppService {
     ) {
     }
 
-    async seeds(body: CreateSeedDto, user?: User) {
-        const users: Array<User> = await this.userSeeds(body, user);
-        if(user) {
-            users.push(user);
-        }
-        return {
-            users: users.length,
-            finances: await this.financeSeeds(users, body.finance, user),
-            pokemons: await this.pokemonSeeds(users, body.pokemon),
-            message: 'Seeds successfully',
-        }
-    }
+    // async seeds(body: CreateSeedDto, user?: User) {
+    //     const users: Array<User> = await this.userSeeds(body, user);
+    //     if(user) {
+    //         users.push(user);
+    //     }
+    //     return {
+    //         users: users.length,
+    //         finances: await this.financeSeeds(users, body.finance, user),
+    //         pokemons: await this.pokemonSeeds(users, body.pokemon),
+    //         message: 'Seeds successfully',
+    //     }
+    // }
 
     private async userSeeds(body: CreateSeedDto, user?: User) {
         const users: Array<User> = [];
@@ -175,38 +175,38 @@ export class AppService {
         return users;
     }
 
-    private async financeSeeds(users: Array<User>, createFinanceSeedsDto?: CreateFinanceSeedsDto, user?: User) {
-        if (!createFinanceSeedsDto) {
-            return;
-        }
-        const financeSeederParams = this.createFinanceSeederParams(createFinanceSeedsDto);
-        const {
-            bills,
-            groups,
-            banks,
-            incomes,
-            expenses,
-            finances,
-            suppliers,
-            incomeSources,
-            supplierTypes
-        } = await this.financeService.seeds({
-            user,
-            users,
-            ...financeSeederParams
-        })
-        return {
-            banks: banks.length,
-            bills: bills.length,
-            groups: groups.length,
-            expenses: expenses.length,
-            finances: finances.length,
-            suppliers: suppliers.length,
-            supplierTypes: supplierTypes.length,
-            incomes: incomes.length,
-            incomeSources: incomeSources.length,
-        }
-    }
+    // private async financeSeeds(users: Array<User>, createFinanceSeedsDto?: CreateFinanceSeedsDto, user?: User) {
+    //     if (!createFinanceSeedsDto) {
+    //         return;
+    //     }
+    //     const financeSeederParams = this.createFinanceSeederParams(createFinanceSeedsDto);
+    //     const {
+    //         bills,
+    //         groups,
+    //         banks,
+    //         incomes,
+    //         expenses,
+    //         finances,
+    //         suppliers,
+    //         incomeSources,
+    //         supplierTypes
+    //     } = await this.financeService.seeds({
+    //         user,
+    //         users,
+    //         ...financeSeederParams
+    //     })
+    //     return {
+    //         banks: banks.length,
+    //         bills: bills.length,
+    //         groups: groups.length,
+    //         expenses: expenses.length,
+    //         finances: finances.length,
+    //         suppliers: suppliers.length,
+    //         supplierTypes: supplierTypes.length,
+    //         incomes: incomes.length,
+    //         incomeSources: incomeSources.length,
+    //     }
+    // }
 
     private async pokemonSeeds(users: Array<User>, createPokemonSeedsDto?:CreatePokemonSeedsDto) {
         if(!createPokemonSeedsDto) {
@@ -302,27 +302,27 @@ export class AppService {
         return pokemonSeederParams;
     }
 
-    async generateSeeds(body: CreateSeedDto) {
-        const hasAnySeed = this.hasAnySeed(body);
-
-        if (!hasAnySeed) {
-            return { message: 'No data was selected to generate the Seed.' };
-        }
-
-        const result = this.DEFAULT_SEEDS;
-
-        const auth = await this.authService.generateSeed(Boolean(body.auth));
-        result.auth = {
-            list: auth.list.length,
-            added: auth.added.length,
-        }
-
-        if(body.finance) {
-            result.finance = await this.generateFinanceSeeds(body.finance);
-        }
-
-        return { ...result, message: 'Seed Generate Successfully'};
-    }
+    // async generateSeeds(body: CreateSeedDto) {
+    //     const hasAnySeed = this.hasAnySeed(body);
+    //
+    //     if (!hasAnySeed) {
+    //         return { message: 'No data was selected to generate the Seed.' };
+    //     }
+    //
+    //     const result = this.DEFAULT_SEEDS;
+    //
+    //     const auth = await this.authService.generateSeed(Boolean(body.auth));
+    //     result.auth = {
+    //         list: auth.list.length,
+    //         added: auth.added.length,
+    //     }
+    //
+    //     if(body.finance) {
+    //         result.finance = await this.generateFinanceSeeds(body.finance);
+    //     }
+    //
+    //     return { ...result, message: 'Seed Generate Successfully'};
+    // }
 
     private hasAnySeed(body: CreateSeedDto): boolean {
         return Object.values(body).some(value => {
@@ -333,37 +333,37 @@ export class AppService {
         });
     }
 
-    private async generateFinanceSeeds(seedsDto: CreateFinanceSeedsDto) {
-        const result = await this.financeService.generateSeeds(seedsDto);
-        return this.mapperFinanceSeedsResult(result);
-    }
+    // private async generateFinanceSeeds(seedsDto: CreateFinanceSeedsDto) {
+    //     const result = await this.financeService.generateSeeds(seedsDto);
+    //     return this.mapperFinanceSeedsResult(result);
+    // }
 
-    async persistSeeds(body: CreateSeedDto) {
-        const hasAnySeed = this.hasAnySeed(body);
+    // async persistSeeds(body: CreateSeedDto) {
+    //     const hasAnySeed = this.hasAnySeed(body);
+    //
+    //     if (!hasAnySeed) {
+    //         return { message: 'No data was selected to persist the Seed.' };
+    //     }
+    //
+    //     const result = this.DEFAULT_SEEDS;
+    //
+    //     if(body.finance) {
+    //         result.finance = await this.persistFinanceSeeds(body.finance);
+    //     }
+    //
+    //     const auth = await this.authService.persistSeed(Boolean(body.auth));
+    //     result.auth = {
+    //         list: auth.list.length,
+    //         added: auth.added.length,
+    //     }
+    //
+    //     return { ...result, message: 'Seed Persist Successfully'};
+    // }
 
-        if (!hasAnySeed) {
-            return { message: 'No data was selected to persist the Seed.' };
-        }
-
-        const result = this.DEFAULT_SEEDS;
-
-        if(body.finance) {
-            result.finance = await this.persistFinanceSeeds(body.finance);
-        }
-
-        const auth = await this.authService.persistSeed(Boolean(body.auth));
-        result.auth = {
-            list: auth.list.length,
-            added: auth.added.length,
-        }
-
-        return { ...result, message: 'Seed Persist Successfully'};
-    }
-
-    private async persistFinanceSeeds(seedsDto: CreateFinanceSeedsDto) {
-        const result = await this.financeService.persistSeeds(seedsDto);
-        return this.mapperFinanceSeedsResult(result);
-    }
+    // private async persistFinanceSeeds(seedsDto: CreateFinanceSeedsDto) {
+    //     const result = await this.financeService.persistSeeds(seedsDto);
+    //     return this.mapperFinanceSeedsResult(result);
+    // }
 
     private mapperFinanceSeedsResult(generateSeeds: FinanceGenerateSeeds): FinanceSeedsResult {
         const {

@@ -1,4 +1,14 @@
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, MaxLength } from 'class-validator';
+import {
+    IsArray,
+    IsBoolean,
+    IsDate,
+    IsEnum,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    MaxLength,
+    ValidateNested
+} from 'class-validator';
 
 import { EMonth } from '@repo/services';
 
@@ -8,9 +18,10 @@ import { IsNameDependingOnParent } from '../../../../decorators/name-depending-p
 
 import { Supplier } from '../../../entities/supplier.entity';
 import { Expense } from '../../../entities/expense.entity';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
+import { PersistMonthDto } from '../../../month/dto/persist-month.dto';
 
-export class CreateExpenseDto implements CreateExpenseParams {
+export class CreateExpenseDto {
     @IsNotEmpty()
     @IsEnum(EExpenseType)
     type!: EExpenseType;
@@ -19,13 +30,19 @@ export class CreateExpenseDto implements CreateExpenseParams {
     @IsBoolean()
     paid?: boolean;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber({ maxDecimalPlaces: 2 })
     value?: number;
 
     @IsOptional()
     @IsEnum(EMonth)
     month?: EMonth;
+
+    @IsOptional()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => PersistMonthDto)
+    months?: Array<PersistMonthDto>;
 
     @IsNotEmpty()
     @MaxLength(200)

@@ -31,6 +31,11 @@ export type TMonth =
     | 'november'
     | 'december';
 
+type SplitMonthsByInstallmentResult = {
+    monthsForNextYear: Array<EMonth>;
+    monthsForCurrentYear: Array<EMonth>;
+}
+
 export const MONTHS: Array<TMonth> = [
     'january',
     'february',
@@ -128,7 +133,6 @@ export function getMonthNumber(month?: string): number {
     return MONTHS.indexOf(month?.toLowerCase() as TMonth) + 1;
 }
 
-
 export function getCurrentMonthNumber(month?: number | string): number {
     switch (typeof month) {
         case 'number':
@@ -148,4 +152,26 @@ export function convertTypeToEnum(month?: TMonth): EMonth {
         return EMonth.JANUARY;
     }
     return month.toUpperCase() as EMonth;
+}
+
+export function splitMonthsByInstalment(year: number, instalments: number, month?: EMonth): SplitMonthsByInstallmentResult {
+    const currentMonth = month ?? getCurrentMonth();
+
+    const startMonthIndex = getMonthIndex(currentMonth);
+
+    const monthsForCurrentYear: Array<EMonth> = [];
+    const monthsForNextYear: Array<EMonth> = [];
+
+    for (let i = 0; i < instalments; i++) {
+        const monthIndex = (startMonthIndex + i) % 12;
+        const currentYear = year + Math.floor((startMonthIndex + i) / 12);
+
+        if (currentYear === year) {
+            monthsForCurrentYear.push(convertTypeToEnum(getMonthByIndex(monthIndex)));
+        } else {
+            monthsForNextYear.push(convertTypeToEnum(getMonthByIndex(monthIndex)));
+        }
+    }
+
+    return { monthsForCurrentYear, monthsForNextYear };
 }

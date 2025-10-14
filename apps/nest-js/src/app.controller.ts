@@ -13,20 +13,20 @@ export class AppController {
   constructor(private readonly service: AppService) {
   }
 
-  @Post('seeds')
-  seeds(@Body() body: CreateSeedDto, @GetUserAuth() user?: User) {
-    return this.service.seeds(body, user);
-  }
-
-    @Post('generate-seeds')
-    generateSeeds(@Body() body: CreateSeedDto) {
-        return this.service.generateSeeds(body);
-    }
-
-    @Post('persist-seeds')
-    persistSeeds(@Body() body: CreateSeedDto) {
-        return this.service.persistSeeds(body);
-    }
+  // @Post('seeds')
+  // seeds(@Body() body: CreateSeedDto, @GetUserAuth() user?: User) {
+  //   return this.service.seeds(body, user);
+  // }
+  //
+  //   @Post('generate-seeds')
+  //   generateSeeds(@Body() body: CreateSeedDto) {
+  //       return this.service.generateSeeds(body);
+  //   }
+  //
+  //   @Post('persist-seeds')
+  //   persistSeeds(@Body() body: CreateSeedDto) {
+  //       return this.service.persistSeeds(body);
+  //   }
 
 
 }

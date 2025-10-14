@@ -17,7 +17,6 @@ export class UpdateExpenseDto implements UpdateExpenseParams {
     paid?: boolean;
 
     @IsOptional()
-    @MaxLength(200)
     supplier?: string | Supplier;
 
     @IsOptional()

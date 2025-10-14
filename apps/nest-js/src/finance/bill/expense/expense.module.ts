@@ -9,6 +9,7 @@ import { MonthModule } from '../../month/month.module';
 import { SupplierModule } from '../../supplier/supplier.module';
 
 import { ExpenseService } from './expense.service';
+import { ExpenseController } from './expense.controller';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ExpenseService } from './expense.service';
     SupplierModule,
     MonthModule
   ],
+  controllers: [ExpenseController],
   providers: [ExpenseService, ExpenseBusiness],
   exports: [ExpenseService],
 })

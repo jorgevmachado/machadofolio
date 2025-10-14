@@ -30,7 +30,7 @@ import { Month } from '../entities/month.entity';
 import { BankService } from '../bank/bank.service';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { CreateExpenseDto } from './expense/dto/create-expense.dto';
-import { BuildExpensePersistenceResult, ExpenseService, PersistExpenseParams, } from './expense/expense.service';
+import { ExpenseService } from './expense/expense.service';
 import { GroupService } from '../group/group.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
@@ -139,28 +139,6 @@ export class BillService extends Service<Bill> {
         return await this.customSave(updatedBill);
     }
 
-    private async customSave(bill: Bill, withThrow = true) {
-        const existBill = await this.findOne({
-            value: bill.name,
-            filters: [{
-                value: bill.year,
-                param: 'year',
-                condition: '='
-            }],
-            withThrow: false,
-        });
-        if (existBill) {
-            if (withThrow) {
-                throw new ConflictException(
-                    `Key (name)=(${bill.name}) already exists with this (year)=(${bill.year}).`,
-                );
-            }
-            return existBill;
-        }
-        const calculatedBill = this.billBusiness.calculate(bill);
-        return await this.save(calculatedBill);
-    }
-
     async remove(param: string) {
         const result = await this.findOne({
             value: param,
@@ -175,104 +153,6 @@ export class BillService extends Service<Bill> {
         }
         await this.repository.softRemove(result);
         return { message: 'Successfully removed' };
-    }
-
-    async addExpense(param: string, createExpenseDto: CreateExpenseDto, billEntity?: Bill, fromWorkSheet?: boolean) {
-        const bill = !billEntity ? await this.findOne({ value: param, withRelations: true }) as Bill : billEntity;
-
-        const expense = await this.buildExpenseToCreate(bill, createExpenseDto);
-
-        const { paid, type, value, month, instalment_number } = createExpenseDto;
-
-        const {
-            nextYear,
-            requiresNewBill,
-            monthsForNextYear,
-            expenseForNextYear,
-            expenseForCurrentYear,
-        } = await this.expenseService.initialize({
-            paid,
-            type,
-            value,
-            month,
-            expense,
-            fromWorkSheet,
-            instalment_number,
-        });
-
-        if (requiresNewBill && expenseForNextYear) {
-            const newBill = (await this.createNewBillForNextYear(
-                nextYear,
-                bill,
-            )) as Bill;
-
-            const existingExpense = await this.existExpenseInBill({
-                year: nextYear,
-                nameCode: expenseForNextYear.name_code,
-                withThrow: false,
-            });
-
-            await this.expenseService.addExpenseForNextYear(newBill, monthsForNextYear, expenseForNextYear, existingExpense, createExpenseDto.value);
-        }
-
-        return expenseForCurrentYear;
-    }
-
-    private async existExpenseInBill({
-                                         year,
-                                         nameCode,
-                                         withThrow = true,
-                                         fallBackMessage = 'You cannot add this expense because it is already in use.',
-                                     }: ExistExpenseInBill) {
-        const filters: Array<FilterParams> = [
-            {
-                value: nameCode,
-                param: 'expenses.name_code',
-                relation: true,
-                condition: 'LIKE',
-            },
-        ];
-        if (year) {
-            filters.push({
-                value: year,
-                param: 'expenses.year',
-                relation: true,
-                condition: '=',
-            });
-        }
-
-        const result = (await this.findAll({ filters, withRelations: true })) as Array<Bill>;
-
-        if (withThrow && result.length) {
-            throw this.error(new ConflictException(fallBackMessage));
-        }
-
-        return result[0]?.expenses?.[0];
-    }
-
-    private async createNewBillForNextYear(year: number, bill: Bill) {
-        const currentBill = new BillConstructor({
-            ...bill,
-            id: undefined,
-            year,
-            expenses: [],
-        });
-        return await this.customSave(currentBill, false);
-    }
-
-    async findOneExpense(param: string, expenseId: string) {
-        const bill = await this.findOne({ value: param }) as Bill;
-        return await this.expenseService.findOne({
-            value: expenseId,
-            withRelations: true,
-            filters: [
-                {
-                    value: bill.id,
-                    param: 'bill',
-                    condition: '=',
-                },
-            ],
-        });
     }
 
     async findAllExpense(param: string, params: ListParams) {
@@ -295,382 +175,421 @@ export class BillService extends Service<Bill> {
         });
     }
 
-    async removeExpense(param: string, expenseId: string) {
-        const expense = await this.findOneExpense(param, expenseId) as Expense;
-        await this.expenseService.softRemove(expense);
-        return { message: 'Successfully removed' };
-    }
-
-    async updateExpense(param: string, expenseId: string, updateExpenseDto: UpdateExpenseDto) {
-        const bill = await this.findOne({ value: param }) as Bill;
-        return await this.expenseService.update(bill, expenseId, updateExpenseDto);
-    }
-
-    async seeds({
-                    finance,
-                    banks,
-                    groups,
-                    billListJson: seedsJson
-                }: BillSeederParams) {
-        const billListSeed = this.seeder.currentSeeds<Bill>({ seedsJson });
-        const financeBillListSeed = filterByCommonKeys<Bill>('id', billListSeed, finance.bills ?? []);
-        return this.seeder.entities({
-            by: 'id',
-            key: 'id',
-            label: 'Bill',
-            seeds: financeBillListSeed,
-            withReturnSeed: true,
-            createdEntityFn: async (item) => {
-                const bank = this.seeder.getRelation<Bank>({
-                    key: 'name',
-                    list: banks,
-                    param: item?.bank?.name,
-                    relation: 'Bank'
-                });
-
-                const group = this.seeder.getRelation<Group>({
-                    key: 'name',
-                    list: groups,
-                    param: item?.group?.name,
-                    relation: 'Group'
-                });
-
-                return new BillConstructor({
-                    ...item,
-                    finance,
-                    bank,
-                    group,
-                    expenses: undefined,
-                })
-            }
-        });
-    }
-
-
-    async spreadsheetProcessing(params: SpreadsheetProcessingParams) {
-        const currentYear = params.year ?? new Date().getFullYear();
-        const bills = await this.findAllByGroupYear(params.groupId, currentYear);
-
-        const detailTables = [
-            EBillType.BANK_SLIP,
-            EBillType.ACCOUNT_DEBIT,
-            EBillType.PIX,
-            EBillType.CREDIT_CARD,
-        ];
-
-        this.billBusiness.spreadsheetProcessing({
-            ...params,
-            year: currentYear,
-            data: bills,
-            summary: true,
-            detailTables,
-            summaryTitle: 'Summary',
-            detailTablesHeader: ['month', 'value', 'paid'],
-            summaryTableHeader: ['type', 'bank', ...MONTHS, 'paid', 'total'],
-            allExpensesHaveBeenPaid: this.expenseService.business.allHaveBeenPaid,
-            buildExpensesTablesParams: this.expenseService.business.spreadsheet.buildTablesParams
-        })
-    }
-
-    private async findAllByGroupYear(groupId: string, year: number) {
-        const bills = await this.findAll({
-            filters: [
-                {
-                    value: groupId,
-                    param: 'group',
-                    condition: '='
-                },
-                {
-                    value: year,
-                    param: 'year',
-                    condition: '='
-                }
-            ],
-            withRelations: true
-        });
-
-        if (Array.isArray(bills)) {
-            return bills;
-        }
-        return [];
-    }
-
-    private async createToSheet(params: CreateToSheetParams) {
-        const year = Number(params['year']);
-        const type = params['type'] as EBillType;
-        const groupName = params['group']?.toString() || '';
-        const bankName = params['bank']?.toString() || '';
-        const currentName = `${groupName} ${snakeCaseToNormal(type)}`;
-        const name = type === EBillType.CREDIT_CARD ? `${currentName} ${bankName}` : currentName;
-        const item = await this.findOne({
-            value: name,
-            filters: [{
-                value: year,
-                param: 'year',
-                condition: '='
-            }],
-            withDeleted: true,
-            withThrow: false
-        });
-
-        if (item) {
-            return item;
-        }
-
-        const finance = params.finance;
-        const bank = await this.bankService.createToSheet(bankName) as Bank;
-
-        const group = await this.groupService.createToSheet(finance, groupName) as Group;
-
-        const bill = new BillConstructor({
-            name,
-            year,
-            type,
-            finance,
-            bank,
-            group,
-        })
-
-        return await this.save(bill);
-    }
-
-
-    async initializeBySpreadsheet(buffer: Buffer<ArrayBufferLike>, finance: Finance): Promise<Array<{
-        groupName: string;
-        bills: number;
-        expenses: number;
-    }>> {
-        const result: Array<{ groupName: string; bills: number; expenses: number; }> = [];
-        const spreadsheet = new Spreadsheet();
-        const worksheets = await spreadsheet.loadFile(buffer);
-
-        for (const worksheet of worksheets) {
-            if (!worksheet) {
-                throw new ConflictException('The Excel file does not contain any worksheets.');
-            }
-            spreadsheet.updateWorkSheet(worksheet);
-            const { groupName, expenses, bills } = await this.initializeWithWorksheet(spreadsheet, finance);
-            result.push({ groupName, bills: bills.length, expenses: expenses.length });
-        }
-        return result;
-    }
-
-    private async initializeWithWorksheet(spreadsheet: Spreadsheet, finance: Finance): Promise<{
-        groupName: string;
-        bills: Array<Bill>;
-        expenses: Array<Expense>;
-    }> {
-        const { year, groupName, nextRow: titleNextRow } = this.billBusiness.getWorkSheetTitle({
-            row: 2,
-            column: 2,
-            workSheet: spreadsheet.workSheet,
-        });
-        const summaryCell = spreadsheet.workSheet.cell(titleNextRow, 2);
-        const summaryCellValue = summaryCell.value ? summaryCell.value.toString().trim() : '';
-        const summaryCellNextRow = Number(summaryCell.row) + 1;
-
-        if (summaryCellValue !== 'Summary') {
-            throw new ConflictException(
-                `The worksheet does not contain a summary table. The worksheet must contain a summary table with the title "Summary".`,
-            );
-        }
-
-        const { bills, nextRow } = await this.getBillsFromSheet(
-            spreadsheet,
-            titleNextRow,
-            summaryCellNextRow,
-            year,
-            groupName,
-            finance,
-        )
-
-        const expenses: Array<Expense> = await this.expenseService.getExpensesFromSheet(
-            year,
-            spreadsheet,
-            bills,
-            groupName,
-            nextRow
-        );
-
-        return {
-            groupName,
-            bills,
-            expenses,
-        }
-    }
-
-
-    private async getBillsFromSheet(
-        spreadsheet: Spreadsheet,
-        titleNextRow: number,
-        summaryCellNextRow: number,
-        year: number,
-        groupName: string,
-        finance: Finance
-    ): Promise<{ bills: Array<Bill>; nextRow: number }> {
-        const tableHeader = ['type', 'bank', ...MONTHS, 'paid', 'total'];
-        const filterTitle = ['TOTAL'];
+    async addExpense(value: string, createExpenseDto: CreateExpenseDto) {
+        const bill = await this.findOne({ value, withRelations: true }) as Bill;
         const {
-            data,
-            nextRow
-        } = spreadsheet.parseExcelRowsToObjectList(summaryCellNextRow, titleNextRow, filterTitle, tableHeader);
+            nextYear,
+            requiresNewBill,
+            monthsForNextYear,
+            expenseForNextYear,
+            expenseForCurrentYear
+        } = await this.expenseService.create(bill, createExpenseDto);
 
-        if (nextRow === titleNextRow) {
-            return { bills: [], nextRow };
+        if(requiresNewBill && expenseForNextYear) {
+            const newBill = await this.create(
+                bill.finance,
+                { ...bill, year: nextYear }
+            ) as Bill;
+
+            await this.expenseService.create(newBill, { ...expenseForNextYear, months: monthsForNextYear })
         }
 
-        const bills: Array<Bill> = [];
-
-        for (const item of data) {
-            const type = !item['type'] ? 'bank_slip' : item['type'].toString();
-
-            const bill = await this.createToSheet({
-                ...item,
-                type: toSnakeCase(type).toUpperCase(),
-                year,
-                group: groupName,
-                finance
-            }) as Bill;
-
-            bills.push(bill);
-        }
-
-        return { bills, nextRow };
-    }
-
-    async persistExpenseByUpload(file: Express.Multer.File, param: string, uploadExpenseDto: UploadExpenseDto) {
-        if (!file?.buffer) {
-            throw new ConflictException('File not sent or invalid.');
-        }
-
-        const bill = await this.findOne({ value: param, withRelations: true }) as Bill;
-
-        const spreadsheet = new Spreadsheet();
-
-        const worksheets = await spreadsheet.loadFile(file.buffer);
-
-        const expenses: Array<Expense> = [];
-
-        for (const worksheet of worksheets) {
-            if (!worksheet) {
-                throw new ConflictException('The Excel file does not contain any worksheets.');
-            }
-            spreadsheet.updateWorkSheet(worksheet);
-            const workSheet = spreadsheet.workSheet;
-            const createdExpenses = this.expenseService.business.spreadsheet.buildForCreation(workSheet, uploadExpenseDto);
-            const listOfCreatedExpensesBuilt = await this.expenseService.buildForCreationBySpreadsheet(createdExpenses);
-            const listExpense = await this.addExpensesByUpload(bill, listOfCreatedExpensesBuilt);
-            expenses.push(...listExpense);
-        }
-
-        return expenses;
-    }
-
-    private async addExpensesByUpload(bill: Bill, listCreateExpenseDto: Array<CreateExpenseDto>) {
-        const expenses: Array<Expense> = [];
-        for (const createExpenseDto of listCreateExpenseDto) {
-            const expense = await this.addExpense(bill.id, createExpenseDto, bill, true) as Expense;
-            expenses.push(expense);
-        }
-        return expenses;
-    }
-
-    async generateSeeds(withBill: boolean, withExpense: boolean, financeSeedsDir: string): Promise<BillGenerateSeeds> {
-        const { months, expenses } = await this.expenseService.generateSeeds(withExpense, financeSeedsDir);
-        const bills = await this.generateEntitySeeds({
-            seedsDir: financeSeedsDir,
-            staging: BILL_LIST_STAGING_JSON,
-            withSeed: !(!withBill && !withExpense),
-            production: BILL_LIST_PRODUCTION_JSON,
-            development: BILL_LIST_DEVELOPMENT_JSON,
-            withRelations: true,
-            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.expenses === item.expenses
-        })
-
-        return { bills, months, expenses }
-    }
-
-    async persistSeeds(withBill: boolean, withExpense: boolean) {
-        const bills = await this.persistEntitySeeds({
-            withSeed: !(!withBill && !withExpense),
-            staging: BILL_LIST_STAGING_JSON,
-            production: BILL_LIST_PRODUCTION_JSON,
-            development: BILL_LIST_DEVELOPMENT_JSON,
-        })
-
-        const { months, expenses } = await this.expenseService.persistSeeds(withExpense);
-
-        return {
-            bills,
-            months,
-            expenses
-        }
-    }
-
-    private async buildExpenseToCreate(bill: Bill, createExpenseDto: CreateExpenseDto) {
-        const createdExpense = await this.expenseService.buildForCreation(
-            bill,
-            createExpenseDto,
-        );
-
-        const existExpense = await this.existExpenseInBill({
-            year: createdExpense.year,
-            nameCode: createdExpense.name_code,
-            withThrow: false,
-        });
-
-        const currentExistExpense = !existExpense ? undefined : {
-            ...existExpense,
-            parent: createdExpense?.parent,
-            is_aggregate: createdExpense?.is_aggregate,
-            aggregate_name: createdExpense?.aggregate_name,
-        }
-
-        return !currentExistExpense ? createdExpense : currentExistExpense;
+        return expenseForCurrentYear;
     }
 
     async persistMultipleExpensesByUpload(files: Express.Multer.File[], param: string, uploadsExpenseDto: UploadsExpenseDto) {
         const bill = await this.findOne({ value: param, withRelations: true }) as Bill;
-
-        const buildExpensePersistenceResult: Array<BuildExpensePersistenceResult> = [];
-
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-
-            if (!file || !file?.buffer) {
-                throw new ConflictException('one of the files was not uploaded or is invalid.');
-            }
-
-            const month = uploadsExpenseDto?.months?.[i];
-
-            const uploadExpenseDto: UploadExpenseDto = {
-                file: '',
-                paid: uploadsExpenseDto?.paid?.[i],
-                month: !month ? convertTypeToEnum(getMonthByIndex(i)) : month,
-                replaceWords: uploadsExpenseDto?.replaceWords,
-                repeatedWords: uploadsExpenseDto?.repeatedWords
-            }
-
-            const expensesBuilt = await this.expenseService.buildExpensesToUpload(file.buffer, uploadExpenseDto);
-
-            const persistenceOfConstructedExpenses = this.expenseService.buildExpensePersistence(bill.year, expensesBuilt);
-            buildExpensePersistenceResult.push(...persistenceOfConstructedExpenses);
-        }
-
-        const cleanPersistExpenseParamsBuilt = this.expenseService.cleanRepeatedPersistExpenseParams(buildExpensePersistenceResult);
-
-        const expenses: Array<Expense> = [];
-
-        for (const persistExpenseParams of cleanPersistExpenseParamsBuilt) {
-            const expense = await this.persistExpense(bill, persistExpenseParams) as Expense;
-            expenses.push(expense);
-        }
-
-        return expenses;
+        return this.expenseService.uploads(bill, files, uploadsExpenseDto);
     }
 
-    private async persistExpense(bill: Bill, persistExpenseParams: PersistExpenseParams) {
-        const expenseToPersist = await this.buildExpenseToCreate(bill, persistExpenseParams) as Expense;
-        return await this.expenseService.persistByUpload(expenseToPersist, persistExpenseParams);
+    private async customSave(bill: Bill, withThrow = true) {
+        const existBill = await this.findOne({
+            value: bill.name,
+            filters: [{
+                value: bill.year,
+                param: 'year',
+                condition: '='
+            }],
+            withThrow: false,
+        });
+        if (existBill) {
+            if (withThrow) {
+                throw new ConflictException(
+                    `Key (name)=(${bill.name}) already exists with this (year)=(${bill.year}).`,
+                );
+            }
+            return existBill;
+        }
+        const calculatedBill = this.billBusiness.calculate(bill);
+        return await this.save(calculatedBill);
     }
+
+    //
+    // async seeds({
+    //                 finance,
+    //                 banks,
+    //                 groups,
+    //                 billListJson: seedsJson
+    //             }: BillSeederParams) {
+    //     const billListSeed = this.seeder.currentSeeds<Bill>({ seedsJson });
+    //     const financeBillListSeed = filterByCommonKeys<Bill>('id', billListSeed, finance.bills ?? []);
+    //     return this.seeder.entities({
+    //         by: 'id',
+    //         key: 'id',
+    //         label: 'Bill',
+    //         seeds: financeBillListSeed,
+    //         withReturnSeed: true,
+    //         createdEntityFn: async (item) => {
+    //             const bank = this.seeder.getRelation<Bank>({
+    //                 key: 'name',
+    //                 list: banks,
+    //                 param: item?.bank?.name,
+    //                 relation: 'Bank'
+    //             });
+    //
+    //             const group = this.seeder.getRelation<Group>({
+    //                 key: 'name',
+    //                 list: groups,
+    //                 param: item?.group?.name,
+    //                 relation: 'Group'
+    //             });
+    //
+    //             return new BillConstructor({
+    //                 ...item,
+    //                 finance,
+    //                 bank,
+    //                 group,
+    //                 expenses: undefined,
+    //             })
+    //         }
+    //     });
+    // }
+    //
+    //
+    // async spreadsheetProcessing(params: SpreadsheetProcessingParams) {
+    //     const currentYear = params.year ?? new Date().getFullYear();
+    //     const bills = await this.findAllByGroupYear(params.groupId, currentYear);
+    //
+    //     const detailTables = [
+    //         EBillType.BANK_SLIP,
+    //         EBillType.ACCOUNT_DEBIT,
+    //         EBillType.PIX,
+    //         EBillType.CREDIT_CARD,
+    //     ];
+    //
+    //     this.billBusiness.spreadsheetProcessing({
+    //         ...params,
+    //         year: currentYear,
+    //         data: bills,
+    //         summary: true,
+    //         detailTables,
+    //         summaryTitle: 'Summary',
+    //         detailTablesHeader: ['month', 'value', 'paid'],
+    //         summaryTableHeader: ['type', 'bank', ...MONTHS, 'paid', 'total'],
+    //         allExpensesHaveBeenPaid: this.expenseService.business.allHaveBeenPaid,
+    //         buildExpensesTablesParams: this.expenseService.business.spreadsheet.buildTablesParams
+    //     })
+    // }
+    //
+    // private async findAllByGroupYear(groupId: string, year: number) {
+    //     const bills = await this.findAll({
+    //         filters: [
+    //             {
+    //                 value: groupId,
+    //                 param: 'group',
+    //                 condition: '='
+    //             },
+    //             {
+    //                 value: year,
+    //                 param: 'year',
+    //                 condition: '='
+    //             }
+    //         ],
+    //         withRelations: true
+    //     });
+    //
+    //     if (Array.isArray(bills)) {
+    //         return bills;
+    //     }
+    //     return [];
+    // }
+    //
+    // private async createToSheet(params: CreateToSheetParams) {
+    //     const year = Number(params['year']);
+    //     const type = params['type'] as EBillType;
+    //     const groupName = params['group']?.toString() || '';
+    //     const bankName = params['bank']?.toString() || '';
+    //     const currentName = `${groupName} ${snakeCaseToNormal(type)}`;
+    //     const name = type === EBillType.CREDIT_CARD ? `${currentName} ${bankName}` : currentName;
+    //     const item = await this.findOne({
+    //         value: name,
+    //         filters: [{
+    //             value: year,
+    //             param: 'year',
+    //             condition: '='
+    //         }],
+    //         withDeleted: true,
+    //         withThrow: false
+    //     });
+    //
+    //     if (item) {
+    //         return item;
+    //     }
+    //
+    //     const finance = params.finance;
+    //     const bank = await this.bankService.createToSheet(bankName) as Bank;
+    //
+    //     const group = await this.groupService.createToSheet(finance, groupName) as Group;
+    //
+    //     const bill = new BillConstructor({
+    //         name,
+    //         year,
+    //         type,
+    //         finance,
+    //         bank,
+    //         group,
+    //     })
+    //
+    //     return await this.save(bill);
+    // }
+    //
+    //
+    // async initializeBySpreadsheet(buffer: Buffer<ArrayBufferLike>, finance: Finance): Promise<Array<{
+    //     groupName: string;
+    //     bills: number;
+    //     expenses: number;
+    // }>> {
+    //     const result: Array<{ groupName: string; bills: number; expenses: number; }> = [];
+    //     const spreadsheet = new Spreadsheet();
+    //     const worksheets = await spreadsheet.loadFile(buffer);
+    //
+    //     for (const worksheet of worksheets) {
+    //         if (!worksheet) {
+    //             throw new ConflictException('The Excel file does not contain any worksheets.');
+    //         }
+    //         spreadsheet.updateWorkSheet(worksheet);
+    //         const { groupName, expenses, bills } = await this.initializeWithWorksheet(spreadsheet, finance);
+    //         result.push({ groupName, bills: bills.length, expenses: expenses.length });
+    //     }
+    //     return result;
+    // }
+    //
+    // private async initializeWithWorksheet(spreadsheet: Spreadsheet, finance: Finance): Promise<{
+    //     groupName: string;
+    //     bills: Array<Bill>;
+    //     expenses: Array<Expense>;
+    // }> {
+    //     const { year, groupName, nextRow: titleNextRow } = this.billBusiness.getWorkSheetTitle({
+    //         row: 2,
+    //         column: 2,
+    //         workSheet: spreadsheet.workSheet,
+    //     });
+    //     const summaryCell = spreadsheet.workSheet.cell(titleNextRow, 2);
+    //     const summaryCellValue = summaryCell.value ? summaryCell.value.toString().trim() : '';
+    //     const summaryCellNextRow = Number(summaryCell.row) + 1;
+    //
+    //     if (summaryCellValue !== 'Summary') {
+    //         throw new ConflictException(
+    //             `The worksheet does not contain a summary table. The worksheet must contain a summary table with the title "Summary".`,
+    //         );
+    //     }
+    //
+    //     const { bills, nextRow } = await this.getBillsFromSheet(
+    //         spreadsheet,
+    //         titleNextRow,
+    //         summaryCellNextRow,
+    //         year,
+    //         groupName,
+    //         finance,
+    //     )
+    //
+    //     const expenses: Array<Expense> = await this.expenseService.getExpensesFromSheet(
+    //         year,
+    //         spreadsheet,
+    //         bills,
+    //         groupName,
+    //         nextRow
+    //     );
+    //
+    //     return {
+    //         groupName,
+    //         bills,
+    //         expenses,
+    //     }
+    // }
+    //
+    //
+    // private async getBillsFromSheet(
+    //     spreadsheet: Spreadsheet,
+    //     titleNextRow: number,
+    //     summaryCellNextRow: number,
+    //     year: number,
+    //     groupName: string,
+    //     finance: Finance
+    // ): Promise<{ bills: Array<Bill>; nextRow: number }> {
+    //     const tableHeader = ['type', 'bank', ...MONTHS, 'paid', 'total'];
+    //     const filterTitle = ['TOTAL'];
+    //     const {
+    //         data,
+    //         nextRow
+    //     } = spreadsheet.parseExcelRowsToObjectList(summaryCellNextRow, titleNextRow, filterTitle, tableHeader);
+    //
+    //     if (nextRow === titleNextRow) {
+    //         return { bills: [], nextRow };
+    //     }
+    //
+    //     const bills: Array<Bill> = [];
+    //
+    //     for (const item of data) {
+    //         const type = !item['type'] ? 'bank_slip' : item['type'].toString();
+    //
+    //         const bill = await this.createToSheet({
+    //             ...item,
+    //             type: toSnakeCase(type).toUpperCase(),
+    //             year,
+    //             group: groupName,
+    //             finance
+    //         }) as Bill;
+    //
+    //         bills.push(bill);
+    //     }
+    //
+    //     return { bills, nextRow };
+    // }
+    //
+    // async persistExpenseByUpload(file: Express.Multer.File, param: string, uploadExpenseDto: UploadExpenseDto) {
+    //     if (!file?.buffer) {
+    //         throw new ConflictException('File not sent or invalid.');
+    //     }
+    //
+    //     const bill = await this.findOne({ value: param, withRelations: true }) as Bill;
+    //
+    //     const spreadsheet = new Spreadsheet();
+    //
+    //     const worksheets = await spreadsheet.loadFile(file.buffer);
+    //
+    //     const expenses: Array<Expense> = [];
+    //
+    //     for (const worksheet of worksheets) {
+    //         if (!worksheet) {
+    //             throw new ConflictException('The Excel file does not contain any worksheets.');
+    //         }
+    //         spreadsheet.updateWorkSheet(worksheet);
+    //         const workSheet = spreadsheet.workSheet;
+    //         const createdExpenses = this.expenseService.business.spreadsheet.buildForCreation(workSheet, uploadExpenseDto);
+    //         const listOfCreatedExpensesBuilt = await this.expenseService.buildForCreationBySpreadsheet(createdExpenses);
+    //         const listExpense = await this.addExpensesByUpload(bill, listOfCreatedExpensesBuilt);
+    //         expenses.push(...listExpense);
+    //     }
+    //
+    //     return expenses;
+    // }
+    //
+    // private async addExpensesByUpload(bill: Bill, listCreateExpenseDto: Array<CreateExpenseDto>) {
+    //     const expenses: Array<Expense> = [];
+    //     for (const createExpenseDto of listCreateExpenseDto) {
+    //         const expense = await this.addExpense(bill.id, createExpenseDto, bill, true) as Expense;
+    //         expenses.push(expense);
+    //     }
+    //     return expenses;
+    // }
+    //
+    // async generateSeeds(withBill: boolean, withExpense: boolean, financeSeedsDir: string): Promise<BillGenerateSeeds> {
+    //     const { months, expenses } = await this.expenseService.generateSeeds(withExpense, financeSeedsDir);
+    //     const bills = await this.generateEntitySeeds({
+    //         seedsDir: financeSeedsDir,
+    //         staging: BILL_LIST_STAGING_JSON,
+    //         withSeed: !(!withBill && !withExpense),
+    //         production: BILL_LIST_PRODUCTION_JSON,
+    //         development: BILL_LIST_DEVELOPMENT_JSON,
+    //         withRelations: true,
+    //         filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.expenses === item.expenses
+    //     })
+    //
+    //     return { bills, months, expenses }
+    // }
+    //
+    // async persistSeeds(withBill: boolean, withExpense: boolean) {
+    //     const bills = await this.persistEntitySeeds({
+    //         withSeed: !(!withBill && !withExpense),
+    //         staging: BILL_LIST_STAGING_JSON,
+    //         production: BILL_LIST_PRODUCTION_JSON,
+    //         development: BILL_LIST_DEVELOPMENT_JSON,
+    //     })
+    //
+    //     const { months, expenses } = await this.expenseService.persistSeeds(withExpense);
+    //
+    //     return {
+    //         bills,
+    //         months,
+    //         expenses
+    //     }
+    // }
+    //
+    // private async buildExpenseToCreate(bill: Bill, createExpenseDto: CreateExpenseDto) {
+    //     const createdExpense = await this.expenseService.buildForCreation(
+    //         bill,
+    //         createExpenseDto,
+    //     );
+    //
+    //     const existExpense = await this.existExpenseInBill({
+    //         year: createdExpense.year,
+    //         nameCode: createdExpense.name_code,
+    //         withThrow: false,
+    //     });
+    //
+    //     const currentExistExpense = !existExpense ? undefined : {
+    //         ...existExpense,
+    //         parent: createdExpense?.parent,
+    //         is_aggregate: createdExpense?.is_aggregate,
+    //         aggregate_name: createdExpense?.aggregate_name,
+    //     }
+    //
+    //     return !currentExistExpense ? createdExpense : currentExistExpense;
+    // }
+    //
+    // async persistMultipleExpensesByUpload(files: Express.Multer.File[], param: string, uploadsExpenseDto: UploadsExpenseDto) {
+    //     const bill = await this.findOne({ value: param, withRelations: true }) as Bill;
+    //
+    //     const buildExpensePersistenceResult: Array<BuildExpensePersistenceResult> = [];
+    //
+    //     for (let i = 0; i < files.length; i++) {
+    //         const file = files[i];
+    //
+    //         if (!file || !file?.buffer) {
+    //             throw new ConflictException('one of the files was not uploaded or is invalid.');
+    //         }
+    //
+    //         const month = uploadsExpenseDto?.months?.[i];
+    //
+    //         const uploadExpenseDto: UploadExpenseDto = {
+    //             file: '',
+    //             paid: uploadsExpenseDto?.paid?.[i],
+    //             month: !month ? convertTypeToEnum(getMonthByIndex(i)) : month,
+    //             replaceWords: uploadsExpenseDto?.replaceWords,
+    //             repeatedWords: uploadsExpenseDto?.repeatedWords
+    //         }
+    //
+    //         const expensesBuilt = await this.expenseService.buildExpensesToUpload(file.buffer, uploadExpenseDto);
+    //
+    //         const persistenceOfConstructedExpenses = this.expenseService.buildExpensePersistence(bill.year, expensesBuilt);
+    //         buildExpensePersistenceResult.push(...persistenceOfConstructedExpenses);
+    //     }
+    //
+    //     const cleanPersistExpenseParamsBuilt = this.expenseService.cleanRepeatedPersistExpenseParams(buildExpensePersistenceResult);
+    //
+    //     const expenses: Array<Expense> = [];
+    //
+    //     for (const persistExpenseParams of cleanPersistExpenseParamsBuilt) {
+    //         const expense = await this.persistExpense(bill, persistExpenseParams) as Expense;
+    //         expenses.push(expense);
+    //     }
+    //
+    //     return expenses;
+    // }
+    //
+    // private async persistExpense(bill: Bill, persistExpenseParams: PersistExpenseParams) {
+    //     const expenseToPersist = await this.buildExpenseToCreate(bill, persistExpenseParams) as Expense;
+    //     return await this.expenseService.persistByUpload(expenseToPersist, persistExpenseParams);
+    // }
 }

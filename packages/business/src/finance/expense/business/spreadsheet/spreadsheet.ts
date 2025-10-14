@@ -466,7 +466,7 @@ export default class SpreadsheetBusiness {
             const isRepeatWord = supplier !== '' && matchesRepeatWords(supplier, rulesRepeatedWords);
 
             if (!isRepeatWord) {
-                const result = this.buildFromCreditCardSheet(cellDate, cellAmount, supplier, uploadExpenseParams?.replaceWords);
+                const result = this.buildFromNubankWorkSheet(cellDate, cellAmount, supplier, uploadExpenseParams?.replaceWords);
 
                 const createExpenseDto: CreateExpenseParams = {
                     type: 'VARIABLE' as CreateExpenseParams['type'],
@@ -520,7 +520,7 @@ export default class SpreadsheetBusiness {
         };
     }
 
-    private buildFromCreditCardSheet(cellDate: string, cellAmount: string, cellSupplier: string, replaceWordsParams?: ReplaceWordsParam): BuildFromCreditCardSheet {
+    private buildFromNubankWorkSheet(cellDate: string, cellAmount: string, cellSupplier: string, replaceWordsParams?: ReplaceWordsParam): BuildFromCreditCardSheet {
         const date = new Date(cellDate);
         const year = date.getFullYear();
         const month = getMonthByIndex(date.getMonth());

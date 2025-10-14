@@ -17,37 +17,37 @@ export class FinanceController {
     constructor(private readonly service: FinanceService) {
     }
 
-    @Get()
-    find(@GetUserAuth() user: User) {
-        return this.service.getByUser(user);
+    // @Get()
+    // find(@GetUserAuth() user: User) {
+    //     return this.service.getByUser(user);
+    // }
+
+    @Post()
+    create(@GetUserAuth() user: User) {
+        return this.service.create(user);
     }
 
-    @Post('/initialize')
-    initialize(@GetUserAuth() user: User) {
-        return this.service.initialize(user);
-    }
 
 
+    // @Get('/generate-document')
+    // async generateDocument(@Res() res: Response, @GetUserAuth() user: User): Promise<void> {
+    //     const buffer = await this.service.generateDocument(user);
+    //
+    //     res.set({
+    //         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    //         'Content-Disposition': 'attachment; filename=controle_financeiro.xlsx',
+    //         'Content-Length': buffer.length
+    //     });
+    //
+    //     res.send(buffer);
+    // }
 
-    @Get('/generate-document')
-    async generateDocument(@Res() res: Response, @GetUserAuth() user: User): Promise<void> {
-        const buffer = await this.service.generateDocument(user);
-
-        res.set({
-            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition': 'attachment; filename=controle_financeiro.xlsx',
-            'Content-Length': buffer.length
-        });
-
-        res.send(buffer);
-    }
-
-    @Post('/upload')
-    @UseFileUpload(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
-    async initializeWithDocument(
-        @UploadedFile() file: Express.Multer.File,
-        @GetUserAuth() user: User
-    ) {
-      return await this.service.initializeWithDocument(file, user);
-    }
+    // @Post('/upload')
+    // @UseFileUpload(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+    // async initializeWithDocument(
+    //     @UploadedFile() file: Express.Multer.File,
+    //     @GetUserAuth() user: User
+    // ) {
+    //   return await this.service.initializeWithDocument(file, user);
+    // }
 }
