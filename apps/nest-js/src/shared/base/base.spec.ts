@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import { ConflictException, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, ConflictException, InternalServerErrorException } from '@nestjs/common';
 
 import { Base } from './base';
 
@@ -29,7 +29,7 @@ describe('Base', () => {
             const mockError = { code: '23505' };
 
             expect(() => base.error(mockError)).toThrow(ConflictException);
-            expect(() => base.error(mockError)).toThrow('User already exists');
+            expect(() => base.error(mockError)).toThrow('Entity already exists');
         });
 
         it('should throw ConflictException when error code is 22001', () => {
@@ -53,16 +53,29 @@ describe('Base', () => {
             expect(() => base.error(mockError)).toThrow('Internal Error');
         });
 
-        it('should throw default InternalServerErrorException when no error is provided', () => {
-            expect(() => base.error(undefined)).toThrow(InternalServerErrorException);
-            expect(() => base.error(undefined)).toThrow('Internal Server Error 2025');
+        it('should throw InternalServerErrorException for missing error or statusCode 500', () => {
+            const mockError = { statusCode: 500, message: 'Internal Error' };
+
+            expect(() => base.error(mockError)).toThrow(InternalServerErrorException);
+            expect(() => base.error(mockError)).toThrow('Internal Error');
         });
 
-        it('should return the error itself if it does not match any known criteria', () => {
+        it('should throw default InternalServerErrorException when no error is provided', () => {
+            expect(() => base.error(undefined)).toThrow(InternalServerErrorException);
+            expect(() => base.error(undefined)).toThrow('Internal Server Error');
+        });
+
+        it('should throw BadRequestException when has message and dont have status and statusCode', () => {
             const mockError = { code: '12345', message: 'Unknown Error' };
 
-            const result = base.error(mockError);
-            expect(result).toBe(mockError);
+            expect(() => base.error(mockError)).toThrow(BadRequestException);
+            expect(() => base.error(mockError)).toThrow('Unknown Error');
+        });
+
+        it('should throw default InternalServerErrorException when no error is provided', () => {
+            const mockError = { code: '12345'}
+            expect(() => base.error(mockError)).not.toEqual(InternalServerErrorException);
+            expect(() => base.error(mockError)).not.toThrow('Internal Server Error');
         });
     });
 });

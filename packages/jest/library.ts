@@ -21,7 +21,6 @@ export const config = {
         ...baseConfig.collectCoverageFrom || [],
         '**/*.{ts,js}',
         'packages/**/src/**/*.{js,ts}',
-        '!**/@types/**',
-        '!**/mock/**',
+        '!**/@types/**'
     ]
 } as const satisfies Config;

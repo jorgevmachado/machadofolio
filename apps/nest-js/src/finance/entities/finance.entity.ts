@@ -1,5 +1,13 @@
-import { CreateDateColumn,
-    DeleteDateColumn, Entity, JoinTable, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    JoinTable,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from 'typeorm';
 
 import { FinanceEntity } from '@repo/business';
 
@@ -7,6 +15,7 @@ import { User } from '../../auth/entities/user.entity';
 
 import { Bill } from './bill.entity';
 import { Group } from './group.entity';
+import { Income } from './incomes.entity';
 
 @Entity({ name: 'finances' })
 export class Finance implements FinanceEntity {
@@ -24,6 +33,9 @@ export class Finance implements FinanceEntity {
     @OneToMany(() => Group, (group) => group.finance)
     @JoinTable()
     groups?: Array<Group>;
+
+    @OneToMany(() => Income, (income) => income.source)
+    incomes?: Array<Income>;
 
     @CreateDateColumn()
     created_at!: Date;

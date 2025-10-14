@@ -13,6 +13,7 @@ const FINANCE_MOCK = {
     },
     bills: [],
     groups: [],
+    incomes: [],
     created_at: new Date('2025-02-01T17:37:47.783Z'),
     updated_at: new Date('2025-02-01T14:40:31.207Z'),
     deleted_at: undefined,
@@ -35,6 +36,45 @@ const BANK_MOCK = {
     updated_at: new Date('2025-02-01T19:46:54.072Z'),
     deleted_at: undefined,
 };
+
+const INCOME_SOURCE_MOCK = {
+    id: 'a4d9d7bf-6525-4909-9fc9-af916b76b3fa',
+    name: 'Job',
+    name_code: 'job',
+    created_at: new Date('2025-02-01T19:00:18.670Z'),
+    updated_at: new Date('2025-02-01T19:00:18.670Z')
+}
+
+const INCOME_MOCK = {
+    id: '7360e3be-20a7-4814-866e-fff660ce9d8e',
+    year: 2025,
+    name: 'Salary',
+    total: 100,
+    months: [],
+    source: INCOME_SOURCE_MOCK,
+    finance: FINANCE_MOCK,
+    name_code: 'salary',
+    created_at: new Date('2025-04-02T19:11:59.405Z'),
+    updated_at: new Date('2025-04-02T19:11:59.405Z'),
+    deleted_at: undefined,
+}
+
+const INCOME_MONTH_MOCK = {
+    id: 'a54df7b0-e28b-4d35-a658-edbb35fcb2d0',
+    year: 2025,
+    code: 1,
+    paid: false,
+    value: 100,
+    label: 'january',
+    income: INCOME_MOCK,
+    expense: undefined,
+    created_at: new Date('2025-04-02T19:11:59.405Z'),
+    updated_at: new Date('2025-04-02T19:11:59.405Z'),
+    deleted_at: undefined,
+    received_at: new Date('2025-02-01T19:00:18.670Z'),
+}
+
+INCOME_MOCK.months = [INCOME_MONTH_MOCK];
 
 const SUPPLIER_TYPE_MOCK = {
     id: 'afdb7bc2-78ad-459c-9d1f-27b99e38f954',
@@ -143,33 +183,10 @@ const EXPENSE_MOCK = {
     type: 'VARIABLE',
     paid: false,
     total: 100,
+    months: undefined,
     supplier: SUPPLIER_MOCK,
     name_code: 'personal_credit_card_nubank_digital_wallet',
     total_paid: 0,
-    january: 100,
-    january_paid: true,
-    february: 0,
-    february_paid: true,
-    march: 0,
-    march_paid: true,
-    april: 0,
-    april_paid: true,
-    may: 0,
-    may_paid: true,
-    june: 0,
-    june_paid: true,
-    july: 0,
-    july_paid: true,
-    august: 0,
-    august_paid: true,
-    september: 0,
-    september_paid: true,
-    october: 0,
-    october_paid: true,
-    november: 0,
-    november_paid: true,
-    december: 0,
-    december_paid: true,
     description: undefined,
     instalment_number: 1,
     created_at: new Date('2025-01-01T17:37:47.783Z'),
@@ -192,19 +209,41 @@ const EXPENSE_CHILDREN_MOCK = {
     parent: EXPENSE_PARENT_MOCK,
 };
 
+const EXPENSE_MONTH_MOCK = {
+    id: 'f101e932-8cb4-4c05-9c76-12ccb51a55ed',
+    year: 2025,
+    code: 1,
+    paid: false,
+    value: 100,
+    label: 'january',
+    income: undefined,
+    expense: EXPENSE_MOCK,
+    created_at: new Date('2025-04-02T19:11:59.405Z'),
+    updated_at: new Date('2025-04-02T19:11:59.405Z'),
+    deleted_at: undefined,
+    received_at: undefined,
+}
+
+EXPENSE_MOCK.months = [EXPENSE_MONTH_MOCK];
+
 FINANCE_MOCK.bills.push(BILL_MOCK);
 FINANCE_MOCK.groups.push(GROUP_MOCK);
+FINANCE_MOCK.incomes.push(INCOME_MOCK);
 
 export {
     FINANCE_MOCK,
     GROUP_MOCK,
     BANK_MOCK,
     BILL_MOCK,
+    INCOME_MOCK,
+    INCOME_SOURCE_MOCK,
     SUPPLIER_TYPE_MOCK,
     SUPPLIER_TYPE_CHILDREN_MOCK,
     SUPPLIER_MOCK,
     SUPPLIER_CHILDREN_MOCK,
     EXPENSE_MOCK,
     EXPENSE_PARENT_MOCK,
-    EXPENSE_CHILDREN_MOCK
+    EXPENSE_CHILDREN_MOCK,
+    EXPENSE_MONTH_MOCK,
+    INCOME_MONTH_MOCK
 };

@@ -28,8 +28,6 @@ import {
 
 import { EMonth } from '@repo/services';
 
-import type { QueryParameters } from '../../../../../types';
-
 import type { ICreateExpenseParams, IUpdateExpenseParams } from './types';
 import { EExpenseType } from './enum';
 import { Expense } from './expense';
@@ -99,7 +97,7 @@ describe('Expense', () => {
             updated_at: '2025-02-01T14:40:31.207Z',
             deleted_at: null
         };
-    const mockPaginateParams: QueryParameters = { page: 1, limit: 10 };
+    const mockPaginateParams = { page: 1, limit: 10 };
     const mockEntityList = [mockEntity, mockEntity];
     const mockEntityPaginate = {
         skip: 0,
@@ -208,6 +206,21 @@ describe('Expense', () => {
             expect(expense.path).toHaveBeenCalledTimes(1);
             expect(expense.path).toHaveBeenCalledWith(path, { body });
             expect(result).toEqual(mockEntity);
+        });
+    });
+
+    describe('getAllByBill', () => {
+        it('should call get with correct URL and parameters for getAllByBill', async () => {
+            (expense.get as any).mockResolvedValue(mockEntityPaginate);
+
+            const result = await expense.getAllByBill(
+                mockEntity.bill.id,
+                mockPaginateParams,
+            );
+            const path = `finance/bill/${mockEntity.bill.id}/list/expense`;
+            expect(expense.get).toHaveBeenCalledTimes(1);
+            expect(expense.get).toHaveBeenCalledWith(path, { params: mockPaginateParams });
+            expect(result).toEqual(mockEntityPaginate);
         });
     });
 });

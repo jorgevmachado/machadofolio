@@ -122,3 +122,30 @@ export function totalByMonth<T extends Record<string, unknown>>(month: TMonth, i
         .filter((value): value is number => typeof value === 'number' && !isNaN(value))
         .reduce((acc, num) => acc + num, 0);
 }
+
+export function getMonthNumber(month?: string): number {
+    isMonthValid(month);
+    return MONTHS.indexOf(month?.toLowerCase() as TMonth) + 1;
+}
+
+
+export function getCurrentMonthNumber(month?: number | string): number {
+    switch (typeof month) {
+        case 'number':
+            if(month < 1 || month > 12) {
+                throw new Error(`The month provided is invalid: ${month}`);
+            }
+            return month;
+        case 'string':
+            return getMonthNumber(month);
+        default:
+            throw new Error(`The month is required`);
+    }
+}
+
+export function convertTypeToEnum(month?: TMonth): EMonth {
+    if(!month) {
+        return EMonth.JANUARY;
+    }
+    return month.toUpperCase() as EMonth;
+}

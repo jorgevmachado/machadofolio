@@ -1,0 +1,225 @@
+[
+  {
+    "id": "03af32e2-2d6c-41b5-aff2-875295da89bb",
+    "name": "Personal Credit Card Nubank Nubank",
+    "year": 2025,
+    "type": "CREDIT_CARD",
+    "bank": {
+      "id": "104624d2-5933-419e-8c98-45b5a6b3ebc4",
+      "name": "Nubank",
+      "name_code": "nubank",
+      "created_at": "2025-10-11T17:19:42.410Z",
+      "updated_at": "2025-10-11T17:19:42.410Z",
+      "deleted_at": null
+    },
+    "total": 0,
+    "finance": {
+      "id": "552caffe-0a45-4cd6-8c30-c9dc6b0b4345",
+      "created_at": "2025-10-11T17:19:42.410Z",
+      "updated_at": "2025-10-11T17:19:42.410Z",
+      "deleted_at": null
+    },
+    "group": {
+      "id": "c3f299b0-41d9-4846-b5c5-98aef423e7bd",
+      "name": "Personal",
+      "name_code": "personal",
+      "created_at": "2025-10-11T17:19:42.410Z",
+      "updated_at": "2025-10-11T17:19:42.410Z",
+      "deleted_at": null
+    },
+    "expenses": [
+      {
+        "id": "9a57b3ba-be27-4b19-8aea-cca3d79f8651",
+        "name": "Personal Credit Card Nubank Nubank Vivo",
+        "year": 2025,
+        "bill": {
+          "id": "03af32e2-2d6c-41b5-aff2-875295da89bb",
+          "name": "Personal Credit Card Nubank Nubank",
+          "year": 2025,
+          "type": "CREDIT_CARD",
+          "total": 0,
+          "all_paid": false,
+          "name_code": "personal_credit_card_nubank_nubank",
+          "created_at": "2025-10-11T17:19:42.410Z",
+          "updated_at": "2025-10-11T17:19:42.410Z",
+          "deleted_at": null,
+          "total_paid": 0
+        },
+        "type": "VARIABLE",
+        "paid": false,
+        "total": 100,
+        "supplier": {
+          "id": "027968f7-0b2a-495b-9475-6a6c73c485a1",
+          "name": "Vivo",
+          "name_code": "vivo",
+          "created_at": "2025-10-11T17:19:42.410Z",
+          "updated_at": "2025-10-11T17:19:42.410Z",
+          "deleted_at": null
+        },
+        "name_code": "personal_credit_card_nubank_nubank_vivo",
+        "total_paid": 0,
+        "total_pending": 100,
+        "months": [
+          {
+            "id": "36635238-14b1-4085-846d-787d0a1a7c8f",
+            "paid": false,
+            "year": 2025,
+            "code": 12,
+            "value": 0,
+            "label": "december",
+            "created_at": "2025-10-11T18:04:09.189Z",
+            "updated_at": "2025-10-11T18:04:09.189Z",
+            "deleted_at": null,
+            "received_at": "2025-10-11T15:04:09.136Z"
+          },
+          {
+            "id": "55a61b86-9646-44d9-96ed-df6f56544c3a",
+            "paid": false,
+            "year": 2025,
+            "code": 11,
+            "value": 0,
+            "label": "november",
+            "created_at": "2025-10-11T18:04:09.186Z",
+            "updated_at": "2025-10-11T18:04:09.186Z",
+            "deleted_at": null,
+            "received_at": "2025-10-11T15:04:09.136Z"
+          },
+          {
+            "id": "59404f8c-b796-4eb8-a36d-838c8f7b87fa",
+            "paid": false,
+            "year": 2025,
+            "code": 10,
+            "value": 0,
+            "label": "october",
+            "created_at": "2025-10-11T18:04:09.182Z",
+            "updated_at": "2025-10-11T18:04:09.182Z",
+            "deleted_at": null,
+            "received_at": "2025-10-11T15:04:09.136Z"
+          },
+          {
+            "id": "68ffcb68-765e-4f85-b9be-40d4c04c4db6",
+            "paid": false,
+            "year": 2025,
+            "code": 9,
+            "value": 0,
+            "label": "september",
+            "created_at": "2025-10-11T18:04:09.178Z",
+            "updated_at": "2025-10-11T18:04:09.178Z",
+            "deleted_at": null,
+            "received_at": "2025-10-11T15:04:09.136Z"
+          },
+          {
+            "id": "74e70e89-ab05-4890-8fec-e2c6428f7589",
+            "paid": false,
+            "year": 2025,
+            "code": 8,
+            "value": 0,
+            "label": "august",
+            "created_at": "2025-10-11T18:04:09.173Z",
+            "updated_at": "2025-10-11T18:04:09.173Z",
+            "deleted_at": null,
+            "received_at": "2025-10-11T15:04:09.136Z"
+          },
+          {
+            "id": "b7d195e6-15d1-4536-9a1f-65e77dcf5e81",
+            "paid": false,
+            "year": 2025,
+            "code": 7,
+            "value": 50,
+            "label": "july",
+            "created_at": "2025-10-11T18:04:09.169Z",
+            "updated_at": "2025-10-11T18:04:09.169Z",
+            "deleted_at": null,
+            "received_at": "2025-10-11T15:04:09.135Z"
+          },
+          {
+            "id": "c3cac822-375f-4174-8365-9eb7dd4bb1ff",
+            "paid": false,
+            "year": 2025,
+            "code": 6,
+            "value": 50,
+            "label": "june",
+            "created_at": "2025-10-11T18:04:09.165Z",
+            "updated_at": "2025-10-11T18:04:09.165Z",
+            "deleted_at": null,
+            "received_at": "2025-10-11T15:04:09.135Z"
+          },
+          {
+            "id": "649334e8-3f00-46a0-aa1f-962f0683618d",
+            "paid": false,
+            "year": 2025,
+            "code": 5,
+            "value": 0,
+            "label": "may",
+            "created_at": "2025-10-11T18:04:09.161Z",
+            "updated_at": "2025-10-11T18:04:09.161Z",
+            "deleted_at": null,
+            "received_at": "2025-10-11T15:04:09.136Z"
+          },
+          {
+            "id": "db487db8-abba-4ccb-afcf-089f5e9d60f0",
+            "paid": false,
+            "year": 2025,
+            "code": 4,
+            "value": 0,
+            "label": "april",
+            "created_at": "2025-10-11T18:04:09.156Z",
+            "updated_at": "2025-10-11T18:04:09.156Z",
+            "deleted_at": null,
+            "received_at": "2025-10-11T15:04:09.136Z"
+          },
+          {
+            "id": "a968e8b9-5fdb-4ee2-8f49-2c59efca9c2b",
+            "paid": false,
+            "year": 2025,
+            "code": 3,
+            "value": 0,
+            "label": "march",
+            "created_at": "2025-10-11T18:04:09.152Z",
+            "updated_at": "2025-10-11T18:04:09.152Z",
+            "deleted_at": null,
+            "received_at": "2025-10-11T15:04:09.136Z"
+          },
+          {
+            "id": "164aca93-b717-4cce-be18-0bfbae705f5b",
+            "paid": false,
+            "year": 2025,
+            "code": 2,
+            "value": 0,
+            "label": "february",
+            "created_at": "2025-10-11T18:04:09.147Z",
+            "updated_at": "2025-10-11T18:04:09.147Z",
+            "deleted_at": null,
+            "received_at": "2025-10-11T15:04:09.136Z"
+          },
+          {
+            "id": "aea25a1c-362c-4e58-8763-2a4fe62dfe28",
+            "paid": false,
+            "year": 2025,
+            "code": 1,
+            "value": 0,
+            "label": "january",
+            "created_at": "2025-10-11T18:04:09.141Z",
+            "updated_at": "2025-10-11T18:04:09.141Z",
+            "deleted_at": null,
+            "received_at": "2025-10-11T15:04:09.135Z"
+          }
+        ],
+        "description": null,
+        "instalment_number": 2,
+        "children": [],
+        "is_aggregate": false,
+        "aggregate_name": null,
+        "created_at": "2025-10-11T18:04:09.123Z",
+        "updated_at": "2025-10-11T18:04:09.202Z",
+        "deleted_at": null
+      }
+    ],
+    "all_paid": false,
+    "name_code": "personal_credit_card_nubank_nubank",
+    "created_at": "2025-10-11T17:19:42.410Z",
+    "updated_at": "2025-10-11T17:19:42.410Z",
+    "deleted_at": null,
+    "total_paid": 0
+  }
+]

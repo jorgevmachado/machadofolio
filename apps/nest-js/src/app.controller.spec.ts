@@ -58,6 +58,8 @@ describe('AppController', () => {
           expenses: 1,
           finances: 1,
           suppliers: 1,
+          incomes: 1,
+          incomeSources: 1,
           supplierTypes: 1,
         },
         pokemons: {

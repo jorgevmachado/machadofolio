@@ -6,6 +6,22 @@ function convertUrlToKey(url: string) {
     return url.startsWith('/') ? url.slice(1) : url;
 }
 
+function treatAuthPort(port?: string) {
+    if(!port) {
+        return port;
+    }
+    switch(port) {
+        case '4002':
+            return '4001';
+        case '4102':
+            return '4101';
+        case '4202':
+            return '4201';
+        default:
+            return;
+    }
+}
+
 function treatRedirectUrl(request: NextRequest, destination: string) {
     const url = request.nextUrl.clone();
     const keyDestination = convertUrlToKey(destination);
@@ -16,6 +32,7 @@ function treatRedirectUrl(request: NextRequest, destination: string) {
         return url;
     }
     const keyPathname = convertUrlToKey(url.pathname);
+    const port = treatAuthPort(url.port);
     if(keyPathname !== keyDestination) {
         const host = request.headers.get('host') ?? undefined;
         const redirectToUrl = new URL('/dashboard', url);
@@ -25,7 +42,9 @@ function treatRedirectUrl(request: NextRequest, destination: string) {
     url.searchParams.set('source', 'finance');
     url.searchParams.set('env', 'dev');
     url.pathname = authRoute.path;
-    url.port = '4001';
+    if(port) {
+        url.port = port;
+    }
     return url;
 }
 

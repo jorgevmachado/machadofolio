@@ -1,0 +1,23 @@
+.modal-upload {
+  gap: 1rem;
+  display: flex;
+  overflow-y: auto;
+  flex-direction: column;
+  &__inputs {
+    gap: 1rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    &--item {
+      width: 100%;
+    }
+  }
+  &__actions {
+    gap: 1rem;
+    display: grid;
+    margin-top: 1rem;
+    grid-template-columns: 1fr 1fr;
+  }
+}

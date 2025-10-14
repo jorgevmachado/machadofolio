@@ -26,7 +26,8 @@ export default function SignInPage() {
             const response = await authService.signIn({ email: email ?? '', password: password ?? ''});
             setAccessToken(response);
             addAlert({ type: 'success', message: 'Authenticated successfully!' });
-            router.push(redirectTo ?? '/');
+            router.replace(redirectTo ?? '/');
+            window.location.reload();
         } catch (error: any) {
             const message =
                 error?.statusCode !== 500 && error?.message

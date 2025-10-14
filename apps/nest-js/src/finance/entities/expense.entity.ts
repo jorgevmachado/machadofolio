@@ -17,6 +17,7 @@ import { DecimalTransformer } from '../../transforms/decimal';
 import { Supplier } from './supplier.entity';
 
 import { Bill } from './bill.entity';
+import { Month } from './month.entity';
 
 
 @Entity({ name: 'expenses' })
@@ -76,160 +77,17 @@ export class Expense implements ExpenseEntity {
     total_paid!: number;
 
     @Column({
-        nullable: false,
+        nullable: true,
         type: 'decimal',
         precision: 10,
         scale: 2,
         default: 0.0,
         transformer: new DecimalTransformer(),
     })
-    january!: number;
+    total_pending?: number;
 
-    @Column({ nullable: false })
-    january_paid!: boolean;
-
-    @Column({
-        nullable: false,
-        type: 'decimal',
-        precision: 10,
-        scale: 2,
-        default: 0.0,
-        transformer: new DecimalTransformer(),
-    })
-    february!: number;
-
-    @Column({ nullable: false })
-    february_paid!: boolean;
-
-    @Column({
-        nullable: false,
-        type: 'decimal',
-        precision: 10,
-        scale: 2,
-        default: 0.0,
-        transformer: new DecimalTransformer(),
-    })
-    march!: number;
-
-    @Column({ nullable: false })
-    march_paid!: boolean;
-
-    @Column({
-        nullable: false,
-        type: 'decimal',
-        precision: 10,
-        scale: 2,
-        default: 0.0,
-        transformer: new DecimalTransformer(),
-    })
-    april!: number;
-
-    @Column({ nullable: false })
-    april_paid!: boolean;
-
-    @Column({
-        nullable: false,
-        type: 'decimal',
-        precision: 10,
-        scale: 2,
-        default: 0.0,
-        transformer: new DecimalTransformer(),
-    })
-    may!: number;
-
-    @Column({ nullable: false })
-    may_paid!: boolean;
-
-    @Column({
-        nullable: false,
-        type: 'decimal',
-        precision: 10,
-        scale: 2,
-        default: 0.0,
-        transformer: new DecimalTransformer(),
-    })
-    june!: number;
-
-    @Column({ nullable: false })
-    june_paid!: boolean;
-
-    @Column({
-        nullable: false,
-        type: 'decimal',
-        precision: 10,
-        scale: 2,
-        default: 0.0,
-        transformer: new DecimalTransformer(),
-    })
-    july!: number;
-
-    @Column({ nullable: false })
-    july_paid!: boolean;
-
-    @Column({
-        nullable: false,
-        type: 'decimal',
-        precision: 10,
-        scale: 2,
-        default: 0.0,
-        transformer: new DecimalTransformer(),
-    })
-    august!: number;
-
-    @Column({ nullable: false })
-    august_paid!: boolean;
-
-    @Column({
-        nullable: false,
-        type: 'decimal',
-        precision: 10,
-        scale: 2,
-        default: 0.0,
-        transformer: new DecimalTransformer(),
-    })
-    september!: number;
-
-    @Column({ nullable: false })
-    september_paid!: boolean;
-
-    @Column({
-        nullable: false,
-        type: 'decimal',
-        precision: 10,
-        scale: 2,
-        default: 0.0,
-        transformer: new DecimalTransformer(),
-    })
-    october!: number;
-
-    @Column({ nullable: false })
-    october_paid!: boolean;
-
-    @Column({
-        nullable: false,
-        type: 'decimal',
-        precision: 10,
-        scale: 2,
-        default: 0.0,
-        transformer: new DecimalTransformer(),
-    })
-    november!: number;
-
-    @Column({ nullable: false })
-    november_paid!: boolean;
-
-    @Column({
-        nullable: false,
-        type: 'decimal',
-        precision: 10,
-        scale: 2,
-        default: 0.0,
-        transformer: new DecimalTransformer(),
-    })
-    december!: number;
-
-    @Column({ nullable: false })
-    december_paid!: boolean;
+    @OneToMany(() => Month, (expenseMonth) => expenseMonth.expense)
+    months?: Array<Month>;
 
     @Column({ nullable: true })
     description?: string;

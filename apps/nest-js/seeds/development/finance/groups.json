@@ -1,0 +1,16 @@
+[
+  {
+    "id": "c3f299b0-41d9-4846-b5c5-98aef423e7bd",
+    "name": "Personal",
+    "finance": {
+      "id": "552caffe-0a45-4cd6-8c30-c9dc6b0b4345",
+      "created_at": "2025-10-11T17:19:42.410Z",
+      "updated_at": "2025-10-11T17:19:42.410Z",
+      "deleted_at": null
+    },
+    "name_code": "personal",
+    "created_at": "2025-10-11T17:19:42.410Z",
+    "updated_at": "2025-10-11T17:19:42.410Z",
+    "deleted_at": null
+  }
+]

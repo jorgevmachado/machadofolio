@@ -15,6 +15,7 @@ export const vscGroup: TIconGroupIcons = {
   user: undefined,
   edit: <VscEdit/>,
   lamp: undefined,
+  plus: undefined,
   star: undefined,
   bolt: undefined,
   book: undefined,

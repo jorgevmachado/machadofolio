@@ -4,6 +4,10 @@ import { Repository } from 'typeorm';
 
 import { Supplier as SupplierConstructor } from '@repo/business';
 
+import SUPPLIER_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/suppliers.json';
+import SUPPLIER_LIST_STAGING_JSON from '../../../seeds/staging/finance/suppliers.json';
+import SUPPLIER_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/suppliers.json';
+
 import { ListParams, Service } from '../../shared';
 
 import type { FinanceSeederParams } from '../types';
@@ -52,6 +56,7 @@ export class SupplierService extends Service<Supplier> {
             ) as SupplierType;
         const currentName = !name ? result.name : name;
         const supplier = new SupplierConstructor({
+            ...result,
             name: currentName,
             type: supplierType,
         });
@@ -114,7 +119,7 @@ export class SupplierService extends Service<Supplier> {
         if(!value || value === '') {
             throw new NotFoundException(`${this.alias} not found`);
         }
-        const item = await this.findOne({ value, withDeleted: true, withThrow: false });
+        const item = await this.findOne({ value, withRelations: true, withDeleted: true, withThrow: false });
 
         if(item) {
             return item;
@@ -123,5 +128,35 @@ export class SupplierService extends Service<Supplier> {
         const supplierType = await this.supplierTypeService.createToSheet('Unknown') as SupplierType;
 
         return this.create({ name: value, type: supplierType });
+    }
+
+    async generateSeeds(withSupplierType: boolean, withSupplier: boolean, financeSeedsDir: string) {
+        const supplierTypes = await this.supplierTypeService.generateSeeds(!withSupplierType && !withSupplier, financeSeedsDir);
+        const suppliers = await this.generateEntitySeeds({
+            withSeed: withSupplier,
+            seedsDir: financeSeedsDir,
+            staging: SUPPLIER_LIST_STAGING_JSON,
+            production: SUPPLIER_LIST_PRODUCTION_JSON,
+            development: SUPPLIER_LIST_DEVELOPMENT_JSON,
+            withRelations: true,
+            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.type.name_code === item.type.name_code
+        })
+
+        return { suppliers, supplierTypes }
+    }
+
+    async persistSeeds(withSupplierType: boolean, withSupplier: boolean) {
+        const supplierTypes = await this.supplierTypeService.persistSeeds(!withSupplierType && !withSupplier);
+        const suppliers = await this.persistEntitySeeds({
+                withSeed: withSupplier,
+                staging: SUPPLIER_LIST_STAGING_JSON,
+                production: SUPPLIER_LIST_PRODUCTION_JSON,
+                development: SUPPLIER_LIST_DEVELOPMENT_JSON,
+        })
+
+        return {
+            suppliers,
+            supplierTypes
+        }
     }
 }

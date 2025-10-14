@@ -172,6 +172,34 @@ describe('WorkSheet', () => {
         });
     });
 
+    describe('getCell', () => {
+        it('should return the default values when has error in object from the worksheet.', () => {
+            const worksheet = new WorkSheet(mockWorkSheet);
+            const result = worksheet.getCell(1, 1);
+            expect(result.cell).toBe(worksheet.cell(1, 1));
+            expect(result.value).toBe('');
+            expect(result.nextRow).toBe(2);
+            expect(result.totalRows).toBe(59);
+        });
+
+        it('should return the correct getCell object from the worksheet.', () => {
+            const mockGetCell = jest.fn().mockReturnValue({
+                    value: 'value',
+                    font: undefined,
+                    alignment: undefined,
+                    fill: undefined,
+                    border: undefined,
+                });
+            const worksheet = new WorkSheet({ ...mockWorkSheet, getCell: mockGetCell });
+            worksheet.cell(1, 1);
+            const result = worksheet.getCell(1, 1);
+            expect(result.cell).toBe(worksheet.cell(1, 1));
+            expect(result.value).toBe('value');
+            expect(result.nextRow).toBe(2);
+            expect(result.totalRows).toBe(59);
+        });
+    });
+
     describe('privates.', () => {
         let worksheet: WorkSheet;
 

@@ -3,14 +3,17 @@ import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/global
 import { INVALID_TYPE, REQUIRED_FIELD } from '../../shared';
 
 import {
-    getCurrentMonth,
-    getMonthByIndex,
-    getMonthIndex,
-    isMonthValid,
-    monthValidator,
     parseMonth,
-    totalByMonth
+    totalByMonth,
+    isMonthValid,
+    getMonthIndex,
+    monthValidator,
+    getMonthNumber,
+    getMonthByIndex,
+    getCurrentMonth,
+    getCurrentMonthNumber, convertTypeToEnum,
 } from './month';
+
 import { EMonth } from './enum';
 
 describe('Date Month function', () => {
@@ -243,5 +246,87 @@ describe('Date Month function', () => {
                 expect(totalByMonth('july', arr)).toBe(0);
             });
         });
+
+        describe('getMonthNumber', () => {
+            it('should return the correct month number for a valid month.', () => {
+                expect(getMonthNumber(EMonth.JANUARY)).toBe(1);
+                expect(getMonthNumber(EMonth.FEBRUARY)).toBe(2);
+                expect(getMonthNumber(EMonth.MARCH)).toBe(3);
+                expect(getMonthNumber(EMonth.APRIL)).toBe(4);
+                expect(getMonthNumber(EMonth.MAY)).toBe(5);
+                expect(getMonthNumber(EMonth.JUNE)).toBe(6);
+                expect(getMonthNumber(EMonth.JULY)).toBe(7);
+                expect(getMonthNumber(EMonth.AUGUST)).toBe(8);
+                expect(getMonthNumber(EMonth.SEPTEMBER)).toBe(9);
+                expect(getMonthNumber(EMonth.OCTOBER)).toBe(10);
+                expect(getMonthNumber(EMonth.NOVEMBER)).toBe(11);
+                expect(getMonthNumber(EMonth.DECEMBER)).toBe(12);
+            });
+
+            it('should throw error when received invalid month.', () => {
+                expect(() => getMonthNumber('INVALID')).toThrow(
+                    'The month provided is invalid: INVALID',
+                );
+            })
+        });
+
+        describe('getCurrentMonthNumber', () => {
+            it('should return the correct month number for a string valid month.', () => {
+                expect(getCurrentMonthNumber(EMonth.JANUARY)).toBe(1);
+                expect(getCurrentMonthNumber(EMonth.FEBRUARY)).toBe(2);
+                expect(getCurrentMonthNumber(EMonth.MARCH)).toBe(3);
+                expect(getCurrentMonthNumber(EMonth.APRIL)).toBe(4);
+                expect(getCurrentMonthNumber(EMonth.MAY)).toBe(5);
+                expect(getCurrentMonthNumber(EMonth.JUNE)).toBe(6);
+                expect(getCurrentMonthNumber(EMonth.JULY)).toBe(7);
+                expect(getCurrentMonthNumber(EMonth.AUGUST)).toBe(8);
+                expect(getCurrentMonthNumber(EMonth.SEPTEMBER)).toBe(9);
+                expect(getCurrentMonthNumber(EMonth.OCTOBER)).toBe(10);
+                expect(getCurrentMonthNumber(EMonth.NOVEMBER)).toBe(11);
+                expect(getCurrentMonthNumber(EMonth.DECEMBER)).toBe(12);
+            });
+
+            it('should return the correct month number for a number valid month.', () => {
+                expect(getCurrentMonthNumber(1)).toBe(1);
+                expect(getCurrentMonthNumber(2)).toBe(2);
+                expect(getCurrentMonthNumber(3)).toBe(3);
+                expect(getCurrentMonthNumber(4)).toBe(4);
+                expect(getCurrentMonthNumber(5)).toBe(5);
+                expect(getCurrentMonthNumber(6)).toBe(6);
+                expect(getCurrentMonthNumber(7)).toBe(7);
+                expect(getCurrentMonthNumber(8)).toBe(8);
+                expect(getCurrentMonthNumber(9)).toBe(9);
+                expect(getCurrentMonthNumber(10)).toBe(10);
+                expect(getCurrentMonthNumber(11)).toBe(11);
+                expect(getCurrentMonthNumber(12)).toBe(12);
+            });
+
+            it('should throw error when received a invalid string month.', () => {
+                expect(() => getCurrentMonthNumber('INVALID')).toThrow(
+                    'The month provided is invalid: INVALID',
+                );
+            })
+
+            it('should throw error when received a invalid number month.', () => {
+                expect(() => getCurrentMonthNumber(0)).toThrow(
+                    'The month provided is invalid: 0',
+                );
+            })
+
+            it('should throw error when received a undefined month.', () => {
+                expect(() => getCurrentMonthNumber(undefined)).toThrow(
+                    'The month is required',
+                );
+            })
+        });
+
+        describe('convertTypeToEnum', () => {
+            it('should return the correct EMonth for a valid string month.', () => {
+                expect(convertTypeToEnum('july')).toEqual(EMonth.JULY);
+            });
+            it('should return JANUARY when received a invalid string month.', () => {
+                expect(convertTypeToEnum(undefined)).toEqual(EMonth.JANUARY);
+            });
+        })
     });
 });

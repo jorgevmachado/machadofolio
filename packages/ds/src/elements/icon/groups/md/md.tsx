@@ -108,6 +108,7 @@ export const mdGroup: TIconGroupIcons = {
   user: <MdPerson />,
   edit: <MdEdit />,
   lamp: <MdLightbulb />,
+  plus: undefined,
   star: undefined,
   bolt: undefined,
   book: undefined,

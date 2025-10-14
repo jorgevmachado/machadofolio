@@ -15,6 +15,10 @@ type SelectProps = {
     disabled?: boolean;
     className?: string;
     placeholder?: string;
+    autoComplete?: boolean;
+    fallbackLabel?: string;
+    fallbackAction?: (name: string, value?: string) => void;
+    filterFunction?: (input: string, option: OptionsProps) => boolean;
 }
 
 export default function Select({
@@ -27,13 +31,30 @@ export default function Select({
     className,
     placeholder = 'Select...',
     onChange,
+    autoComplete = false,
+    fallbackAction,
+    fallbackLabel,
+    filterFunction
 }: SelectProps) {
     const [open, setOpen] = useState(false);
     const [focused, setFocused] = useState(-1);
     const [selectedValue, setSelectedValue] = useState(value ?? '');
     const [closing, setClosing] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
     const optionsList = useMemo(() => options, [options]);
+    const filteredOptions = useMemo(() => {
+        if(!autoComplete) {
+            return optionsList;
+        }
+        if(!selectedValue) {
+            return optionsList;
+        }
+        if(filterFunction) {
+            return optionsList.filter(opt => filterFunction(selectedValue, opt));
+        }
+        return optionsList.filter(opt => opt.label.toLowerCase().includes(selectedValue?.toLowerCase()));
+    }, [optionsList, autoComplete, selectedValue, filterFunction]);
 
     useEffect(() => {
         if (value !== undefined && value !== selectedValue) {
@@ -54,7 +75,7 @@ export default function Select({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [open, disabled]);
 
-    function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         if (disabled) {
             return;
         }
@@ -122,27 +143,81 @@ export default function Select({
         }
     }
 
+    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSelectedValue(value);
+        setOpen(true);
+        setFocused(-1);
+        if(onInput) {
+            onInput(e, value);
+        }
+    }
+
+    const handleOptionClick = (value: string) => {
+        selectOption(value);
+        if (inputRef.current) {
+            inputRef.current.blur();
+        }
+    }
+
+    const treatValue = (value: string) => {
+        if(autoComplete) {
+            const option = optionsList.find(opt => opt.value === value || opt.label === value);
+            return option ? option.label : value;
+        }
+        return value;
+    }
+
+    const onClickFallback = (e: React.MouseEvent<HTMLLIElement>) => {
+        e.preventDefault();
+        if(fallbackAction) {
+            fallbackAction(name, selectedValue);
+            setSelectedValue('');
+        }
+    }
+
     return (
         <div className="ds-select" ref={wrapperRef} data-testid="ds-select">
             <div
+                role="combobox"
+                onClick={handleOnClick}
+                tabIndex={disabled ? -1 : 0}
+                onKeyDown={handleKeyDown}
                 className={joinClass([
                     "ds-select__control",
                     open && "ds-select__control--open",
-                    className
+                    !autoComplete && className
                 ])}
-                onClick={handleOnClick}
-                role="combobox"
                 aria-label={selectedLabel || placeholder}
                 aria-expanded={open}
                 aria-controls={open ? `${id}-dropdown` : undefined}
                 aria-disabled={disabled}
-                aria-activedescendant={open ? `${id}-option-${focused}` : undefined}
-                tabIndex={disabled ? -1 : 0}
-                onKeyDown={handleKeyDown}
+                aria-activedescendant={open && focused >= 0 ? `${id}-option-${focused}` : undefined}
             >
-                <span className={selectedValue ? "" : "ds-select__placeholder"} data-testid="ds-select-placeholder">
+                {autoComplete
+                    ? (
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={treatValue(selectedValue)}
+                            onFocus={() => setOpen(true)}
+                            onChange={handleOnChange}
+                            disabled={disabled}
+                            autoComplete="off"
+                            className={className}
+                            placeholder={placeholder}
+                            data-testid="ds-autocomplete-input"
+                            aria-autocomplete="list"
+                            aria-controls={open ? `${id}-dropdown` : undefined}
+                            aria-activedescendant={open && focused >= 0 ? `${id}-option-${focused}` : undefined}
+
+                        />
+                    )
+                    : (
+                    <span className={selectedValue ? "" : "ds-select__placeholder"} data-testid="ds-select-placeholder">
                     {selectedLabel || placeholder}
                 </span>
+                )}
                 <Icon icon="chevron-down" color="primary-80" size="20" className={joinClass(["ds-select__arrow", open && "ds-select__arrow--open"])} />
                 {open || closing ? (
                     <ul
@@ -154,19 +229,27 @@ export default function Select({
                         role="listbox"
                         aria-labelledby={id}
                     >
-                        {optionsList.map((option, idx) => (
+                        {filteredOptions.length === 0 ? (
+                            <li
+                                role="option"
+                                onClick={onClickFallback}
+                                tabIndex={-1}
+                                className="ds-select__option ds-select__option--empty" >
+                                {fallbackAction ? fallbackLabel ?? 'Add' : 'No options'}
+                            </li>
+                        ) : filteredOptions.map((option, idx) => (
                             <li
                                 key={option.value}
                                 id={`${id}-option-${idx}`}
                                 className={joinClass([
                                     'ds-select__option',
-                                    selectedValue === option.value && 'ds-select__option--selected',
+                                    selectedValue.toLowerCase() === option.label.toLowerCase() && 'ds-select__option--selected',
                                     focused === idx && 'ds-select__option--focused',
                                 ])}
                                 role="option"
-                                aria-selected={selectedValue === option.value}
+                                aria-selected={selectedValue === option.label}
                                 tabIndex={-1}
-                                onClick={() => selectOption(option.value)}
+                                onClick={() => handleOptionClick(option.value)}
                                 onMouseEnter={() => setFocused(idx)}
                             >
                                 {option.label}

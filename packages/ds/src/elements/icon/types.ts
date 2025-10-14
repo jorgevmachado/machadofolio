@@ -14,6 +14,7 @@ export type TIcon =
     | 'user'
     | 'edit'
     | 'lamp'
+    | 'plus'
     | 'star'
     | 'bolt'
     | 'book'

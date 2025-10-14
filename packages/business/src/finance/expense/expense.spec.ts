@@ -1,14 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
-import { MONTHS } from '@repo/services';
-
 import { EXPENSE_MOCK } from '../mock';
 
 import Expense from './expense';
 import type { ExpenseEntity } from './types';
 
 describe('Expense', () => {
-    const expenseMock: ExpenseEntity = EXPENSE_MOCK as unknown as ExpenseEntity;
+    const mockEntity: ExpenseEntity = EXPENSE_MOCK as unknown as ExpenseEntity;
     beforeEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
@@ -19,115 +17,75 @@ describe('Expense', () => {
     });
 
     describe('Constructor', () => {
-        it('should create an instance with all provided parameters', () => {
-            const expense = new Expense(expenseMock);
+        it('should create an instance when receiving only mandatory parameters', () => {
+            const expense = new Expense({
+                bill: mockEntity.bill,
+                type: mockEntity.type,
+                supplier: mockEntity.supplier,
+            });
             expect(expense).toBeInstanceOf(Expense);
-            expect(expense.id).toBe(expenseMock.id);
-            expect(expense.year).toBe(expenseMock.year);
-            expect(expense.type).toBe(expenseMock.type);
-            expect(expense.paid).toBe(expenseMock.paid);
-            expect(expense.total).toBe(expenseMock.total);
-            expect(expense.supplier).toBe(expenseMock.supplier);
-            expect(expense.total_paid).toBe(expenseMock.total_paid);
-            expect(expense.description).toBe(expenseMock.description);
-            expect(expense.instalment_number).toBe(
-                expenseMock.instalment_number,
-            );
-            expect(expense.created_at).toBe(expenseMock.created_at);
-            expect(expense.updated_at).toBe(expenseMock.updated_at);
-            expect(expense.deleted_at).toBe(expenseMock.deleted_at);
-        });
-
-        it('should keep optional fields undefined when they are not provided', () => {
-            const params = {
-                bill: expenseMock.bill,
-                type: expenseMock.type,
-                supplier: expenseMock.supplier,
-            };
-
-            const expense = new Expense(params);
-
+            expect(expense.id).toBeUndefined();
+            expect(expense.year).toBe(new Date().getFullYear());
+            expect(expense.type).toBe(mockEntity.type);
+            expect(expense.paid).toBeFalsy();
+            expect(expense.total).toBe(0);
+            expect(expense.months).toHaveLength(0);
+            expect(expense.supplier).toBe(mockEntity.supplier);
+            expect(expense.total_paid).toBe(0);
             expect(expense.created_at).toBeUndefined();
             expect(expense.updated_at).toBeUndefined();
             expect(expense.deleted_at).toBeUndefined();
             expect(expense.description).toBeUndefined();
+            expect(expense.instalment_number).toBe(1,);
         });
 
-        it('should override default values when provided in parameters', () => {
-            const expenseToUpdate: Expense = {
-                ...expenseMock,
-                year: 2030,
-                paid: undefined,
-                bill: {
-                    ...expenseMock.bill,
-                    name: 'New Bill'
-                },
-                name: 'New Bill New Supplier',
-                total: 12,
-                supplier: {
-                    ...expenseMock.supplier,
-                    name: 'New Supplier'
-                },
-                name_code: 'new_bill_new_supplier',
-                total_paid: 12,
-                description: 'New Description',
-                instalment_number: 12,
-            };
-
-            MONTHS.forEach((month) => {
-                expenseToUpdate[month] = 1;
-                expenseToUpdate[`${month}_paid`] = true;
-            });
-
-            const expense = new Expense({
-                ...expenseMock,
-                ...expenseToUpdate,
-            });
-            expect(expense.year).toBe(expenseToUpdate.year);
-            expect(expense.paid).toBeFalsy();
-            expect(expense.bill.name).toBe(expenseToUpdate.bill.name);
-            expect(expense.name).toBe(expenseToUpdate.name);
-            expect(expense.total).toBe(expenseToUpdate.total);
-            expect(expense.supplier.name).toBe(expenseToUpdate.supplier.name);
-            expect(expense.name_code).toBe(expenseToUpdate.name_code);
-            expect(expense.total_paid).toBe(expenseToUpdate.total_paid);
-            expect(expense.description).toBe(expenseToUpdate.description);
-            expect(expense.instalment_number).toBe(expenseToUpdate.instalment_number);
-            MONTHS.forEach((month) => {
-                expect(expense[month]).toBe(1);
-                expect(expense[`${month}_paid`]).toBeTruthy();
-            });
-
+        it('should create an instance with all provided parameters', () => {
+            const expense = new Expense(mockEntity);
+            expect(expense).toBeInstanceOf(Expense);
+            expect(expense.id).toBe(mockEntity.id);
+            expect(expense.year).toBe(mockEntity.year);
+            expect(expense.type).toBe(mockEntity.type);
+            expect(expense.paid).toBe(mockEntity.paid);
+            expect(expense.total).toBe(mockEntity.total);
+            expect(expense.months).toBe(mockEntity.months);
+            expect(expense.supplier).toBe(mockEntity.supplier);
+            expect(expense.total_paid).toBe(mockEntity.total_paid);
+            expect(expense.created_at).toBe(mockEntity.created_at);
+            expect(expense.updated_at).toBe(mockEntity.updated_at);
+            expect(expense.deleted_at).toBe(mockEntity.deleted_at);
+            expect(expense.description).toBe(mockEntity.description);
+            expect(expense.instalment_number).toBe(mockEntity.instalment_number);
         });
 
         it('should create an instance with is_aggregate true', () => {
             const expenseSubAggregateMock = {
-                ...expenseMock,
+                ...mockEntity,
                 is_aggregate: true,
-                parent: expenseMock,
-                children: [expenseMock],
+                parent: mockEntity,
+                children: [mockEntity],
                 aggregate_name: 'aggregate',
             };
             const expense = new Expense(expenseSubAggregateMock);
-            expect(expense.is_aggregate).toBeTruthy();
-            expect(expense.parent).toEqual(expenseMock);
-            expect(expense.children).toHaveLength(1);
             expect(expense.name).toEqual(`${expense.bill.name} aggregate ${expense.supplier.name}`);
+            expect(expense.parent).toEqual(mockEntity);
+            expect(expense.children).toHaveLength(1);
+            expect(expense.is_aggregate).toBeTruthy();
+
         });
 
         it('should create an instance with is_aggregate true and no name', () => {
             const expenseSubAggregateMock = {
-                ...expenseMock,
+                ...mockEntity,
                 is_aggregate: true,
-                parent: expenseMock,
-                children: [expenseMock],
+                parent: mockEntity,
+                children: [mockEntity],
                 aggregate_name: undefined,
             };
             const expense = new Expense(expenseSubAggregateMock);
-            expect(expense.is_aggregate).toBeTruthy();
-            expect(expense.parent).toEqual(expenseMock);
-            expect(expense.children).toHaveLength(1);
             expect(expense.name).toEqual(`${expense.bill.name}  ${expense.supplier.name}`);
+            expect(expense.parent).toEqual(mockEntity);
+            expect(expense.children).toHaveLength(1);
+            expect(expense.is_aggregate).toBeTruthy();
         });
     });
 });

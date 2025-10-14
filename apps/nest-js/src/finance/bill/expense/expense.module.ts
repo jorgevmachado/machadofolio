@@ -5,14 +5,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExpenseBusiness } from '@repo/business';
 
 import { Expense } from '../../entities/expense.entity';
-import { ExpenseService } from './expense.service';
+import { MonthModule } from '../../month/month.module';
 import { SupplierModule } from '../../supplier/supplier.module';
+
+import { ExpenseService } from './expense.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Expense]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    SupplierModule
+    SupplierModule,
+    MonthModule
   ],
   providers: [ExpenseService, ExpenseBusiness],
   exports: [ExpenseService],

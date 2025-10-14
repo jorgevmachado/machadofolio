@@ -1,0 +1,10 @@
+.ignore-words {
+  &__text {
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  &__input {
+    margin-top: 1rem;
+  }
+}

@@ -6,7 +6,7 @@ import { EStatus } from '@repo/business';
 
 import { type PaginateParameters, PokeApiService } from '@repo/business';
 
-import { type FindOneByParams, ListParams, Service } from '../shared';
+import { type FindOneByParams, GenerateSeeds, ListParams, Service } from '../shared';
 
 import { Pokemon } from './entities/pokemon.entity';
 import { PokemonAbility } from './entities/ability.entity';
@@ -16,6 +16,13 @@ import { PokemonMoveService } from './move/move.service';
 import type { PokemonSeederParams } from './types';
 import { PokemonType } from './entities/type.entity';
 import { PokemonTypeService } from './type/type.service';
+
+export type PokemonGenerateSeeds = {
+    moves: GenerateSeeds<PokemonMove>;
+    types: GenerateSeeds<PokemonType>;
+    pokemons: GenerateSeeds<Pokemon>;
+    abilities: GenerateSeeds<PokemonAbility>;
+}
 
 @Injectable()
 export class PokemonService extends Service<Pokemon> {

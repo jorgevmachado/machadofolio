@@ -4,7 +4,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port 4001",
+    "dev": "bash ../../scripts/next-dev-env.sh development 4001",
+    "dev:stg": "bash ../../scripts/next-dev-env.sh staging 4101",
+    "dev:prod": "bash ../../scripts/next-dev-env.sh production 4201",
     "build": "next build",
     "start": "next start",
     "lint": "next lint --max-warnings 0 --fix",

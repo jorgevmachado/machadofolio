@@ -4,6 +4,10 @@ import { Repository } from 'typeorm';
 
 import { Bank as BankConstructor } from '@repo/business';
 
+import BANK_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/banks.json';
+import BANK_LIST_STAGING_JSON from '../../../seeds/staging/finance/banks.json';
+import BANK_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/banks.json';
+
 import { Service } from '../../shared';
 
 import type { FinanceSeederParams } from '../types';
@@ -60,5 +64,25 @@ export class BankService extends Service<Bank> {
       }
 
       return this.create({ name: value });
+    }
+
+    async generateSeeds(withSeed: boolean, financeSeedsDir: string) {
+      return await this.generateEntitySeeds({
+          withSeed,
+          seedsDir: financeSeedsDir,
+          staging: BANK_LIST_STAGING_JSON,
+          production: BANK_LIST_PRODUCTION_JSON,
+          development: BANK_LIST_DEVELOPMENT_JSON,
+          filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code
+      });
+    }
+
+    async persistSeeds(withSeed?: boolean) {
+      return await this.persistEntitySeeds({
+          withSeed,
+          staging: BANK_LIST_STAGING_JSON,
+          production: BANK_LIST_PRODUCTION_JSON,
+          development: BANK_LIST_DEVELOPMENT_JSON,
+      });
     }
 }

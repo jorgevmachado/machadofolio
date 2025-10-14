@@ -93,6 +93,7 @@ describe('Finance Service', () => {
                 allPaid: false,
                 suppliers: [],
                 totalPaid: 0,
+                incomes: [],
                 expenses: [],
                 totalPending: 0,
                 supplierTypes: []

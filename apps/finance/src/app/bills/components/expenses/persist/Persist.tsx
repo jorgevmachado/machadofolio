@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { EMonth, MONTHS, ValidatorParams, convertToNumber } from '@repo/services';
 
@@ -37,6 +38,7 @@ export default function Persist({
     onSubmit,
 }: PersistProps) {
     const isMounted = useRef(false);
+    const router = useRouter();
 
     const [inputGroups, setInputGroups] = useState<Array<InputGroup>>([]);
     const [inputs, setInputs] = useState<Array<InputGroupItem>>([]);
@@ -67,11 +69,13 @@ export default function Persist({
             supplier: fields?.supplier ?? expense?.supplier,
             description: fields?.description ?? expense?.description,
         }
-
-        MONTHS.forEach((month) => {
-            update[month] = convertToNumber(fields[month] as string);
-            update[`${month}_paid`] = fields[`${month}_paid` as keyof PersistForm['fields']] === 'true';
-        });
+        if(expense?.months && expense?.months?.length > 0) {
+            update.months = expense.months.map((item) => {
+                item.value = convertToNumber(fields[item.label] as string);
+                item.paid = fields[`${item.label}_paid` as keyof PersistForm['fields']] === 'true';
+                return item;
+            })
+        }
         onSubmit?.({ create, update, expense });
         onClose();
     };
@@ -246,6 +250,16 @@ export default function Persist({
         return input.validator(params);
     }
 
+    const fallbackAction = (name: string) => {
+        switch (name) {
+            case 'supplier':
+                router.push('/suppliers');
+                break;
+            default:
+                break;
+        }
+    }
+
     useEffect(() => {
         if(!isMounted.current) {
             isMounted.current = true;
@@ -272,6 +286,7 @@ export default function Persist({
                                     onInput={handleOnInput}
                                     className={input.className ?? 'persist__row--item'}
                                     validator={(params) => handleValidator(input, params)}
+                                    fallbackAction={fallbackAction}
                                 />
                             )}
                             {show && input.label === 'Paid' && (

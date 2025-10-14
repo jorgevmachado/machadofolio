@@ -1,9 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
-import fs from 'fs';
+import fs, { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { writeFile } from 'fs/promises';
 
 export class File {
+    constructor(protected env: string) {}
     async upload(file: Express.Multer.File, filename?: string) {
         const filePath = this.getPath(file, filename);
 
@@ -33,5 +34,22 @@ export class File {
         }
 
         return filePath;
+    }
+
+    createDirectory(pathDir: string, rootDir?: string) {
+        const path = join(!rootDir ? process.cwd() : rootDir, pathDir);
+        if (!existsSync(path)) {
+            mkdirSync(path);
+        }
+        return path;
+    }
+
+    getSeedsDirectory(path: string = this.env) {
+        const rootDir = this.createDirectory('seeds');
+        return this.createDirectory(path, rootDir);
+    }
+
+    writeFile(fileName: string, pathDir: string, content: unknown) {
+        return writeFileSync(join(pathDir, fileName), JSON.stringify(content, null, 2));
     }
 }

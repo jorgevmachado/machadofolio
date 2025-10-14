@@ -4,7 +4,11 @@ import { Repository } from 'typeorm';
 
 import { Group as GroupConstructor } from '@repo/business';
 
-import { ListParams, Service } from '../../shared';
+import GROUP_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/groups.json';
+import GROUP_LIST_STAGING_JSON from '../../../seeds/staging/finance/groups.json';
+import GROUP_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/groups.json';
+
+import { GenerateSeeds, ListParams, Service } from '../../shared';
 
 import { Finance } from '../entities/finance.entity';
 import type { FinanceSeederParams } from '../types';
@@ -84,5 +88,27 @@ export class GroupService extends Service<Group> {
         }
 
         return this.create(finance, { name: value });
+    }
+
+    async generateSeeds(withSeed: boolean, financeSeedsDir: string): Promise<GenerateSeeds<Group>> {
+        return await this.generateEntitySeeds({
+            seedsDir: financeSeedsDir,
+            staging: GROUP_LIST_STAGING_JSON,
+            withSeed,
+            production: GROUP_LIST_PRODUCTION_JSON,
+            development: GROUP_LIST_DEVELOPMENT_JSON,
+            withRelations: true,
+            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code
+
+        })
+    }
+
+    async persistSeeds(withSeed?: boolean) {
+        return await this.persistEntitySeeds({
+            withSeed,
+            staging: GROUP_LIST_STAGING_JSON,
+            production: GROUP_LIST_PRODUCTION_JSON,
+            development: GROUP_LIST_DEVELOPMENT_JSON,
+        });
     }
 }

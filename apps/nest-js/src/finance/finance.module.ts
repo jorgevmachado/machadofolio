@@ -10,6 +10,8 @@ import { GroupModule } from './group/group.module';
 import { SupplierModule } from './supplier/supplier.module';
 
 import { Finance } from './entities/finance.entity';
+import { IncomeModule } from './income/income.module';
+import { MonthModule } from './month/month.module';
 
 @Module({
     controllers: [FinanceController],
@@ -20,7 +22,9 @@ import { Finance } from './entities/finance.entity';
         BankModule,
         BillModule,
         GroupModule,
-        SupplierModule
+        SupplierModule,
+        IncomeModule,
+        MonthModule
     ],
     exports: [FinanceService]
 })

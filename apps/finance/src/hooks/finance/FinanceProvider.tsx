@@ -39,7 +39,8 @@ export default function FinanceProvider({ children }: React.PropsWithChildren) {
             const response = await financeService.find();
             initializeFinanceInfo(response);
         } catch (error) {
-            console.error('# => FinanceInfoProvider => fetchFinanceInfo => error => ', error);
+            const errorMessage = (error instanceof Error) ? error.message : 'Error fetching Finance Info';
+            console.log('# => fetchFinanceInfo => error => ', errorMessage)
         } finally {
             hide()
         }
@@ -48,14 +49,14 @@ export default function FinanceProvider({ children }: React.PropsWithChildren) {
     const initialize = useCallback(async () => {
         show()
         try {
-            const response = await financeService.initialize();
-            setFinance(response)
+            await financeService.initialize();
+            await fetchFinanceInfo(); // Atualiza o estado após inicializar
         } catch (error) {
             console.error('# => FinanceInfoProvider => initializeFinance => error => ', error);
         } finally {
             hide()
         }
-    }, [show, hide]);
+    }, [show, hide, fetchFinanceInfo]);
 
 
     useEffect(() => {

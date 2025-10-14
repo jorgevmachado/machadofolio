@@ -9,7 +9,11 @@ import { transformObjectDateAndNulls } from '@repo/services';
 
 import { ERole, EStatus, User as UserConstructor } from '@repo/business';
 
-import { Service, type TBy } from '../../shared';
+import USER_LIST_DEVELOPMENT_JSON from '../../../seeds/development/users.json';
+import USER_LIST_STAGING_JSON from '../../../seeds/staging/users.json';
+import USER_LIST_PRODUCTION_JSON from '../../../seeds/production/users.json';
+
+import { GenerateSeeds, Service, type TBy } from '../../shared';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { CredentialsUserDto } from './dto/credentials-user.dto';
@@ -185,5 +189,27 @@ export class UsersService extends Service<User>{
     async seeds(listJson: Array<unknown>, password: string) {
         const seeds = listJson.map((item) => transformObjectDateAndNulls<User, unknown>(item));
         return await Promise.all(seeds.map( async (item) => await this.seed(item, password)));
+    }
+
+    async generateSeed(withSeed: boolean): Promise<GenerateSeeds<User>> {
+        const rootSeedsDir = this.file.getSeedsDirectory();
+        return await this.generateEntitySeeds({
+            staging: USER_LIST_STAGING_JSON,
+            seedsDir: rootSeedsDir,
+            withSeed,
+            production: USER_LIST_PRODUCTION_JSON,
+            development: USER_LIST_DEVELOPMENT_JSON,
+            withRelations: true,
+            filterGenerateEntitySeedsFn: (json, item) => json.cpf === item.cpf || json.email === item.email,
+        });
+    }
+
+    async persistSeed(withSeed: boolean) {
+        return await this.persistEntitySeeds({
+            withSeed,
+            staging: USER_LIST_STAGING_JSON,
+            production: USER_LIST_PRODUCTION_JSON,
+            development: USER_LIST_DEVELOPMENT_JSON,
+        });
     }
 }

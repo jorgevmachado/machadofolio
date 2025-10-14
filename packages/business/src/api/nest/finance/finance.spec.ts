@@ -13,25 +13,20 @@ jest.mock('../abstract', () => {
     return { NestModuleAbstract };
 });
 
-jest.mock('./bank', () => ({ Bank: jest.fn() }));
 jest.mock('./bill', () => ({ Bill: jest.fn() }));
+jest.mock('./bank', () => ({ Bank: jest.fn() }));
+jest.mock('./income', () => ({ Income: jest.fn() }));
 jest.mock('./group', () => ({ Group: jest.fn() }));
 jest.mock('./supplier', () => ({ Supplier: jest.fn() }));
 
-import {
-    afterEach,
-    beforeEach,
-    describe,
-    expect,
-    it,
-    jest,
-} from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
 
-import { Bank, type IBank } from './bank';
-import { Bill, type IBill, IExpense } from './bill';
+import { Bill } from './bill';
+import { Bank } from './bank';
+import { Group } from './group';
+import { Income } from './income';
 import { Finance } from './finance';
-import { Group, type IGroup } from './group';
-import { type ISupplier, ISupplierType, Supplier } from './supplier';
+import { Supplier } from './supplier';
 
 jest.mock('./');
 
@@ -5484,16 +5479,16 @@ describe('Finance', () => {
         jest.resetModules();
     });
 
-    describe('supplierModule', () => {
-        it('should initialize Supplier module', () => {
-            expect(Supplier).toHaveBeenCalledTimes(1);
-            expect(Supplier).toHaveBeenCalledWith(mockConfig);
+    describe('bill Module', () => {
+        it('should initialize Bill module', () => {
+            expect(Bill).toHaveBeenCalledTimes(1);
+            expect(Bill).toHaveBeenCalledWith(mockConfig);
         });
 
-        it('should return the instance of Supplier via supplier getter', () => {
-            const supplierModule = finance.supplier;
-            expect(supplierModule).toBeInstanceOf(Supplier);
-            expect(Supplier).toHaveBeenCalledTimes(1);
+        it('should return the instance of Bill via bill getter', () => {
+            const billModule = finance.bill;
+            expect(billModule).toBeInstanceOf(Bill);
+            expect(Bill).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -5523,29 +5518,29 @@ describe('Finance', () => {
         });
     });
 
-    describe('bank Module', () => {
-        it('should initialize Bank module', () => {
-            expect(Bank).toHaveBeenCalledTimes(1);
-            expect(Bank).toHaveBeenCalledWith(mockConfig);
+    describe('income Module', () => {
+        it('should initialize Income module', () => {
+            expect(Income).toHaveBeenCalledTimes(1);
+            expect(Income).toHaveBeenCalledWith(mockConfig);
         });
 
-        it('should return the instance of Bank via bank getter', () => {
-            const bankModule = finance.bank;
-            expect(bankModule).toBeInstanceOf(Bank);
-            expect(Bank).toHaveBeenCalledTimes(1);
+        it('should return the instance of Income via income getter', () => {
+            const incomeModule = finance.income;
+            expect(incomeModule).toBeInstanceOf(Income);
+            expect(Income).toHaveBeenCalledTimes(1);
         });
     });
 
-    describe('bill Module', () => {
-        it('should initialize Bill module', () => {
-            expect(Bill).toHaveBeenCalledTimes(1);
-            expect(Bill).toHaveBeenCalledWith(mockConfig);
+    describe('supplierModule', () => {
+        it('should initialize Supplier module', () => {
+            expect(Supplier).toHaveBeenCalledTimes(1);
+            expect(Supplier).toHaveBeenCalledWith(mockConfig);
         });
 
-        it('should return the instance of Bill via bill getter', () => {
-            const billModule = finance.bill;
-            expect(billModule).toBeInstanceOf(Bill);
-            expect(Bill).toHaveBeenCalledTimes(1);
+        it('should return the instance of Supplier via supplier getter', () => {
+            const supplierModule = finance.supplier;
+            expect(supplierModule).toBeInstanceOf(Supplier);
+            expect(Supplier).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -5565,6 +5560,7 @@ describe('Finance', () => {
             total: 0,
             banks: [],
             groups: [],
+            incomes: [],
             finance: mockEntity,
             allPaid: false,
             suppliers: [],

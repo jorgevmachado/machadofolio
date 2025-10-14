@@ -4,6 +4,10 @@ import { Repository } from 'typeorm';
 
 import { SupplierType as SupplierTypeConstructor } from '@repo/business';
 
+import SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON from '../../../../seeds/development/finance/supplier_types.json';
+import SUPPLIER_TYPE_LIST_STAGING_JSON from '../../../../seeds/staging/finance/supplier_types.json';
+import SUPPLIER_TYPE_LIST_PRODUCTION_JSON from '../../../../seeds/production/finance/supplier_types.json';
+
 import { Service } from '../../../shared';
 
 import type { FinanceSeederParams } from '../../types';
@@ -76,12 +80,32 @@ export class SupplierTypeService extends Service<SupplierType> {
         if(!value || value === '') {
             throw new NotFoundException(`${this.alias} not found`);
         }
-        const item = await this.findOne({ value, withDeleted: true, withThrow: false });
+        const item = await this.findOne({ value, withRelations: true, withDeleted: true, withThrow: false });
 
         if(item) {
             return item;
         }
 
         return this.create({ name: value });
+    }
+
+    async generateSeeds(withoutSupplierType: boolean, financeSeedsDir: string) {
+      return await this.generateEntitySeeds({
+          withSeed: !withoutSupplierType,
+          seedsDir: financeSeedsDir,
+          staging: SUPPLIER_TYPE_LIST_STAGING_JSON,
+          production: SUPPLIER_TYPE_LIST_PRODUCTION_JSON,
+          development: SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON,
+          filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code
+      });
+    }
+
+    async persistSeeds(withoutSupplierType: boolean) {
+      return await this.persistEntitySeeds({
+          withSeed: !withoutSupplierType,
+          staging: SUPPLIER_TYPE_LIST_STAGING_JSON,
+          production: SUPPLIER_TYPE_LIST_PRODUCTION_JSON,
+          development: SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON,
+      });
     }
 }

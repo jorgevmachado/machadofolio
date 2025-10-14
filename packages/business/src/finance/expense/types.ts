@@ -1,51 +1,52 @@
 import type {
     ICreateExpenseParams,
     IExpense,
-    IExpenseBase,
-    IExpenseMonthsWithPaid,
+    IMonthsObject,
     IPartialNestBaseEntity,
-    IUpdateExpenseParams
+    IUpdateExpenseParams,
+    IUploadExpenseParams
 } from '../../api';
+import { TMonth } from '@repo/services';
 
 export type ExpenseEntity = IExpense;
 
-export type ExpenseConstructorParams
-    = Omit<IExpenseBase, 'id' | 'year' | 'paid' | 'name' | 'total' | 'total_paid' | 'instalment_number' | 'name_code' | 'created_at' | 'updated_at' | 'deleted_at'>
-    & IPartialNestBaseEntity
-    & Partial<IExpenseMonthsWithPaid>
-    & Pick<ExpenseEntity, 'is_aggregate' | 'children' | 'parent' | 'aggregate_name'>
-    & {
+export type ExpenseConstructorParams = Omit<
+    ExpenseEntity,
+    'id' |
+    'year' |
+    'paid' |
+    'name' |
+    'total' |
+    'name_code' |
+    'total_paid' |
+    'created_at' |
+    'updated_at' |
+    'deleted_at' |
+    'instalment_number'
+> & IPartialNestBaseEntity & {
     paid?: boolean;
     year?: number;
     total?: number;
     total_paid?: number;
     instalment_number?: number;
-};
-
+}
 
 export type CreateExpenseParams = ICreateExpenseParams;
 
 export type UpdateExpenseParams = IUpdateExpenseParams;
 
+export type UploadExpenseParams = IUploadExpenseParams;
+
 export type InitializedExpense = {
     nextYear: number;
     requiresNewBill: boolean;
-    monthsForNextYear?: Array<string>;
+    monthsForNextYear?: Array<TMonth>;
     expenseForNextYear?: ExpenseEntity;
-    monthsForCurrentYear?: Array<string>;
+    monthsForCurrentYear: Array<TMonth>;
     expenseForCurrentYear: ExpenseEntity;
 }
 
-export type TMonthPaid =
-    | 'january_paid'
-    | 'february_paid'
-    | 'march_paid'
-    | 'april_paid'
-    | 'may_paid'
-    | 'june_paid'
-    | 'july_paid'
-    | 'august_paid'
-    | 'september_paid'
-    | 'october_paid'
-    | 'november_paid'
-    | 'december_paid';
+export type ExpenseWithMonthsAndPaid = IMonthsObject & Omit<ExpenseEntity, 'parent' | 'children'> & {
+    parent?: ExpenseWithMonthsAndPaid;
+    children?: Array<ExpenseWithMonthsAndPaid>;
+};

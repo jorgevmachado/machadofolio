@@ -1,11 +1,11 @@
 "use client"
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
 import { type  UserEntity } from '@repo/business';
 
-import { Page, useAlert, useLoading, UserProvider } from '@repo/ui';
+import { Page, useAlert, UserProvider } from '@repo/ui';
 
 import { privateRoutes } from '../../../routes';
 import { authService, getAccessToken, removeAccessToken } from '../../../shared';
@@ -17,9 +17,10 @@ type LayoutProps = {
 export default function Layout({ children }: LayoutProps) {
     const router = useRouter();
     const { addAlert } = useAlert();
-    const { show, hide } = useLoading();
 
     const [user, setUser] = useState<UserEntity | undefined>(undefined);
+
+    const [token, setToken] = useState<string | undefined>(getAccessToken());
 
     const handleLinkClick = useCallback(
         (path: string) => {
@@ -43,27 +44,28 @@ export default function Layout({ children }: LayoutProps) {
         return;
     }, [user, router]);
 
-    const token = useMemo(() => getAccessToken() || '', []);
-
     const fetchUser = useCallback(async () => {
         try {
-            show();
             const fetchedUser = await authService.me();
             setUser(fetchedUser);
         } catch (error) {
             addAlert({ type: 'error', message: 'Your token has expired!' });
             removeAccessToken();
             setUser(undefined);
-        } finally {
-            hide();
         }
-    }, [show, hide, addAlert]);
+    }, [addAlert]);
 
     useEffect(() => {
-        if(token) {
+        setToken(getAccessToken());
+    }, []);
+
+    useEffect(() => {
+        if (token && !user) {
             fetchUser();
+        } else if (!token) {
+            setUser(undefined);
         }
-    }, [token]);
+    }, [token, user, fetchUser]);
 
 
     return (

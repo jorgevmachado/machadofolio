@@ -1,0 +1,1 @@
+export { ModalUpload as default } from './ModalUpload'

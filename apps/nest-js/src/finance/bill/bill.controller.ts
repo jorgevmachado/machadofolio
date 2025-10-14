@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile, UploadedFiles, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { type QueryParameters } from '@repo/business';
@@ -7,6 +7,8 @@ import { AuthRoleGuard } from '../../guards/auth-role/auth-role.guard';
 import { AuthStatusGuard } from '../../guards/auth-status/auth-status.guard';
 import { FinanceInitializeGuard } from '../../guards/finance-initialize/finance-initialize.guard';
 import { GetUserAuth } from '../../decorators/auth-user/auth-user.decorator';
+import { UseFileUpload } from '../../decorators/use-file-upload/use-file-upload.decorator';
+import { UseMultipleFileUpload } from '../../decorators/use-multiple-file-upload/use-multiple-file-upload.decorator';
 
 import { Finance } from '../entities/finance.entity';
 import { ListParams } from '../../shared';
@@ -17,7 +19,8 @@ import { CreateBillDto } from './dto/create-bill.dto';
 import { CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
-
+import { UploadExpenseDto } from './expense/dto/upload-expense.dto';
+import { UploadsExpenseDto } from './expense/dto/uploads-expense.dto';
 
 @Controller('finance/bill')
 @UseGuards(
@@ -69,6 +72,26 @@ export class BillController {
   addExpense(@Param('param') param: string, @Body() createExpenseDto: CreateExpenseDto) {
     return this.service.addExpense(param, createExpenseDto);
   }
+
+    @Post(':param/expense/upload')
+    @UseFileUpload(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+    persistExpenseByUpload(
+        @UploadedFile() file: Express.Multer.File,
+        @Param('param') param: string,
+        @Body() uploadExpenseDto: UploadExpenseDto,
+    ) {
+       return this.service.persistExpenseByUpload(file, param, uploadExpenseDto);
+    }
+
+    @Post(':param/expense/uploads')
+    @UseMultipleFileUpload(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'], 12)
+    persistMultipleExpensesByUpload(
+        @UploadedFiles() files: Express.Multer.File[],
+        @Param('param') param: string,
+        @Body() uploadsExpenseDto: UploadsExpenseDto,
+    ) {
+       return this.service.persistMultipleExpensesByUpload(files, param, uploadsExpenseDto);
+    }
 
   @Get(':param/expense/:expenseId')
   findOneExpense(@Param('param') param: string, @Param('expenseId') expenseId: string) {

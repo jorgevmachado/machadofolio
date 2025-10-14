@@ -1,4 +1,5 @@
 import type { ECellType } from './enum';
+import type * as ExcelJS from 'exceljs';
 
 export type CellParams = {
     cell: string | number;
@@ -86,4 +87,11 @@ export type MergeCell = {
 export type Positions = {
     row: number;
     column: number;
+}
+
+export type GetCell = {
+    cell: ExcelJS.Cell;
+    value: string;
+    nextRow: number;
+    totalRows: number;
 }
