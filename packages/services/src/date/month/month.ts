@@ -142,3 +142,10 @@ export function getCurrentMonthNumber(month?: number | string): number {
             throw new Error(`The month is required`);
     }
 }
+
+export function convertTypeToEnum(month?: TMonth): EMonth {
+    if(!month) {
+        return EMonth.JANUARY;
+    }
+    return month.toUpperCase() as EMonth;
+}

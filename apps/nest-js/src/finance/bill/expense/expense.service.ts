@@ -33,6 +33,7 @@ import { PersistMonthDto } from '../../month/dto/persist-month.dto';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { Month } from '../../entities/month.entity';
+import { UploadExpenseDto } from './dto/upload-expense.dto';
 
 export type InitializeParams = {
     paid?: ExpenseEntity['paid'];
@@ -54,6 +55,14 @@ export type createToSheetParams = Record<string, string | number | boolean | obj
 type ExpenseGenerateSeeds = {
     months: Array<Month>;
     expenses: GenerateSeeds<Expense>;
+}
+
+export type PersistExpenseParams = Omit<CreateExpenseDto, 'month'> & {
+    months: Array<PersistMonthDto>;
+}
+
+export type BuildExpensePersistenceResult = Omit<CreateExpenseDto, 'month'> & {
+    month: PersistMonthDto;
 }
 
 @Injectable()
@@ -562,5 +571,105 @@ export class ExpenseService extends Service<Expense> {
             months: this.business.monthsMapper(expenses.added),
             expenses
         }
+    }
+
+    public async buildExpensesToUpload(buffer: Buffer, uploadExpenseDto: UploadExpenseDto) {
+        const spreadsheet = new Spreadsheet();
+
+        const worksheets = await spreadsheet.loadFile(buffer);
+
+        const worksheet = worksheets[0];
+
+        if (!worksheet) {
+            throw new ConflictException('The Excel file does not contain any worksheets.');
+        }
+
+        spreadsheet.updateWorkSheet(worksheet);
+        const workSheet = spreadsheet.workSheet;
+
+        const createdExpenses = this.business.spreadsheet.buildForCreation(workSheet, uploadExpenseDto);
+
+        return await this.buildForCreationBySpreadsheet(createdExpenses);
+    }
+
+    public buildExpensePersistence(year: number, createExpenseDtoList: Array<CreateExpenseDto>): Array<BuildExpensePersistenceResult> {
+        return createExpenseDtoList.map((createExpenseDto) => {
+            const month = this.monthService.business.generatePersistMonthParams({
+                year,
+                paid: createExpenseDto?.paid,
+                value: createExpenseDto?.value,
+                month: createExpenseDto?.month,
+                received_at: createExpenseDto?.received_at
+            });
+            return {
+                ...createExpenseDto,
+                month
+            };
+        });
+    }
+
+    cleanRepeatedPersistExpenseParams(buildExpensePersistenceResult: Array<BuildExpensePersistenceResult>): Array<PersistExpenseParams> {
+        const initialPersistExpenseParams: Array<PersistExpenseParams> = [{
+            type: EExpenseType.VARIABLE,
+            value: 0,
+            months: [],
+            supplier: '',
+            instalment_number: 1,
+        }];
+
+        return buildExpensePersistenceResult.reduce((acc, item) => {
+            const hasParam = acc.find((accItem) => accItem.supplier['name_code'] === item.supplier['name_code']);
+            if(!hasParam) {
+                const expenseToSave = buildExpensePersistenceResult.filter((bep) => bep.supplier['name_code'] === item.supplier['name_code']);
+                const expenseMonths =  expenseToSave.flatMap((expense) => expense.month);
+                acc.push({
+                    type: item.type,
+                    paid: item.paid,
+                    value: 0,
+                    months: expenseMonths,
+                    supplier: item.supplier,
+                    received_at: item.received_at,
+                });
+            }
+            return acc;
+        }, initialPersistExpenseParams).filter((item) => item.months.length > 0 && item.supplier !== '');
+    }
+
+    async persistByUpload(expense: Expense,persistExpenseParams: PersistExpenseParams) {
+        const isCreate = !expense?.id;
+
+        const savedExpense = isCreate ? await this.save(expense) as Expense : { ...expense};
+
+        const expenseMonths: Array<PersistMonthDto> = isCreate
+            ? this.monthService.business.generateMonthListCreationParameters({
+                year: savedExpense?.year,
+                paid: savedExpense?.paid,
+                months: persistExpenseParams.months,
+                received_at: persistExpenseParams.received_at
+            })
+            : this.updateMonths(savedExpense.months, persistExpenseParams.months);
+
+        if(expenseMonths?.length > 0) {
+            savedExpense.months = await this.monthService.persistList(expenseMonths, { expense: savedExpense });
+            const savedExpenseCalculated = this.expenseBusiness.calculate(savedExpense);
+            return await this.save(savedExpenseCalculated);
+        }
+
+        return savedExpense;
+    }
+
+    private updateMonths(currentMonths: Array<Month> = [], monthsToUpdate: Array<PersistMonthDto>) {
+        return currentMonths.map((month) => {
+            const monthToUpdate = monthsToUpdate.find((monthToUpdate) => monthToUpdate.code === month.code);
+
+            if(!monthToUpdate) {
+                return month;
+            }
+
+            month.paid = Boolean(monthToUpdate.paid);
+            month.value = monthToUpdate.value !== month.value ? monthToUpdate.value : month.value;
+            month.received_at = monthToUpdate.received_at !== month.received_at ? monthToUpdate.received_at : month.received_at;
+            return month;
+        })
     }
 }

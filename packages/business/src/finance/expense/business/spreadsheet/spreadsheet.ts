@@ -475,6 +475,7 @@ export default class SpreadsheetBusiness {
                     month: uploadExpenseParams?.month,
                     supplier: result.supplier,
                     description: 'Create by Document Import',
+                    received_at: result.date,
                     instalment_number: result.instalment_number,
                 }
 
@@ -531,6 +532,7 @@ export default class SpreadsheetBusiness {
 
         return {
             year,
+            date,
             value,
             month: month?.toUpperCase() as EMonth,
             supplier,

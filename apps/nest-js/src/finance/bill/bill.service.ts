@@ -2,9 +2,17 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { MONTHS, Spreadsheet, filterByCommonKeys, snakeCaseToNormal, toSnakeCase } from '@repo/services';
+import {
+    convertTypeToEnum,
+    filterByCommonKeys,
+    getMonthByIndex,
+    MONTHS,
+    snakeCaseToNormal,
+    Spreadsheet,
+    toSnakeCase
+} from '@repo/services';
 
-import { BillBusiness, Bill as BillConstructor, EBillType } from '@repo/business';
+import { Bill as BillConstructor, BillBusiness, EBillType } from '@repo/business';
 
 import BILL_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/bills.json';
 import BILL_LIST_STAGING_JSON from '../../../seeds/staging/finance/bills.json';
@@ -22,13 +30,14 @@ import { Month } from '../entities/month.entity';
 import { BankService } from '../bank/bank.service';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { CreateExpenseDto } from './expense/dto/create-expense.dto';
-import { ExpenseService } from './expense/expense.service';
+import { BuildExpensePersistenceResult, ExpenseService, PersistExpenseParams, } from './expense/expense.service';
 import { GroupService } from '../group/group.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
 import { UploadExpenseDto } from './expense/dto/upload-expense.dto';
 
 import type { BillSeederParams, CreateToSheetParams, ExistExpenseInBill, SpreadsheetProcessingParams } from './types';
+import { UploadsExpenseDto } from './expense/dto/uploads-expense.dto';
 
 type BillGenerateSeeds = {
     bills: GenerateSeeds<Bill>;
@@ -169,7 +178,7 @@ export class BillService extends Service<Bill> {
     }
 
     async addExpense(param: string, createExpenseDto: CreateExpenseDto, billEntity?: Bill, fromWorkSheet?: boolean) {
-        const bill = !billEntity ?  await this.findOne({ value: param, withRelations: true }) as Bill : billEntity;
+        const bill = !billEntity ? await this.findOne({ value: param, withRelations: true }) as Bill : billEntity;
 
         const expense = await this.buildExpenseToCreate(bill, createExpenseDto);
 
@@ -559,7 +568,7 @@ export class BillService extends Service<Bill> {
 
     private async addExpensesByUpload(bill: Bill, listCreateExpenseDto: Array<CreateExpenseDto>) {
         const expenses: Array<Expense> = [];
-        for(const createExpenseDto of listCreateExpenseDto) {
+        for (const createExpenseDto of listCreateExpenseDto) {
             const expense = await this.addExpense(bill.id, createExpenseDto, bill, true) as Expense;
             expenses.push(expense);
         }
@@ -618,5 +627,50 @@ export class BillService extends Service<Bill> {
         }
 
         return !currentExistExpense ? createdExpense : currentExistExpense;
+    }
+
+    async persistMultipleExpensesByUpload(files: Express.Multer.File[], param: string, uploadsExpenseDto: UploadsExpenseDto) {
+        const bill = await this.findOne({ value: param, withRelations: true }) as Bill;
+
+        const buildExpensePersistenceResult: Array<BuildExpensePersistenceResult> = [];
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+
+            if (!file || !file?.buffer) {
+                throw new ConflictException('one of the files was not uploaded or is invalid.');
+            }
+
+            const month = uploadsExpenseDto?.months?.[i];
+
+            const uploadExpenseDto: UploadExpenseDto = {
+                file: '',
+                paid: uploadsExpenseDto?.paid?.[i],
+                month: !month ? convertTypeToEnum(getMonthByIndex(i)) : month,
+                replaceWords: uploadsExpenseDto?.replaceWords,
+                repeatedWords: uploadsExpenseDto?.repeatedWords
+            }
+
+            const expensesBuilt = await this.expenseService.buildExpensesToUpload(file.buffer, uploadExpenseDto);
+
+            const persistenceOfConstructedExpenses = this.expenseService.buildExpensePersistence(bill.year, expensesBuilt);
+            buildExpensePersistenceResult.push(...persistenceOfConstructedExpenses);
+        }
+
+        const cleanPersistExpenseParamsBuilt = this.expenseService.cleanRepeatedPersistExpenseParams(buildExpensePersistenceResult);
+
+        const expenses: Array<Expense> = [];
+
+        for (const persistExpenseParams of cleanPersistExpenseParamsBuilt) {
+            const expense = await this.persistExpense(bill, persistExpenseParams) as Expense;
+            expenses.push(expense);
+        }
+
+        return expenses;
+    }
+
+    private async persistExpense(bill: Bill, persistExpenseParams: PersistExpenseParams) {
+        const expenseToPersist = await this.buildExpenseToCreate(bill, persistExpenseParams) as Expense;
+        return await this.expenseService.persistByUpload(expenseToPersist, persistExpenseParams);
     }
 }

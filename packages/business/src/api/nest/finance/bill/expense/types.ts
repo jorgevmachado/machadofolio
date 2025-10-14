@@ -41,6 +41,7 @@ export type ICreateExpenseParams = {
     parent?: string | IExpense['parent'];
     supplier: string | IExpense['supplier'];
     description?: string;
+    received_at?: Date;
     aggregate_name?: string;
     instalment_number?: number;
 }

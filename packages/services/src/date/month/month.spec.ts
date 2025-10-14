@@ -11,7 +11,7 @@ import {
     getMonthNumber,
     getMonthByIndex,
     getCurrentMonth,
-    getCurrentMonthNumber,
+    getCurrentMonthNumber, convertTypeToEnum,
 } from './month';
 
 import { EMonth } from './enum';
@@ -319,5 +319,14 @@ describe('Date Month function', () => {
                 );
             })
         });
+
+        describe('convertTypeToEnum', () => {
+            it('should return the correct EMonth for a valid string month.', () => {
+                expect(convertTypeToEnum('july')).toEqual(EMonth.JULY);
+            });
+            it('should return JANUARY when received a invalid string month.', () => {
+                expect(convertTypeToEnum(undefined)).toEqual(EMonth.JANUARY);
+            });
+        })
     });
 });

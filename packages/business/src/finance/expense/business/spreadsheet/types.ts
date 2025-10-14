@@ -96,6 +96,7 @@ export type ValidateWorkSheetToBuild = {
 
 export type BuildFromCreditCardSheet = {
     year: number;
+    date: Date;
     value: number;
     month: EMonth;
     supplier: string;
