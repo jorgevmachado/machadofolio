@@ -534,6 +534,35 @@ describe('Expense Business', () => {
         });
     });
 
+    describe('monthsMapper', () => {
+        it('should return a list of months by list of expenses.', () => {
+            const mockExpenses = [
+                mockEntity,
+                {...mockEntity, parent: mockEntity },
+                {...mockEntity, children: [ mockEntity ] },
+            ];
+
+            const result = business.monthsMapper(mockExpenses);
+            expect(result).toHaveLength(4);
+        });
+
+        it('should return a list empty when received a list of expenses empty.', () => {
+            const result = business.monthsMapper([]);
+            expect(result).toHaveLength(0);
+        });
+
+        it('should return a list of months by list of expenses when expenses has a undefined months.', () => {
+            const mockExpenses = [
+                { ...mockEntity, months: undefined },
+                {...mockEntity, parent: mockEntity },
+                {...mockEntity, children: [ { ...mockEntity, months: undefined } ] },
+            ];
+
+            const result = business.monthsMapper(mockExpenses);
+            expect(result).toHaveLength(2);
+        });
+    });
+
     describe('convertMonthsToObject', () => {
         it('should return an object with the months correctly', () => {
             mockConvertMonthsToObject.mockReturnValue({

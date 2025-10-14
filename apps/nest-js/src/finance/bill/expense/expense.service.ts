@@ -344,7 +344,7 @@ export class ExpenseService extends Service<Expense> {
         }
     }
 
-    private async validateExistExpense(expense: Expense, fromWorkSheet?: boolean) {
+    private async validateExistExpense(expense: Expense, withoutThrow?: boolean) {
         const filters: Array<FilterParams> = [
             {
                 value: expense.name_code,
@@ -361,7 +361,7 @@ export class ExpenseService extends Service<Expense> {
         ];
         const result = await this.findAll({ withRelations: true, filters }) as Array<Expense>;
 
-        if (result.length && !fromWorkSheet) {
+        if (result.length && !withoutThrow) {
             throw this.error(new ConflictException('Expense already exists'));
         }
 
@@ -526,7 +526,7 @@ export class ExpenseService extends Service<Expense> {
         });
 
         return {
-            months: this.mapperMonthsSeeds(expenses.added),
+            months: this.business.monthsMapper(expenses.added),
             expenses
         }
     }
@@ -540,35 +540,8 @@ export class ExpenseService extends Service<Expense> {
         })
 
         return {
-            months: this.mapperMonthsSeeds(expenses.added),
+            months: this.business.monthsMapper(expenses.added),
             expenses
         }
-    }
-
-    private mapperMonthsSeeds(expenses: Array<Expense>): Array<Month> {
-        const expenseMonths: Array<Month> = [];
-
-        if(expenses.length === 0) {
-            return expenseMonths;
-        }
-
-        expenses.forEach((expense) => {
-            const months = expense?.months ?? [];
-            if(months.length > 0) {
-                expenseMonths.push(...months);
-            }
-            const expenseChildren = expense?.children ?? [];
-            if(expenseChildren.length > 0) {
-                expenseChildren.forEach((child) => {
-                    const childMonths = child?.months ?? [];
-                    if(childMonths.length > 0) {
-                        expenseMonths.push(...childMonths);
-                    }
-                });
-            }
-        });
-
-
-        return expenseMonths;
     }
 }

@@ -170,23 +170,8 @@ export class BillService extends Service<Bill> {
 
     async addExpense(param: string, createExpenseDto: CreateExpenseDto, billEntity?: Bill, fromWorkSheet?: boolean) {
         const bill = !billEntity ?  await this.findOne({ value: param, withRelations: true }) as Bill : billEntity;
-        const createdExpense = await this.expenseService.buildForCreation(
-            bill,
-            createExpenseDto,
-        );
 
-        const existExpense = await this.existExpenseInBill({
-            year: createdExpense.year,
-            nameCode: createdExpense.name_code,
-            withThrow: false,
-        });
-
-        const currentExistExpense = !existExpense ? undefined : {
-            ...existExpense,
-            parent: createdExpense?.parent,
-            is_aggregate: createdExpense?.is_aggregate,
-            aggregate_name: createdExpense?.aggregate_name,
-        }
+        const expense = await this.buildExpenseToCreate(bill, createExpenseDto);
 
         const { paid, type, value, month, instalment_number } = createExpenseDto;
 
@@ -201,7 +186,7 @@ export class BillService extends Service<Bill> {
             type,
             value,
             month,
-            expense: !currentExistExpense ? createdExpense : currentExistExpense,
+            expense,
             fromWorkSheet,
             instalment_number,
         });
@@ -611,5 +596,27 @@ export class BillService extends Service<Bill> {
             months,
             expenses
         }
+    }
+
+    private async buildExpenseToCreate(bill: Bill, createExpenseDto: CreateExpenseDto) {
+        const createdExpense = await this.expenseService.buildForCreation(
+            bill,
+            createExpenseDto,
+        );
+
+        const existExpense = await this.existExpenseInBill({
+            year: createdExpense.year,
+            nameCode: createdExpense.name_code,
+            withThrow: false,
+        });
+
+        const currentExistExpense = !existExpense ? undefined : {
+            ...existExpense,
+            parent: createdExpense?.parent,
+            is_aggregate: createdExpense?.is_aggregate,
+            aggregate_name: createdExpense?.aggregate_name,
+        }
+
+        return !currentExistExpense ? createdExpense : currentExistExpense;
     }
 }

@@ -179,4 +179,31 @@ export default class ExpenseBusiness {
         return result;
 
     }
+
+    public monthsMapper(expenses: Array<Expense>): Array<Month> {
+        const expenseMonths: Array<Month> = [];
+
+        if(expenses.length === 0) {
+            return expenseMonths;
+        }
+
+        expenses.forEach((expense) => {
+            const months = expense?.months ?? [];
+            if(months.length > 0) {
+                expenseMonths.push(...months);
+            }
+            const expenseChildren = expense?.children ?? [];
+            if(expenseChildren.length > 0) {
+                expenseChildren.forEach((child) => {
+                    const childMonths = child?.months ?? [];
+                    if(childMonths.length > 0) {
+                        expenseMonths.push(...childMonths);
+                    }
+                });
+            }
+        });
+
+
+        return expenseMonths;
+    }
 }
