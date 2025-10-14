@@ -52,7 +52,6 @@ export class UploadExpenseDto implements UploadExpenseParams {
     @IsArray()
     @Transform(({ value }) => {
         if(value && ((value) as Array<string>).length === 1) {
-            console.log('# => repeatedWords => ', value);
             return value[0].split(',');
         }
         return value;

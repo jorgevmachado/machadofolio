@@ -119,8 +119,10 @@ export class ExpenseService extends Service<Expense> {
         const existExpense =  await this.validateExistExpense(expenseToInitialize, fromWorkSheet);
 
         const result = this.expenseBusiness.initialize(expenseToInitialize, month);
-        const currentExpense  = !existExpense ? result.expenseForCurrentYear : { ...existExpense, ...result.expenseForCurrentYear };
-        const initializedExpense = await this.create(currentExpense, result.monthsForCurrentYear, value);
+
+        const initializedExpense = !existExpense
+            ? await this.create(result.expenseForCurrentYear, result.monthsForCurrentYear, value)
+            : await this.persist({...existExpense, ...result.expenseForCurrentYear}, result.monthsForCurrentYear, value, fromWorkSheet);
 
         if (initializedExpense) {
             result.expenseForCurrentYear = initializedExpense;
@@ -163,6 +165,23 @@ export class ExpenseService extends Service<Expense> {
             return await this.save(savedExpenseCalculated);
         }
         return savedExpense;
+    }
+
+    async persist(expense: Expense, months: Array<TMonth> = [], value: number = 0, fromWorkSheet?: boolean) {
+        const expenseToPersist = {...expense};
+        if(expense?.months && expense?.months?.length > 0) {
+            const monthList = !fromWorkSheet ? expense.months :  expense.months.map((month) => {
+                const monthReceivedFind = months.find((item) => item === month.label);
+                if(monthReceivedFind) {
+                    month.value = month.value + value;
+                }
+                return month;
+            });
+            expenseToPersist.months = await this.monthService.persistList(monthList, { expense: expenseToPersist });
+            const savedExpenseCalculated = this.expenseBusiness.calculate(expenseToPersist);
+            return await this.save(savedExpenseCalculated);
+        }
+        return expense;
     }
 
     async update(bill: Bill, param: string, body: UpdateExpenseDto) {
