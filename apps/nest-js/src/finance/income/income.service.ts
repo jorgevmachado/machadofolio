@@ -9,7 +9,7 @@ import INCOME_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/inc
 import INCOME_LIST_STAGING_JSON from '../../../seeds/staging/finance/incomes.json';
 import INCOME_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/incomes.json';
 
-import { type FilterParams, GenerateSeeds, Service } from '../../shared';
+import { type FilterParams, SeedsGenerated, Service } from '../../shared';
 
 import type { FinanceSeederParams } from '../types';
 
@@ -34,8 +34,8 @@ type createToSheetParams = Record<string, string | number | boolean | object | F
 
 type IncomeGenerateSeeds = {
     months: Array<Month>;
-    incomes: GenerateSeeds<Income>;
-    incomeSources: GenerateSeeds<IncomeSource>;
+    incomes: SeedsGenerated<Income>;
+    incomeSources: SeedsGenerated<IncomeSource>;
 }
 
 @Injectable()

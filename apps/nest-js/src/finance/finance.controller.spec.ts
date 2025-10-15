@@ -30,7 +30,7 @@ describe('FinanceController', () => {
             seed: jest.fn(),
             seeds: jest.fn(),
             basicSeeds: jest.fn(),
-            initialize: jest.fn(),
+            create: jest.fn(),
           },
         },
       ],
@@ -52,9 +52,9 @@ describe('FinanceController', () => {
   describe('initialize', () => {
     it('should initialize the database ', async () => {
       jest
-          .spyOn(service, 'initialize')
+          .spyOn(service, 'create')
           .mockResolvedValueOnce(mockEntity);
-      expect(await controller.initialize(mockEntity.user)).toEqual(mockEntity);
+      expect(await controller.create(mockEntity.user)).toEqual(mockEntity);
     });
   });
 });

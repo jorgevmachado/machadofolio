@@ -20,7 +20,7 @@ type GetListJsonParams = {
     development: unknown;
 }
 
-export interface GenerateSeeds<T> {
+export interface SeedsGenerated<T> {
     list: Array<T>;
     added: Array<T>;
 }
@@ -173,7 +173,7 @@ export abstract class Service<T extends BasicEntity> extends Base {
             development,
             withRelations,
             persistEntitySeedsFn,
-    }: PersistEntitySeedsParams<T>): Promise<GenerateSeeds<T>> {
+    }: PersistEntitySeedsParams<T>): Promise<SeedsGenerated<T>> {
         if(!withSeed) {
             return {
                 list: [],
@@ -212,7 +212,7 @@ export abstract class Service<T extends BasicEntity> extends Base {
             development,
             withRelations,
             filterGenerateEntitySeedsFn,
-    }: GenerateEntitySeedsParams<T>): Promise<GenerateSeeds<T>> {
+    }: GenerateEntitySeedsParams<T>): Promise<SeedsGenerated<T>> {
         if(!withSeed) {
             return {
                 list: [],

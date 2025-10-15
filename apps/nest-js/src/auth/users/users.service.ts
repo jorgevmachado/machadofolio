@@ -13,7 +13,7 @@ import USER_LIST_DEVELOPMENT_JSON from '../../../seeds/development/users.json';
 import USER_LIST_STAGING_JSON from '../../../seeds/staging/users.json';
 import USER_LIST_PRODUCTION_JSON from '../../../seeds/production/users.json';
 
-import { GenerateSeeds, Service, type TBy } from '../../shared';
+import { SeedsGenerated, Service, type TBy } from '../../shared';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { CredentialsUserDto } from './dto/credentials-user.dto';
@@ -191,7 +191,7 @@ export class UsersService extends Service<User>{
         return await Promise.all(seeds.map( async (item) => await this.seed(item, password)));
     }
 
-    async generateSeed(withSeed: boolean): Promise<GenerateSeeds<User>> {
+    async generateSeed(withSeed: boolean): Promise<SeedsGenerated<User>> {
         const rootSeedsDir = this.file.getSeedsDirectory();
         return await this.generateEntitySeeds({
             staging: USER_LIST_STAGING_JSON,

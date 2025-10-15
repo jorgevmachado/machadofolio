@@ -46,32 +46,4 @@ describe('AppController', () => {
       expect(appController).toBeDefined();
     });
   });
-
-  describe('seeds', () => {
-    it('should return seeds', async () => {
-      const expected = {
-        users: 1,
-        finances: {
-          bills: 1,
-          groups: 1,
-          banks: 1,
-          expenses: 1,
-          finances: 1,
-          suppliers: 1,
-          incomes: 1,
-          incomeSources: 1,
-          supplierTypes: 1,
-        },
-        pokemons: {
-          moves: 1,
-          types: 1,
-          pokemons: 1,
-          abilities: 1,
-        },
-        message: 'Seeds successfully',
-      }
-      jest.spyOn(service, 'seeds').mockResolvedValueOnce(expected);
-      expect(await appController.seeds(createSeedDto)).toEqual(expected);
-    });
-  });
 });

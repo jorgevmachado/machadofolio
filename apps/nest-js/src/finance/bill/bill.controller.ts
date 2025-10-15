@@ -16,7 +16,6 @@ import { BillService } from './bill.service';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
-import { UpdateExpenseDto } from './expense/dto/update-expense.dto';
 import { UseMultipleFileUpload } from '../../decorators/use-multiple-file-upload/use-multiple-file-upload.decorator';
 import { UploadsExpenseDto } from './expense/dto/uploads-expense.dto';
 
@@ -72,28 +71,18 @@ export class BillController {
     }
 
     @Get(':param/list/expense')
-    findAllExpenseByBill(@Param('param') param: string, @Query() parameters: QueryParameters){
+    findAllExpenseByBill(@Param('param') param: string, @Query() parameters: QueryParameters) {
         return this.service.findAllExpense(param, { parameters });
     }
 
-    //   @Post(':param/expense/upload')
-    //   @UseFileUpload(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
-    //   persistExpenseByUpload(
-    //       @UploadedFile() file: Express.Multer.File,
-    //       @Param('param') param: string,
-    //       @Body() uploadExpenseDto: UploadExpenseDto,
-    //   ) {
-    //      return this.service.persistExpenseByUpload(file, param, uploadExpenseDto);
-    //   }
-    //
-      @Post(':param/expense/uploads')
-      @UseMultipleFileUpload(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'], 12)
-      persistMultipleExpensesByUpload(
-          @UploadedFiles() files: Express.Multer.File[],
-          @Param('param') param: string,
-          @Body() uploadsExpenseDto: UploadsExpenseDto,
-      ) {
-         return this.service.persistMultipleExpensesByUpload(files, param, uploadsExpenseDto);
-      }
+    @Post(':param/expense/uploads')
+    @UseMultipleFileUpload(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'], 12)
+    persistExpensesByUpload(
+        @UploadedFiles() files: Express.Multer.File[],
+        @Param('param') param: string,
+        @Body() uploadsExpenseDto: UploadsExpenseDto,
+    ) {
+        return this.service.persistExpensesByUpload(files, param, uploadsExpenseDto);
+    }
 
 }

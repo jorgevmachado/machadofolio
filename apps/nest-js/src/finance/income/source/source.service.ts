@@ -8,7 +8,7 @@ import INCOME_SOURCE_LIST_DEVELOPMENT_JSON from '../../../../seeds/development/f
 import INCOME_SOURCE_LIST_STAGING_JSON from '../../../../seeds/staging/finance/income_sources.json';
 import INCOME_SOURCE_LIST_PRODUCTION_JSON from '../../../../seeds/production/finance/income_sources.json';
 
-import { GenerateSeeds, Service } from '../../../shared';
+import { SeedsGenerated, Service } from '../../../shared';
 
 import { IncomeSource } from '../../entities/income-source.entity';
 
@@ -84,7 +84,7 @@ export class IncomeSourceService extends Service<IncomeSource>{
         return this.create({ name: value });
     }
 
-    async generateSeeds(withoutIncomeSource: boolean, financeSeedsDir: string): Promise<GenerateSeeds<IncomeSource>> {
+    async generateSeeds(withoutIncomeSource: boolean, financeSeedsDir: string): Promise<SeedsGenerated<IncomeSource>> {
         return await this.generateEntitySeeds({
             seedsDir: financeSeedsDir,
             staging: INCOME_SOURCE_LIST_STAGING_JSON,

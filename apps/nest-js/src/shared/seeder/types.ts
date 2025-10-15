@@ -31,3 +31,8 @@ export type CurrentSeedsParams<T> = {
     seeds?: Array<T>;
     seedsJson?: Array<unknown>;
 }
+
+export type SeedsResultItem = {
+    list: number;
+    added: number;
+}
