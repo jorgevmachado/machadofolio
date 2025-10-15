@@ -75,17 +75,17 @@ export class ExpenseService extends Service<Expense> {
 
         await this.validateExistExpense(bill, builtExpense);
 
-        const buildToCreate = this.buildToCreate(builtExpense, createExpenseDto.months, createExpenseDto.month, createExpenseDto.value);
+        const prepareForCreation = this.prepareForCreation(builtExpense, createExpenseDto.months, createExpenseDto.month, createExpenseDto.value);
 
-        const expense = await this.save(buildToCreate.expenseForCurrentYear) as Expense;
+        const expense = await this.save(prepareForCreation.expenseForCurrentYear) as Expense;
 
-        if(buildToCreate.monthsForCurrentYear.length > 0) {
-            expense.months = await this.monthService.persistList(buildToCreate.monthsForCurrentYear, { expense });
+        if(prepareForCreation.monthsForCurrentYear.length > 0) {
+            expense.months = await this.monthService.persistList(prepareForCreation.monthsForCurrentYear, { expense });
             const expenseCalculated = this.business.calculate(expense);
-            buildToCreate.expenseForCurrentYear = await this.save(expenseCalculated) as Expense;
+            prepareForCreation.expenseForCurrentYear = await this.save(expenseCalculated) as Expense;
         }
 
-        return buildToCreate;
+        return prepareForCreation;
     }
 
     async update(param: string, body: UpdateExpenseDto) {
@@ -356,7 +356,7 @@ export class ExpenseService extends Service<Expense> {
         }
     }
 
-    private buildToCreate(expense: Expense, months?: CreateExpenseDto['months'], month?: CreateExpenseDto['month'], value: number = 0): BuildToCreateResult {
+    private prepareForCreation(expense: Expense, months?: CreateExpenseDto['months'], month?: CreateExpenseDto['month'], value: number = 0): BuildToCreateResult {
         const result: BuildToCreateResult = {
             nextYear: expense.year + 1,
             requiresNewBill: false,
