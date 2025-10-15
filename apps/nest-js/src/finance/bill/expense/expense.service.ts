@@ -202,6 +202,11 @@ export class ExpenseService extends Service<Expense> {
 
             createExpenseDtoList.push(...createExpenseDtoListToSave);
         }
+
+        if(createExpenseDtoList.length === 0) {
+            return [];
+        }
+
         const initialPersistExpenseParams: Array<CreateExpenseDto> = [{
             type: EExpenseType.VARIABLE,
             value: 0,

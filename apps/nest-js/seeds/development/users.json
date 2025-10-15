@@ -1,27 +1,27 @@
 [
   {
-    "id": "be146217-15f3-42a6-ae38-af5e0802701d",
+    "id": "9bef9bdf-c365-49bf-8c32-52753fdd47ff",
     "cpf": "00256337160",
     "role": "ADMIN",
-    "salt": "$2b$10$RHqVgK15VyJTkS.PUyRcD.",
+    "salt": "$2b$10$/rdBgAXVYl.5Ti9WVw.c9O",
     "name": "Jorge Machado",
     "email": "jorge.vmachado@gmail.com",
     "gender": "MALE",
-    "status": "COMPLETE",
+    "status": "INCOMPLETE",
     "avatar": null,
     "whatsapp": "61996230790",
-    "password": "$2b$10$RHqVgK15VyJTkS.PUyRcD.UADHOUz6JKJl0PgZymwpLnK4NODQ5/y",
+    "password": "$2b$10$/rdBgAXVYl.5Ti9WVw.c9OvyujLK5feBL2ySRmLnqUJ4EiWvCL/k6",
     "finance": {
-      "id": "552caffe-0a45-4cd6-8c30-c9dc6b0b4345",
-      "created_at": "2025-10-11T17:19:42.410Z",
-      "updated_at": "2025-10-11T17:19:42.410Z",
+      "id": "b30c1ea0-8bb5-436c-af73-93dd04f8e06a",
+      "created_at": "2025-10-11T21:45:32.029Z",
+      "updated_at": "2025-10-11T21:45:32.029Z",
       "deleted_at": null
     },
-    "created_at": "2025-10-11T17:19:42.410Z",
-    "updated_at": "2025-10-11T17:19:42.410Z",
+    "created_at": "2025-10-10T15:55:09.095Z",
+    "updated_at": "2025-10-11T21:45:32.029Z",
     "deleted_at": null,
     "date_of_birth": "1990-07-20T00:00:00.000Z",
     "recover_token": null,
-    "confirmation_token": "51183e2dfcae44e29c9ab50c4acd973e342fa80efb5c3e18ce5d50d23623bd41"
+    "confirmation_token": "657c2ef23adc37dee0c246be55bfdcf3a24953a80953699584d516f4aabedefb"
   }
 ]

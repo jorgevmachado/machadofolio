@@ -1,10 +1,258 @@
 [
   {
-    "id": "027968f7-0b2a-495b-9475-6a6c73c485a1",
+    "id": "7ef38c7b-dc2e-4c14-a9e3-52d425770098",
+    "name": "L.U.V.E",
+    "name_code": "l_u_v_e",
+    "type": {
+      "id": "24ce3c90-a486-4fbc-95db-462b8b6e0b91",
+      "name": "Maçonaria",
+      "name_code": "maconaria",
+      "created_at": "2025-10-11T21:49:18.128Z",
+      "updated_at": "2025-10-11T21:49:18.128Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-11T21:49:38.279Z",
+    "updated_at": "2025-10-11T21:49:38.279Z",
+    "deleted_at": null
+  },
+  {
+    "id": "f1dd3a5c-c6c3-4376-b1a5-9fb18f29c74c",
+    "name": "Graus Filosóficos",
+    "type": {
+      "id": "24ce3c90-a486-4fbc-95db-462b8b6e0b91",
+      "name": "Maçonaria",
+      "name_code": "maconaria",
+      "created_at": "2025-10-11T21:49:18.128Z",
+      "updated_at": "2025-10-11T21:49:18.128Z",
+      "deleted_at": null
+    },
+    "name_code": "graus_filosoficos",
+    "created_at": "2025-10-11T21:49:49.496Z",
+    "updated_at": "2025-10-11T21:49:49.496Z",
+    "deleted_at": null
+  },
+  {
+    "id": "14f9a155-1abd-4000-8505-55d875b71332",
+    "name": "Bodes do Asfalto",
+    "type": {
+      "id": "24ce3c90-a486-4fbc-95db-462b8b6e0b91",
+      "name": "Maçonaria",
+      "name_code": "maconaria",
+      "created_at": "2025-10-11T21:49:18.128Z",
+      "updated_at": "2025-10-11T21:49:18.128Z",
+      "deleted_at": null
+    },
+    "name_code": "bodes_do_asfalto",
+    "created_at": "2025-10-11T21:50:04.810Z",
+    "updated_at": "2025-10-11T21:50:04.810Z",
+    "deleted_at": null
+  },
+  {
+    "id": "4f114dae-90bb-4513-9176-2b16da6da47b",
+    "name": "Netflix",
+    "type": {
+      "id": "4b9dc942-b5de-4402-ab88-26d5b09bee67",
+      "name": "Serviços",
+      "name_code": "servicos",
+      "created_at": "2025-10-11T21:47:48.020Z",
+      "updated_at": "2025-10-11T21:47:48.020Z",
+      "deleted_at": null
+    },
+    "name_code": "netflix",
+    "created_at": "2025-10-11T21:50:20.673Z",
+    "updated_at": "2025-10-11T21:50:20.673Z",
+    "deleted_at": null
+  },
+  {
+    "id": "66194c3d-2d45-43de-88d2-2131f5b78b1c",
+    "name": "HBO MAX",
+    "type": {
+      "id": "4b9dc942-b5de-4402-ab88-26d5b09bee67",
+      "name": "Serviços",
+      "name_code": "servicos",
+      "created_at": "2025-10-11T21:47:48.020Z",
+      "updated_at": "2025-10-11T21:47:48.020Z",
+      "deleted_at": null
+    },
+    "name_code": "hbo_max",
+    "created_at": "2025-10-11T21:50:30.394Z",
+    "updated_at": "2025-10-11T21:50:30.394Z",
+    "deleted_at": null
+  },
+  {
+    "id": "0ebe9455-dfcb-4aee-b6de-6ce6a30c5798",
+    "name": "Melimais - Mercado Livre",
+    "type": {
+      "id": "4b9dc942-b5de-4402-ab88-26d5b09bee67",
+      "name": "Serviços",
+      "name_code": "servicos",
+      "created_at": "2025-10-11T21:47:48.020Z",
+      "updated_at": "2025-10-11T21:47:48.020Z",
+      "deleted_at": null
+    },
+    "name_code": "melimais_mercado_livre",
+    "created_at": "2025-10-11T21:51:41.652Z",
+    "updated_at": "2025-10-11T21:51:41.652Z",
+    "deleted_at": null
+  },
+  {
+    "id": "9880491f-87ac-4521-96f7-a64f67a6bbfb",
+    "name": "Ifood Club",
+    "type": {
+      "id": "4b9dc942-b5de-4402-ab88-26d5b09bee67",
+      "name": "Serviços",
+      "name_code": "servicos",
+      "created_at": "2025-10-11T21:47:48.020Z",
+      "updated_at": "2025-10-11T21:47:48.020Z",
+      "deleted_at": null
+    },
+    "name_code": "ifood_club",
+    "created_at": "2025-10-11T21:51:55.769Z",
+    "updated_at": "2025-10-11T21:51:55.769Z",
+    "deleted_at": null
+  },
+  {
+    "id": "48128638-31bf-4527-bcda-9175a616f4be",
+    "name": "Neoenergia",
+    "type": {
+      "id": "4b9dc942-b5de-4402-ab88-26d5b09bee67",
+      "name": "Serviços",
+      "name_code": "servicos",
+      "created_at": "2025-10-11T21:47:48.020Z",
+      "updated_at": "2025-10-11T21:47:48.020Z",
+      "deleted_at": null
+    },
+    "name_code": "neoenergia",
+    "created_at": "2025-10-11T22:13:10.768Z",
+    "updated_at": "2025-10-11T22:13:10.768Z",
+    "deleted_at": null
+  },
+  {
+    "id": "21476a5f-9881-430b-9557-4e9d3fffbd37",
+    "name": "IPTU - Imposto Predial e Territorial Urbano",
+    "type": {
+      "id": "c035f9b6-4012-4587-9146-872fc17e9da7",
+      "name": "Impostos",
+      "name_code": "impostos",
+      "created_at": "2025-10-11T22:16:38.381Z",
+      "updated_at": "2025-10-11T22:16:38.381Z",
+      "deleted_at": null
+    },
+    "name_code": "iptu_imposto_predial_e_territorial_urbano",
+    "created_at": "2025-10-11T22:17:07.665Z",
+    "updated_at": "2025-10-11T22:17:07.665Z",
+    "deleted_at": null
+  },
+  {
+    "id": "0aea6f31-2f12-4aa0-88a7-d5bb80626ca7",
     "name": "Vivo",
+    "type": {
+      "id": "4b9dc942-b5de-4402-ab88-26d5b09bee67",
+      "name": "Serviços",
+      "name_code": "servicos",
+      "created_at": "2025-10-11T21:47:48.020Z",
+      "updated_at": "2025-10-11T21:47:48.020Z",
+      "deleted_at": null
+    },
     "name_code": "vivo",
-    "created_at": "2025-10-11T17:19:42.410Z",
-    "updated_at": "2025-10-11T17:19:42.410Z",
+    "created_at": "2025-10-11T22:20:42.209Z",
+    "updated_at": "2025-10-11T22:20:42.209Z",
+    "deleted_at": null
+  },
+  {
+    "id": "5b6f07dc-0037-449d-9c58-c94a750d2ffd",
+    "name": "Claro",
+    "type": {
+      "id": "4b9dc942-b5de-4402-ab88-26d5b09bee67",
+      "name": "Serviços",
+      "name_code": "servicos",
+      "created_at": "2025-10-11T21:47:48.020Z",
+      "updated_at": "2025-10-11T21:47:48.020Z",
+      "deleted_at": null
+    },
+    "name_code": "claro",
+    "created_at": "2025-10-11T22:20:50.615Z",
+    "updated_at": "2025-10-11T22:20:50.615Z",
+    "deleted_at": null
+  },
+  {
+    "id": "92a009fa-42e0-4d9e-bedc-7bafc11341cb",
+    "name": "Facilite (Condomínio)",
+    "type": {
+      "id": "d2cc7742-2a4c-4ec9-afe8-f31e4046a636",
+      "name": "Casa",
+      "name_code": "casa",
+      "created_at": "2025-10-11T22:21:47.611Z",
+      "updated_at": "2025-10-11T22:21:47.611Z",
+      "deleted_at": null
+    },
+    "name_code": "facilite_condominio",
+    "created_at": "2025-10-11T22:22:03.941Z",
+    "updated_at": "2025-10-11T22:22:03.941Z",
+    "deleted_at": null
+  },
+  {
+    "id": "b775201c-672b-4f88-9208-f05d8157e600",
+    "name": "Âncora (Condomínio)",
+    "type": {
+      "id": "d2cc7742-2a4c-4ec9-afe8-f31e4046a636",
+      "name": "Casa",
+      "name_code": "casa",
+      "created_at": "2025-10-11T22:21:47.611Z",
+      "updated_at": "2025-10-11T22:21:47.611Z",
+      "deleted_at": null
+    },
+    "name_code": "ancora_condominio",
+    "created_at": "2025-10-11T22:22:48.141Z",
+    "updated_at": "2025-10-11T22:22:58.645Z",
+    "deleted_at": null
+  },
+  {
+    "id": "2b300e0e-54d8-4ad0-b9e8-23e226ef2d25",
+    "name": "Aluguel (Vera)",
+    "type": {
+      "id": "d2cc7742-2a4c-4ec9-afe8-f31e4046a636",
+      "name": "Casa",
+      "name_code": "casa",
+      "created_at": "2025-10-11T22:21:47.611Z",
+      "updated_at": "2025-10-11T22:21:47.611Z",
+      "deleted_at": null
+    },
+    "name_code": "aluguel_vera",
+    "created_at": "2025-10-11T22:26:31.656Z",
+    "updated_at": "2025-10-11T22:27:12.894Z",
+    "deleted_at": null
+  },
+  {
+    "id": "097c6ef1-47ef-4f89-b3c7-8a4a30f20acc",
+    "name": "Garagem (Marcos)",
+    "type": {
+      "id": "d2cc7742-2a4c-4ec9-afe8-f31e4046a636",
+      "name": "Casa",
+      "name_code": "casa",
+      "created_at": "2025-10-11T22:21:47.611Z",
+      "updated_at": "2025-10-11T22:21:47.611Z",
+      "deleted_at": null
+    },
+    "name_code": "garagem_marcos",
+    "created_at": "2025-10-11T22:29:15.393Z",
+    "updated_at": "2025-10-11T22:29:15.393Z",
+    "deleted_at": null
+  },
+  {
+    "id": "e71f7df2-1faf-415d-a62e-1d25340a1f47",
+    "name": "Garagem (Flavia)",
+    "type": {
+      "id": "d2cc7742-2a4c-4ec9-afe8-f31e4046a636",
+      "name": "Casa",
+      "name_code": "casa",
+      "created_at": "2025-10-11T22:21:47.611Z",
+      "updated_at": "2025-10-11T22:21:47.611Z",
+      "deleted_at": null
+    },
+    "name_code": "garagem_flavia",
+    "created_at": "2025-10-11T22:29:25.830Z",
+    "updated_at": "2025-10-11T22:29:25.830Z",
     "deleted_at": null
   }
 ]
