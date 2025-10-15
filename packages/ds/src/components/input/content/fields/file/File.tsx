@@ -10,7 +10,7 @@ import {
 
 import { type TContext, joinClass } from '../../../../../utils';
 
-import { Image } from '../../../../../elements'
+import { Icon, Image } from '../../../../../elements'
 
 import Button from '../../../../button'
 
@@ -19,8 +19,11 @@ import './File.scss';
 interface FileInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onInput' | 'onChange'> {
     onInput?: (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, value?: string) => void;
     context: TContext;
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>, value?: string) => void;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>, value?: string, fileName?: string) => void;
+    onRemove?: () => void;
+    clearFile?: boolean;
     withPreview?: boolean;
+    showRemoveButton?: boolean;
 }
 
 export default function FileInput({
@@ -30,8 +33,11 @@ export default function FileInput({
     context,
     disabled,
     onChange,
+    onRemove,
+    clearFile,
     className,
     withPreview,
+    showRemoveButton,
     ...props
 }: FileInputProps) {
     const inputRef = useRef<HTMLInputElement>(null);
@@ -76,7 +82,8 @@ export default function FileInput({
         setPreview(null);
 
         const file = e.target.files?.[0];
-        setFileName(file ? file.name : '');
+        const fileName = file ? file.name : '';
+        setFileName(fileName);
         const result = { currentFile: undefined as string | undefined };
 
         if (file) {
@@ -86,11 +93,32 @@ export default function FileInput({
         }
 
         if (onChange) {
-            onChange(e, result.currentFile);
+            onChange(e, result.currentFile, fileName);
         }
 
         if(onInput) {
             onInput(e as React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, result.currentFile);
+        }
+    };
+
+    const handleRemove = () => {
+        setPreview(null);
+        setFileName('');
+
+        if (inputRef.current) {
+            inputRef.current.value = '';
+        }
+
+        if (onRemove) {
+            onRemove();
+        }
+
+        if (onChange) {
+            onChange({ target: inputRef.current } as React.ChangeEvent<HTMLInputElement>, undefined);
+        }
+
+        if (onInput) {
+            onInput({ target: inputRef.current } as unknown as React.FormEvent<HTMLInputElement>, undefined);
         }
     };
 
@@ -108,6 +136,11 @@ export default function FileInput({
         }
     }, [value, withPreview]);
 
+    useEffect(() => {
+        if (clearFile) {
+            handleRemove();
+        }
+    }, [clearFile]);
 
     return (
         <div className={classNameList} data-testid="ds-file-input">
@@ -136,6 +169,14 @@ export default function FileInput({
                     {...props}
                 />
                 <span className="ds-file-input__filename">{fileName || 'No files selected'}</span>
+                {(fileName && showRemoveButton) && (
+                    <Icon
+                        icon="trash"
+                        color="error-100"
+                        onClick={handleRemove}
+                        className="ds-file-input__icon-remove"
+                    />
+                )}
             </div>
         </div>
     )

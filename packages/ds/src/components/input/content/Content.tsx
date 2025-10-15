@@ -37,14 +37,18 @@ interface ContentProps extends Omit<React.InputHTMLAttributes<HTMLInputElement |
     invalid?: boolean;
     options?: Array<OptionsProps>;
     calendar?: DateInputProps;
+    onRemove?: () => void;
+    clearFile?: boolean;
     formatter?: (value?: string) => string;
     appearance: TAppearance;
     withPreview?: boolean;
+    onChangeFile?:(event: React.ChangeEvent<HTMLInputElement>, value?: string, fileName?: string) => void;
     autoComplete?: boolean;
     fallbackLabel?: string;
     filterFunction?: (input: string, option: OptionsProps) => boolean;
     fallbackAction?: SelectInputProps['fallbackAction'];
     defaultFormatter?: boolean;
+    showRemoveButton?: boolean;
 }
 
 const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>((
@@ -66,14 +70,18 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         calendar,
         onChange,
         disabled = false,
+        onRemove,
+        clearFile,
         formatter,
         appearance,
         withPreview = true,
+        onChangeFile,
         autoComplete = false,
         fallbackLabel,
         filterFunction,
         fallbackAction,
         defaultFormatter = true,
+        showRemoveButton = false,
         ...props
     },
     ref
@@ -126,6 +134,18 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         }
         if(onChange) {
             onChange(e)
+        }
+    }
+
+    const handleOnChangeFile = (e: React.ChangeEvent<HTMLInputElement>, value?: string, fileName?: string) => {
+        if(value) {
+            setCurrentInputValue(value);
+        }
+        if(onChange) {
+            onChange(e)
+        }
+        if(onChangeFile) {
+            onChangeFile(e, value, fileName);
         }
     }
 
@@ -288,11 +308,14 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         value={currentInputValue}
                         accept={accept}
                         onInput={handleInput}
-                        onChange={handleOnChange}
-                        disabled={disabled}
                         context={context}
+                        onChange={handleOnChangeFile}
+                        disabled={disabled}
+                        onRemove={onRemove}
+                        clearFile={clearFile}
                         className={joinClass(defaultClassNameInputList)}
                         withPreview={withPreview}
+                        showRemoveButton={showRemoveButton}
                     />
                 )}
                 {isDate && (

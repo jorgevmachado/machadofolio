@@ -12,6 +12,21 @@ class ReplaceWordItemDTO implements ReplaceWordParam {
 }
 
 export class UploadsExpenseDto {
+    @IsOptional()
+    @IsArray()
+    @IsBoolean({ each: true})
+    @Transform(({ value }) => {
+        if(value && Array.isArray(value)) {
+            if(value.length === 1) {
+                const array = value[0].split(',');
+                return array.map((item: string) => item.trim() === 'true') as Array<boolean>;
+            }
+            return value.map((item: string) => item.trim() === 'true') as Array<boolean>;
+        }
+        return value;
+    }, { toClassOnly: true })
+    paid?: Array<boolean>;
+
     files: Array<string> = [];
 
     @IsOptional()
@@ -26,17 +41,7 @@ export class UploadsExpenseDto {
     }, { toClassOnly: true })
     months?: Array<EMonth>;
 
-    @IsOptional()
-    @IsArray()
-    @IsBoolean({ each: true})
-    @Transform(({ value }) => {
-        if(value && ((value) as Array<string>).length === 1) {
-            const array = value[0].split(',');
-            return array.map((item: string) => item.trim() === 'true') as Array<boolean>;
-        }
-        return value;
-    })
-    paid?: Array<boolean>;
+
 
     @IsOptional()
     @IsArray()

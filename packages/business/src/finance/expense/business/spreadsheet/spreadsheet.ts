@@ -453,7 +453,7 @@ export default class SpreadsheetBusiness {
 
     }
 
-    public buildForCreation(workSheet: WorkSheet, uploadExpenseParams: UploadExpenseParams): Array<CreateExpenseParams> {
+    public buildForCreation(workSheet: WorkSheet, uploadExpenseParams: Omit<UploadExpenseParams, 'file'>): Array<CreateExpenseParams> {
         const { totalRows, nextRow } = this.validateWorkSheetToBuild(workSheet);
         const listCreateExpenseParams: Array<CreateExpenseParams> = [];
         for (let i = 0; i < totalRows; i++) {

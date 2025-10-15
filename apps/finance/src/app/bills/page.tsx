@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react';
 
-import { Bill, type BillList, CreateBillParams, UploadExpenseParams } from '@repo/business';
+import { Bill, type BillList, CreateBillParams, UploadsExpenseParams } from '@repo/business';
 
 import { Tabs } from '@repo/ds';
 
@@ -81,7 +81,7 @@ export default function BillsPage() {
         }
     }
 
-    const handleUploadExpense = async (bill: Bill, params: UploadExpenseParams) => {
+    const handleUploadExpense = async (bill: Bill, params: UploadsExpenseParams) => {
         show();
         try {
             await expenseService.upload(bill.id, params);
@@ -126,7 +126,7 @@ export default function BillsPage() {
             width: '799px',
             title: `Cadastrar Despesa por Arquivo`,
             body: (
-                <ModalUpload bill={bill} onClose={closeModal} onSubmit={handleUploadExpense} />
+                <ModalUpload bill={bill} onClose={closeModal} onSubmit={handleUploadExpense}/>
             ),
             closeOnEsc: true,
             closeOnOutsideClick: true,

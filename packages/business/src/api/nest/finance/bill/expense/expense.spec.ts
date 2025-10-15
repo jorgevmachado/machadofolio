@@ -223,4 +223,27 @@ describe('Expense', () => {
             expect(result).toEqual(mockEntityPaginate);
         });
     });
+
+    describe('uploads', () => {
+        it('Should call upload with correct URL and parameters for uploads', async () => {
+            const mockFiles: Array<string> = [
+                'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQACAgIACGo1==',
+                'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQACAgIACGo2==',
+                'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQACAgIACGo3=='
+            ];
+
+            (expense.uploads as any).mockResolvedValue([mockEntity]);
+
+            const result = await expense.uploads(
+                mockEntity.bill.id,
+                {
+                    paid: [true, true, true],
+                    files: mockFiles,
+                    months: [EMonth.JANUARY, EMonth.FEBRUARY, EMonth.MARCH],
+                    replaceWords: undefined,
+                    repeatedWords: undefined,
+                }
+            )
+        });
+    });
 });

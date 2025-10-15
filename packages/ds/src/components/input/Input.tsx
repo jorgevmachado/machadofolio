@@ -59,18 +59,23 @@ interface InputProps extends Omit<InputPropsItem, 'onInput'>, Omit<HostProps, 'a
     counter?: TextProps;
     context?: TContext;
     calendar?: ContentProps['calendar'];
+    onRemove?: () => void;
+    clearFile?: boolean;
     formatter?: (value?: string) => string;
     validated?: ValidatedProps;
     validator?: (validatorParams: ValidatorParams) => ValidatorMessage;
     helperText?: TextProps;
     appearance?: TAppearance;
+    onInputFile?: () => void;
     withPreview?: boolean;
+    onChangeFile?:(event: React.ChangeEvent<HTMLInputElement>, value?: string, fileName?: string) => void;
     autoComplete?: boolean;
     fallbackLabel?: string;
     filterFunction?: (input: string, option: OptionsProps) => boolean;
     fallbackAction?: ContentProps['fallbackAction'];
     defaultValidator?: boolean;
     defaultFormatter?: boolean;
+    showRemoveButton?: boolean;
 }
 
 export default function Input({
@@ -98,6 +103,8 @@ export default function Input({
     context = 'primary',
     multiple,
     calendar,
+    onRemove,
+    clearFile,
     formatter,
     required,
     children,
@@ -115,12 +122,14 @@ export default function Input({
     onMouseDown,
     placeholder = '',
     withPreview = false,
+    onChangeFile,
     autoComplete,
     fallbackLabel,
     filterFunction,
     fallbackAction,
     defaultValidator = true,
     defaultFormatter = true,
+    showRemoveButton = false,
     ...props
 }: InputProps) {
     const [inputValidated, setInputValidated] = useState<ValidatedProps>({ invalid: false, message: undefined });
@@ -219,6 +228,8 @@ export default function Input({
                             disabled={disabled}
                             onChange={onChange}
                             calendar={calendar}
+                            onRemove={onRemove}
+                            clearFile={clearFile}
                             formatter={formatter}
                             onKeyDown={onKeyDown}
                             autoFocus={autoFocus}
@@ -228,11 +239,13 @@ export default function Input({
                             onMouseDown={onMouseDown}
                             placeholder={placeholder}
                             withPreview={withPreview}
+                            onChangeFile={onChangeFile}
                             autoComplete={autoComplete}
                             filterFunction={filterFunction}
                             fallbackLabel={fallbackLabel}
                             fallbackAction={fallbackAction}
                             defaultFormatter={defaultFormatter}
+                            showRemoveButton={showRemoveButton}
                         />
                     </InputProvider>
                     {(inputValidated.invalid && inputValidated.message) && (

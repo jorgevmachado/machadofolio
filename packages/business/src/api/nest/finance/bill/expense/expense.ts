@@ -3,7 +3,13 @@ import { type ReplaceWordParam } from '@repo/services';
 import type { INestModuleConfig } from '../../../types';
 import { NestModuleAbstract } from '../../../abstract';
 
-import type { ICreateExpenseParams, IExpense, IUpdateExpenseParams, IUploadExpenseParams } from './types';
+import {
+    ICreateExpenseParams,
+    IExpense,
+    IUpdateExpenseParams,
+    IUploadExpenseParams,
+    IUploadsExpenseParams
+} from './types';
 import type { IQueryParameters } from '../../../../types';
 
 export class Expense extends NestModuleAbstract<IExpense, ICreateExpenseParams, IUpdateExpenseParams> {
@@ -16,16 +22,11 @@ export class Expense extends NestModuleAbstract<IExpense, ICreateExpenseParams, 
         return this.post(path, { body: params });
     }
 
-    async update(param: string, params: IUpdateExpenseParams, by: string = ''): Promise<IExpense> {
-        const path = `${this.pathUrl}/${by}/${this.subPathUrl}/${param}`;
-        return this.path(`${path}`, { body: params });
-    }
-
     async getAllByBill(billId: string, parameters: IQueryParameters) {
         return this.get(`${this.pathUrl}/${billId}/list/${this.subPathUrl}`, { params: parameters });
     }
 
-    async upload(billId: string, params: IUploadExpenseParams) {
+    async uploads(billId: string, params: IUploadsExpenseParams) {
         const formData = new FormData();
 
         const list = Object.keys(params);
@@ -34,12 +35,32 @@ export class Expense extends NestModuleAbstract<IExpense, ICreateExpenseParams, 
             const value = params[key as keyof IUploadExpenseParams];
 
             switch (key) {
-                case 'file':
-                    const file = value as string;
-                    if(file.startsWith('data:')) {
-                        const base64Response = await fetch(file);
-                        const blob = await base64Response.blob();
-                        formData.append('file', blob, 'upload.xlsx');
+                case 'paid': {
+                    if(Array.isArray(value)) {
+                        value.forEach((item) => {
+                            formData.append('paid[]', String(item));
+                        });
+                    }
+                    break;
+                }
+                case 'files':
+                    if(Array.isArray(value)) {
+                        const list = value as Array<string>;
+                        for(let i = 0; i < list.length; i++) {
+                            const file = list[i];
+                            if(file.startsWith('data:')) {
+                                const base64Response = await fetch(file);
+                                const blob = await base64Response.blob();
+                                formData.append(`files`, blob, `upload.xlsx`);
+                            }
+                        }
+                    }
+                    break;
+                case 'months':
+                    if(Array.isArray(value)) {
+                        value.forEach((item) => {
+                            formData.append('months[]', String(item));
+                        });
                     }
                     break;
                 case 'replaceWords':
@@ -51,17 +72,17 @@ export class Expense extends NestModuleAbstract<IExpense, ICreateExpenseParams, 
                     break;
                 case 'repeatedWords':
                     if(Array.isArray(value)) {
-                        const repeatedWords = value.join(',');
-                        formData.append('repeatedWords[]', repeatedWords);
+                        value.forEach((item) => {
+                            formData.append('repeatedWords[]', String(item));
+                        });
                     }
                     break;
-                case 'month':
                 default:
                     formData.append(key, value as string);
                     break;
             }
         }
 
-        return this.post(`${this.pathUrl}/${billId}/${this.subPathUrl}/upload`, { body: formData });
+        return this.post(`${this.pathUrl}/${billId}/${this.subPathUrl}/uploads`, { body: formData });
     }
 }

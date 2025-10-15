@@ -21,7 +21,7 @@ import { Expense } from '../../../entities/expense.entity';
 import { Transform, Type } from 'class-transformer';
 import { PersistMonthDto } from '../../../month/dto/persist-month.dto';
 
-export class CreateExpenseDto {
+export class CreateExpenseDto implements CreateExpenseParams {
     @IsNotEmpty()
     @IsEnum(EExpenseType)
     type!: EExpenseType;
@@ -44,6 +44,9 @@ export class CreateExpenseDto {
     @Type(() => PersistMonthDto)
     months?: Array<PersistMonthDto>;
 
+    @IsOptional()
+    parent?: string | Expense;
+
     @IsNotEmpty()
     @MaxLength(200)
     supplier!: string | Supplier;
@@ -51,16 +54,6 @@ export class CreateExpenseDto {
     @IsOptional()
     @MaxLength(200)
     description?: string | undefined;
-
-    @IsNotEmpty()
-    @IsNumber({ maxDecimalPlaces: 2 })
-    instalment_number?: number | undefined;
-
-    @IsOptional()
-    parent?: string | Expense;
-
-    @IsNameDependingOnParent()
-    aggregate_name?:string;
 
     @IsOptional()
     @Transform(({ value }) => {
@@ -71,4 +64,11 @@ export class CreateExpenseDto {
     })
     @IsDate()
     received_at?: Date;
+
+    @IsNameDependingOnParent()
+    aggregate_name?:string;
+
+    @IsNotEmpty()
+    @IsNumber({ maxDecimalPlaces: 2 })
+    instalment_number?: number | undefined;
 }
