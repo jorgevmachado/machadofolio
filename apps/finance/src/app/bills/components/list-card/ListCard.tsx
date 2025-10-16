@@ -1,5 +1,5 @@
 'use client'
-import { Bill } from '@repo/business';
+import { Bill, EBillType } from '@repo/business';
 
 import { Accordion, Icon, Text } from '@repo/ds';
 
@@ -19,6 +19,7 @@ export default function ListCard({ list, handleOpenDeleteModal, handleUploadFile
     const currentList = billBusiness.mapBillListByFilter(list, 'bank');
 
     const renderChildrenTitle = (bill: Bill) => {
+        const showUpload = bill.bank.name_code === 'nubank' && bill.type === EBillType.CREDIT_CARD;
         return (
             <div className="list-card__accordion--title">
                 <Text>{bill.name}</Text>
@@ -29,13 +30,15 @@ export default function ListCard({ list, handleOpenDeleteModal, handleUploadFile
                         handleOpenDeleteModal(bill);
                     }}
                 />
-                <Icon
-                    icon="upload"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleUploadFileModal(bill);
-                    }}
-                />
+                {showUpload && (
+                    <Icon
+                        icon="upload"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleUploadFileModal(bill);
+                        }}
+                    />
+                )}
             </div>
         );
     };

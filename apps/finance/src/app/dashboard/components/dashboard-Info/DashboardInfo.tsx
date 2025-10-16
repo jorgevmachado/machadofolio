@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 import { currencyFormatter, EGender } from '@repo/services';
 
-import { FinanceInfo, User } from '@repo/business';
+import { EExpenseType, FinanceInfo, User } from '@repo/business';
 
 import { Button, Card, Text } from '@repo/ds';
 
@@ -228,6 +228,21 @@ export default function DashboardInfo({
                         ))}
                     </section>
                 ))}
+            </div>
+            <div className="finance-info__content">
+                <section className="finance-info__content--group">
+                    <Card className="finance-info__content--group-item">
+                        <Text tag="h2" variant="large" color="primary-60" weight="bold">
+                            Despesas
+                        </Text>
+                        <Text variant="medium" color="neutral-80">
+                            Fixos: {expenses.filter((item) => item.type === EExpenseType.FIXED).length}
+                        </Text>
+                        <Text variant="medium" color="neutral-80">
+                            Variáveis: {expenses.filter((item) => item.type === EExpenseType.VARIABLE).length}
+                        </Text>
+                    </Card>
+                </section>
             </div>
         </div>
     )
