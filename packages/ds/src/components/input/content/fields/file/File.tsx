@@ -16,19 +16,26 @@ import Button from '../../../../button'
 
 import './File.scss';
 
+type FilesNameProps = {
+    value: string;
+    error: boolean;
+}
+
 type FileProps = {
     value: string;
+    error: boolean;
     preview: string;
     fileName: string;
 }
 
 export type OnFileChangeParams = {
     name: string;
+    error: boolean;
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
     files?: Array<FileProps>;
     value?: string;
     preview?: string;
-    filesName?: Array<string>;
+    filesName?: Array<{value: string; error: boolean;}>;
 }
 
 interface FileInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onInput' | 'onChange'> {
@@ -58,7 +65,7 @@ export default function FileInput({
     ...props
 }: FileInputProps) {
     const inputRef = useRef<HTMLInputElement>(null);
-    const [filesName, setFilesName] = useState<Array<string>>([]);
+    const [filesName, setFilesName] = useState<Array<FilesNameProps>>([]);
     const [preview, setPreview] = useState<string | null>(null);
 
     const fallBackMessage = !multiple ? 'No file selected' : 'No files selected';
@@ -73,28 +80,34 @@ export default function FileInput({
     ]);
 
     const buildFilePreview = async (file: File) => {
-        const result = { previewImage: '', previewFile: '' };
-        const extension = file.name.split('.').pop()?.toLowerCase();
-        const isImage = imageTypeValidator({ accept: `.${extension}`}).valid;
-        result.previewFile = await fileToBase64(file);
-        if(isImage) {
-            result.previewImage = result.previewFile;
+        const result = { previewImage: '', previewFile: '', error: false };
+        try {
+            const extension = file.name.split('.').pop()?.toLowerCase();
+            const isImage = imageTypeValidator({ accept: `.${extension}`}).valid;
+            result.previewFile = await fileToBase64(file);
+            if(isImage) {
+                result.previewImage = result.previewFile;
+                return result;
+            }
+
+            switch (extension) {
+                case 'pdf':
+                    result.previewImage = PDF_IMAGE_BASE64;
+                    break;
+                case 'xlsx':
+                    result.previewImage = XLSX_IMAGE_BASE64;
+                    break;
+                default:
+                    result.previewImage = DOC_IMAGE_BASE64;
+                    break;
+            }
+
+            return result;
+        } catch (error) {
+            console.error('Error building file preview:', error);
+            result.error = true;
             return result;
         }
-
-        switch (extension) {
-            case 'pdf':
-                result.previewImage = PDF_IMAGE_BASE64;
-                break;
-            case 'xlsx':
-                result.previewImage = XLSX_IMAGE_BASE64;
-                break;
-            default:
-                result.previewImage = DOC_IMAGE_BASE64;
-                break;
-        }
-
-        return result;
     }
 
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,45 +115,39 @@ export default function FileInput({
 
         const targetFiles = e.target.files;
         const files: Array<FileProps> = [];
-        const currentFilesNames: Array<string> = [];
+        const currentFilesNames: Array<FilesNameProps> = [];
         if(targetFiles && targetFiles.length > 0) {
             for(let i = 0; i < targetFiles?.length; i++) {
                 const targetFile = targetFiles[i];
                 if(!targetFile) {
                     return;
                 }
-                const { previewFile: value, previewImage: preview } = await buildFilePreview(targetFile);
+                const { previewFile: value, previewImage: preview, error } = await buildFilePreview(targetFile);
                 const fileName = targetFile.name;
-
-                currentFilesNames.push(fileName);
 
                 const file: FileProps = {
                     value,
+                    error,
                     preview,
                     fileName
                 }
+                currentFilesNames.push({value: fileName, error });
                 files.push(file);
             }
 
             if(files.length > 0) {
-                const firstFile = files[0];
                 const file = {
-                    value: undefined as string | undefined,
-                    preview: undefined as string | undefined,
+                    value: files.flatMap((file) => file.value).join(', ') as string,
+                    preview: files.flatMap((file) => file.preview).join(', ') as string,
                 }
                 setFilesName(currentFilesNames);
-
-                if(firstFile) {
-                    file.value = firstFile.value;
-                    file.preview = firstFile.preview;
-                    setPreview(file.preview);
-                }
 
                 if(onChange) {
                     onChange({
                         ...file,
                         name,
                         event: e,
+                        error: !files.every((file) => !file.error),
                         files,
                         filesName: currentFilesNames
                     })
@@ -168,7 +175,7 @@ export default function FileInput({
 
         if (onChange) {
             const event = { target: inputRef.current } as React.ChangeEvent<HTMLInputElement>;
-            onChange({ name, event });
+            onChange({ name, event, error: false });
         }
 
         if (onInput) {
@@ -183,7 +190,7 @@ export default function FileInput({
                 const extension = extractExtensionFromBase64(base64);
                 if(extension) {
                     setPreview(base64);
-                    setFilesName([`file.${extension}`]);
+                    setFilesName([{ value: `file.${extension}`, error: false }]);
                 }
 
             })();
@@ -226,9 +233,12 @@ export default function FileInput({
                 />
                 {filesName.length > 0 ? (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        {filesName.map((fileName, index) => (
+                        {filesName.map(({ value, error }, index) => (
                             <div key={index}>
-                                <span className="ds-file-input__filename">{fileName}</span>
+                                <span className={joinClass([
+                                    'ds-file-input__filename',
+                                    error && 'ds-file-input__filename--error',
+                                ])}>{value}</span>
                             </div>
                         ))}
                     </div>
