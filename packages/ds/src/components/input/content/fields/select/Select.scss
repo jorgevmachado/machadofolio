@@ -1,15 +1,16 @@
 .ds-select {
   position: relative;
   width: 100%;
-  max-width: 400px;
 
   &__control {
     width: 100%;
+    min-width: 200px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     cursor: pointer;
     transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+    position: relative;
+
     &:hover, &--open {
       border-color: var(--color-neutral-100);
     }
@@ -20,6 +21,15 @@
       border-color: #ddd;
       color: #aaa;
     }
+
+    span, input {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     .ds-select__arrow {
       position: absolute;
       right: 1.2rem;
@@ -51,6 +61,26 @@
     opacity: 1;
     transform: translateY(0);
     transition: opacity 0.2s, transform 0.2s;
+    max-height: 288px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: var(--border-radius-large);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: var(--border-radius-large);
+
+      &:hover {
+        background: #a8a8a8;
+      }
+    }
   }
 
   &__dropdown--closing {

@@ -7,6 +7,7 @@ import { OInputTypes } from '../../utils';
 import Button from '../button';
 
 import Input from './Input';
+import { MONTHS } from '@repo/services';
 
 type InputProps = React.ComponentProps<typeof Input>;
 
@@ -269,17 +270,10 @@ export const Select: Story = {
         type: 'select',
         name: 'select',
         label: 'Select',
-        options: [
-            {
-                label: 'Option 1',
-                value: 'option1',
-                disabled: true,
-            },
-            {
-                label: 'Option 2',
-                value: 'option2',
-            }
-        ],
+        options: MONTHS.map((month) => ({
+            value: month.toUpperCase(),
+            label: month,
+        })),
         placeholder: 'Input Select',
         helperText: undefined,
     },
