@@ -22,7 +22,7 @@ import { type TGenericIconProps, Text } from '../../elements';
 import Feedback from '../feedback';
 import Label from '../label';
 
-import Content from './content';
+import Content, { OnFileInputChangeParams } from './content';
 import { InputProvider } from './InputContext';
 
 import './Input.scss';
@@ -68,7 +68,7 @@ interface InputProps extends Omit<InputPropsItem, 'onInput'>, Omit<HostProps, 'a
     appearance?: TAppearance;
     onInputFile?: () => void;
     withPreview?: boolean;
-    onChangeFile?:(event: React.ChangeEvent<HTMLInputElement>, value?: string, fileName?: string) => void;
+    onChangeFile?:(params: OnFileInputChangeParams) => void;
     autoComplete?: boolean;
     fallbackLabel?: string;
     filterFunction?: (input: string, option: OptionsProps) => boolean;

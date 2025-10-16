@@ -53,7 +53,9 @@ const Template = (args: InputProps) => {
     const [onInput, setOnInput] = React.useState<{ name: string; value: string | Array<string>;} | undefined>(undefined);
     return (
         <>
-            <Input {...args} onInput={( { name, value}) =>setOnInput({name, value })} />
+            <Input
+                {...args} onInput={( { name, value}) =>setOnInput({name, value })}
+            />
             {onInput && (
                 <div style={{ marginTop: '1rem' }}>
                     <strong>On Input:</strong>
@@ -103,6 +105,25 @@ export const File: Story = {
             invalid: true,
             message: 'Field is required',
         },
+        showRemoveButton: true
+    },
+    render: (args) => <Template {...args} />,
+};
+
+export const MultipleFile: Story = {
+    args: {
+        type: 'file',
+        label: 'File',
+        value: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHN5dygQnJFirBww40JLAsLuZHF0kOdBrzLw&s',
+        accept: '.pdf, .xlsx, image/*',
+        multiple: true,
+        placeholder: 'Select file',
+        withPreview: false,
+        validated: {
+            invalid: false,
+            message: 'Field is required',
+        },
+        helperText: undefined,
     },
     render: (args) => <Template {...args} />,
 };
@@ -252,6 +273,7 @@ export const Select: Story = {
             {
                 label: 'Option 1',
                 value: 'option1',
+                disabled: true,
             },
             {
                 label: 'Option 2',

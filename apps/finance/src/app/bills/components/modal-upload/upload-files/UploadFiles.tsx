@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import { MONTHS, EMonth } from '@repo/services';
+import { EMonth, getMonthByIndex, MONTHS } from '@repo/services';
 
-import { Button, Input, OptionsProps, Switch, Table } from '@repo/ds';
+import { Input, type OnFileInputChangeParams, type OptionsProps, Switch, Table } from '@repo/ds';
 
 import { UploadListItem } from '../types';
 
@@ -13,176 +13,251 @@ type UploadFilesProps = {
     updateUploads: (uploads: Array<UploadListItem>) => void;
 }
 
-type InputProps = React.ComponentProps<typeof Input>;
+type FormItem = {
+    index: number;
+    paid: React.ReactNode;
+    month: React.ReactNode;
+    fileName: string;
+}
 
-const DEFAULT_INPUT: Array<InputProps> = [
-    {
-        id: 'file',
-        key: 'file',
-        name: 'file',
-        fluid: true,
-        type: 'file',
-        accept: '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
-    },
-    {
-        id: 'paid',
-        key: 'paid',
-        type: 'text',
-        label: 'Paid',
-        checked: false,
-    },
-    {
-        id: 'select_month_upload',
-        key: 'month',
-        type: "select",
-        fluid: true,
-        name: 'month',
-        required: true,
-        placeholder: 'Choose a Month'
-    }
-];
+type ListItemMonth = {
+    index: number;
+    value: string;
+}
 
-type Form = {
+type ListItem = {
+    index: number;
     paid: boolean;
     file: string;
-    month: string;
+    month: ListItemMonth;
+    fileName: string;
+}
+
+type BuildComponentParams = {
+    file: string;
+    paid?: boolean;
+    index: number;
+    month?: string;
     fileName: string;
 }
 
 export default function UploadFiles({ uploads, updateUploads }: UploadFilesProps) {
-    const [currentUploads, setCurrentUploads] = useState<Array<UploadListItem>>(uploads);
-    const [inputs, setInputs] = useState<Array<InputProps>>(DEFAULT_INPUT);
-    const [form, setForm] = useState<Form>({ paid: false, file: '', month: '', fileName: '' });
-    const [shouldClearFile, setShouldClearFile] = useState<boolean>(false);
-    const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
-    const [months, setMonths] = useState<Array<OptionsProps>>(MONTHS.map((item) => ({ value: item.toUpperCase(), label: item, })));
+    const [formList, setFormList] = useState<Array<FormItem>>([]);
+    const [list, setList] = useState<Array<ListItem>>([]);
+    const [months] = useState<Array<OptionsProps>>(MONTHS.map((item) => ({
+        value: item.toUpperCase(),
+        label: item,
+    })));
 
-    const handleOnInput = (name: string, value: string | boolean) => {
-        setForm((prev) => ({...prev, [name]: value}))
-    }
-
-    const treatValue = (name?: string) => {
-        if(!name) {
-            return '';
-        }
-        return form[name as keyof Form] as string;
-    }
-
-    const buildInputs = (months: Array<OptionsProps>, uploads?: Array<UploadListItem>) => {
-        const currentMonths = !uploads ? [] : uploads.flatMap((item) => item.month?.toLowerCase() as string);
-        const monthsFiltered = months.filter((item) => !currentMonths.includes(item.value.toLowerCase() as string));
-        const currentInputs = inputs.map((input) => ({
-            ...input,
-            options: input.type === 'select' ? monthsFiltered : undefined,
+    const handleOnInput = (index: number, name: string, value: string | boolean) => {
+        setList((prevState) => prevState.map((item, i) => {
+            if(i === index) {
+                switch (name) {
+                    case 'paid':
+                        item.paid = value as boolean;
+                        break;
+                    case 'month':
+                        item.month = buildMonth({ month: value as string });
+                        break;
+                }
+            }
+            return item;
         }));
-        setInputs(currentInputs);
     }
 
-    const handleAdd=   (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        const { paid, file, month, fileName } = form;
-        const uploads = [...currentUploads];
-        uploads.push({
-            index: uploads.length + 1,
-            paid,
-            file,
-            month: month as EMonth,
-            fileName,
+    const handleMonthChange = (index: number, newMonth: string) => {
+        setList((prevState) => prevState.map((item, i) => {
+            if(i === index) {
+                const monthIndex = MONTHS.findIndex(m => m.toUpperCase() === newMonth);
+                item.month.index = monthIndex;
+                item.month.value = MONTHS[monthIndex] ?? '';
+            }
+            return item;
+        }));
+    };
+
+    const renderInputMonth = (index: number, monthItem: ListItemMonth, list: Array<ListItem>) => {
+        const month = monthItem.value.toUpperCase();
+
+        const currentMonths = list
+            .filter((item) => item.index !== index) // Exclui o item atual
+            .map((item) => item.month?.value?.toLowerCase())
+            .filter(Boolean);
+
+        const monthsFiltered = months.filter(
+            (item) => !currentMonths.includes(item.value.toLowerCase())
+        );
+
+        const options = month && !monthsFiltered.some(m => m.value === month)
+            ? [...monthsFiltered, months.find(m => m.value === month)].filter(Boolean) as Array<OptionsProps>
+            : monthsFiltered;
+
+        const inputName = `month_${index}`;
+        return (
+            <Input
+                id={`select_month_${index}`}
+                key={inputName}
+                type="select"
+                name={inputName}
+                value={month}
+                options={options}
+                required
+                placeholder="Choose a Month"
+                onInput={({ value }) => handleMonthChange(index, value as string)}
+            />
+        )
+    }
+
+    const renderInputPaid = (index: number, paid: boolean = false) => {
+        return (
+            <Switch
+                key={index}
+                label="Paid"
+                checked={list[index]?.paid ?? paid}
+                onChange={(_, checked) => handleOnInput(index, 'paid', checked)}
+            />
+        )
+    }
+
+    const getMonthIndex = ({ month, fileName } : { month?: string, fileName?: string }) => {
+        if(month) {
+            return MONTHS.findIndex(m => m.toUpperCase() === month.toUpperCase());
+        }
+        if(fileName) {
+            const fileDateString = fileName.replaceAll('Nubank_', '').replaceAll('.xlsx', '');
+            const fileDate = new Date(fileDateString);
+            return fileDate.getMonth();
+        }
+        return Number('abc');
+    }
+
+    const buildMonth = (params : { month?: string, fileName?: string }) => {
+        const index = getMonthIndex(params);
+        if (isNaN(index)) {
+            return {
+                index: -1,
+                value: ''
+            };
+        }
+        return {
+            index,
+            value: getMonthByIndex(index) as string
+        }
+    }
+
+    const buildFormList = (list: Array<ListItem> = []): Array<FormItem> => {
+        return list.map((item) => buildFormListItem(item, list));
+    }
+
+    const buildFormListItem = (item: ListItem, list: Array<ListItem> = []): FormItem => {
+        const { index, paid, month, fileName } = item;
+        return {
+            index,
+            paid: renderInputPaid(index, paid),
+            month: renderInputMonth(index, month, list),
+            fileName
+        }
+    }
+
+    const handleOnChangeFile = ({ files }: OnFileInputChangeParams) => {
+        buildComponent(files?.map((file, index) => ({
+            file: file.value,
+            paid: false,
+            index,
+            fileName: file.fileName
+        })));
+    }
+
+    const buildComponent = (params: Array<BuildComponentParams> = []) => {
+        const currentList: Array<ListItem> = [];
+        const currentFormList: Array<FormItem> = [];
+        params.forEach((item) => {
+            const month = buildMonth({ month: item.month, fileName: item.fileName });
+            const itemList = {
+                index: item.index,
+                paid: Boolean(item.paid),
+                file: item.file,
+                month,
+                fileName: item.fileName
+            }
+            currentList.push(itemList);
+            const formItem = buildFormListItem(itemList, currentList);
+            currentFormList.push(formItem);
         });
-        setCurrentUploads(uploads);
-        updateUploads(uploads);
-        buildInputs(months, uploads);
-        setButtonDisabled(true);
-        setForm((prev) => ({ ...prev, file: '', month: '', paid: false }));
-        setShouldClearFile(true);
+        setList(currentList);
+        setFormList(currentFormList);
     }
 
-    const validatorForm = () => {
-        const { month, file } = form;
-        const addButtonDisabled = month === '' || file === ''
-        setButtonDisabled(addButtonDisabled);
-        return !addButtonDisabled;
+    const validateForm = () => {
+        return list.every((item) => item.month.index !== -1);
     }
 
-    const handleDeleteUpload = (item: UploadListItem) => {
-        const uploadToRemove = uploads.filter((upload) => upload.index !== item.index);
-        setCurrentUploads(uploadToRemove);
-        updateUploads(uploadToRemove);
-        buildInputs(months, uploadToRemove);
+    const handleUpdateUploads = (list: Array<ListItem>) => {
+        updateUploads(list.map((item) => ({
+            index: item.index,
+            file: item.file,
+            paid: item.paid,
+            month: item.month.value as EMonth,
+            fileName: item.fileName
+        })))
     }
 
     useEffect(() => {
-        validatorForm();
-    }, [form.file, form.month]);
+        if (list.length > 0) {
+            const updatedFormList = buildFormList(list);
+            setFormList(updatedFormList);
+            const formValid = validateForm();
+            if(formValid) {
+                handleUpdateUploads(list);
+            }
+        }
+    }, [list]);
 
     useEffect(() => {
-        const months = MONTHS.map((item) => ({ value: item.toUpperCase(), label: item, }));
-        setMonths(months);
-        buildInputs(months);
+        if(uploads.length > 0) {
+            buildComponent(uploads.map((item) => ({
+                file: item.file,
+                paid: item.paid,
+                index: item.index,
+                month: item.month,
+                fileName: item.fileName
+            })));
+        }
     }, []);
 
     return (
         <>
-            <div className="upload-files__inputs">
-                {inputs.map((input) => (
-                    <React.Fragment key={input.key} >
-                        {input.type === 'text'
-                            ? (
-                                <Switch
-                                    label="Paid"
-                                    checked={form.paid}
-                                    onChange={(_, checked) => handleOnInput('paid', checked)}
-                                />
-                            )
-                            : (
-                                <Input
-                                    {...input}
-                                    value={treatValue(input.name)}
-                                    onInput={({name, value}) => handleOnInput(name, value as string)}
-                                    clearFile={shouldClearFile}
-                                    onChangeFile={(e, value, fileName) => {
-                                        if(!value) {
-                                            setShouldClearFile(false);
-                                        }
-                                        if(fileName) {
-                                            handleOnInput('fileName', fileName);
-                                        }
-                                    }}
-                                    className="modal-upload__inputs--item"
-                                />
-                            )
-                        }
-                    </React.Fragment>
-                ))}
-                <Button context="primary" disabled={buttonDisabled} onClick={handleAdd}>Add</Button>
+            <div className="upload-files__file">
+                <Input
+                    id="file"
+                    key="file"
+                    name="file"
+                    fluid
+                    type="file"
+                    accept=".csv, .xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                    multiple
+                    disabled={formList.length > 0}
+                    onChangeFile={handleOnChangeFile}
+                />
             </div>
-
-            {uploads.length > 0 && (
+            {formList.length > 0 && (
                 <div>
-                    <Table items={uploads.map((item) => ({
-                        ...item,
-                        paid: !item.paid ? 'NO' : 'YES',
-                    }))} headers={[
-                        {
-                            text: 'Arquivo',
-                            value: 'fileName',
-                        },
-                        {
-                            text: 'Mes',
-                            value: 'month',
-                        },
-                        {
-                            text: 'Pago',
-                            value: 'paid',
-                        }
-                    ]}
-                           actions={{
-                               text: '',
-                               delete: {
-                                   icon: { icon: 'trash' },
-                                   onClick: (item: UploadListItem) =>  handleDeleteUpload(item)
-                               }
-                           }}
+                    <Table
+                        items={formList}
+                        headers={[
+                            {
+                                text: 'Arquivo',
+                                value: 'fileName',
+                            },
+                            {
+                                text: 'Mes',
+                                value: 'month',
+                            },
+                            {
+                                text: 'Pago',
+                                value: 'paid',
+                            }
+                        ]}
                     />
                 </div>
             )}

@@ -20,6 +20,7 @@
       }
     }
     tr {
+      position: relative;
       &:hover {
         td {
           background-color: var(--color-neutral-40);
@@ -34,11 +35,12 @@
     td {
       padding: var(--size-regular) var(--size-tiny);
       font-size: var(--font-size-md);
-      overflow: hidden;
+      overflow: visible;
       word-wrap: break-word;
       white-space: nowrap;
       border-bottom: 1px solid var(--color-neutral-60);
       text-overflow: ellipsis;
+      position: relative;
     }
   }
   &__no-data-container {

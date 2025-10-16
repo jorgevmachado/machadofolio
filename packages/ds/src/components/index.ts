@@ -3,7 +3,7 @@ export { default as Link } from './link';
 export { default as Dropdown } from './dropdown';
 export { default as Feedback } from './feedback';
 export { default as Label } from './label';
-export { default as Input, type OnInputParams } from './input';
+export { default as Input, type OnInputParams, type OnFileInputChangeParams } from './input';
 export { default as Alert } from './alert';
 export { default as Table, ETypeTableHeader } from './table';
 export { default as Pagination } from './pagination';

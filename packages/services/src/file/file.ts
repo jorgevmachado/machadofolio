@@ -60,6 +60,10 @@ export function extractExtensionFromBase64(base64: string): string | undefined {
  const result = base64.match(/data:(.*?);base64,/);
  if (result && result[1]) {
   const mimeType = result[1];
+  const currentMimeType = mimeType.split('/').pop();
+  if(currentMimeType === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+      return 'xlsx';
+  }
   return mimeType.split('/').pop();
  }
  return;

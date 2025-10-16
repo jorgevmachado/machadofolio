@@ -8,7 +8,7 @@ import type { TGenericIconProps } from '../../../elements';
 
 import { useInput } from '../InputContext';
 
-import { DateInput, FileInput, RadioGroupInput, SelectInput } from './fields';
+import { DateInput, FileInput, RadioGroupInput, SelectInput, type OnFileChangeParams } from './fields';
 import Addon from './addon';
 import Inside from './inside';
 
@@ -17,6 +17,8 @@ import './Content.scss';
 type DateInputProps = React.ComponentProps<typeof DateInput>;
 
 type SelectInputProps = React.ComponentProps<typeof SelectInput>;
+
+export type OnFileInputChangeParams = OnFileChangeParams;
 
 export type OnInputParams = {
     name: string;
@@ -42,7 +44,7 @@ interface ContentProps extends Omit<React.InputHTMLAttributes<HTMLInputElement |
     formatter?: (value?: string) => string;
     appearance: TAppearance;
     withPreview?: boolean;
-    onChangeFile?:(event: React.ChangeEvent<HTMLInputElement>, value?: string, fileName?: string) => void;
+    onChangeFile?:(params: OnFileInputChangeParams) => void;
     autoComplete?: boolean;
     fallbackLabel?: string;
     filterFunction?: (input: string, option: OptionsProps) => boolean;
@@ -137,15 +139,15 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         }
     }
 
-    const handleOnChangeFile = (e: React.ChangeEvent<HTMLInputElement>, value?: string, fileName?: string) => {
+    const handleOnChangeFile = (params: OnFileInputChangeParams) => {
         if(value) {
             setCurrentInputValue(value);
         }
         if(onChange) {
-            onChange(e)
+            onChange(params.event)
         }
         if(onChangeFile) {
-            onChangeFile(e, value, fileName);
+            onChangeFile(params);
         }
     }
 
@@ -307,6 +309,7 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         name={name}
                         value={currentInputValue}
                         accept={accept}
+                        multiple={props.multiple}
                         onInput={handleInput}
                         context={context}
                         onChange={handleOnChangeFile}
