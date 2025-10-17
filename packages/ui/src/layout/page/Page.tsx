@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useBreakpoint } from '@repo/ds';
 
-import { Content, Navbar, Sidebar } from '../../components';
+import { Content, type InternationalizationProps, Navbar, Sidebar } from '../../components';
 import type { TRoute } from '../../utils';
 
 import './Page.scss';
@@ -23,6 +23,7 @@ interface PageProps extends React.HTMLAttributes<HTMLDivElement> {
     onLinkClick?: (path: string) => void;
     withAnimation?: boolean;
     isAuthenticated?: boolean;
+    internationalization?: InternationalizationProps;
 }
 
 export default function Page({
@@ -38,6 +39,7 @@ export default function Page({
     onLinkClick,
     withAnimation = true,
     isAuthenticated = false,
+    internationalization
 }: PageProps) {
     const { isMobile } = useBreakpoint();
 
@@ -70,7 +72,12 @@ export default function Page({
         <div className="ui-page" data-testid="ui-page">
             { isAuthenticated && (
                 <>
-                    <Navbar title={navbarTitle || 'My App'} action={navbarAction} userName={userName}/>
+                    <Navbar
+                        title={navbarTitle || 'My App'}
+                        action={navbarAction}
+                        userName={userName}
+                        internationalization={internationalization}
+                    />
                     { menu && (
                         <Sidebar
                             menu={menu}
