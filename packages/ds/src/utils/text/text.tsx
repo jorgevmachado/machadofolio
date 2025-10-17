@@ -14,7 +14,6 @@ export function formattedText(children: unknown) {
         return children;
     }
     if (typeof children !== 'string') {
-        console.warn('Invalid children type. Expected string or ReactNode.');
         return children;
     }
 
