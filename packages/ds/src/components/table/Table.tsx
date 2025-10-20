@@ -90,6 +90,10 @@ export default function Table({
         }
     }, [isMobile]);
 
+    useEffect(() => {
+        setCurrentHeaders(headers);
+    }, [headers]);
+
     return loading
         ? (<Spinner />)
         : (

@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { useI18n } from '@repo/i18n';
+
 import { BillEntity } from '@repo/business';
 
 import { Button, Text } from '@repo/ds';
@@ -15,6 +17,7 @@ type GroupInfoProps = {
 }
 
 export default function GroupInfo({ bills, className, totalRegisteredGroups }: GroupInfoProps) {
+    const { t } = useI18n();
     const router = useRouter();
 
     const list = billBusiness.mapBillListByFilter(bills, 'group');
@@ -52,21 +55,21 @@ export default function GroupInfo({ bills, className, totalRegisteredGroups }: G
     return (
         <BarChart
             type="horizontal"
-            title="Top Groups"
-            subtitle="Groups with the highest expenses"
+            title={`Top ${t('groups')}`}
+            subtitle={`${t('groups')} ${t('with_the_highest_expenses')}`}
             data={data}
-            fallback="No groups registered"
+            fallback={`${t('no_groups_registered')}`}
             className={className}
             tooltipContent={(params) => (<TooltipChart {...params} countText="Expenses" valueText="Total"/>)}
         >
             <Text variant="medium" color="neutral-80">
-                {totalRegisteredGroups} registered groups
+                {totalRegisteredGroups} {t('registered_groups')}
             </Text>
             <Button
                 size="small"
                 context="primary"
                 onClick={() => router.push('/groups')}>
-                Ver Detalhes
+                {t('view_details')}
             </Button>
         </BarChart>
     );

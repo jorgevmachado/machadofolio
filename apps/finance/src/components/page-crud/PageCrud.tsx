@@ -1,5 +1,8 @@
 'use client'
 import React, { useState } from 'react';
+
+import { useI18n } from '@repo/i18n';
+
 import { Pagination, Table } from '@repo/ds';
 
 import { useModal } from '@repo/ui';
@@ -44,6 +47,7 @@ export default function PageCrud({
     resourceName,
     handlePageChange
 }: PageCrudProps) {
+    const { t } = useI18n();
     const { openModal, modal, closeModal } = useModal();
     const [sortedColumn, setSortedColumn] = useState<TableProps['sortedColumn']>({
         sort: '',
@@ -64,7 +68,7 @@ export default function PageCrud({
             return;
         }
         openModal({
-            title: `${hasId(item) ? 'Edit' : 'Create'} ${resourceName}`,
+            title: `${hasId(item) ? t('edit') : t('create')} ${resourceName}`,
             body: (
                 <ModalPersist
                     item={item}
@@ -82,7 +86,7 @@ export default function PageCrud({
             return;
         }
         openModal({
-            title: `Are you sure you want to delete the ${resourceName}`,
+            title: `${t('want_to_delete')} ${resourceName}`,
             width: '700px',
             body: (
                 <ModalDelete item={item} onClose={closeModal} onDelete={actions?.delete}/>
@@ -95,7 +99,7 @@ export default function PageCrud({
             <PageHeader
                 resourceName={resourceName}
                 action={actions?.create && inputs?.length ? {
-                    label: `Create new ${resourceName}`,
+                    label: `${t('create_new')} ${resourceName}`,
                     onClick: () => handlePersistModal()
                 } : undefined}
             />
@@ -104,8 +108,8 @@ export default function PageCrud({
                 actions={actions && {
                     text: actions.text,
                     align: actions.align,
-                    edit: actions?.edit  && inputs?.length? { onClick: (item: unknown) => handlePersistModal(item)}  : undefined,
-                    delete: actions?.delete ? { onClick: (item: unknown) => handleDeleteModal(item)}  : undefined
+                    edit: actions?.edit  && inputs?.length? { children: t('edit'), onClick: (item: unknown) => handlePersistModal(item)}  : undefined,
+                    delete: actions?.delete ? { children: t('delete'), onClick: (item: unknown) => handleDeleteModal(item)}  : undefined
                 }}
                 headers={headers}
                 loading={loading}

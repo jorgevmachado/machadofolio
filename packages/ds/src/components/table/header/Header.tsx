@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { joinClass } from '../../../utils';
 import { Icon } from '../../../elements';
@@ -17,6 +17,7 @@ type HeaderProps = Pick<
 };
 
 export default function Header({ headers, actions, handleSort, sortedColumn }: HeaderProps) {
+    const [data, setData] = useState<TableProps['headers']>([]);
 
 
     const classNameCellList = (sortable: boolean) => joinClass([
@@ -37,10 +38,14 @@ export default function Header({ headers, actions, handleSort, sortedColumn }: H
             : 'ds-table-header__cell--content-icon',
     ]);
 
+    useEffect(() => {
+        setData(headers);
+    }, [headers]);
+
     return (
         <thead className="ds-table-header" data-testid="ds-table-header">
             <tr>
-                {headers.map((item, index) => (
+                {data.map((item, index) => (
                     <th
                         key={`table-header-column-${index}`}
                         role="columnheader"

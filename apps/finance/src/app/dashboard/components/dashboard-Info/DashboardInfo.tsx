@@ -68,19 +68,31 @@ export default function DashboardInfo({
                     />
                 </section>
                 <section className="finance-info__content--group">
-                    <SupplierInfo expenses={expenses} totalRegisteredSuppliers={suppliers.length}
-                                  className="finance-info__content--group-item"/>
-                    <GroupInfo bills={bills} totalRegisteredGroups={groups.length}
-                               className="finance-info__content--group-item"/>
+                    <SupplierInfo
+                        expenses={expenses}
+                        className="finance-info__content--group-item"
+                        totalRegisteredSuppliers={suppliers.length}
+                    />
+                    <GroupInfo
+                        bills={bills}
+                        className="finance-info__content--group-item"
+                        totalRegisteredGroups={groups.length}
+                    />
                 </section>
                 <section className="finance-info__content--group">
                     <DistributionOfExpenses expenses={expenses} className="finance-info__content--group-item"/>
                 </section>
                 <section className="finance-info__content--group">
-                    <BankInfo bills={bills} totalRegisteredBanks={banks.length}
-                              className="finance-info__content--group-item"/>
-                    <PaymentMethodsInfo bills={bills} totalRegisteredBills={bills.length}
-                                        className="finance-info__content--group-item"/>
+                    <BankInfo
+                        bills={bills}
+                        className="finance-info__content--group-item"
+                        totalRegisteredBanks={banks.length}
+                    />
+                    <PaymentMethodsInfo
+                        bills={bills}
+                        className="finance-info__content--group-item"
+                        totalRegisteredBills={bills.length}
+                    />
                 </section>
             </div>
         </div>

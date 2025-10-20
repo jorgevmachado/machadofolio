@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { useI18n } from '@repo/i18n';
+
 import { BillEntity } from '@repo/business';
 
 import { Button, Text } from '@repo/ds';
@@ -15,6 +17,7 @@ type BankInfoProps = {
 }
 
 export default function BankInfo({ bills, className, totalRegisteredBanks }: BankInfoProps) {
+    const { t } = useI18n();
     const router = useRouter();
 
     const list = billBusiness.mapBillListByFilter(bills, 'bank');
@@ -52,21 +55,21 @@ export default function BankInfo({ bills, className, totalRegisteredBanks }: Ban
     return (
         <BarChart
             type="horizontal"
-            title="Top Banks"
-            subtitle="Banks with the highest expenses"
+            title={`Top ${t('banks')}`}
+            subtitle={`${t('banks')} ${t('with_the_highest_expenses')}`}
             data={data}
-            fallback="No banks registered"
+            fallback={t('no_banks_registered')}
             className={className}
             tooltipContent={(params) => (<TooltipChart {...params} countText="Expenses" valueText="Total"/>)}
         >
             <Text variant="medium" color="neutral-80">
-                {totalRegisteredBanks} registered banks
+                {totalRegisteredBanks} {t('registered_banks')}
             </Text>
             <Button
                 size="small"
                 context="primary"
                 onClick={() => router.push('/banks')}>
-                Ver Detalhes
+                {t('view_details')}
             </Button>
         </BarChart>
     );

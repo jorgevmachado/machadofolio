@@ -3,6 +3,8 @@ import React from 'react';
 
 import { useRouter } from 'next/navigation';
 
+import { useI18n } from '@repo/i18n';
+
 import type { ExpenseEntity } from '@repo/business';
 
 import { Button, Text } from '@repo/ds';
@@ -17,6 +19,7 @@ type SupplierBarChartProps = {
 
 export default function SupplierInfo({ expenses, className, totalRegisteredSuppliers }: SupplierBarChartProps) {
     const router = useRouter();
+    const { t } = useI18n();
     const data = React.useMemo(() => {
         const supplierMap = new Map<string, Omit<DataItemProps, 'color'>>();
 
@@ -50,21 +53,21 @@ export default function SupplierInfo({ expenses, className, totalRegisteredSuppl
     return (
         <BarChart
             type="horizontal"
-            title="Top 5 Suppliers"
-            subtitle="Suppliers with the highest expenses"
+            title={`Top 5 ${t('suppliers')}`}
+            subtitle={`${t('suppliers')} ${t('with_the_highest_expenses')}`}
             data={data}
-            fallback="No expenses registered"
+            fallback={t('no_expenses_registered')}
             className={className}
             tooltipContent={(params) => (<TooltipChart {...params} countText="Expenses" valueText="Total"/>)}
         >
             <Text variant="medium" color="neutral-80">
-                {totalRegisteredSuppliers} registered suppliers
+                {totalRegisteredSuppliers} {t('registered')} {t('suppliers')}
             </Text>
             <Button
                 size="small"
                 context="primary"
                 onClick={() => router.push('/suppliers')}>
-                Ver Detalhes
+                {t('view_details')}
             </Button>
         </BarChart>
     );

@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { useI18n } from '@repo/i18n';
+
 import { BillEntity } from '@repo/business';
 
 import { Button, Text } from '@repo/ds';
@@ -15,6 +17,7 @@ type BankInfoProps = {
 }
 
 export default function PaymentMethodsInfo({ bills, className, totalRegisteredBills }: BankInfoProps) {
+    const { t } = useI18n();
     const router = useRouter();
 
     const list = billBusiness.mapBillListByFilter(bills, 'type');
@@ -52,21 +55,21 @@ export default function PaymentMethodsInfo({ bills, className, totalRegisteredBi
     return (
         <BarChart
             type="horizontal"
-            title="Top Payment Methods"
-            subtitle="Payment Methods with the highest expenses"
+            title={`Top ${t('payment_methods')}`}
+            subtitle={`${t('payment_methods')} ${t('with_the_highest_expenses')}`}
             data={data}
-            fallback="No Payment Methods registered"
+            fallback={t('no_payment_methods_registered')}
             className={className}
             tooltipContent={(params) => (<TooltipChart {...params} countText="Expenses" valueText="Total"/>)}
         >
             <Text variant="medium" color="neutral-80">
-                {totalRegisteredBills} registered bills
+                {totalRegisteredBills} {t('registered_bills')}
             </Text>
             <Button
                 size="small"
                 context="primary"
                 onClick={() => router.push('/bills')}>
-                Ver Detalhes
+                {t('view_details')}
             </Button>
         </BarChart>
     );
