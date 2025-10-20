@@ -15,6 +15,7 @@
   "dependencies": {
     "@repo/business": "*",
     "@repo/ds": "*",
+    "@repo/i18n": "*",
     "@repo/services": "*",
     "@repo/tokens": "*",
     "@repo/ui": "*",

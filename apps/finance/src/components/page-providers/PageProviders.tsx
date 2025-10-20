@@ -1,6 +1,8 @@
 "use client"
 import React from 'react';
 
+import { I18nProvider } from '@repo/i18n';
+
 import { AlertProvider, LoadingProvider } from '@repo/ui';
 
 import PageLayout from './page-layout';
@@ -11,12 +13,14 @@ type PageProvidersProps = {
 
 export default function PageProviders({ children }: PageProvidersProps) {
  return (
-     <AlertProvider style={{ marginTop: '3.2rem'}}>
-         <LoadingProvider>
-             <PageLayout>
-                 {children}
-             </PageLayout>
-         </LoadingProvider>
-     </AlertProvider>
+     <I18nProvider defaultLang="en">
+         <AlertProvider style={{ marginTop: '3.2rem'}}>
+             <LoadingProvider>
+                 <PageLayout>
+                     {children}
+                 </PageLayout>
+             </LoadingProvider>
+         </AlertProvider>
+     </I18nProvider>
  )
 }

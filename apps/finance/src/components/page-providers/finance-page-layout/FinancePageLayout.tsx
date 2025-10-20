@@ -2,7 +2,9 @@
 import React, { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { Page, useUser } from '@repo/ui';
+import { useI18n } from '@repo/i18n';
+
+import { Page, useUser, LanguageOption } from '@repo/ui';
 
 import { privateRoutes } from '../../../routes';
 
@@ -17,6 +19,7 @@ export default function FinancePageLayout({ children }: FinancePageLayoutProps) 
     const router = useRouter();
     const { user } = useUser();
     const { financeInfo } = useFinance();
+    const { lang, setLanguage, t } = useI18n();
 
     const loadMenu = () => {
         if (user?.finance || financeInfo) {
@@ -36,13 +39,18 @@ export default function FinancePageLayout({ children }: FinancePageLayoutProps) 
         [router],
     );
 
+    const handleOnChangeLang = (languageOption: LanguageOption) => {
+        setLanguage(languageOption.code);
+    }
+
     return (
         <Page
             menu={loadMenu()}
             userName={user?.name}
-            navbarTitle="Finance"
+            navbarTitle={t('financeTitle')}
             onLinkClick={handleLinkClick}
             isAuthenticated={Boolean(user)}
+            internationalization={{ lang, onChange: handleOnChangeLang }}
         >{children}</Page>
     )
 }
