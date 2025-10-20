@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 
 import './Internationalization.scss';
 
-type LanguageOption = {
+export type LanguageOption = {
     flag: string;
     code: string;
     label: string;
 }
 
-type InternationalizationProps = {
+export type InternationalizationProps = {
     lang?: string;
     onChange?: (languageOption: LanguageOption) => void;
     languageOptions?: Array<LanguageOption>;

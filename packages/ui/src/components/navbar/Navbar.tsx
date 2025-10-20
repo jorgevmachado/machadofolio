@@ -2,11 +2,9 @@ import React from 'react';
 
 import { Button } from '@repo/ds';
 
-import Internationalization from './internationalization';
+import { Internationalization, type InternationalizationProps } from './internationalization';
 
 import './Navbar.scss';
-
-export type InternationalizationProps = React.ComponentProps<typeof Internationalization>;
 
 type NavbarProps = {
     title: string;
