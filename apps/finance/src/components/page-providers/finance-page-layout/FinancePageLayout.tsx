@@ -45,9 +45,10 @@ export default function FinancePageLayout({ children }: FinancePageLayoutProps) 
 
     return (
         <Page
+            translator={t}
             menu={loadMenu()}
             userName={user?.name}
-            navbarTitle={t('financeTitle')}
+            navbarTitle="Finance"
             onLinkClick={handleLinkClick}
             isAuthenticated={Boolean(user)}
             internationalization={{ lang, onChange: handleOnChangeLang }}

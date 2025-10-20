@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
+import { TranslatorFunction } from '@repo/i18n';
+
 import { useBreakpoint } from '@repo/ds';
 
 import { Content, type InternationalizationProps, Navbar, Sidebar } from '../../components';
 import type { TRoute } from '../../utils';
 
 import './Page.scss';
+
 
 interface PageProps extends React.HTMLAttributes<HTMLDivElement> {
     menu?: Array<TRoute>;
@@ -19,6 +22,7 @@ interface PageProps extends React.HTMLAttributes<HTMLDivElement> {
         label: string;
         onClick: () => void;
     };
+    translator?: TranslatorFunction;
     sidebarOpen?: boolean;
     onLinkClick?: (path: string) => void;
     withAnimation?: boolean;
@@ -33,6 +37,7 @@ export default function Page({
     userName,
     children,
     ariaLabel,
+    translator,
     navbarTitle,
     navbarAction,
     sidebarOpen = true,
@@ -54,6 +59,7 @@ export default function Page({
         return {
             key: 'logout',
             type: 'private',
+            name: 'logout',
             title: logout?.title ?? 'Logout',
             icon: logout?.icon ?? 'sign-out',
             path: logout?.path ?? '/logout'
@@ -76,6 +82,7 @@ export default function Page({
                         title={navbarTitle || 'My App'}
                         action={navbarAction}
                         userName={userName}
+                        translator={translator}
                         internationalization={internationalization}
                     />
                     { menu && (
@@ -83,8 +90,9 @@ export default function Page({
                             menu={menu}
                             logout={treatLogout()}
                             onToggle={handleSidebarToggle}
-                            isSidebarOpen={isSidebarOpen}
+                            translator={translator}
                             onLinkClick={onLinkClick}
+                            isSidebarOpen={isSidebarOpen}
                         />
                     )}
                 </>

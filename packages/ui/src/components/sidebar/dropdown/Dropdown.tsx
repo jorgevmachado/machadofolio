@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 
+import { TranslatorFunction } from '@repo/i18n';
+
 import { formatPath } from '@repo/services';
 
-import { Icon } from '@repo/ds';
+import { Icon, Text } from '@repo/ds';
 
 import { type TRoute } from '../../../utils';
 
@@ -11,11 +13,12 @@ import './Dropdown.scss';
 type DropdownProps = {
     menu: TRoute;
     isOpen: boolean;
+    translator?: TranslatorFunction;
     onLinkClick: (path: string) => void;
     grandParentPath?: string;
 };
 
-export default function Dropdown({ menu, isOpen, onLinkClick, grandParentPath }: DropdownProps) {
+export default function Dropdown({ menu, isOpen, translator, onLinkClick, grandParentPath }: DropdownProps) {
     const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
     const toggleExpand = (item: string) => {
@@ -34,9 +37,9 @@ export default function Dropdown({ menu, isOpen, onLinkClick, grandParentPath }:
                 <Icon icon={menu.icon}/>
                 {isOpen && (
                     <div className="ui-dropdown__menu--title">
-                        <span className="ui-dropdown__menu--title-text">
+                        <Text tag="span" variant="medium" translator={translator} className="ui-dropdown__menu--title-text">
                           {menu.title}
-                        </span>
+                        </Text>
                         <Icon icon={expandedItem === menu.title ? 'chevron-up' : 'chevron-down'}/>
                     </div>
                 )}
@@ -62,12 +65,18 @@ export default function Dropdown({ menu, isOpen, onLinkClick, grandParentPath }:
                                     {isOpen ? (
                                         <>
                                             <Icon icon={child.icon} />
-                                            <span className="ui-dropdown__submenu--link-title">{child.title}</span>
+                                            <Text tag="span" name={child.name} variant="medium" className="ui-dropdown__submenu--link-title" translator={translator}>{child.title}</Text>
                                         </>
                                     ) : (
-                                        <span className="ui-dropdown__submenu--link-abbr" data-testid="ui-dropdown-submenu-link">
+                                        <Text
+                                            tag="span"
+                                            name={child.icon ? undefined : child.name}
+                                            variant="medium"
+                                            translator={translator}
+                                            className="ui-dropdown__submenu--link-abbr"
+                                            data-testid="ui-dropdown-submenu-link">
                                             { child.icon ? <Icon icon={child.icon} /> : abbrTitle(child.title)}
-                                        </span>
+                                        </Text>
                                     )}
                                 </div>
                             )}

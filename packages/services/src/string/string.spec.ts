@@ -22,7 +22,7 @@ import {
     replaceWords,
     type ReplaceWordsParam,
     validateText,
-    matchesRepeatWords
+    matchesRepeatWords, removePunctuationAndSpaces, restorePunctuationAtEnd
 } from './string';
 
 jest.mock('uuid');
@@ -518,6 +518,30 @@ describe('String function', () => {
             expect(matchesRepeatWords('house', customListRepeatWords)).toBeFalsy();
             expect(matchesRepeatWords('House', customListRepeatWords)).toBeTruthy();
             expect(matchesRepeatWords('Home', customListRepeatWords)).toBeFalsy();
+        });
+    });
+
+    describe('removePunctuationAndSpaces', () => {
+        it('Should remove all punctuation and spaces from a string', () => {
+            const text = 'Welcome, ';
+            const result = removePunctuationAndSpaces(text);
+            expect(result.cleaned).toEqual('Welcome');
+            expect(result.punctuations).toEqual([', ']);
+        });
+
+        it('Should retorn string when dont have punctuation.', () => {
+            const text = 'Welcome,';
+            const result = removePunctuationAndSpaces(text);
+            expect(result.cleaned).toEqual('Welcome');
+            expect(result.punctuations).toEqual([',']);
+        })
+    });
+
+    describe('restorePunctuationAtEnd', () => {
+        it('should restore punctuation at the end of the string', () => {
+            const text = 'Welcome';
+            const result = restorePunctuationAtEnd(text, [', ']);
+            expect(result).toEqual('Welcome, ');
         });
     });
 });

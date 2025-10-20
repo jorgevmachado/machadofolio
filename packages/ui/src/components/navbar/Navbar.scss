@@ -13,6 +13,7 @@
   background-color: var(--color-navbar-background);
   justify-content: space-between;
   &__left--logo {
+    color: var(--color-menu);
     font-size: var(--dimensions-relative-36);
     font-weight: var(--font-weight-bold);
   }
@@ -107,6 +108,7 @@
 }
 
 .navbar-welcome {
+  color: var(--color-menu);
   white-space: nowrap;
   overflow: visible;
   text-overflow: clip;

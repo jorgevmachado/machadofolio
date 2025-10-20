@@ -51,6 +51,7 @@
     "@chromatic-com/storybook": "^4.0.1",
     "@repo/business": "*",
     "@repo/ds": "*",
+    "@repo/i18n": "*",
     "@repo/eslint-config": "*",
     "@repo/jest": "*",
     "@repo/services": "*",

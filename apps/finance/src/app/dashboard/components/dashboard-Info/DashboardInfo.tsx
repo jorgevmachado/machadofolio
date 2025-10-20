@@ -1,5 +1,7 @@
 'use client'
-import React from 'react';
+import React, { useEffect } from 'react';
+
+import { useI18n } from '@repo/i18n';
 
 import { EGender } from '@repo/services';
 
@@ -22,25 +24,37 @@ export default function DashboardInfo({
                                           suppliers,
                                           totalPending,
                                       }: FinanceInfoProps) {
-    const treatTitle = (user: User) => {
-        const getLinkingWord = (gender: EGender) => {
-            switch (gender) {
-                case EGender.MALE:
-                    return 'do';
-                case EGender.FEMALE:
-                    return 'da';
-                default:
-                    return 'do(a)';
+    const { t, lang } = useI18n();
+    const [title, setTitle] = React.useState<string>('');
+    const treatTitle = (user: User, text: string, language: string) => {
+        const getLinkingWord = (gender: EGender, language: string) => {
+            if(language === 'pt-BR') {
+                switch (gender) {
+                    case EGender.MALE:
+                        return 'do';
+                    case EGender.FEMALE:
+                        return 'da';
+                    default:
+                        return 'do(a)';
+                }
             }
+            return 'of';
+
         }
-        const linkingWord = getLinkingWord(user.gender);
-        return `Finanças ${linkingWord} ${user.name}`;
+        const linkingWord = getLinkingWord(user.gender, language);
+        return `${text} ${linkingWord} ${user.name}`;
     }
+
+    useEffect(() => {
+        const text = t('title');
+        const newTitle = treatTitle(finance.user, text, lang);
+        setTitle(newTitle);
+    }, [t, lang]);
 
     return (
         <div className="finance-info" data-testid="finance-info">
             <header className="finance-info__header">
-                <Text tag="h1" variant="giant" color="primary-100">{treatTitle(finance.user)}</Text>
+                <Text tag="h1" variant="giant" color="primary-100">{title}</Text>
             </header>
             <div className="finance-info__content">
                 <section>

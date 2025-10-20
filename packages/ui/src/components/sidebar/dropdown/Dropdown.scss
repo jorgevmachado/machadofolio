@@ -18,6 +18,7 @@
       align-items: center;
       width: 100%;
       &-text {
+        color: var(--color-menu);
         margin-left: var(--dimensions-fixed-10);
       }
     }
@@ -39,6 +40,7 @@
         margin-left: var(--dimensions-fixed-10);
       }
       &-abbr {
+        color: var(--color-menu);
         font-size: var(--font-size-regular);
       }
       &:hover {

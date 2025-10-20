@@ -9,6 +9,11 @@ export type ReplaceWordsParam = Array<ReplaceWordParam>;
 
 export const linkingWords: Array<string> = ['de', 'da', 'do', 'das', 'dos'];
 
+type PunctuationMap = {
+    cleaned: string;
+    punctuations: Array<string>;
+}
+
 export function normalize(value: string): string {
  return value
      .normalize('NFD')
@@ -234,3 +239,24 @@ export function matchesRepeatWords(text: string, patterns: Array<string>): boole
         return text.trim() === pattern.trim();
     });
 }
+
+export function removePunctuationAndSpaces(text: string): PunctuationMap {
+    function helper(chars: string[], accCleaned: string, accPunctuations: Array<string>): PunctuationMap {
+        if (chars.length === 0) {
+            return { cleaned: accCleaned, punctuations: accPunctuations };
+        }
+        const [char, ...rest] = chars;
+        if (/[.,;:]/.test(char)) {
+            const spaces = rest.join('').match(/^( +)/)?.[0] ?? '';
+            const skip = spaces.length;
+            return helper(rest.slice(skip), accCleaned, [...accPunctuations, char + spaces]);
+        }
+        return helper(rest, accCleaned + char, accPunctuations);
+    }
+    return helper(Array.from(text), '', []);
+}
+
+export function restorePunctuationAtEnd(processed: string, punctuations: Array<string>): string {
+    return processed + punctuations.join('');
+}
+

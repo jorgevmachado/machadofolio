@@ -6,24 +6,28 @@ export const publicRoutes: Array<TRoute> = [
         key: 'sign-in',
         path: '/sign-in',
         type: 'public',
+        name: 'sign_in',
         title: 'Sign In',
     },
     {
         key: 'sign-up',
         path: '/sign-up',
         type: 'public',
+        name: 'sign_up',
         title: 'Sign Up',
     },
     {
         key: 'forgot-password',
         path: '/forgot-password',
         type: 'public',
+        name: 'forgot_password',
         title: 'Forgot Password',
     },
     {
         key: 'reset-password',
         path: '/reset-password',
         type: 'public',
+        name: 'reset_password',
         title: 'Reset Password',
     },
 ];
@@ -34,6 +38,7 @@ export const privateRoutes: Array<TRoute> = [
         icon: 'home',
         path: '/dashboard',
         type: 'private',
+        name: 'dashboard',
         title: 'Dashboard',
     },
     {
@@ -41,6 +46,7 @@ export const privateRoutes: Array<TRoute> = [
         icon: 'user',
         path: 'http://localhost:4001/profile?source=finance&redirectTo=http://localhost:4002/dashboard',
         type: 'private',
+        name: 'profile',
         title: 'Profile',
     },
     {
@@ -48,6 +54,7 @@ export const privateRoutes: Array<TRoute> = [
         icon: 'school',
         path: '/banks',
         type: 'private',
+        name: 'bank',
         title: 'Bank',
     },
     {
@@ -55,6 +62,7 @@ export const privateRoutes: Array<TRoute> = [
         icon: 'group',
         path: '/groups',
         type: 'private',
+        name: 'group',
         title: 'Group',
     },
     {
@@ -62,6 +70,7 @@ export const privateRoutes: Array<TRoute> = [
         icon: 'user-tie',
         path: '/suppliers',
         type: 'private',
+        name: 'supplier',
         title: 'Supplier',
         children: [
             {
@@ -69,6 +78,7 @@ export const privateRoutes: Array<TRoute> = [
                 icon: 'user-tie',
                 path: '',
                 type: 'private',
+                name: 'supplier',
                 title: 'Supplier',
             },
             {
@@ -76,6 +86,7 @@ export const privateRoutes: Array<TRoute> = [
                 path: '/types',
                 type: 'private',
                 icon: 'box',
+                name: 'supplier_type',
                 title: 'Supplier Type',
             },
         ],
@@ -85,6 +96,7 @@ export const privateRoutes: Array<TRoute> = [
         icon: 'wallet',
         path: '/bills',
         type: 'private',
+        name: 'bill',
         title: 'Bill',
     },
 ];

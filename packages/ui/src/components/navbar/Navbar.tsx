@@ -1,10 +1,13 @@
 import React from 'react';
 
-import { Button } from '@repo/ds';
+import { TranslatorFunction } from '@repo/i18n';
+
+import { Button, Text } from '@repo/ds';
 
 import { Internationalization, type InternationalizationProps } from './internationalization';
 
 import './Navbar.scss';
+
 
 type NavbarProps = {
     title: string;
@@ -13,14 +16,17 @@ type NavbarProps = {
         onClick: () => void;
     }
     userName?: string;
+    translator?: TranslatorFunction;
     internationalization?: InternationalizationProps;
 }
 
-export default function Navbar({ title, action, userName, internationalization }: NavbarProps) {
+export default function Navbar({ title, action, userName, translator, internationalization }: NavbarProps) {
     return (
         <nav className="ui-navbar" data-testid="ui-navbar">
             <div className="ui-navbar__left">
-                <span className="ui-navbar__left--logo">{title}</span>
+                <Text name="title" translator={translator} className="ui-navbar__left--logo">
+                    {title}
+                </Text>
             </div>
             <div className="ui-navbar__right">
                 <div className="ui-navbar__right--profile"
@@ -28,9 +34,9 @@ export default function Navbar({ title, action, userName, internationalization }
                     {userName
                         ? (
                             <>
-                                <span className="navbar-welcome">
+                                <Text className="navbar-welcome" translator={translator}>
                                     Welcome, <strong>{userName}</strong>
-                                </span>
+                                </Text>
                                 {internationalization && (
                                     <Internationalization {...internationalization}/>
                                 )}

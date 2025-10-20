@@ -172,7 +172,6 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         if(isRadioGroup) {
 
             if(onInput) {
-                console.log('# => value => ', value);
                 onInput({
                     name: name || '',
                     value: value || '',

@@ -36,10 +36,9 @@ export default function DashboardPage() {
             {!financeInfo
                 ? (
                     <div className="dashboard__empty">
-                        <Text tag="h1" variant="large">O Usuário <strong>{user.name}</strong> não possui finanças
-                            cadastradas.</Text>
+                        <Text tag="h1" variant="large">The user <strong>{user.name}</strong> does not have any registered finances.</Text>
                         <Button context="success" onClick={handleCreateFinance} disabled={isCreatingFinance}>
-                            {isCreatingFinance ? 'Criando...' : 'Criar Finanças'}
+                            {isCreatingFinance ? 'Creating...' : 'Create Finances'}
                         </Button>
                     </div>
                 ) : (

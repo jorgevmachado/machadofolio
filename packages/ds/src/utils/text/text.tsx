@@ -1,6 +1,17 @@
 import React from 'react';
 
+import { removePunctuationAndSpaces, restorePunctuationAtEnd } from '@repo/services';
+
+import { TranslatorFunction } from '@repo/i18n';
+
 import generateComponentId from '../generate-component-id';
+
+type TranslateTextParams = {
+    text?: string;
+    name?: string;
+    translator?: TranslatorFunction;
+}
+
 
 export function isReactNode(value: unknown): boolean {
     return (
@@ -70,4 +81,40 @@ function replaceTextBetween(texts: Array<string | React.JSX.Element>) {
         }
         return text;
     });
+}
+
+export function translateText({ text, translator, name } : TranslateTextParams) {
+    if(!translator) {
+        return text;
+    }
+    if(name) {
+        const currentText = translator(name);
+        return currentText !== name ? currentText : text;
+    }
+    if(text) {
+        const punctuationMap = removePunctuationAndSpaces(text);
+        const cleanText = punctuationMap.cleaned.toLowerCase();
+        const translatedText = translator(cleanText);
+        return translatedText !== cleanText ? restorePunctuationAtEnd(translatedText, punctuationMap.punctuations) : text;
+    }
+    return text;
+}
+
+export function translateValue(value: string | unknown, name?: string, translator?: TranslatorFunction, textsToTranslate?: Array<string>) {
+    if(translator) {
+        if(typeof value === 'string') {
+            return translateText({ text: value, translator, name });
+        }
+        if(Array.isArray(value) && value.length > 1) {
+            return value.map((v) => {
+                return typeof v === 'string' ? translateText({ text: v, translator }) : v;
+            });
+        }
+        if(Array.isArray(value) && value.length === 1) {
+            const currentValue =  typeof value[0] === 'string' ? value[0] : '';
+            return translateText({ text: currentValue, translator, name });
+        }
+        return value;
+    }
+    return value;
 }

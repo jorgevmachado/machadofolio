@@ -13,7 +13,7 @@ type PageProvidersProps = {
 
 export default function PageProviders({ children }: PageProvidersProps) {
  return (
-     <I18nProvider defaultLang="en">
+     <I18nProvider brand="finance" defaultLang="en">
          <AlertProvider style={{ marginTop: '3.2rem'}}>
              <LoadingProvider>
                  <PageLayout>
