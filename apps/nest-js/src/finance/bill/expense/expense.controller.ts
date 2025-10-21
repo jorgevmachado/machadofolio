@@ -20,7 +20,7 @@ import { UpdateExpenseDto } from './dto/update-expense.dto';
 export class ExpenseController {
     constructor(private readonly service: ExpenseService) {}
 
-    @Put('/expense/:param')
+    @Put('/:param/expense')
     updateExpense(
         @Param('param') param: string,
         @Body() updateExpenseDto: UpdateExpenseDto,
@@ -28,7 +28,7 @@ export class ExpenseController {
         return this.service.update(param, updateExpenseDto);
     }
 
-    @Get('/expense/:param')
+    @Get('/:param/expense')
     findOne(@Param('param') param: string) {
         return this.service.findOne({ value: param, withRelations: true });
     }
@@ -38,7 +38,7 @@ export class ExpenseController {
         return this.service.findAll({ parameters, withRelations: Boolean(parameters?.withRelations) });
     }
 
-    @Delete('/expense/:param')
+    @Delete('/:param/expense')
     remove(@Param('param') param: string) {
         return this.service.remove(param);
     }

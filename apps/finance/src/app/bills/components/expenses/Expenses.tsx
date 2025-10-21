@@ -43,7 +43,7 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
         show();
         try {
             expense
-                ? await expenseService.update(expense.id, update, bill?.id)
+                ? await expenseService.update(expense.id, update)
                 : await expenseService.create(create, bill?.id)
             addAlert({ type: 'success', message: `${t('expense')} ${expense ? t('updated') : t('saved')} ${t('successfully')}!` });
             await fetchBill(bill?.id ?? '');
