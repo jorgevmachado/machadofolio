@@ -36,9 +36,13 @@ export function fileBase64Validator({ value }: ValidatorParams): ValidatorMessag
     }
 }
 
+export async function urlToBlob(url: string): Promise<Blob> {
+    const res = await fetch(url);
+    return await res.blob();
+}
+
 export async function urlToBase64(url: string): Promise<string> {
- const res = await fetch(url);
- const blob = await res.blob();
+ const blob = await urlToBlob(url);
  return await new Promise<string>((resolve, reject) => {
   const reader = new FileReader();
   reader.onloadend = () => resolve(reader.result as string);

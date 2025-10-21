@@ -1,3 +1,12 @@
+const mockUrlToBlob = jest.fn()
+jest.mock('@repo/services', () => {
+    const originalModule = jest.requireActual('@repo/services') as Record<string, any>;
+    return {
+        ...originalModule,
+        urlToBlob: mockUrlToBlob,
+    }
+});
+
 jest.mock('../../../abstract', () => {
     class NestModuleAbstract {
         public pathUrl: string;
@@ -8,6 +17,7 @@ jest.mock('../../../abstract', () => {
         public getAll = jest.fn<(...args: any[]) => Promise<any>>();
         public getOne = jest.fn<(...args: any[]) => Promise<any>>();
         public delete = jest.fn<(...args: any[]) => Promise<any>>();
+        public update = jest.fn<(...args: any[]) => Promise<any>>();
         constructor(config: any) {
             this.pathUrl = config?.pathUrl;
             this.subPathUrl = config?.subPathUrl;
@@ -26,7 +36,7 @@ import {
     jest,
 } from '@jest/globals';
 
-import { EMonth } from '@repo/services';
+import { EMonth, ReplaceWordParam } from '@repo/services';
 
 import type { ICreateExpenseParams, IUpdateExpenseParams } from './types';
 import { EExpenseType } from './enum';
@@ -122,7 +132,6 @@ describe('Expense', () => {
         jest.resetModules();
     });
 
-
     describe('getAll', () => {
         it('should call get with correct URL and parameters for getAll', async () => {
             (expense.getAll as any).mockResolvedValue(mockEntityPaginate);
@@ -191,7 +200,7 @@ describe('Expense', () => {
 
     describe('update', () => {
         it('should call update with correct URL and parameters for update', async () => {
-            (expense.path as any).mockResolvedValue(mockEntity);
+            (expense.update as any).mockResolvedValue(mockEntity);
 
             const mockExpenseUpdateParams: IUpdateExpenseParams = {
                 ...mockEntity,
@@ -200,11 +209,9 @@ describe('Expense', () => {
                 supplier: mockEntity.supplier.id,
             };
 
-            const path = `finance/bill/${mockEntity.bill.id}/expense/${mockEntity.id}`;
-            const body = mockExpenseUpdateParams;
-            const result = await expense.update(mockEntity.id, mockExpenseUpdateParams, mockEntity.bill.id);
-            expect(expense.path).toHaveBeenCalledTimes(1);
-            expect(expense.path).toHaveBeenCalledWith(path, { body });
+            const result = await expense.update(mockEntity.id, mockExpenseUpdateParams);
+            expect(expense.update).toHaveBeenCalledTimes(1);
+            expect(expense.update).toHaveBeenCalledWith(mockEntity.id, mockExpenseUpdateParams);
             expect(result).toEqual(mockEntity);
         });
     });
@@ -226,24 +233,77 @@ describe('Expense', () => {
 
     describe('uploads', () => {
         it('Should call upload with correct URL and parameters for uploads', async () => {
+            mockUrlToBlob.mockImplementation((file) => {
+                return new Blob([file as string], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            });
             const mockFiles: Array<string> = [
                 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQACAgIACGo1==',
                 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQACAgIACGo2==',
                 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQACAgIACGo3=='
             ];
 
-            (expense.uploads as any).mockResolvedValue([mockEntity]);
+            (expense.post as any).mockResolvedValue([mockEntity]);
+
+            const path = `finance/bill/${mockEntity.bill.id}/expense/uploads`;
+
+            const paid: Array<boolean> = [true, true, true];
+            const months: Array<EMonth> = [EMonth.JANUARY, EMonth.FEBRUARY, EMonth.MARCH];
+            const replaceWords: Array<ReplaceWordParam> = [{
+                before: 'test',
+                after: 'Test'
+            }];
+            const repeatedWords: Array<string> = ['test'];
 
             const result = await expense.uploads(
                 mockEntity.bill.id,
                 {
-                    paid: [true, true, true],
+                    paid,
                     files: mockFiles,
-                    months: [EMonth.JANUARY, EMonth.FEBRUARY, EMonth.MARCH],
-                    replaceWords: undefined,
-                    repeatedWords: undefined,
+                    months,
+                    replaceWords,
+                    repeatedWords,
                 }
-            )
+            );
+
+            expect(expense.post).toHaveBeenCalledTimes(1);
+            // @ts-ignore
+            const calledFormData = expense.post.mock.calls[0][1].body;
+
+            const actualFields = {};
+            for (const [key, value] of calledFormData.entries()) {
+                if (!actualFields[key]) actualFields[key] = [];
+                actualFields[key].push(value);
+            }
+
+            expect(actualFields['paid[]']).toHaveLength(paid.length);
+            paid.forEach((item, idx) => {
+                expect(actualFields['paid[]'][idx]).toBe(String(item));
+            });
+
+            expect(actualFields['months[]']).toHaveLength(months.length);
+            months.forEach((item, idx) => {
+                expect(actualFields['months[]'][idx]).toBe(String(item));
+            });
+
+            expect(actualFields['files']).toHaveLength(mockFiles.length);
+            actualFields['files'].forEach((blob) => {
+                expect(blob).toBeInstanceOf(Blob);
+                expect(blob.type).toBe('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                expect(blob.size).toBeGreaterThan(0);
+            });
+
+            expect(actualFields['replaceWords[]']).toHaveLength(replaceWords.length);
+            expect(actualFields['replaceWords[]']).toEqual(["{\"before\":\"test\",\"after\":\"Test\"}"]);
+
+
+            expect(actualFields['repeatedWords[]']).toHaveLength(repeatedWords.length);
+            repeatedWords.forEach((item, idx) => {
+                expect(actualFields['repeatedWords[]'][idx]).toBe(String(item));
+            });
+
+            // @ts-ignore
+            expect(expense.post.mock.calls[0][0]).toBe(path);
+            expect(result).toEqual([mockEntity]);
         });
     });
 });

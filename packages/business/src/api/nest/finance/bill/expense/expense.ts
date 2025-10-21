@@ -1,4 +1,4 @@
-import { type ReplaceWordParam } from '@repo/services';
+import { type ReplaceWordParam, urlToBlob } from '@repo/services';
 
 import type { INestModuleConfig } from '../../../types';
 import { NestModuleAbstract } from '../../../abstract';
@@ -49,8 +49,7 @@ export class Expense extends NestModuleAbstract<IExpense, ICreateExpenseParams, 
                         for(let i = 0; i < list.length; i++) {
                             const file = list[i];
                             if(file.startsWith('data:')) {
-                                const base64Response = await fetch(file);
-                                const blob = await base64Response.blob();
+                                const blob = await urlToBlob(file);
                                 formData.append(`files`, blob, `upload.xlsx`);
                             }
                         }
@@ -76,9 +75,6 @@ export class Expense extends NestModuleAbstract<IExpense, ICreateExpenseParams, 
                             formData.append('repeatedWords[]', String(item));
                         });
                     }
-                    break;
-                default:
-                    formData.append(key, value as string);
                     break;
             }
         }
