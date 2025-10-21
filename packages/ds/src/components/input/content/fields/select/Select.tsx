@@ -47,12 +47,15 @@ export default function Select({
         if(!autoComplete) {
             return optionsList;
         }
+
         if(!selectedValue) {
             return optionsList;
         }
+
         if(filterFunction) {
             return optionsList.filter(opt => filterFunction(selectedValue, opt));
         }
+
         return optionsList.filter(opt => opt.label.toLowerCase().includes(selectedValue?.toLowerCase()));
     }, [optionsList, autoComplete, selectedValue, filterFunction]);
 
@@ -160,12 +163,9 @@ export default function Select({
         }
     }
 
-    const treatValue = (value: string) => {
-        if(autoComplete) {
-            const option = optionsList.find(opt => opt.value === value || opt.label === value);
-            return option ? option.label : value;
-        }
-        return value;
+    const treatValueAutoComplete = (value: string) => {
+        const option = optionsList.find(opt => opt.value === value || opt.label === value);
+        return option ? option.label : value;
     }
 
     const onClickFallback = (e: React.MouseEvent<HTMLLIElement>) => {
@@ -199,7 +199,7 @@ export default function Select({
                         <input
                             ref={inputRef}
                             type="text"
-                            value={treatValue(selectedValue)}
+                            value={treatValueAutoComplete(selectedValue)}
                             onFocus={() => setOpen(true)}
                             onChange={handleOnChange}
                             disabled={disabled}
@@ -234,7 +234,8 @@ export default function Select({
                                 role="option"
                                 onClick={onClickFallback}
                                 tabIndex={-1}
-                                className="ds-select__option ds-select__option--empty" >
+                                className="ds-select__option ds-select__option--empty"
+                                data-testid="ds-select-fallback">
                                 {fallbackAction ? fallbackLabel ?? 'Add' : 'No options'}
                             </li>
                         ) : filteredOptions.map((option, idx) => (
@@ -243,7 +244,7 @@ export default function Select({
                                 id={`${id}-option-${idx}`}
                                 className={joinClass([
                                     'ds-select__option',
-                                    selectedValue.toLowerCase() === option.label.toLowerCase() && 'ds-select__option--selected',
+                                    selectedValue === option.value && 'ds-select__option--selected',
                                     focused === idx && 'ds-select__option--focused',
                                 ])}
                                 role="option"

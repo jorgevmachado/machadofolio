@@ -119,10 +119,13 @@ export default function FileInput({
         if(targetFiles && targetFiles.length > 0) {
             for(let i = 0; i < targetFiles?.length; i++) {
                 const targetFile = targetFiles[i];
+
                 if(!targetFile) {
                     return;
                 }
                 const { previewFile: value, previewImage: preview, error } = await buildFilePreview(targetFile);
+                setPreview(preview);
+
                 const fileName = targetFile.name;
 
                 const file: FileProps = {
@@ -248,6 +251,7 @@ export default function FileInput({
 
                 {(filesName.length > 0 && showRemoveButton) && (
                     <Icon
+                        data-testid="ds-file-input-remove"
                         icon="trash"
                         color="error-100"
                         onClick={handleRemove}

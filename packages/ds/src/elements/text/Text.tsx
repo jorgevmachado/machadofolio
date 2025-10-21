@@ -60,10 +60,14 @@ export default function Text({
     useEffect(() => {
         const displayValue = (isReactNode(children) || isObject(children))
             ? children
-            : formattedText(children as string);
+            : (() => {
+                const formatted = formattedText(children as string);
+                return formatted !== undefined ? formatted : children;
+            })();
 
         if (translator) {
-            setValue(translateValue(displayValue, name, translator, textsToTranslate));
+            const translated = translateValue(displayValue, name, translator, textsToTranslate);
+            setValue(translated);
             return;
         }
         setValue(displayValue);
