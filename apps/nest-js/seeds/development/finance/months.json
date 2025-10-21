@@ -6617,7 +6617,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 12.9,
+    "value": 12.90,
     "label": "january",
     "expense": {
       "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
@@ -6649,7 +6649,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 12.9,
+    "value": 12.90,
     "label": "february",
     "expense": {
       "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
@@ -6681,7 +6681,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 12.9,
+    "value": 12.90,
     "label": "march",
     "expense": {
       "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
@@ -6713,7 +6713,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 12.9,
+    "value": 12.90,
     "label": "april",
     "expense": {
       "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
@@ -6745,7 +6745,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 12.9,
+    "value": 12.90,
     "label": "may",
     "expense": {
       "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
@@ -6777,7 +6777,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 12.9,
+    "value": 12.90,
     "label": "june",
     "expense": {
       "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
@@ -6809,7 +6809,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 12.9,
+    "value": 12.90,
     "label": "july",
     "expense": {
       "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
@@ -6841,7 +6841,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 12.9,
+    "value": 12.90,
     "label": "august",
     "expense": {
       "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
@@ -6873,7 +6873,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 12.9,
+    "value": 12.90,
     "label": "september",
     "expense": {
       "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
@@ -6905,7 +6905,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 12.9,
+    "value": 12.90,
     "label": "october",
     "expense": {
       "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
@@ -6937,7 +6937,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 12.9,
+    "value": 12.90,
     "label": "november",
     "expense": {
       "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
@@ -6969,7 +6969,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 12.9,
+    "value": 12.90,
     "label": "december",
     "expense": {
       "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",

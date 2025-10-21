@@ -22,6 +22,7 @@
   "registered_bills": "contas registradas",
   "registered_banks": "bancos registrados",
   "registered_groups": "grupos cadastrados",
+  "installment_number": "Número da parcela",
   "not_found_finance": "não possui nenhuma situação financeira registrada",
   "financial_overview": "Visão Geral Financeira",
   "no_banks_registered": "Nenhum banco cadastrado",

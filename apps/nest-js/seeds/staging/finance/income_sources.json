@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": "09856858-e47a-4d50-9244-172ad7e35595",
+    "name": "Job",
+    "name_code": "job",
+    "created_at": "2025-10-15T15:30:32.009Z",
+    "updated_at": "2025-10-15T15:30:32.009Z",
+    "deleted_at": null
+  }
+]

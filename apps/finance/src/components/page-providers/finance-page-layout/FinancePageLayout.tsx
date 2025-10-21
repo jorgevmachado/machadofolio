@@ -51,7 +51,7 @@ export default function FinancePageLayout({ children }: FinancePageLayoutProps) 
             navbarTitle="Finance"
             onLinkClick={handleLinkClick}
             isAuthenticated={Boolean(user)}
-            internationalization={{ lang, onChange: handleOnChangeLang }}
+            internationalization={{ lang, onChange: handleOnChangeLang, languageOptionsCode: ['en', 'pt-BR'] }}
         >{children}</Page>
     )
 }

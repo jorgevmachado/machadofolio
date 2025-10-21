@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { EMonth, MONTHS, ValidatorParams, convertToNumber } from '@repo/services';
+import { useI18n } from '@repo/i18n';
+
+import { EMonth, MONTHS, ValidatorParams, convertToNumber, toSnakeCase, snakeCaseToNormal } from '@repo/services';
 
 import { type CreateExpenseParams, EExpenseType, Expense, UpdateExpenseParams } from '@repo/business';
 
@@ -37,6 +39,7 @@ export default function Persist({
     expense,
     onSubmit,
 }: PersistProps) {
+    const { t } = useI18n();
     const isMounted = useRef(false);
     const router = useRouter();
 
@@ -260,6 +263,29 @@ export default function Persist({
         }
     }
 
+    const translatePlaceholder = (placeholder?: string) => {
+        if (!placeholder) {
+            return placeholder;
+        }
+
+        const translateWords: Array<{ before: string; after: string }> = [
+            ...MONTHS.map((month) => ({ before: `enter_a_${month}_value`, after: `enter_${month}_value` })),
+            { before: 'month', after: 'month' },
+            { before: 'enter_a', after: 'enter_a' },
+            { before: 'value', after: 'value' },
+            { before: 'choose_a', after: 'choose_a' },
+            { before: 'installment_number', after: 'installment_number' },
+            { before: 'supplier', after: 'supplier' },
+            { before: 'type', after: 'type' },
+        ];
+
+        const placeholderSnakeCase = toSnakeCase(placeholder);
+        const placeholderClean = translateWords.reduce((acc, word) =>
+            acc.replaceAll(word.before, t(word.after)), placeholderSnakeCase);
+
+        return snakeCaseToNormal(placeholderClean);
+    }
+
     useEffect(() => {
         if(!isMounted.current) {
             isMounted.current = true;
@@ -283,15 +309,17 @@ export default function Persist({
                             {show && input.label !== 'Paid' && (
                                 <Input
                                     {...input}
+                                    label={!input?.label ? undefined : t(input.label.toLowerCase())}
                                     onInput={handleOnInput}
                                     className={input.className ?? 'persist__row--item'}
                                     validator={(params) => handleValidator(input, params)}
+                                    placeholder={translatePlaceholder(input?.placeholder)}
                                     fallbackAction={fallbackAction}
                                 />
                             )}
                             {show && input.label === 'Paid' && (
                                 <Switch
-                                    label={input.label}
+                                    label={!input.label ? undefined : t(input.label.toLowerCase())}
                                     checked={switchChecked({ name: input.name, item: expense })}
                                     onChange={(_, checked ) => handleOnSwitch(checked, input.name)}
                                     className="persist__row--switch"

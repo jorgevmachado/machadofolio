@@ -44,7 +44,7 @@ export default function CalculationSummary({
                 key: 'paid',
                 label: allPaidLabel === 'All Paid' ? t('all_paid'): allPaidLabel,
                 value: {
-                    label: allPaid ? 'Yes' : 'No',
+                    label: allPaid ? t('yes') : t('no'),
                     color: allPaid ? 'success-80' : 'error-80'
                 }
             },

@@ -22,6 +22,7 @@
   "registered_bills": "registered bills",
   "registered_banks": "registered banks",
   "registered_groups": "registered groups",
+  "installment_number": "Installment Number",
   "not_found_finance": "does not have any registered finances",
   "financial_overview": "Financial Overview",
   "registered_expenses": "registered expenses",

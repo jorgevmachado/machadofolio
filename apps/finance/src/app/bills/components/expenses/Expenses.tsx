@@ -1,6 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 
+import { useI18n } from '@repo/i18n';
+
 import { MONTHS, truncateString } from '@repo/services';
 
 import { Bill, EBillType, Expense } from '@repo/business';
@@ -17,7 +19,6 @@ import CreditCard from './credit-card';
 
 import './Expenses.scss';
 
-
 type ExpensesProps = {
     bill: Bill;
 }
@@ -29,6 +30,7 @@ type OpenFormModalParams = {
 }
 
 export default function Expenses({ bill: billData }: ExpensesProps) {
+    const { t } = useI18n();
     const [calculatedExpenses, setCalculatedExpenses] = useState<Array<Expense>>([]);
     const [bill, setBill] = useState<Bill | undefined>(billData);
 
@@ -43,7 +45,7 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
             expense
                 ? await expenseService.update(expense.id, update, bill?.id)
                 : await expenseService.create(create, bill?.id)
-            addAlert({ type: 'success', message: `Expense ${expense ? 'updated' : 'saved'} successfully!` });
+            addAlert({ type: 'success', message: `${t('expense')} ${expense ? t('updated') : t('saved')} ${t('successfully')}!` });
             await fetchBill(bill?.id ?? '');
         } catch (error) {
             addAlert({
@@ -59,7 +61,7 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
     const handleOpenFormModal = ({ expense, parent, parents }: OpenFormModalParams) => {
         openModal({
             width: '799px',
-            title: `${expense ? 'Edit' : 'Create'} Expense`,
+            title: `${expense ? t('edit') : t('create')} ${t('expense')}`,
             body: (
                 <Persist
                     onClose={closeModal}
@@ -77,7 +79,7 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
 
     const generateHeaders = () => {
         const monthHeaders = MONTHS.map((month) => ({
-            text: truncateString(month, 3),
+            text: truncateString(t(month), 3),
             type: ETypeTableHeader.MONEY,
             value: month,
             conditionColor: {
@@ -87,7 +89,7 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
             },
         }));
         return [
-            { text: 'Supplier', value: 'supplier.name' },
+            { text: t('supplier'), value: 'supplier.name' },
             ...monthHeaders,
             { text: 'Total', value: 'total', type: ETypeTableHeader.MONEY },
         ];
@@ -103,7 +105,7 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
             const response = await billService.get(id);
             setBill(response);
         } catch (error) {
-            addAlert({ type: 'error', message: 'Error fetching Bill' });
+            addAlert({ type: 'error', message: t('error_fetching_bills')});
             console.error(error)
             throw error;
         } finally {

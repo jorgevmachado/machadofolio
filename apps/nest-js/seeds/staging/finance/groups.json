@@ -1,1 +1,58 @@
-[]
+[
+  {
+    "id": "dd3da3dc-24e3-43c9-a27b-b6b0a2184bf3",
+    "name": "Vera (Mãe)",
+    "finance": {
+      "id": "b30c1ea0-8bb5-436c-af73-93dd04f8e06a",
+      "created_at": "2025-10-11T21:45:32.029Z",
+      "updated_at": "2025-10-11T21:45:32.029Z",
+      "deleted_at": null
+    },
+    "name_code": "vera_mae",
+    "created_at": "2025-10-11T21:47:21.260Z",
+    "updated_at": "2025-10-11T21:47:21.260Z",
+    "deleted_at": null
+  },
+  {
+    "id": "491ccde6-82e5-4f58-8897-628a3a146a5d",
+    "name": "Residencial Monte Carlo",
+    "finance": {
+      "id": "b30c1ea0-8bb5-436c-af73-93dd04f8e06a",
+      "created_at": "2025-10-11T21:45:32.029Z",
+      "updated_at": "2025-10-11T21:45:32.029Z",
+      "deleted_at": null
+    },
+    "name_code": "residencial_monte_carlo",
+    "created_at": "2025-10-11T21:47:08.440Z",
+    "updated_at": "2025-10-11T21:47:08.440Z",
+    "deleted_at": null
+  },
+  {
+    "id": "f6364664-5fa7-461a-bd16-e758ed12149a",
+    "name": "Residencial Ingrid",
+    "finance": {
+      "id": "b30c1ea0-8bb5-436c-af73-93dd04f8e06a",
+      "created_at": "2025-10-11T21:45:32.029Z",
+      "updated_at": "2025-10-11T21:45:32.029Z",
+      "deleted_at": null
+    },
+    "name_code": "residencial_ingrid",
+    "created_at": "2025-10-11T21:46:59.358Z",
+    "updated_at": "2025-10-11T21:46:59.358Z",
+    "deleted_at": null
+  },
+  {
+    "id": "3b10492b-35cf-4a35-9af4-8af8525f9346",
+    "name": "Pessoal",
+    "finance": {
+      "id": "b30c1ea0-8bb5-436c-af73-93dd04f8e06a",
+      "created_at": "2025-10-11T21:45:32.029Z",
+      "updated_at": "2025-10-11T21:45:32.029Z",
+      "deleted_at": null
+    },
+    "name_code": "pessoal",
+    "created_at": "2025-10-11T21:46:38.044Z",
+    "updated_at": "2025-10-11T21:46:38.044Z",
+    "deleted_at": null
+  }
+]

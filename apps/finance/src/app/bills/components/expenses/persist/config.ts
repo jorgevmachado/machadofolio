@@ -195,7 +195,7 @@ export const GROUPS: Array<InputGroup> = [
             {
                 id: month,
                 show: false,
-                type: 'text' as InputGroupItem['type'],
+                type: 'money' as InputGroupItem['type'],
                 name: month,
                 label: capitalize(month),
                 fluid: true,

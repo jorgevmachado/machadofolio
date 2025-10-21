@@ -12,6 +12,7 @@ export type InternationalizationProps = {
     lang?: string;
     onChange?: (languageOption: LanguageOption) => void;
     languageOptions?: Array<LanguageOption>;
+    languageOptionsCode?: Array<string>;
     currentLanguageOptions?: (languageOptions: Array<LanguageOption>) => void;
 };
 
@@ -21,7 +22,7 @@ const LANGUAGES_DEFAULT: Array<LanguageOption> = [
     { code: 'es', label: 'Español', flag: '🇪🇸' },
 ];
 
-export default function Internationalization({ lang = 'en', onChange, languageOptions = LANGUAGES_DEFAULT, currentLanguageOptions }: InternationalizationProps) {
+export default function Internationalization({ lang = 'en', onChange, languageOptions = LANGUAGES_DEFAULT, languageOptionsCode, currentLanguageOptions }: InternationalizationProps) {
     const [language, setLanguage] = useState<string>(lang);
     const [languages, setLanguages] = useState<Array<LanguageOption>>(languageOptions);
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -50,6 +51,18 @@ export default function Internationalization({ lang = 'en', onChange, languageOp
             currentLanguageOptions(languages);
         }
     }, [currentLanguageOptions]);
+
+    useEffect(() => {
+        if(languageOptionsCode) {
+            if(languages.length > 0) {
+                const languageFiltered = languages.filter(lang => languageOptionsCode.includes(lang.code));
+                setLanguages(languageFiltered);
+                return;
+            }
+            const languagesFilteredWithoutLanguages = LANGUAGES_DEFAULT.filter(lang => languageOptionsCode.includes(lang.code));
+            setLanguages(languagesFilteredWithoutLanguages);
+        }
+    }, [languageOptionsCode]);
     return (
         <div className="ui-internationalization__wrapper">
             <button

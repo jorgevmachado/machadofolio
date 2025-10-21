@@ -45,7 +45,6 @@ export default function Accordion ({
     ]);
 
     const handleToggle = useCallback(() => {
-        console.log('handleToggle');
         if (!disabled) {
             toggleOpen();
         }
