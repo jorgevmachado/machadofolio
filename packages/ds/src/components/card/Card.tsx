@@ -1,22 +1,24 @@
 import React from 'react';
 
-type CardProps = {
+import { generateComponentId, joinClass } from '../../utils';
+
+import './Card.scss';
+
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   style?: React.CSSProperties;
   children: React.ReactNode;
   className?: string;
 }
 
-export default function Card({ children, className, style }: CardProps) {
+export default function Card({ id, children, className, style, ...props }: CardProps) {
+    const componentId = id ? id : generateComponentId('ds-card');
     return (
         <div
-            className={className}
-            style={{
-                background: '#fff',
-                borderRadius: '16px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                padding: '1.5rem',
-                ...style,
-            }}
+            {...props}
+            id={componentId}
+            style={style}
+            className={joinClass(['ds-card', className && className])}
+            data-testid="ds-card"
         >
             {children}
         </div>
