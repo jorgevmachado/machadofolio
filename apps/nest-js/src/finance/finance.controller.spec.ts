@@ -31,6 +31,7 @@ describe('FinanceController', () => {
             seeds: jest.fn(),
             basicSeeds: jest.fn(),
             create: jest.fn(),
+            getByUser: jest.fn(),
           },
         },
       ],
@@ -56,5 +57,41 @@ describe('FinanceController', () => {
           .mockResolvedValueOnce(mockEntity);
       expect(await controller.create(mockEntity.user)).toEqual(mockEntity);
     });
+  });
+
+  describe('getByUser', () => {
+      const responseExpected = {
+          finance: mockEntity,
+          groups: [],
+          bills: [],
+          banks: [],
+          suppliers: [],
+          supplierTypes: [],
+          expenses: [],
+          incomes: [],
+          incomeSources: [],
+          total: 0,
+          allPaid: false,
+          totalPaid: 0,
+          totalPending: 0,
+      }
+      it('should return finance by user ', async () => {
+          jest.spyOn(service, 'getByUser').mockResolvedValueOnce(responseExpected);
+          const result = await controller.find(mockEntity.user);
+          expect(result.finance).toEqual(responseExpected.finance);
+          expect(result.groups).toEqual(responseExpected.groups);
+          expect(result.bills).toEqual(responseExpected.bills);
+          expect(result.banks).toEqual(responseExpected.banks);
+          expect(result.suppliers).toEqual(responseExpected.suppliers);
+          expect(result.supplierTypes).toEqual(responseExpected.supplierTypes);
+          expect(result.expenses).toEqual(responseExpected.expenses);
+          expect(result.incomes).toEqual(responseExpected.incomes);
+          expect(result.incomeSources).toEqual(responseExpected.incomeSources);
+          expect(result.total).toEqual(responseExpected.total);
+          expect(result.allPaid).toEqual(responseExpected.allPaid);
+          expect(result.totalPaid).toEqual(responseExpected.totalPaid);
+          expect(result.totalPending).toEqual(responseExpected.totalPending);
+      })
+
   });
 });
