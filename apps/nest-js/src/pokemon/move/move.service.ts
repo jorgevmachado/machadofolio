@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { PokeApiService } from '@repo/business';
 
-import { Service } from '../../shared';
+import { SeedsGenerated, Service } from '../../shared';
 
 import { PokemonMove } from '../entities/move.entity';
 
@@ -59,7 +59,7 @@ export class PokemonMoveService extends Service<PokemonMove> {
         })
     }
 
-    async generateSeeds(withSeed: boolean, pokemonSeedsDir: string) {
+    async generateSeeds(withSeed: boolean, pokemonSeedsDir: string): Promise<SeedsGenerated<PokemonMove>> {
         console.log('# => pokemonSeedsDir => ', pokemonSeedsDir);
         if(!withSeed) {
             return {
@@ -73,7 +73,7 @@ export class PokemonMoveService extends Service<PokemonMove> {
         };
     }
 
-    async persistSeeds(withSeed?: boolean) {
+    async persistSeeds(withSeed?: boolean): Promise<SeedsGenerated<PokemonMove>> {
         if(!withSeed) {
             return {
                 list: [],

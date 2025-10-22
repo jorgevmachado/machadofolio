@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { Service } from '../../shared';
+import { SeedsGenerated, Service } from '../../shared';
 
 import { PokemonAbility } from '../entities/ability.entity';
 
@@ -59,7 +59,7 @@ export class PokemonAbilityService extends Service<PokemonAbility> {
         })
     }
 
-    async generateSeeds(withSeed: boolean, pokemonSeedsDir: string) {
+    async generateSeeds(withSeed: boolean, pokemonSeedsDir: string): Promise<SeedsGenerated<PokemonAbility>> {
         console.log('# => pokemonSeedsDir => ', pokemonSeedsDir);
         if(!withSeed) {
             return {
@@ -73,7 +73,7 @@ export class PokemonAbilityService extends Service<PokemonAbility> {
         };
     }
 
-    async persistSeeds(withSeed?: boolean) {
+    async persistSeeds(withSeed?: boolean): Promise<SeedsGenerated<PokemonAbility>> {
         if(!withSeed) {
             return {
                 list: [],

@@ -217,10 +217,7 @@ export class PokemonService extends Service<Pokemon> {
         result.type = await this.pokemonTypeService.generateSeeds(Boolean(seedsDto.move), pokemonSeedsDir);
         result.ability = await this.pokemonAbilityService.generateSeeds(Boolean(seedsDto.move), pokemonSeedsDir);
 
-        result.pokemon = {
-            list: [],
-            added: []
-        }
+        result.pokemon = await this.generateSeed(Boolean(seedsDto.pokemon), pokemonSeedsDir);
 
         return this.mapperPokemonSeedsResult(result);
     }
@@ -233,12 +230,36 @@ export class PokemonService extends Service<Pokemon> {
         result.type = await this.pokemonTypeService.persistSeeds(Boolean(seedsDto.move));
         result.ability = await this.pokemonAbilityService.persistSeeds(Boolean(seedsDto.move));
 
-        result.pokemon = {
-            list: [],
-            added: []
-        }
+        result.pokemon = await this.persistSeed(Boolean(seedsDto.pokemon));
 
         return this.mapperPokemonSeedsResult(result);
+    }
+
+    private async generateSeed(withSeed: boolean, pokemonSeedsDir: string): Promise<SeedsGenerated<Pokemon>>{
+        console.log('# => pokemonSeedsDir => ', pokemonSeedsDir);
+        if(!withSeed) {
+            return {
+                list: [],
+                added: [],
+            };
+        }
+        return {
+            list: [],
+            added: [],
+        }
+    }
+
+    private async persistSeed(withSeed: boolean): Promise<SeedsGenerated<Pokemon>>{
+        if(!withSeed) {
+            return {
+                list: [],
+                added: [],
+            };
+        }
+        return {
+            list: [],
+            added: [],
+        }
     }
 
     validatePokemonSeedsDto(createPokemonSeedsDto: CreatePokemonSeedsDto):CreatePokemonSeedsDto {
@@ -251,7 +272,7 @@ export class PokemonService extends Service<Pokemon> {
         return seedsDto;
     }
 
-    private mapperPokemonSeedsResult(generateSeeds: PokemonGenerateSeeds) {
+    private mapperPokemonSeedsResult(generateSeeds: PokemonGenerateSeeds): PokemonSeedsResult {
         const {
             type,
             move,
