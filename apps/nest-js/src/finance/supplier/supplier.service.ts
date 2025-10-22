@@ -139,7 +139,7 @@ export class SupplierService extends Service<Supplier> {
             production: SUPPLIER_LIST_PRODUCTION_JSON,
             development: SUPPLIER_LIST_DEVELOPMENT_JSON,
             withRelations: true,
-            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.type.name_code === item.type.name_code
+            filterGenerateEntityFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.type.name_code === item.type.name_code
         })
 
         return { suppliers, supplierTypes }
@@ -147,7 +147,7 @@ export class SupplierService extends Service<Supplier> {
 
     async persistSeeds(withSupplierType: boolean, withSupplier: boolean) {
         const supplierTypes = await this.supplierTypeService.persistSeeds(!withSupplierType && !withSupplier);
-        const suppliers = await this.persistEntitySeeds({
+        const suppliers = await this.seeder.persistEntity({
                 withSeed: withSupplier,
                 staging: SUPPLIER_LIST_STAGING_JSON,
                 production: SUPPLIER_LIST_PRODUCTION_JSON,

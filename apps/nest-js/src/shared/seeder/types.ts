@@ -36,3 +36,27 @@ export type SeedsResultItem = {
     list: number;
     added: number;
 }
+
+export interface SeedsGenerated<T> {
+    list: Array<T>;
+    added: Array<T>;
+}
+
+export interface PersistEntitySeedsParams<T> {
+    staging: unknown;
+    withSeed?: boolean;
+    production: unknown;
+    development: unknown;
+    withRelations?: boolean;
+    persistEntityFn?: (item: T) => T;
+}
+
+export interface GenerateEntitySeedsParams<T> {
+    staging: unknown;
+    seedsDir: string;
+    withSeed?: boolean;
+    production: unknown;
+    development: unknown;
+    withRelations?: boolean;
+    filterGenerateEntityFn: (json: T, item: T) => boolean;
+}

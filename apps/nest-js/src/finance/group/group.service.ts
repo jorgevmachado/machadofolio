@@ -98,13 +98,13 @@ export class GroupService extends Service<Group> {
             production: GROUP_LIST_PRODUCTION_JSON,
             development: GROUP_LIST_DEVELOPMENT_JSON,
             withRelations: true,
-            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code
+            filterGenerateEntityFn: (json, item) => json.name === item.name || json.name_code === item.name_code
 
         })
     }
 
     async persistSeeds(withSeed?: boolean) {
-        return await this.persistEntitySeeds({
+        return await this.seeder.persistEntity({
             withSeed,
             staging: GROUP_LIST_STAGING_JSON,
             production: GROUP_LIST_PRODUCTION_JSON,

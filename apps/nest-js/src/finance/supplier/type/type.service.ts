@@ -96,12 +96,12 @@ export class SupplierTypeService extends Service<SupplierType> {
           staging: SUPPLIER_TYPE_LIST_STAGING_JSON,
           production: SUPPLIER_TYPE_LIST_PRODUCTION_JSON,
           development: SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON,
-          filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code
+          filterGenerateEntityFn: (json, item) => json.name === item.name || json.name_code === item.name_code
       });
     }
 
     async persistSeeds(withoutSupplierType: boolean) {
-      return await this.persistEntitySeeds({
+      return await this.seeder.persistEntity({
           withSeed: !withoutSupplierType,
           staging: SUPPLIER_TYPE_LIST_STAGING_JSON,
           production: SUPPLIER_TYPE_LIST_PRODUCTION_JSON,

@@ -91,12 +91,12 @@ export class IncomeSourceService extends Service<IncomeSource>{
             withSeed: !withoutIncomeSource,
             production: INCOME_SOURCE_LIST_PRODUCTION_JSON,
             development: INCOME_SOURCE_LIST_DEVELOPMENT_JSON,
-            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code
+            filterGenerateEntityFn: (json, item) => json.name === item.name || json.name_code === item.name_code
         });
     }
 
     async persistSeeds(withoutSeed: boolean) {
-        return await this.persistEntitySeeds({
+        return await this.seeder.persistEntity({
             withSeed: !withoutSeed,
             staging: INCOME_SOURCE_LIST_STAGING_JSON,
             production: INCOME_SOURCE_LIST_PRODUCTION_JSON,

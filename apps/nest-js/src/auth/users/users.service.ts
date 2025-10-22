@@ -200,12 +200,12 @@ export class UsersService extends Service<User>{
             production: USER_LIST_PRODUCTION_JSON,
             development: USER_LIST_DEVELOPMENT_JSON,
             withRelations: true,
-            filterGenerateEntitySeedsFn: (json, item) => json.cpf === item.cpf || json.email === item.email,
+            filterGenerateEntityFn: (json, item) => json.cpf === item.cpf || json.email === item.email,
         });
     }
 
     async persistSeed(withSeed: boolean) {
-        return await this.persistEntitySeeds({
+        return await this.seeder.persistEntity({
             withSeed,
             staging: USER_LIST_STAGING_JSON,
             production: USER_LIST_PRODUCTION_JSON,

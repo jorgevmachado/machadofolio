@@ -1,10 +1,6 @@
-import { Buffer } from 'buffer';
-
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
-import { Spreadsheet } from '@repo/services';
 
 import { Finance as FinanceConstructor } from '@repo/business';
 
@@ -24,7 +20,7 @@ import { Bill } from './entities/bill.entity';
 import { BillService } from './bill/bill.service';
 import { Expense } from './entities/expense.entity';
 import { Finance } from './entities/finance.entity';
-import { FinanceSeedsParams, FinanceSeedsResult } from './types';
+import { FinanceSeedsResult } from './types';
 import { Group } from './entities/group.entity';
 import { GroupService } from './group/group.service';
 import { Income } from './entities/incomes.entity';
@@ -60,39 +56,40 @@ export class FinanceService extends Service<Finance> {
             list: [],
             added: []
         },
-        months:{
+        months: {
             list: [],
             added: []
         },
-        groups:{
+        groups: {
             list: [],
             added: []
         },
-        incomes:{
+        incomes: {
             list: [],
             added: []
         },
-        expenses:{
+        expenses: {
             list: [],
             added: []
         },
-        finances:{
+        finances: {
             list: [],
             added: []
         },
-        suppliers:{
+        suppliers: {
             list: [],
             added: []
         },
-        supplierTypes:{
+        supplierTypes: {
             list: [],
             added: []
         },
-        incomeSources:{
+        incomeSources: {
             list: [],
             added: []
         }
     }
+
     constructor(
         @InjectRepository(Finance)
         protected repository: Repository<Finance>,
@@ -101,7 +98,7 @@ export class FinanceService extends Service<Finance> {
         protected readonly supplierService: SupplierService,
         protected readonly billService: BillService,
         protected readonly incomeService: IncomeService,
-        protected readonly  monthService: MonthService,
+        protected readonly monthService: MonthService,
     ) {
         super('finances', ['bills', 'groups', 'bills.expenses'], repository);
     }
@@ -177,7 +174,7 @@ export class FinanceService extends Service<Finance> {
             production: FINANCE_LIST_PRODUCTION_JSON,
             development: FINANCE_LIST_DEVELOPMENT_JSON,
             withRelations: true,
-            filterGenerateEntitySeedsFn: (json, item) => json.id === item.id || json.bills === item.bills || json.groups === item.groups
+            filterGenerateEntityFn: (json, item) => json.id === item.id || json.bills === item.bills || json.groups === item.groups
         });
 
         const {
@@ -188,11 +185,11 @@ export class FinanceService extends Service<Finance> {
         result.incomes = incomes;
         result.incomeSources = incomeSources;
 
-        if(incomeMonths.length > 0) {
+        if (incomeMonths.length > 0) {
             result.months.list.push(...incomeMonths);
         }
 
-        result.groups =  await this.groupService.generateSeeds(Boolean(seedsDto.group), financeSeedsDir);
+        result.groups = await this.groupService.generateSeeds(Boolean(seedsDto.group), financeSeedsDir);
 
         const {
             bills,
@@ -203,7 +200,7 @@ export class FinanceService extends Service<Finance> {
         result.bills = bills;
         result.expenses = expenses;
 
-        if(expenseMonths.length > 0) {
+        if (expenseMonths.length > 0) {
             result.months.list.push(...expenseMonths);
         }
 
@@ -225,19 +222,19 @@ export class FinanceService extends Service<Finance> {
         result.suppliers = suppliers;
         result.supplierTypes = supplierTypes
 
-        result.finances = await this.persistEntitySeeds({
+        result.finances = await this.seeder.persistEntity({
             withSeed: seedsDto.finance,
             staging: FINANCE_LIST_STAGING_JSON,
             production: FINANCE_LIST_PRODUCTION_JSON,
             development: FINANCE_LIST_DEVELOPMENT_JSON,
-            persistEntitySeedsFn: (item) => ({
+            persistEntityFn: (item) => ({
                 ...item,
                 bills: undefined,
                 groups: undefined,
             })
         });
 
-        result.groups =  await this.groupService.persistSeeds(seedsDto?.group);
+        result.groups = await this.groupService.persistSeeds(seedsDto?.group);
 
         const {
             months: incomeMonths,
@@ -247,7 +244,7 @@ export class FinanceService extends Service<Finance> {
         result.incomes = incomes;
         result.incomeSources = incomeSources;
 
-        if(incomeMonths.length > 0) {
+        if (incomeMonths.length > 0) {
             result.months.list.push(...incomeMonths);
         }
 
@@ -260,7 +257,7 @@ export class FinanceService extends Service<Finance> {
         result.bills = bills;
         result.expenses = expenses;
 
-        if(expenseMonths.length > 0) {
+        if (expenseMonths.length > 0) {
             result.months.list.push(...expenseMonths);
         }
 
@@ -271,7 +268,7 @@ export class FinanceService extends Service<Finance> {
 
     private validateFinanceSeedsDto(createFinanceSeedsDto: CreateFinanceSeedsDto) {
         const seedsDto = { ...createFinanceSeedsDto };
-        if(createFinanceSeedsDto.income) {
+        if (createFinanceSeedsDto.income) {
             seedsDto.finance = true;
             seedsDto.incomeSource = true;
         }
@@ -324,7 +321,7 @@ export class FinanceService extends Service<Finance> {
                 list: groups.list.length,
                 added: groups.added.length
             },
-            months: {list: months.list.length, added: months.added.length},
+            months: { list: months.list.length, added: months.added.length },
             income: {
                 list: incomes.list.length,
                 added: incomes.added.length

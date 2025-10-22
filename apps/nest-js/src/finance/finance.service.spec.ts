@@ -45,12 +45,13 @@ jest.mock('../shared', () => {
             createDirectory: jest.fn(),
             getSeedsDirectory: jest.fn(),
         };
-        persistEntitySeeds = jest.fn();
         generateEntitySeeds = jest.fn();
         seeder = {
             entities: jest.fn(),
             executeSeed: jest.fn(),
             currentSeeds: jest.fn(),
+            persistEntity: jest.fn(),
+            generateEntity: jest.fn(),
         };
     }
 
@@ -380,7 +381,7 @@ describe('FinanceService', () => {
                 suppliers: financeGenerateSeeds.suppliers,
                 supplierTypes: financeGenerateSeeds.supplierTypes
             });
-            jest.spyOn(service, 'persistEntitySeeds').mockResolvedValueOnce(financeGenerateSeeds.finances);
+            jest.spyOn(service.seeder, 'persistEntity').mockResolvedValueOnce(financeGenerateSeeds.finances);
             jest.spyOn(incomeService, 'persistSeeds').mockResolvedValueOnce({
                 months: [mockIncomeMonthEntity],
                 incomes: financeGenerateSeeds.incomes,

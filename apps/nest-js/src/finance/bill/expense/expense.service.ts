@@ -338,7 +338,7 @@ export class ExpenseService extends Service<Expense> {
             production: EXPENSE_LIST_PRODUCTION_JSON,
             development: EXPENSE_LIST_DEVELOPMENT_JSON,
             withRelations: true,
-            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code,
+            filterGenerateEntityFn: (json, item) => json.name === item.name || json.name_code === item.name_code,
         });
 
         return {
@@ -348,7 +348,7 @@ export class ExpenseService extends Service<Expense> {
     }
 
     async persistSeeds(withSeed: boolean) {
-        const expenses = await this.persistEntitySeeds({
+        const expenses = await this.seeder.persistEntity({
             withSeed,
             staging: EXPENSE_LIST_STAGING_JSON,
             production: EXPENSE_LIST_PRODUCTION_JSON,

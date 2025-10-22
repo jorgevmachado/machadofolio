@@ -199,14 +199,14 @@ export class BillService extends Service<Bill> {
             production: BILL_LIST_PRODUCTION_JSON,
             development: BILL_LIST_DEVELOPMENT_JSON,
             withRelations: true,
-            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.expenses === item.expenses
+            filterGenerateEntityFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.expenses === item.expenses
         })
 
         return { bills, months, expenses }
     }
 
     async persistSeeds(withBill: boolean, withExpense: boolean) {
-        const bills = await this.persistEntitySeeds({
+        const bills = await this.seeder.persistEntity({
             withSeed: !(!withBill && !withExpense),
             staging: BILL_LIST_STAGING_JSON,
             production: BILL_LIST_PRODUCTION_JSON,

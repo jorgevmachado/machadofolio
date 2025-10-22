@@ -73,12 +73,12 @@ export class BankService extends Service<Bank> {
           staging: BANK_LIST_STAGING_JSON,
           production: BANK_LIST_PRODUCTION_JSON,
           development: BANK_LIST_DEVELOPMENT_JSON,
-          filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code
+          filterGenerateEntityFn: (json, item) => json.name === item.name || json.name_code === item.name_code
       });
     }
 
     async persistSeeds(withSeed?: boolean) {
-      return await this.persistEntitySeeds({
+      return await this.seeder.persistEntity({
           withSeed,
           staging: BANK_LIST_STAGING_JSON,
           production: BANK_LIST_PRODUCTION_JSON,

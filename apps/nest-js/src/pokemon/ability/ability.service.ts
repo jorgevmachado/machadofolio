@@ -2,6 +2,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
+import POKEMON_ABILITY_LIST_DEVELOPMENT_JSON from '../../../seeds/development/pokemon/abilities.json';
+import POKEMON_ABILITY_LIST_STAGING_JSON from '../../../seeds/staging/pokemon/abilities.json';
+import POKEMON_ABILITY_LIST_PRODUCTION_JSON from '../../../seeds/production/pokemon/abilities.json';
+
 import { SeedsGenerated, Service } from '../../shared';
 
 import { PokemonAbility } from '../entities/ability.entity';
@@ -60,30 +64,23 @@ export class PokemonAbilityService extends Service<PokemonAbility> {
     }
 
     async generateSeeds(withSeed: boolean, pokemonSeedsDir: string): Promise<SeedsGenerated<PokemonAbility>> {
-        console.log('# => pokemonSeedsDir => ', pokemonSeedsDir);
-        if(!withSeed) {
-            return {
-                list: [],
-                added: [],
-            };
-        }
-        return {
-            list: [],
-            added: [],
-        };
+        return await this.generateEntitySeeds({
+            withSeed,
+            seedsDir: pokemonSeedsDir,
+            staging: POKEMON_ABILITY_LIST_STAGING_JSON,
+            production: POKEMON_ABILITY_LIST_PRODUCTION_JSON,
+            development: POKEMON_ABILITY_LIST_DEVELOPMENT_JSON,
+            filterGenerateEntityFn: (json, item) => json.order === item.order
+        });
     }
 
     async persistSeeds(withSeed?: boolean): Promise<SeedsGenerated<PokemonAbility>> {
-        if(!withSeed) {
-            return {
-                list: [],
-                added: [],
-            };
-        }
-        return {
-            list: [],
-            added: [],
-        };
+        return await this.seeder.persistEntity({
+            withSeed,
+            staging: POKEMON_ABILITY_LIST_STAGING_JSON,
+            production: POKEMON_ABILITY_LIST_PRODUCTION_JSON,
+            development: POKEMON_ABILITY_LIST_DEVELOPMENT_JSON,
+        });
     }
 }
 

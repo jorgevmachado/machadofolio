@@ -105,6 +105,12 @@ describe('service', () => {
         });
     });
 
+    describe('env', () => {
+        it('should return env value', () => {
+            expect(service.env).toEqual('development');
+        });
+    });
+
     describe('fileModule', () => {
         it('should initialize fileModule module.', () => {
             expect(File).toBeCalledTimes(1);
@@ -115,6 +121,7 @@ describe('service', () => {
         it('should initialize seederModule module.', () => {
             expect(Seeder).toBeCalledTimes(1);
             expect(Seeder).toBeCalledWith(
+                'development',
                 'mockAlias',
                 ['relation1', 'relation2'],
                 mockRepository,
@@ -275,109 +282,43 @@ describe('service', () => {
         });
     });
 
-    describe('getListJson', () => {
-        it('should return a list json of development with default env', () => {
-            const result = service.getListJson(getListJsonParams);
-            expect(result).toEqual(getListJsonParams.development);
-        });
-
-        it('should return a list json of development', () => {
-            const result = service.getListJson({
-                ...getListJsonParams,
-                env: 'development',
-            });
-            expect(result).toEqual(getListJsonParams.development);
-        });
-
-        it('should return a list json of staging', () => {
-            const result = service.getListJson({
-                ...getListJsonParams,
-                env: 'staging',
-            });
-            expect(result).toEqual(getListJsonParams.staging);
-        });
-
-        it('should return a list json of production', () => {
-            const result = service.getListJson({
-                ...getListJsonParams,
-                env: 'production',
-            });
-            expect(result).toEqual(getListJsonParams.production);
-        });
-
-    });
-
-    describe('persistEntitySeeds', () => {
-        it('should return empty when received boolean flag withSeed equal false', async () => {
-            const result = await service.persistEntitySeeds({...getListJsonParams, withSeed: false});
-            expect(result).toEqual({ list: [], added: []});
-        });
-
-        it('should persist entity seeds', async () => {
-            jest.spyOn(service, 'findAll').mockResolvedValueOnce([]);
-            jest.spyOn(service, 'getListJson').mockReturnValue([entity]);
-            jest.spyOn(service, 'findOne').mockResolvedValueOnce(null);
-            // @ts-ignore
-            jest.spyOn(mockRepository, 'insert').mockResolvedValueOnce(entity);
-            const result = await service.persistEntitySeeds({
-                ...getListJsonParams,
-                withSeed: true,
-                withRelations: true,
-            });
-            expect(result).toEqual({ list: [entity], added: [entity]});
-        });
-
-        it('should persist entity seeds with persistEntitySeedsFn', async () => {
-            jest.spyOn(service, 'findAll').mockResolvedValueOnce([]);
-            jest.spyOn(service, 'getListJson').mockReturnValue([entity]);
-            jest.spyOn(service, 'findOne').mockResolvedValueOnce(null);
-            // @ts-ignore
-            jest.spyOn(mockRepository, 'insert').mockResolvedValueOnce(entity);
-            const result = await service.persistEntitySeeds({
-                ...getListJsonParams,
-                withSeed: true,
-                withRelations: true,
-                persistEntitySeedsFn: (json) => json,
-            });
-            expect(result).toEqual({ list: [entity], added: [entity]});
-        });
-    });
-
     describe('generateEntitySeeds', () => {
         it('should return empty when received boolean flag withSeed equal false', async () => {
+            const expected = {list: [], added: []};
+            jest.spyOn(service.seeder, 'generateEntity').mockResolvedValueOnce(expected);
             const result = await service.generateEntitySeeds({
                 ...getListJsonParams,
                 seedsDir: 'dir',
                 withSeed: false,
-                filterGenerateEntitySeedsFn: () => true,
+                filterGenerateEntityFn: () => true,
             });
-            expect(result).toEqual({ list: [], added: []});
+            expect(result).toEqual(expected);
         });
 
         it('should added empty when dont generate seeds', async () => {
-            jest.spyOn(service, 'findAll').mockResolvedValueOnce([]);
-            jest.spyOn(service, 'getListJson').mockReturnValue([entity]);
+            const expected = { list: [entity], added: [] };
+            jest.spyOn(service.seeder, 'generateEntity').mockResolvedValueOnce(expected);
 
             const result = await service.generateEntitySeeds({
                 ...getListJsonParams,
                 seedsDir: 'dir',
                 withSeed: true,
-                filterGenerateEntitySeedsFn: () => false,
+                filterGenerateEntityFn: () => false,
             });
-            expect(result).toEqual({ list: [entity], added: []});
+            expect(result).toEqual(expected);
         });
 
         it('should generate seeds', async () => {
-            jest.spyOn(service, 'findAll').mockResolvedValueOnce([entity]);
-            jest.spyOn(service, 'getListJson').mockReturnValue([entity]);
+            const expected = { list: [entity, entity], added: [entity]};
+            jest.spyOn(service.seeder, 'generateEntity').mockResolvedValueOnce(expected);
 
             const result = await service.generateEntitySeeds({
                 ...getListJsonParams,
                 seedsDir: 'dir',
                 withSeed: true,
-                filterGenerateEntitySeedsFn: () => false,
+                filterGenerateEntityFn: () => false,
             });
-            expect(result).toEqual({ list: [entity, entity], added: [entity]});
+            expect(result).toEqual(expected);
         });
 
 
