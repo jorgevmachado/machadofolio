@@ -1,10 +1,10 @@
 "use client"
-import React, { useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useRef } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { useI18n } from '@repo/i18n';
 
-import { Page, useUser, LanguageOption } from '@repo/ui';
+import { Page, useUser, LanguageOption, useLoading } from '@repo/ui';
 
 import { privateRoutes } from '../../../routes';
 
@@ -17,6 +17,12 @@ type FinancePageLayoutProps = {
 
 export default function FinancePageLayout({ children }: FinancePageLayoutProps) {
     const router = useRouter();
+    const pathname = usePathname();
+
+    const { show, hide } = useLoading();
+
+    const pendingPath = useRef<string | null>(null);
+
     const { user } = useUser();
     const { financeInfo } = useFinance();
     const { lang, setLanguage, t } = useI18n();
@@ -28,20 +34,29 @@ export default function FinancePageLayout({ children }: FinancePageLayoutProps) 
         return privateRoutes.filter((item) => item.key === 'dashboard' || item.key === 'profile');
     }
 
-    const handleLinkClick = useCallback(
-        (path: string) => {
-            if (path === '/logout') {
-                removeAccessToken();
-                return router.push('/');
+    const handleLinkClick = (path: string) => {
+            if(path !== pathname) {
+                const isPathLogout = path === '/logout';
+                const currentPath =  isPathLogout ? '/' : path;
+                if(isPathLogout) {
+                    removeAccessToken();
+                }
+                show({ type: 'bar', size: 2, context: 'secondary' });
+                pendingPath.current = currentPath;
+                router.push(currentPath);
             }
-            router.push(path);
-        },
-        [router],
-    );
+        };
 
     const handleOnChangeLang = (languageOption: LanguageOption) => {
         setLanguage(languageOption.code);
     }
+
+    useEffect(() => {
+        if(pendingPath.current && pathname === pendingPath.current) {
+            hide();
+            pendingPath.current = null;
+        }
+    }, [pathname]);
 
     return (
         <Page
