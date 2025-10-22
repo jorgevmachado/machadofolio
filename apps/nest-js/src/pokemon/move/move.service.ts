@@ -58,4 +58,31 @@ export class PokemonMoveService extends Service<PokemonMove> {
             createdEntityFn: async (item) => item
         })
     }
+
+    async generateSeeds(withSeed: boolean, pokemonSeedsDir: string) {
+        console.log('# => pokemonSeedsDir => ', pokemonSeedsDir);
+        if(!withSeed) {
+            return {
+                list: [],
+                added: [],
+            };
+        }
+        return {
+            list: [],
+            added: [],
+        };
+    }
+
+    async persistSeeds(withSeed?: boolean) {
+        if(!withSeed) {
+            return {
+                list: [],
+                added: [],
+            };
+        }
+        return {
+            list: [],
+            added: [],
+        };
+    }
 }

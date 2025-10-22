@@ -1,4 +1,4 @@
-import { type PokemonSeederParams } from './pokemon/types';
+import { type PokemonSeedsResult } from './pokemon/types';
 
 
 jest.mock('./auth/auth.service', () => {
@@ -67,8 +67,7 @@ import { PokemonService } from './pokemon/pokemon.service';
 import { type CreateFinanceSeedsDto } from './finance/dto/create-finance-seeds.dto';
 import { type CreatePokemonSeedsDto } from './pokemon/dto/create-pokemon-seeds.dto';
 import { type CreateSeedDto } from './dto/create-seed.dto';
-import { type FinanceSeederParams } from './finance/types';
-import { type Income } from './finance/entities/incomes.entity';
+import { type FinanceSeedsResult } from './finance/types';
 
 describe('AppService', () => {
     let service: AppService;
@@ -76,17 +75,31 @@ describe('AppService', () => {
     let financeService: FinanceService;
     let pokemonService: PokemonService;
 
-    const financeSeederParams: FinanceSeederParams = {
-        billListJson: [BILL_MOCK],
-        bankListJson: [BANK_MOCK],
-        groupListJson: [GROUP_MOCK],
-        financeListJson: [FINANCE_MOCK],
-        expenseListJson: [EXPENSE_MOCK],
-        supplierListJson: [SUPPLIER_MOCK],
-        incomeListJson: [INCOME_MOCK],
-        incomeSourceListJson: [INCOME_SOURCE_MOCK],
-        supplierTypeListJson: [SUPPLIER_TYPE_MOCK],
-    };
+    const financeSeedsResult: FinanceSeedsResult = {
+        bank: { list: 1, added: 1 },
+        bill: { list: 1, added: 1 },
+        group: { list: 1, added: 1 },
+        months: { list: 1, added: 1 },
+        income: { list: 1, added: 1 },
+        expense: { list: 1, added: 1 },
+        finance: { list: 1, added: 1 },
+        supplier: { list: 1, added: 1 },
+        incomeSource: { list: 1, added: 1 },
+        supplierType: { list: 1, added: 1 },
+    }
+
+    const pokemonSeedsResult: PokemonSeedsResult = {
+        move: { list: 1, added: 1 },
+        type: { list: 1, added: 1 },
+        ability: { list: 1, added: 1 },
+        pokemon: { list: 1, added: 1 },
+    }
+
+    const mockSeedsResult = {
+        auth: { list: 1, added: 1 },
+        finance: financeSeedsResult,
+        pokemon: pokemonSeedsResult,
+    }
 
     const createFinanceSeedsDto: CreateFinanceSeedsDto = {
         bank: true,
@@ -100,13 +113,6 @@ describe('AppService', () => {
         supplierType: true,
     };
 
-    const pokemonSeederParams: PokemonSeederParams = {
-        listJson: [POKEMON_MOCK],
-        moveListJson: [POKEMON_MOVE_MOCK],
-        typeListJson: [POKEMON_TYPE_MOCK],
-        abilityListJson: [POKEMON_ABILITY_MOCK],
-    };
-
     const createPokemonSeedsDto:CreatePokemonSeedsDto = {
         move: true,
         type: true,
@@ -115,9 +121,9 @@ describe('AppService', () => {
     };
 
     const createSeedDto:CreateSeedDto = {
-         auth: true,
-         finance: createFinanceSeedsDto,
-         pokemon: createPokemonSeedsDto,
+        auth: true,
+        finance: createFinanceSeedsDto,
+        pokemon: createPokemonSeedsDto,
     }
 
     beforeEach(async () => {
@@ -127,20 +133,22 @@ describe('AppService', () => {
                 {
                     provide: AuthService,
                     useValue: {
-                        seed: jest.fn(),
-                        seeds: jest.fn(),
+                        persistSeed: jest.fn(),
+                        generateSeed: jest.fn(),
                     }
                 },
                 {
                     provide: FinanceService,
                     useValue: {
-                        seeds: jest.fn(),
+                        persistSeeds: jest.fn(),
+                        generateSeeds: jest.fn(),
                     }
                 },
                 {
                     provide: PokemonService,
                     useValue: {
-                        seeds: jest.fn(),
+                        persistSeeds: jest.fn(),
+                        generateSeeds: jest.fn(),
                     }
                 },
             ]
@@ -158,5 +166,83 @@ describe('AppService', () => {
         expect(pokemonService).toBeDefined();
     });
 
-    describe('privates', () => {});
+    describe('generateSeeds', () => {
+        it('should return message when dont has any param to generate seed', async () => {
+            jest.spyOn(service, 'hasAnyParamToGenerateSeed' as any).mockReturnValue(false);
+            expect(await service.generateSeeds(createSeedDto)).toEqual({ message: 'No data was selected to generate the Seed.' });
+        });
+
+        it('should generate seeds', async () => {
+            jest.spyOn(service, 'hasAnyParamToGenerateSeed' as any).mockReturnValue(true);
+            jest.spyOn(authService, 'generateSeed').mockResolvedValueOnce({
+                list: [USER_MOCK],
+                added: [USER_MOCK],
+            });
+            jest.spyOn(financeService, 'generateSeeds').mockResolvedValueOnce(financeSeedsResult);
+            jest.spyOn(pokemonService, 'generateSeeds').mockResolvedValueOnce(pokemonSeedsResult);
+            expect(await service.generateSeeds(createSeedDto)).toEqual({
+                ...mockSeedsResult,
+                message: 'Seed Generate Successfully'
+            });
+        });
+    });
+
+    describe('persistSeeds', () => {
+        it('should return message when dont has any param to persist seed', async () => {
+            jest.spyOn(service, 'hasAnyParamToGenerateSeed' as any).mockReturnValue(false);
+            expect(await service.persistSeeds(createSeedDto)).toEqual({ message: 'No data was selected to persist the Seed.' });
+        });
+
+        it('should persist seeds', async () => {
+            jest.spyOn(service, 'hasAnyParamToGenerateSeed' as any).mockReturnValue(true);
+            jest.spyOn(authService, 'persistSeed').mockResolvedValueOnce({
+                list: [USER_MOCK],
+                added: [USER_MOCK],
+            });
+            jest.spyOn(financeService, 'persistSeeds').mockResolvedValueOnce(financeSeedsResult);
+            jest.spyOn(pokemonService, 'persistSeeds').mockResolvedValueOnce(pokemonSeedsResult);
+            expect(await service.persistSeeds(createSeedDto)).toEqual({
+                ...mockSeedsResult,
+                message: 'Seed Persist Successfully'
+            });
+        });
+    });
+
+    describe('privates', () => {
+        describe('DEFAULT_SEEDS', () => {
+            const mockSeedsResultDefault = {
+                auth: { list: 0, added: 0 },
+                finance: {
+                    bank: { list: 0, added: 0 },
+                    bill: { list: 0, added: 0 },
+                    group: { list: 0, added: 0 },
+                    months: { list: 0, added: 0 },
+                    income: { list: 0, added: 0 },
+                    expense: { list: 0, added: 0 },
+                    finance: { list: 0, added: 0 },
+                    supplier: { list: 0, added: 0 },
+                    incomeSource: { list: 0, added: 0 },
+                    supplierType: { list: 0, added: 0 },
+                },
+                pokemon: {
+                    move: { list: 0, added: 0 },
+                    type: { list: 0, added: 0 },
+                    ability: { list: 0, added: 0 },
+                    pokemon: { list: 0, added: 0 },
+                },
+            }
+            it('should return the default seeds', () => {
+                expect(service['DEFAULT_SEEDS']).toEqual(mockSeedsResultDefault);
+            });
+        });
+
+        describe('hasAnyParamToGenerateSeed', () => {
+            it('should return true if any param is true', () => {
+                expect(service['hasAnyParamToGenerateSeed']({...createSeedDto, auth: false })).toEqual(true);
+            });
+            it('should return false if all params are false', () => {
+                expect(service['hasAnyParamToGenerateSeed']({ auth: false })).toEqual(false);
+            });
+        });
+    });
 });

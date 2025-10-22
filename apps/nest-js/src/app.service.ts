@@ -1,16 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import POKEMON_ABILITY_LIST_FIXTURE_JSON from '@repo/mock-json/pokemon/ability/pokemon-abilities.json';
-import POKEMON_LIST_FIXTURE_JSON from '@repo/mock-json/pokemon/pokemons.json';
-import POKEMON_MOVE_LIST_FIXTURE_JSON from '@repo/mock-json/pokemon/move/pokemon-moves.json';
-import POKEMON_TYPE_LIST_FIXTURE_JSON from '@repo/mock-json/pokemon/type/pokemon-types.json';
-
 import { AuthService } from './auth/auth.service';
 import { CreateSeedDto } from './dto/create-seed.dto';
 import { FinanceService } from './finance/finance.service';
-
-import { CreatePokemonSeedsDto } from './pokemon/dto/create-pokemon-seeds.dto';
-import type { PokemonSeederParams, GeneratedPokemonSeeds, PokemonSeedsResult } from './pokemon/types';
+import type { PokemonSeedsResult } from './pokemon/types';
 import { PokemonService } from './pokemon/pokemon.service';
 import { FinanceSeedsResult } from './finance/types';
 import { SeedsResultItem } from './shared';
@@ -98,28 +91,7 @@ export class AppService {
     ) {
     }
 
-    private createPokemonSeederParams(createPokemonSeedsDto: CreatePokemonSeedsDto) {
-        const pokemonSeederParams: PokemonSeederParams = {}
-
-        if (createPokemonSeedsDto.pokemon) {
-            pokemonSeederParams.listJson = POKEMON_LIST_FIXTURE_JSON;
-        }
-
-        if (createPokemonSeedsDto.move) {
-            pokemonSeederParams.moveListJson = POKEMON_MOVE_LIST_FIXTURE_JSON;
-        }
-
-        if (createPokemonSeedsDto.type) {
-            pokemonSeederParams.typeListJson = POKEMON_TYPE_LIST_FIXTURE_JSON;
-        }
-
-        if (createPokemonSeedsDto.ability) {
-            pokemonSeederParams.abilityListJson = POKEMON_ABILITY_LIST_FIXTURE_JSON;
-        }
-        return pokemonSeederParams;
-    }
-
-    async generateSeeds(body: CreateSeedDto) {
+    async generateSeeds(body: CreateSeedDto)    {
         const hasAnyParamToGenerateSeed = this.hasAnyParamToGenerateSeed(body);
 
         if (!hasAnyParamToGenerateSeed) {
@@ -138,6 +110,10 @@ export class AppService {
             result.finance = await this.financeService.generateSeeds(body.finance);
         }
 
+        if (body.pokemon) {
+            result.pokemon = await this.pokemonService.generateSeeds(body.pokemon);
+        }
+
         return { ...result, message: 'Seed Generate Successfully' };
     }
 
@@ -152,6 +128,10 @@ export class AppService {
 
         if (body.finance) {
             result.finance = await this.financeService.persistSeeds(body.finance);
+        }
+
+        if (body.pokemon) {
+            result.pokemon = await this.pokemonService.persistSeeds(body.pokemon);
         }
 
         const auth = await this.authService.persistSeed(Boolean(body.auth));
@@ -170,33 +150,5 @@ export class AppService {
             }
             return !!value;
         });
-    }
-
-    private mapperPokemonSeedsResult(generateSeeds: GeneratedPokemonSeeds): PokemonSeedsResult {
-        const {
-            types,
-            moves,
-            pokemons,
-            abilities,
-        } = generateSeeds;
-
-        return {
-            type: {
-                list: types.list.length,
-                added: types.added.length
-            },
-            move: {
-                list: moves.list.length,
-                added: moves.added.length
-            },
-            ability: {
-                list: abilities.list.length,
-                added: abilities.added.length
-            },
-            pokemon: {
-                list: pokemons.list.length,
-                added: pokemons.added.length
-            },
-        }
     }
 }

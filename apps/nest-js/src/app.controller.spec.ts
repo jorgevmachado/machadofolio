@@ -1,7 +1,9 @@
 import { Test, type TestingModule } from '@nestjs/testing';
+
+import type { CreateSeedDto } from './dto/create-seed.dto';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import type { CreateSeedDto } from './dto/create-seed.dto';
 
 describe('AppController', () => {
   let service: AppService;
@@ -25,13 +27,36 @@ describe('AppController', () => {
     },
   }
 
+  const mockSeedsResult = {
+      auth: { list: 1, added: 1 },
+      finance: {
+          bank: { list: 1, added: 1 },
+          bill: { list: 1, added: 1 },
+          group: { list: 1, added: 1 },
+          months: { list: 1, added: 1 },
+          income: { list: 1, added: 1 },
+          expense: { list: 1, added: 1 },
+          finance: { list: 1, added: 1 },
+          supplier: { list: 1, added: 1 },
+          incomeSource: { list: 1, added: 1 },
+          supplierType: { list: 1, added: 1 },
+      },
+      pokemon: {
+          move: { list: 1, added: 1 },
+          type: { list: 1, added: 1 },
+          ability: { list: 1, added: 1 },
+          pokemon: { list: 1, added: 1 },
+      },
+  }
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
       providers: [{
         provide: AppService,
         useValue: {
-          seeds: jest.fn()
+            persistSeeds: jest.fn(),
+            generateSeeds: jest.fn()
         }
       }],
     }).compile();
@@ -46,4 +71,18 @@ describe('AppController', () => {
       expect(appController).toBeDefined();
     });
   });
+
+    describe('generateSeeds', () => {
+        it('should generate seeds', async () => {
+            jest.spyOn(service, 'generateSeeds').mockResolvedValue({ ...mockSeedsResult, message: 'Seed Generate Successfully' });
+            expect(await appController.generateSeeds(createSeedDto)).toEqual({ ...mockSeedsResult, message: 'Seed Generate Successfully' });
+        });
+    });
+
+    describe('persistSeeds', () => {
+        it('should persist seeds', async () => {
+            jest.spyOn(service, 'persistSeeds').mockResolvedValue({ ...mockSeedsResult, message: 'Seed Persist Successfully' });
+            expect(await appController.persistSeeds(createSeedDto)).toEqual({ ...mockSeedsResult, message: 'Seed Persist Successfully' });
+        });
+    });
 });
