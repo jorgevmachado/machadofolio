@@ -1,5 +1,13 @@
-export type DataItemProps = {
+export type ColorProps = {
     type: string;
+    name: string;
+    color: string;
+};
+
+export type TChartColor = 'default' |'bank' | 'highlight' | 'harmony' | 'organic' | 'emphasis';
+
+export type DataChartItem = {
+    type: TChartColor;
     name: string;
     fill?: string;
     value: number;
@@ -7,7 +15,6 @@ export type DataItemProps = {
     color: string;
     percentageTotal?: number;
 };
-
 
 export type PayloadItemProps = {
     hide: boolean;
@@ -20,11 +27,11 @@ export type PayloadItemProps = {
     stroke?: any;
     dataKey: string;
     nameKey?: any;
-    payload: DataItemProps;
+    payload: DataChartItem;
     strokeWidth?: any;
 }
 
-export type TooltipProps = {
+export type ChartTooltipProps = {
     active?: boolean;
     payload?: Array<PayloadItemProps>;
     countText?: string;

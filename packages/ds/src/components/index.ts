@@ -14,3 +14,4 @@ export { default as Card } from './card';
 export { default as Tabs } from './tabs';
 export { default as Accordion } from './accordion';
 export { default as Switch } from './switch';
+export { default as Chart, type ChartTooltipProps, type DataChartItem } from './chart';

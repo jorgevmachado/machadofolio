@@ -5,10 +5,9 @@ import { useI18n } from '@repo/i18n';
 
 import { BillEntity } from '@repo/business';
 
-import { Button, Text } from '@repo/ds';
+import { Button, Text, Chart, type DataChartItem } from '@repo/ds';
 
 import { billBusiness, expenseBusiness } from '../../../../shared';
-import { BarChart, TooltipChart, type DataItemProps } from '../../../../components';
 
 type GroupInfoProps = {
     bills: Array<BillEntity>;
@@ -23,7 +22,7 @@ export default function GroupInfo({ bills, className, totalRegisteredGroups }: G
     const list = billBusiness.mapBillListByFilter(bills, 'group');
 
     const data = useMemo(() => {
-        const groupMap = new Map<string, Omit<DataItemProps, 'color'>>();
+        const groupMap = new Map<string, Omit<DataChartItem, 'color'>>();
         list.forEach((item) => {
             const expenses = item.list.flatMap((bill) => bill.expenses).filter((expense) => expense !== undefined);
             const calculate = expenseBusiness.calculateAll(expenses);
@@ -33,7 +32,7 @@ export default function GroupInfo({ bills, className, totalRegisteredGroups }: G
                 if (current) {
                     const currentCount = current?.count ?? 0;
                     groupMap.set(groupName, {
-                        type: 'group',
+                        type: 'highlight',
                         name: groupName,
                         value: current.value + calculate.total,
                         count: currentCount + 1
@@ -41,7 +40,7 @@ export default function GroupInfo({ bills, className, totalRegisteredGroups }: G
                 }
             } else {
                 groupMap.set(groupName, {
-                    type: 'group',
+                    type: 'highlight',
                     name: groupName,
                     value: calculate.total,
                     count: 1
@@ -53,14 +52,18 @@ export default function GroupInfo({ bills, className, totalRegisteredGroups }: G
     }, [list]);
 
     return (
-        <BarChart
-            type="horizontal"
-            title={`Top ${t('groups')}`}
+        <Chart
+            top={5}
+            type="bar"
+            title={`Top 5 ${t('groups')}`}
             subtitle={`${t('groups')} ${t('with_the_highest_expenses')}`}
             data={data}
             fallback={`${t('no_groups_registered')}`}
             className={className}
-            tooltipContent={(params) => (<TooltipChart {...params} countText="Expenses" valueText="Total"/>)}
+            chartTooltip={{
+                countText: t("expenses"),
+                valueText: t("total")
+            }}
         >
             <Text variant="medium" color="neutral-80">
                 {totalRegisteredGroups} {t('registered_groups')}
@@ -71,6 +74,6 @@ export default function GroupInfo({ bills, className, totalRegisteredGroups }: G
                 onClick={() => router.push('/groups')}>
                 {t('view_details')}
             </Button>
-        </BarChart>
+        </Chart>
     );
 }

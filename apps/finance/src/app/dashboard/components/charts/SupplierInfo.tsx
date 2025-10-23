@@ -7,9 +7,7 @@ import { useI18n } from '@repo/i18n';
 
 import type { ExpenseEntity } from '@repo/business';
 
-import { Button, Text } from '@repo/ds';
-
-import { BarChart, TooltipChart, type DataItemProps } from '../../../../components';
+import { Button, Text, Chart, type DataChartItem } from '@repo/ds';
 
 type SupplierBarChartProps = {
     expenses: Array<ExpenseEntity>;
@@ -21,7 +19,7 @@ export default function SupplierInfo({ expenses, className, totalRegisteredSuppl
     const router = useRouter();
     const { t } = useI18n();
     const data = React.useMemo(() => {
-        const supplierMap = new Map<string, Omit<DataItemProps, 'color'>>();
+        const supplierMap = new Map<string, Omit<DataChartItem, 'color'>>();
 
         expenses.forEach((expense) => {
             const supplierId = expense.supplier.id;
@@ -31,14 +29,14 @@ export default function SupplierInfo({ expenses, className, totalRegisteredSuppl
                 const current = supplierMap.get(supplierId)!;
                 const currentCount = current?.count ?? 0
                 supplierMap.set(supplierId, {
-                    type: 'supplier',
+                    type: 'highlight',
                     name: supplierName,
                     value: current.value + expense.total,
                     count: currentCount + 1
                 });
             } else {
                 supplierMap.set(supplierId, {
-                    type: 'supplier',
+                    type: 'highlight',
                     name: supplierName,
                     value: expense.total,
                     count: 1
@@ -51,14 +49,18 @@ export default function SupplierInfo({ expenses, className, totalRegisteredSuppl
 
 
     return (
-        <BarChart
-            type="horizontal"
+        <Chart
+            type="bar"
+            top={5}
             title={`Top 5 ${t('suppliers')}`}
             subtitle={`${t('suppliers')} ${t('with_the_highest_expenses')}`}
             data={data}
             fallback={t('no_expenses_registered')}
             className={className}
-            tooltipContent={(params) => (<TooltipChart {...params} countText="Expenses" valueText="Total"/>)}
+            chartTooltip={{
+                countText: t('expenses'),
+                valueText: t('total')
+            }}
         >
             <Text variant="medium" color="neutral-80">
                 {totalRegisteredSuppliers} {t('registered')} {t('suppliers')}
@@ -69,6 +71,6 @@ export default function SupplierInfo({ expenses, className, totalRegisteredSuppl
                 onClick={() => router.push('/suppliers')}>
                 {t('view_details')}
             </Button>
-        </BarChart>
+        </Chart>
     );
 }

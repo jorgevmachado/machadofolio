@@ -3,9 +3,7 @@ import React from 'react';
 
 import { useI18n } from '@repo/i18n';
 
-import { Text } from '@repo/ds';
-
-import { BarChart, TooltipChart } from '../../../../components';
+import { Chart, Text } from '@repo/ds';
 
 type FinanceBarChartProps = {
     total: number;
@@ -17,39 +15,41 @@ type FinanceBarChartProps = {
 
 export default function FinanceInfo({ total, totalPaid, className, totalPending, totalRegisteredExpenses }: FinanceBarChartProps) {
     const { t } = useI18n();
-    const data = [
-        {
-            type: 'finance',
-            name: 'Total',
-            value: total,
-            fill: '#8b5cf6'
-        },
-        {
-            type: 'finance',
-            name: 'Pago',
-            value: totalPaid,
-            fill: '#10b981'
-        },
-        {
-            type: 'finance',
-            name: 'Pendente',
-            value: totalPending,
-            fill: '#ef4444'
-        }
-    ];
 
     return (
-        <BarChart
-            type="vertical"
-            data={data}
+        <Chart
+            type="bar"
+            data={[
+                {
+                    type: 'highlight',
+                    name: t('total'),
+                    value: Number(total.toFixed(2)),
+                    fill: '#8b5cf6'
+                },
+                {
+                    type: 'highlight',
+                    name: t('paid'),
+                    value: Number(totalPaid.toFixed(2)),
+                    fill: '#10b981'
+                },
+                {
+                    type: 'highlight',
+                    name: t('pending'),
+                    value: Number(totalPending.toFixed(2)),
+                    fill: '#ef4444'
+                }
+            ]}
             title={t('financial_overview')}
-            className={className}
             subtitle={t('comparison_between_total_values')}
-            tooltipContent={(params) => (<TooltipChart {...params} valueText="Value"/>)}
+            className={className}
+            layoutType="vertical"
+            chartTooltip={{
+                valueText: t('value')
+            }}
         >
             <Text variant="medium" color="neutral-80">
                 {totalRegisteredExpenses} {t('registered_expenses')}
             </Text>
-        </BarChart>
+        </Chart>
     );
 }

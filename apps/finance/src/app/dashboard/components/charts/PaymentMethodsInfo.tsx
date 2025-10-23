@@ -5,10 +5,9 @@ import { useI18n } from '@repo/i18n';
 
 import { BillEntity } from '@repo/business';
 
-import { Button, Text } from '@repo/ds';
+import { Button, Chart, type DataChartItem, Text } from '@repo/ds';
 
 import { billBusiness, expenseBusiness } from '../../../../shared';
-import { BarChart, TooltipChart, type DataItemProps } from '../../../../components';
 
 type BankInfoProps = {
     bills: Array<BillEntity>;
@@ -23,7 +22,7 @@ export default function PaymentMethodsInfo({ bills, className, totalRegisteredBi
     const list = billBusiness.mapBillListByFilter(bills, 'type');
 
     const data = useMemo(() => {
-        const paymentMethodMap = new Map<string, Omit<DataItemProps, 'color'>>();
+        const paymentMethodMap = new Map<string, Omit<DataChartItem, 'color'>>();
         list.forEach((item) => {
             const expenses = item.list.flatMap((bill) => bill.expenses).filter((expense) => expense !== undefined);
             const calculate = expenseBusiness.calculateAll(expenses);
@@ -33,7 +32,7 @@ export default function PaymentMethodsInfo({ bills, className, totalRegisteredBi
                 if (current) {
                     const currentCount = current?.count ?? 0;
                     paymentMethodMap.set(paymentMethodName, {
-                        type: 'payment-method',
+                        type: 'highlight',
                         name: paymentMethodName,
                         value: current.value + calculate.total,
                         count: currentCount + 1
@@ -41,7 +40,7 @@ export default function PaymentMethodsInfo({ bills, className, totalRegisteredBi
                 }
             } else {
                 paymentMethodMap.set(paymentMethodName, {
-                    type: 'payment-method',
+                    type: 'highlight',
                     name: paymentMethodName,
                     value: calculate.total,
                     count: 1
@@ -53,14 +52,19 @@ export default function PaymentMethodsInfo({ bills, className, totalRegisteredBi
     }, [list]);
 
     return (
-        <BarChart
-            type="horizontal"
+        <Chart
+            top={5}
+            type="bar"
+            data={data}
             title={`Top ${t('payment_methods')}`}
             subtitle={`${t('payment_methods')} ${t('with_the_highest_expenses')}`}
-            data={data}
             fallback={t('no_payment_methods_registered')}
             className={className}
-            tooltipContent={(params) => (<TooltipChart {...params} countText="Expenses" valueText="Total"/>)}
+            wrapperType="card"
+            chartTooltip={{
+                countText: t('expenses'),
+                valueText: 'Total'
+            }}
         >
             <Text variant="medium" color="neutral-80">
                 {totalRegisteredBills} {t('registered_bills')}
@@ -71,6 +75,6 @@ export default function PaymentMethodsInfo({ bills, className, totalRegisteredBi
                 onClick={() => router.push('/bills')}>
                 {t('view_details')}
             </Button>
-        </BarChart>
+        </Chart>
     );
 }

@@ -5,10 +5,9 @@ import { useI18n } from '@repo/i18n';
 
 import { BillEntity } from '@repo/business';
 
-import { Button, Text } from '@repo/ds';
+import { Button, Chart, Text, type DataChartItem } from '@repo/ds';
 
 import { billBusiness, expenseBusiness } from '../../../../shared';
-import { BarChart, TooltipChart, type DataItemProps } from '../../../../components';
 
 type BankInfoProps = {
     bills: Array<BillEntity>;
@@ -23,7 +22,7 @@ export default function BankInfo({ bills, className, totalRegisteredBanks }: Ban
     const list = billBusiness.mapBillListByFilter(bills, 'bank');
 
     const data = useMemo(() => {
-        const bankMap = new Map<string, Omit<DataItemProps, 'color'>>();
+        const bankMap = new Map<string, Omit<DataChartItem, 'color'>>();
         list.forEach((item) => {
             const expenses = item.list.flatMap((bill) => bill.expenses).filter((expense) => expense !== undefined);
             const calculate = expenseBusiness.calculateAll(expenses);
@@ -53,14 +52,20 @@ export default function BankInfo({ bills, className, totalRegisteredBanks }: Ban
     }, [list]);
 
     return (
-        <BarChart
-            type="horizontal"
-            title={`Top ${t('banks')}`}
-            subtitle={`${t('banks')} ${t('with_the_highest_expenses')}`}
+        <Chart
+            top={5}
+            type="bar"
             data={data}
+            title={`Top 5 ${t('banks')}`}
             fallback={t('no_banks_registered')}
+            subtitle={`${t('banks')} ${t('with_the_highest_expenses')}`}
             className={className}
-            tooltipContent={(params) => (<TooltipChart {...params} countText="Expenses" valueText="Total"/>)}
+            layoutType="horizontal"
+            wrapperType="card"
+            chartTooltip={{
+                countText: t('expenses'),
+                valueText: 'Total'
+            }}
         >
             <Text variant="medium" color="neutral-80">
                 {totalRegisteredBanks} {t('registered_banks')}
@@ -71,6 +76,6 @@ export default function BankInfo({ bills, className, totalRegisteredBanks }: Ban
                 onClick={() => router.push('/banks')}>
                 {t('view_details')}
             </Button>
-        </BarChart>
+        </Chart>
     );
 }
