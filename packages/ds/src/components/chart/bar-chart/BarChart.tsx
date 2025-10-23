@@ -11,9 +11,13 @@ import {
 
 import { currencyFormatter } from '@repo/services';
 
+import { useBreakpoint } from '../../../hooks';
+
 import { DataChartItem, AxisProps, ChartTooltipProps } from '../types';
 
 import BarChartContent from './bar-chart-content';
+
+import './BarChart.scss';
 
 type BarChartProps = {
     data: Array<DataChartItem>;
@@ -26,8 +30,8 @@ export default function BarChart({
     data,
     tooltipContent,
 }: BarChartProps) {
-
     const isVertical = type === 'vertical';
+    const { isMobile } = useBreakpoint();
 
     const formatAxis = (value: number) => {
         return currencyFormatter(value);
@@ -50,13 +54,17 @@ export default function BarChart({
         return { x, y } as AxisProps;
     }, []);
 
+    const chartMargin = isMobile
+        ? { top: 20, right: 20, left: 20, bottom: 20 }
+        : { top: 30, right: 30, left: 100, bottom: 30 };
+
     return (
-        <div data-testid="ds-bar-chart">
-            <ResponsiveContainer width="100%" height={310}>
+        <div data-testid="ds-bar-chart" className="bar-chart-container">
+            <ResponsiveContainer className="bar-chart-responsive" width="100%" height={isMobile ? 220 : 310}>
                 <BarChartComponent
                     data={data}
                     layout={type === 'horizontal' ? 'vertical' : 'horizontal'}
-                    margin={{ top: 30, right: 30, left: 100, bottom: 30 }}
+                    margin={chartMargin}
                 >
                     <CartesianGrid strokeDasharray="3 3"/>
                     <XAxis {...axis.x}/>

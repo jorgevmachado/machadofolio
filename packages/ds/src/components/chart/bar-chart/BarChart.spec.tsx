@@ -30,6 +30,9 @@ jest.mock('./bar-chart-content', () => ({
     __esModule: true,
     default: ({ isVertical }: any) => (<div data-testid="mock-bar-chart-content" data-vertical={isVertical} />)
 }));
+jest.mock('../../../hooks', () => ({
+    useBreakpoint: jest.fn(() => ({ isMobile: false }))
+}));
 
 import BarChart from './BarChart';
 
@@ -68,7 +71,8 @@ describe('<BarChart/>', () => {
         tooltipContent: mockTooltipContent
     };
 
-    const renderComponent = (props: any = {}) => {
+    const renderComponent = (props: any = {}, breakpoint: any = { isMobile: false }) => {
+        (require('../../../hooks').useBreakpoint as jest.Mock).mockReturnValue(breakpoint);
         return render(<BarChart {...defaultProps} {...props}/>);
     }
 
@@ -78,8 +82,8 @@ describe('<BarChart/>', () => {
         jest.restoreAllMocks();
     });
 
-    it('should render component with props default.', () => {
-        renderComponent();
+    it('should render component with props default (desktop).', () => {
+        renderComponent({}, { isMobile: false });
         expect(screen.getByTestId('ds-bar-chart')).toBeInTheDocument();
         expect(screen.getByTestId('mock-responsive-container')).toBeInTheDocument();
         expect(screen.getByTestId('mock-bar-chart-component')).toBeInTheDocument();
@@ -90,8 +94,32 @@ describe('<BarChart/>', () => {
         expect(screen.getByTestId('mock-bar-chart-content')).toBeInTheDocument();
     });
 
-    it('should render component with type vertical.', () => {
-        renderComponent({ type: 'vertical'});
+    it('should render component with type vertical (desktop).', () => {
+        renderComponent({ type: 'vertical'}, { isMobile: false });
+        expect(screen.getByTestId('ds-bar-chart')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-responsive-container')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-bar-chart-component')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-cartesian-grid')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-x-axis')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-y-axis')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-tooltip')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-bar-chart-content')).toBeInTheDocument();
+    });
+
+    it('should render component with props default (mobile).', () => {
+        renderComponent({}, { isMobile: true });
+        expect(screen.getByTestId('ds-bar-chart')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-responsive-container')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-bar-chart-component')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-cartesian-grid')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-x-axis')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-y-axis')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-tooltip')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-bar-chart-content')).toBeInTheDocument();
+    });
+
+    it('should render component with type vertical (mobile).', () => {
+        renderComponent({ type: 'vertical'}, { isMobile: true });
         expect(screen.getByTestId('ds-bar-chart')).toBeInTheDocument();
         expect(screen.getByTestId('mock-responsive-container')).toBeInTheDocument();
         expect(screen.getByTestId('mock-bar-chart-component')).toBeInTheDocument();
@@ -102,3 +130,4 @@ describe('<BarChart/>', () => {
         expect(screen.getByTestId('mock-bar-chart-content')).toBeInTheDocument();
     });
 });
+

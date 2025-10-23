@@ -185,8 +185,6 @@ export const mapColors = (
 ) => {
     const currentColors = getColors(colors, type);
 
-    console.log('# => currentColors => ', currentColors);
-
     if(type === 'bank') {
         const currentName = toSnakeCase(name.toLowerCase());
         return (currentColors.find((item) => item.name === currentName) ?? FALLBACK_COLOR).color;
