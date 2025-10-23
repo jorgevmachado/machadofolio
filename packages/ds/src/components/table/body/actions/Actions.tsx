@@ -1,5 +1,7 @@
 import React from 'react';
 
+import useBreakpoint from '../../../../hooks/use-breakpoint';
+
 import type { TableProps } from '../../types';
 
 import Action from './action';
@@ -9,6 +11,7 @@ type ActionsProps = Pick<TableProps, 'actions'> & {
 }
 
 export default function Actions({ item, actions }: ActionsProps) {
+    const { isMobile } = useBreakpoint();
     return actions ? (
         <td
             style={{
@@ -19,7 +22,7 @@ export default function Actions({ item, actions }: ActionsProps) {
             }}
             data-testid="ds-table-body-actions"
         >
-            {actions.edit && (
+            {actions.edit && !isMobile &&(
                 <Action type="edit" item={item} action={actions.edit} />
             )}
             {actions.delete && (

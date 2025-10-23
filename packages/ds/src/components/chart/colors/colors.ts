@@ -193,5 +193,5 @@ export const mapColors = (
     }
 
     const defaultColors = currentColors.flatMap((item) => item.color);
-    return defaultColors[index % currentColors.length];
+    return defaultColors[index % currentColors.length] ?? FALLBACK_COLOR.color;
 }
