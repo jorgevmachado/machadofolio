@@ -1,0 +1,1 @@
+export { default as BarChart, type BarChartProps } from './bar-chart';

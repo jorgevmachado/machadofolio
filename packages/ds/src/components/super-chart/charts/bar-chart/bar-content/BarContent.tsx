@@ -1,0 +1,119 @@
+import React, { useMemo } from 'react';
+import { Bar, Cell, LabelList } from 'recharts';
+
+import type { ActiveBar, BarChartLabelsItem, BarChartDataItem } from '../types';
+
+import { getRandomHarmonicPalette } from '../../../colors';
+
+import ActiveRectangle from './active-ractangle';
+import LabelListContent from './label-list-content';
+
+type BarContentProps = {
+    data?: Array<BarChartDataItem>;
+    labels?: Array<BarChartLabelsItem>;
+}
+
+type CellItem = {
+    key: string;
+    fill: string;
+    index: number;
+    stroke: string;
+}
+
+type ListItem = {
+    key: string;
+    fill: string;
+    cells: Array<CellItem>
+    index: number;
+    radius: [number, number, number, number];
+    stroke: string;
+    dataKey: string;
+    stackId?: string;
+    fillText?: string;
+    labelList?: BarChartLabelsItem['labelList'];
+    activeBar?: ActiveBar;
+    background?: { fill: string };
+    minPointSize?: number;
+}
+
+export default function BarContent({ data = [], labels = [] }: BarContentProps) {
+    if(labels?.length <= 0) {
+        return null;
+    }
+
+    const list = useMemo(() => {
+        const barData: Array<ListItem> = labels.map((label, index) => {
+            return {
+                key: `${label.key}-${index}`,
+                fill: label?.fill || '#808080',
+                index,
+                cells: [],
+                radius: [0, 8, 8, 0],
+                stroke: label?.stroke || '#0072bb',
+                dataKey: label.key,
+                stackId: label?.stackId,
+                activeBar: label?.activeBar,
+                labelList: label?.labelList,
+                background: label?.background,
+                minPointSize: label?.minPointSize,
+            }
+        });
+
+        const cellData: Array<CellItem> = data.map((item, index) => {
+            const { fill, stroke } = getRandomHarmonicPalette();
+          return {
+              key: `${item.type}-${index}`,
+              fill: item?.fill || fill,
+              index,
+              stroke: item?.stroke || item?.fill || stroke,
+          }
+        });
+
+        const onlyOneBarData = barData.length === 1;
+
+        if(onlyOneBarData) {
+            return barData.map((bar) => ({
+                ...bar,
+                cells: cellData
+            }))
+        }
+
+        const orderedBarData: Array<ListItem> = barData.sort((a, b) => b.index - a.index);
+
+        const mappedList: Array<ListItem> = orderedBarData.map((bar) => {
+            return {
+                ...bar,
+                cells: cellData.map((cell) => ({
+                    ...cell,
+                    fill: bar.fill,
+                    index: bar.index,
+                    stroke: bar.stroke
+                })),
+            }
+        });
+
+        return mappedList;
+    }, [labels, data]);
+
+    return list.map((item) => {
+        return (
+            <Bar
+                key={item.key}
+                fill={item.fill}
+                dataKey={item.dataKey}
+                stackId={item?.stackId}
+                activeBar={Boolean(item?.activeBar) ? <ActiveRectangle activeBar={item.activeBar}/> : undefined}
+                background={item?.background}
+                minPointSize={item?.minPointSize}
+            >
+                {item?.labelList && (
+                    <LabelList dataKey={item.labelList.dataKey} content={ !item.labelList?.withContent ? undefined : <LabelListContent fillText={item.labelList?.fill}  />}/>
+                )}
+
+                {item.cells.map((cell) => (
+                    <Cell key={cell.key} fill={cell.fill} stroke={cell.stroke} />
+                ))}
+            </Bar>
+        )
+    })
+}

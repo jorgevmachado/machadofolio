@@ -15,3 +15,5 @@ export { default as Tabs } from './tabs';
 export { default as Accordion } from './accordion';
 export { default as Switch } from './switch';
 export { default as Chart, type ChartTooltipProps, type DataChartItem } from './chart';
+export { default as NewChart } from './new-chart';
+export { default as SuperChart } from './super-chart';
