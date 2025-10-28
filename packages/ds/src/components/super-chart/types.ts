@@ -1,4 +1,4 @@
-export type TChart = 'bar';
+export type TChart = 'bar' | 'pie';
 
 export type TWrapper = 'default' | 'card';
 

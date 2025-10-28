@@ -52,14 +52,14 @@ export function numberValidator({ value }: ValidatorParams): ValidatorMessage {
  };
 }
 
-export function convertToNumber(value?: string): number {
+export function convertToNumber(value?: unknown, fallback: number = 0): number {
     if(!value) {
-        return 0;
+        return fallback;
     }
 
-    const rawValue = parseFloat(value);
+    const rawValue = typeof value === 'string' ? parseFloat(value) : Number(value);
     if(isNaN(rawValue)) {
-        return 0;
+        return fallback;
     }
 
     return rawValue;

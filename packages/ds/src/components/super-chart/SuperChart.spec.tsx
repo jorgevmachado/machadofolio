@@ -25,39 +25,18 @@ jest.mock('./charts', () => {
             }
             return (<div {...props} data-testid="mock-bar-chart"/>)
         },
+        PieChart: (props: any) => {
+            if(props.tooltipContent) {
+                props.tooltipContent({});
+            }
+            return (<div {...props} data-testid="mock-pie-chart"/>)
+        }
     }
 })
 
 import SuperChart from './SuperChart';
 
 describe('<SuperChart/>', () => {
-
-    const mockData = [
-        {
-            type: 'bank',
-            name: 'Nubank',
-            value: 400,
-            count: 4
-        },
-        {
-            type: 'bank',
-            name: 'Caixa',
-            value: 300,
-            count: 3
-        },
-        {
-            type: 'bank',
-            name: 'Itaú',
-            value: 200,
-            count: 2
-        },
-        {
-            type: 'bank',
-            name: 'Santander',
-            value: 100,
-            count: 1
-        },
-    ]
     const defaultProps = {
         type: 'bar',
         title: 'Super Chart Title',
@@ -82,15 +61,52 @@ describe('<SuperChart/>', () => {
         expect(screen.queryByTestId('mock-bar-chart')).not.toBeInTheDocument();
     });
 
-    it('should render component with type pie.', () => {
-        renderComponent({ type: 'pie' });
-        expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
-        expect(screen.queryByTestId('mock-bar-chart')).not.toBeInTheDocument();
+    describe('BarChart', () => {
+        const mockData = [
+            {
+                type: 'bank',
+                name: 'Nubank',
+                value: 400,
+                count: 4
+            },
+            {
+                type: 'bank',
+                name: 'Caixa',
+                value: 300,
+                count: 3
+            },
+            {
+                type: 'bank',
+                name: 'Itaú',
+                value: 200,
+                count: 2
+            },
+            {
+                type: 'bank',
+                name: 'Santander',
+                value: 100,
+                count: 1
+            },
+        ];
+
+        it('should render component with type bar without barChart.', () => {
+            renderComponent({ type: 'bar' });
+            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.queryByTestId('mock-bar-chart')).not.toBeInTheDocument();
+        });
+
+        it('should render component with type bar and barChart.', () => {
+            renderComponent({ barChart: { data: mockData }, chartTooltip: { countText: 'expenses', valueText: 'Total' } });
+            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.getByTestId('mock-bar-chart')).toBeInTheDocument();
+        });
     });
 
-    it('should render component with type bar and barChart.', () => {
-        renderComponent({ barChart: { data: mockData }, chartTooltip: { countText: 'expenses', valueText: 'Total' } });
-        expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
-        expect(screen.getByTestId('mock-bar-chart')).toBeInTheDocument();
+    describe('PieChart', () => {
+        it('should render component with type pie without pieChart.', () => {
+            renderComponent({ type: 'pie' });
+            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.queryByTestId('mock-pie-chart')).not.toBeInTheDocument();
+        });
     });
 });
