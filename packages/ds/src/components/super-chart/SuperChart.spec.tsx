@@ -108,5 +108,48 @@ describe('<SuperChart/>', () => {
             expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
             expect(screen.queryByTestId('mock-pie-chart')).not.toBeInTheDocument();
         });
+
+        it('should render component with type pie and pieChart.', () => {
+            renderComponent({ type: 'pie', pieChart: { pies: [{
+                        cx: '50%',
+                        cy: '50%',
+                        key: 'inner',
+                        fill: '#8884d8',
+                        data: [
+                            { name: 'Group A', value: 400 },
+                            { name: 'Group B', value: 300 },
+                            { name: 'Group C', value: 300 },
+                            { name: 'Group D', value: 200 },
+                        ],
+                        dataKey: 'value',
+                        outerRadius: '50%',
+                        isAnimationActive: true
+                    }, {
+                            cx: '50%',
+                            cy: '50%',
+                            key: 'outer',
+                            fill: '#82ca9d',
+                            data: [
+                                { name: 'A1', value: 100 },
+                                { name: 'A2', value: 300 },
+                                { name: 'B1', value: 100 },
+                                { name: 'B2', value: 80 },
+                                { name: 'B3', value: 40 },
+                                { name: 'B4', value: 30 },
+                                { name: 'B5', value: 50 },
+                                { name: 'C1', value: 100 },
+                                { name: 'C2', value: 200 },
+                                { name: 'D1', value: 150 },
+                                { name: 'D2', value: 50 },
+                            ],
+                            label: true,
+                            dataKey: 'value',
+                            innerRadius: '60%',
+                            outerRadius: '80%',
+                            isAnimationActive: true
+                        }]}, chartTooltip: { countText: 'expenses', valueText: 'Total' } });
+            expect(screen.getByTestId('mock-pie-chart')).toBeInTheDocument();
+
+        });
     });
 });
