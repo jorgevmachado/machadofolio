@@ -9,13 +9,15 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
+import { currencyFormatter } from '@repo/services';
 
 import { useBreakpoint } from '../../../../hooks';
 
+import type { XAxisProps, YAxisProps } from '../../types';
+
 import BarContent from './bar-content';
 
-import type { BarChartProps, XAxisProps, YAxisProps } from './types';
-import { currencyFormatter } from '@repo/services';
+import type { BarChartProps } from './types';
 
 export default function BarChart ({
     top,

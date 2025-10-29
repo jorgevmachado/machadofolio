@@ -260,3 +260,16 @@ export function restorePunctuationAtEnd(processed: string, punctuations: Array<s
     return processed + punctuations.join('');
 }
 
+export function convertToPercent(value?: number, fallback: string = '0%'): string {
+    if(!value) {
+        return fallback;
+    }
+    return `${(value * 100).toFixed(0)}%`;
+}
+
+export function getPercentValue(value: number = 0, total: number = 0): string {
+    const ratio = total > 0 ? value / total : 0;
+
+    return convertToPercent(ratio);
+}
+

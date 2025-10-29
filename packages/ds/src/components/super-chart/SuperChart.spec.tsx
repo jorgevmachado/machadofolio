@@ -3,10 +3,18 @@ import React from 'react';
 import '@testing-library/jest-dom'
 import { cleanup, render, screen } from '@testing-library/react';
 
+jest.mock('d3-shape', () => ({
+    curveCardinal: {
+        tension: jest.fn(),
+    }
+}));
+
 jest.mock('./chart-content', () => ({
     __esModule: true,
-    default: (props: any) => (<div {...props} data-testid="mock-chart-content">{props.isFallback ? null : props.children}</div>),
-    ChartContent: (props: any) => (<div {...props} data-testid="mock-chart-content">{props.isFallback ? null : props.children}</div>),
+    default: (props: any) => (
+        <div {...props} data-testid="mock-chart-content">{props.isFallback ? null : props.children}</div>),
+    ChartContent: (props: any) => (
+        <div {...props} data-testid="mock-chart-content">{props.isFallback ? null : props.children}</div>),
 }));
 
 jest.mock('./chart-tooltip', () => ({
@@ -20,19 +28,25 @@ jest.mock('./charts', () => {
     return {
         ...originalModule,
         BarChart: (props: any) => {
-            if(props.tooltipContent) {
+            if (props.tooltipContent) {
                 props.tooltipContent({});
             }
             return (<div {...props} data-testid="mock-bar-chart"/>)
         },
         PieChart: (props: any) => {
-            if(props.tooltipContent) {
+            if (props.tooltipContent) {
                 props.tooltipContent({});
             }
             return (<div {...props} data-testid="mock-pie-chart"/>)
+        },
+        AreaChart: (props: any) => {
+            if (props.tooltipContent) {
+                props.tooltipContent({});
+            }
+            return (<div {...props} data-testid="mock-area-chart"/>)
         }
     }
-})
+});
 
 import SuperChart from './SuperChart';
 
@@ -96,7 +110,10 @@ describe('<SuperChart/>', () => {
         });
 
         it('should render component with type bar and barChart.', () => {
-            renderComponent({ barChart: { data: mockData }, chartTooltip: { countText: 'expenses', valueText: 'Total' } });
+            renderComponent({
+                barChart: { data: mockData },
+                chartTooltip: { countText: 'expenses', valueText: 'Total' }
+            });
             expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
             expect(screen.getByTestId('mock-bar-chart')).toBeInTheDocument();
         });
@@ -110,21 +127,26 @@ describe('<SuperChart/>', () => {
         });
 
         it('should render component with type pie and pieChart.', () => {
-            renderComponent({ type: 'pie', pieChart: { pies: [{
-                        cx: '50%',
-                        cy: '50%',
-                        key: 'inner',
-                        fill: '#8884d8',
-                        data: [
-                            { name: 'Group A', value: 400 },
-                            { name: 'Group B', value: 300 },
-                            { name: 'Group C', value: 300 },
-                            { name: 'Group D', value: 200 },
-                        ],
-                        dataKey: 'value',
-                        outerRadius: '50%',
-                        isAnimationActive: true
-                    }, {
+            renderComponent({
+                type: 'pie',
+                pieChart: {
+                    pies: [
+                        {
+                            cx: '50%',
+                            cy: '50%',
+                            key: 'inner',
+                            fill: '#8884d8',
+                            data: [
+                                { name: 'Group A', value: 400 },
+                                { name: 'Group B', value: 300 },
+                                { name: 'Group C', value: 300 },
+                                { name: 'Group D', value: 200 },
+                            ],
+                            dataKey: 'value',
+                            outerRadius: '50%',
+                            isAnimationActive: true
+                        },
+                        {
                             cx: '50%',
                             cy: '50%',
                             key: 'outer',
@@ -147,8 +169,83 @@ describe('<SuperChart/>', () => {
                             innerRadius: '60%',
                             outerRadius: '80%',
                             isAnimationActive: true
-                        }]}, chartTooltip: { countText: 'expenses', valueText: 'Total' } });
+                        }
+                    ]
+                },
+                chartTooltip: { countText: 'expenses', valueText: 'Total' }
+            });
             expect(screen.getByTestId('mock-pie-chart')).toBeInTheDocument();
+
+        });
+    });
+
+    describe('AreaChart', () => {
+        it('should render component with type area without areaChart.', () => {
+            renderComponent({ type: 'area' });
+            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.queryByTestId('mock-area-chart')).not.toBeInTheDocument();
+        });
+
+        it('should render component with type area and areaChart.', () => {
+            renderComponent({
+                type: 'area',
+                areaChart: {
+                    areas: [
+                        {
+                            name: 'Page A',
+                            uv: 4000,
+                            pv: 2400,
+                            amt: 2400,
+                        },
+                        {
+                            name: 'Page B',
+                            uv: 3000,
+                            pv: 1398,
+                            amt: 2210,
+                        },
+                        {
+                            name: 'Page C',
+                            uv: 2000,
+                            pv: 9800,
+                            amt: 2290,
+                        },
+                        {
+                            name: 'Page D',
+                            uv: 2780,
+                            pv: 3908,
+                            amt: 2000,
+                        },
+                        {
+                            name: 'Page E',
+                            uv: 1890,
+                            pv: 4800,
+                            amt: 2181,
+                        },
+                        {
+                            name: 'Page F',
+                            uv: 2390,
+                            pv: 3800,
+                            amt: 2500,
+                        },
+                        {
+                            name: 'Page G',
+                            uv: 3490,
+                            pv: 4300,
+                            amt: 2100,
+                        },
+                    ],
+                    labels: [{
+                        key: 'uv',
+                        fill: '#8884d8',
+                        type: 'monotone',
+                        stroke: '#8884d8',
+                        dataKey: 'uv'
+                    }],
+                    responsive: true
+                },
+                chartTooltip: { countText: 'expenses', valueText: 'Total' }
+            });
+            expect(screen.getByTestId('mock-area-chart')).toBeInTheDocument();
 
         });
     });

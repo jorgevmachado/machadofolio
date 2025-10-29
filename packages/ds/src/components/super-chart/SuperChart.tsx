@@ -8,7 +8,7 @@ import type {
 
 import ChartContent from './chart-content';
 import ChartTooltip from './chart-tooltip';
-import { BarChart, PieChart, type BarChartProps, type PieChartProps } from './charts';
+import { BarChart, PieChart, type BarChartProps, type PieChartProps, type AreaChartProps, AreaChart } from './charts';
 
 import './SuperChart.scss';
 
@@ -17,6 +17,7 @@ type SuperChartProps = {
     title: string;
     barChart?: BarChartProps;
     pieChart?: PieChartProps;
+    areaChart?: AreaChartProps
     subtitle?: string;
     fallback?: string;
     children?: React.ReactNode;
@@ -33,6 +34,7 @@ export default function SuperChart({
     fallback = 'No data available',
     barChart,
     pieChart,
+    areaChart,
     children,
     className,
     wrapperType,
@@ -44,6 +46,15 @@ export default function SuperChart({
         if (type === 'bar' && barChart) {
             const { data } = barChart;
             return data.length <= 0;
+        }
+        if(type === 'pie' && pieChart) {
+            const { pies } = pieChart;
+            return pies.length <= 0;
+        }
+
+        if(type === 'area' && areaChart) {
+            const { areas } = areaChart;
+            return areas.length <= 0;
         }
         return false;
     }
@@ -71,6 +82,14 @@ export default function SuperChart({
                         {...pieChart}
                         tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
                     />
+                )
+            }
+            {
+                (type === 'area' && areaChart) && (
+                        <AreaChart
+                            {...areaChart}
+                            tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
+                        />
                 )
             }
             {children}

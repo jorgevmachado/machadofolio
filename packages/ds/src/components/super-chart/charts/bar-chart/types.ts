@@ -1,10 +1,6 @@
 import React from 'react';
 
-import { XAxis, YAxis } from 'recharts';
-import type { ChartTooltipParams } from '../../types';
-
-export type XAxisProps = React.ComponentProps< typeof XAxis>;
-export type YAxisProps = React.ComponentProps< typeof YAxis>;
+import type { ChartTooltipParams, XAxisProps, YAxisProps } from '../../types';
 
 export type BarChartDataItem = Record<string, string | number> & {
     fill?: string;

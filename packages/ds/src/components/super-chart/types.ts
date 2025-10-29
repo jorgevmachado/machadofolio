@@ -1,6 +1,13 @@
-export type TChart = 'bar' | 'pie';
+import React from 'react';
+
+import { XAxis, YAxis } from 'recharts';
+
+export type TChart = 'bar' | 'pie' | 'area';
 
 export type TWrapper = 'default' | 'card';
+
+export type XAxisProps = React.ComponentProps< typeof XAxis>;
+export type YAxisProps = React.ComponentProps< typeof YAxis>;
 
 export type ChartTooltipParams = {
     active?: boolean;
@@ -25,13 +32,10 @@ export type PayloadItemProps = {
     strokeWidth?: any;
 }
 
-
-
 export type ColorProps = {
     fill: string;
     type: string;
     name: string;
     color: string;
     stroke: string;
-
 };
