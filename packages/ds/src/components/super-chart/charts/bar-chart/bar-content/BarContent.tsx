@@ -11,6 +11,7 @@ import LabelListContent from './label-list-content';
 type BarContentProps = {
     data?: Array<BarChartDataItem>;
     labels?: Array<BarChartLabelsItem>;
+    isVertical: boolean;
 }
 
 type CellItem = {
@@ -36,12 +37,13 @@ type ListItem = {
     minPointSize?: number;
 }
 
-export default function BarContent({ data = [], labels = [] }: BarContentProps) {
+export default function BarContent({ data = [], labels = [], isVertical }: BarContentProps) {
     if(labels?.length <= 0) {
         return null;
     }
 
     const list = useMemo(() => {
+
         const barData: Array<ListItem> = labels.map((label, index) => {
             return {
                 key: `${label.key}-${index}`,
@@ -61,24 +63,33 @@ export default function BarContent({ data = [], labels = [] }: BarContentProps) 
 
         const cellData: Array<CellItem> = data.map((item, index) => {
             const { fill, stroke } = getRandomHarmonicPalette();
-          return {
-              key: `${item.type}-${index}`,
-              fill: item?.fill || fill,
-              index,
-              stroke: item?.stroke || item?.fill || stroke,
-          }
+            return {
+                key: `${item.type}-${index}`,
+                fill: item?.fill || fill,
+                index,
+                stroke: item?.stroke || item?.fill || stroke,
+            }
         });
 
         const onlyOneBarData = barData.length === 1;
 
-        if(onlyOneBarData) {
+        if(onlyOneBarData && isVertical) {
             return barData.map((bar) => ({
                 ...bar,
                 cells: cellData
-            }))
+            }));
         }
 
         const orderedBarData: Array<ListItem> = barData.sort((a, b) => b.index - a.index);
+
+        if(!isVertical) {
+            const horizontalMappedList: Array<ListItem> = orderedBarData.map((bar) => ({
+                ...bar,
+                radius: [0, 8, 8, 0],
+            }));
+
+            return horizontalMappedList;
+        }
 
         const mappedList: Array<ListItem> = orderedBarData.map((bar) => {
             return {
@@ -93,7 +104,8 @@ export default function BarContent({ data = [], labels = [] }: BarContentProps) 
         });
 
         return mappedList;
-    }, [labels, data]);
+
+    }, [labels, data, isVertical]);
 
     return list.map((item) => {
         return (
@@ -105,9 +117,13 @@ export default function BarContent({ data = [], labels = [] }: BarContentProps) 
                 activeBar={Boolean(item?.activeBar) ? <ActiveRectangle activeBar={item.activeBar}/> : undefined}
                 background={item?.background}
                 minPointSize={item?.minPointSize}
+                data-testid={`ds-bar-content-${item.dataKey}-${isVertical ? 'vertical' : 'horizontal'}`}
             >
                 {item?.labelList && (
-                    <LabelList dataKey={item.labelList.dataKey} content={ !item.labelList?.withContent ? undefined : <LabelListContent fillText={item.labelList?.fill}  />}/>
+                    <LabelList
+                        dataKey={item.labelList.dataKey}
+                        position={item.labelList?.position}
+                        content={ !item.labelList?.withContent ? undefined : <LabelListContent fillText={item.labelList?.fill}  />}/>
                 )}
 
                 {item.cells.map((cell) => (

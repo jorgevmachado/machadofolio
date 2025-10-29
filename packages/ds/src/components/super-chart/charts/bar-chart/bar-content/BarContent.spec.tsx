@@ -7,7 +7,7 @@ jest.mock('recharts', () => {
     let index = 0;
     return (
         {
-            Bar: ({ dataKey, children, ...props }: any) => (<div {...props} data-testid={`mock-bar-${dataKey}`}>{children}</div>),
+            Bar: ({ children, radius, ...props }: any) => (<div {...props}>{children}</div>),
             Cell: ((props: any) => {
                 index++
                 return (
@@ -68,7 +68,9 @@ describe('<BarContent/>', () => {
         },
     ];
 
-    const defaultProps = {}
+    const defaultProps = {
+        isVertical: true
+    }
 
     const renderComponent = (props: any = {}) => {
         render(<BarContent {...defaultProps} {...props}/>)
@@ -86,26 +88,26 @@ describe('<BarContent/>', () => {
 
     it('should render component with props default.', () => {
         renderComponent();
-        expect(screen.queryByTestId('mock-bar-value')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('ds-bar-content-value-vertical')).not.toBeInTheDocument();
     });
 
     it('should render component with labels', () => {
         renderComponent({ labels: [{ key: 'value' }]});
-        const component = screen.getByTestId('mock-bar-value');
+        const component = screen.getByTestId('ds-bar-content-value-vertical');
         expect(component).toBeInTheDocument();
         expect(component).toHaveAttribute('fill', '#808080');
     });
 
     it('should render component with labels and fill', () => {
         renderComponent({ labels: [{ key: 'value', fill: '#fff'}]});
-        const component = screen.getByTestId('mock-bar-value');
+        const component = screen.getByTestId('ds-bar-content-value-vertical');
         expect(component).toBeInTheDocument();
         expect(component).toHaveAttribute('fill', '#fff');
     });
 
     it('should render component with data', () => {
         renderComponent({ data, labels: [{ key: 'value', fill: '#fff'}]});
-        expect(screen.getByTestId('mock-bar-value')).toBeInTheDocument();
+        expect(screen.getByTestId('ds-bar-content-value-vertical')).toBeInTheDocument();
 
         const cellComponent1 = screen.getByTestId(`mock-cell-1`);
         expect(cellComponent1).toBeInTheDocument();
@@ -135,8 +137,8 @@ describe('<BarContent/>', () => {
             { key: 'count', fill: '#442c61'},
         ]
         renderComponent({ data, labels});
-        expect(screen.getByTestId('mock-bar-value')).toBeInTheDocument();
-        expect(screen.getByTestId('mock-bar-count')).toBeInTheDocument();
+        expect(screen.getByTestId('ds-bar-content-value-vertical')).toBeInTheDocument();
+        expect(screen.getByTestId('ds-bar-content-count-vertical')).toBeInTheDocument();
     });
 
     it('should render component with  active bar', () => {
@@ -144,7 +146,7 @@ describe('<BarContent/>', () => {
             { key: 'value', fill: '#9c44dc', activeBar: { type: 'rectangle' }},
         ]
         renderComponent({ data, labels});
-        const component = screen.getByTestId('mock-bar-value')
+        const component = screen.getByTestId('ds-bar-content-value-vertical')
         expect(component).toBeInTheDocument();
         expect(component).toHaveAttribute('activeBar', '[object Object]');
     });
@@ -154,7 +156,7 @@ describe('<BarContent/>', () => {
             { key: 'value', fill: '#9c44dc', labelList: { dataKey: 'name', withContent: false }},
         ]
         renderComponent({ data, labels});
-        expect(screen.getByTestId('mock-bar-value')).toBeInTheDocument();
+        expect(screen.getByTestId('ds-bar-content-value-vertical')).toBeInTheDocument();
         expect(screen.getByTestId('mock-label-list')).toBeInTheDocument();
     });
 
@@ -163,9 +165,14 @@ describe('<BarContent/>', () => {
             { key: 'value', fill: '#9c44dc', labelList: { dataKey: 'name', withContent: true }},
         ]
         renderComponent({ data, labels});
-        expect(screen.getByTestId('mock-bar-value')).toBeInTheDocument();
+        expect(screen.getByTestId('ds-bar-content-value-vertical')).toBeInTheDocument();
         const labelListComponent = screen.getByTestId('mock-label-list');
         expect(labelListComponent).toBeInTheDocument();
         expect(labelListComponent).toHaveAttribute('content', '[object Object]');
+    });
+
+    it('should render component horizontal', () => {
+        renderComponent({ isVertical: false, labels: [{ key: 'value', fill: '#808080' }] });
+        expect(screen.getByTestId('ds-bar-content-value-horizontal')).toBeInTheDocument();
     });
 })

@@ -99,6 +99,7 @@ const meta = {
                 },
             ],
             labels: [{ key: 'value', fill: '#808080', activeBar: { type: 'rectangle' } }],
+            withCurrencyTickFormatter: true
         },
         subtitle: 'Bar Chart Subtitle',
         children: 'Hello, World!',
@@ -219,5 +220,53 @@ export const BarChartWithBackground: Story = {
             ]
         }
 
+    }
+}
+
+export const BarChartVertical: Story = {
+    args: {
+        barChart: {
+            data: [
+                {
+                    type: 'bank',
+                    name: 'Nubank',
+                    value: 400,
+                    count: 4,
+                    fill: '#9c44dc',
+                    color: '#bc8ae1',
+                    stroke: '#442c61',
+                },
+                {
+                    type: 'bank',
+                    name: 'Caixa',
+                    value: 300,
+                    count: 3,
+                    fill: '#002060',
+                    color: '#FF9933',
+                    stroke: '#3b82f6'
+                },
+                {
+                    type: 'bank',
+                    name: 'Itaú',
+                    value: 200,
+                    count: 2,
+                    fill: '#F88104',
+                    color: '#FF6200',
+                    stroke: '#004387'
+                },
+                {
+                    type: 'bank',
+                    name: 'Santander',
+                    value: 100,
+                    count: 1,
+                    fill: '#EA1D25',
+                    color: '#c2c2c2',
+                    stroke: '#333333'
+                },
+            ],
+            layout: 'horizontal',
+            labels: [{ key: 'value', fill: '#808080' }],
+            withCurrencyTickFormatter: true
+        }
     }
 }

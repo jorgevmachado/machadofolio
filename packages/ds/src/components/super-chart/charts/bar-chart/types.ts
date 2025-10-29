@@ -23,6 +23,7 @@ export type ActiveBar = {
 export type LabelList = {
     fill?: string;
     dataKey: string;
+    position?: 'top' | 'bottom' | 'center';
     withContent?: boolean;
 }
 
@@ -42,6 +43,8 @@ export type BarChartProps = {
     data: Array<BarChartDataItem>;
     xAxis?: Array<XAxisProps>;
     yAxis?: Array<YAxisProps>;
+    layout?: 'vertical' | 'horizontal';
     labels?: Array<BarChartLabelsItem>;
     tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
+    withCurrencyTickFormatter?: boolean;
 }

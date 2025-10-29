@@ -15,6 +15,7 @@ import { useBreakpoint } from '../../../../hooks';
 import BarContent from './bar-content';
 
 import type { BarChartProps, XAxisProps, YAxisProps } from './types';
+import { currencyFormatter } from '@repo/services';
 
 export default function BarChart ({
     top,
@@ -22,26 +23,47 @@ export default function BarChart ({
     xAxis,
     yAxis,
     labels = [],
-    tooltipContent
+    layout = 'vertical',
+    tooltipContent,
+    withCurrencyTickFormatter
 }: BarChartProps) {
     const { isMobile } = useBreakpoint();
+
+    const isVertical = layout === 'vertical';
 
     const list = useMemo(() => {
         const limitedData = typeof top === 'number' ? data.slice(0, top) : data;
         return limitedData.filter((item) => item !== undefined);
     }, [data, top])
 
+    const formatAxis = (value: number) => {
+        return currencyFormatter(value);
+    };
+
     const axis = useMemo(() => {
-        const yList: Array<YAxisProps> = !yAxis ? [{
-            width: 'auto'
-        }] : yAxis;
+        const x : XAxisProps = isVertical
+            ? { dataKey: 'name' }
+            : { type: 'number' };
 
-        const xList: Array<XAxisProps> = !xAxis ? [{
-            dataKey: 'name'
-        }] : xAxis;
+        const y: YAxisProps = isVertical
+            ? { width: 'auto' }
+            : {
+                type: 'category',
+                width: 90,
+                dataKey: 'name'
+            };
 
-        return { yList, xList }
-    }, [yAxis, xAxis]);
+        if(withCurrencyTickFormatter) {
+            x.tickFormatter = isVertical ? undefined : formatAxis;
+            y.tickFormatter = isVertical ? formatAxis : undefined;
+        }
+
+        const xList: Array<XAxisProps> = !xAxis ? [x] : xAxis;
+
+        const yList: Array<YAxisProps> = !yAxis ? [y] : yAxis;
+
+        return { xList, yList }
+    }, [xAxis, yAxis, withCurrencyTickFormatter]);
 
     const chartMargin = isMobile
         ? { top: 20, right: 20, left: 20, bottom: 20 }
@@ -52,6 +74,7 @@ export default function BarChart ({
             <ResponsiveContainer className="bar-chart-responsive" width="100%" height={isMobile ? 220 : 310}>
                 <BarChartComponent
                     data={list}
+                    layout={layout === 'vertical' ? 'horizontal' : 'vertical'}
                     margin={chartMargin}
                 >
                     <CartesianGrid strokeDasharray="3 3"/>
@@ -65,8 +88,8 @@ export default function BarChart ({
                     ))}
 
                     <Tooltip content={tooltipContent}/>
-                    <Legend/>
-                    <BarContent data={list} labels={labels}/>
+                    {isVertical &&  <Legend/> }
+                    <BarContent data={list} labels={labels} isVertical={isVertical}/>
                 </BarChartComponent>
             </ResponsiveContainer>
         </div>

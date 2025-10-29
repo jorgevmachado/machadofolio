@@ -142,4 +142,54 @@ describe('<BarChart/>', () => {
         expect(screen.getByTestId('mock-tooltip')).toBeInTheDocument();
         expect(screen.getByTestId('mock-bar-chart-content')).toBeInTheDocument();
     });
+
+    it('should render component with withCurrencyTickFormatter.', () => {
+        renderComponent({ withCurrencyTickFormatter: true });
+        expect(screen.getByTestId('ds-bar-chart')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-responsive-container')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-bar-chart-component')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-cartesian-grid')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-x-axis')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-y-axis')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-tooltip')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-bar-chart-content')).toBeInTheDocument();
+    });
+
+    it('should render component with layout horizontal.', () => {
+        renderComponent({ layout: 'horizontal' });
+        expect(screen.getByTestId('ds-bar-chart')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-responsive-container')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-bar-chart-component')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-cartesian-grid')).toBeInTheDocument();
+        const xAxisComponent = screen.getByTestId('mock-x-axis');
+        expect(xAxisComponent).toBeInTheDocument();
+        expect(xAxisComponent).toHaveAttribute('type', 'number');
+
+        const yAxisComponent = screen.getByTestId('mock-y-axis');
+        expect(yAxisComponent).toBeInTheDocument();
+        expect(yAxisComponent).toHaveAttribute('width', '90');
+        expect(yAxisComponent).toHaveAttribute('type', 'category');
+
+        expect(screen.getByTestId('mock-tooltip')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-bar-chart-content')).toBeInTheDocument();
+    });
+
+    it('should render component with layout horizontal and withCurrencyTickFormatter.', () => {
+        renderComponent({ layout: 'horizontal', withCurrencyTickFormatter: true });
+        expect(screen.getByTestId('ds-bar-chart')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-responsive-container')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-bar-chart-component')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-cartesian-grid')).toBeInTheDocument();
+        const xAxisComponent = screen.getByTestId('mock-x-axis');
+        expect(xAxisComponent).toBeInTheDocument();
+        expect(xAxisComponent).toHaveAttribute('type', 'number');
+
+        const yAxisComponent = screen.getByTestId('mock-y-axis');
+        expect(yAxisComponent).toBeInTheDocument();
+        expect(yAxisComponent).toHaveAttribute('width', '90');
+        expect(yAxisComponent).toHaveAttribute('type', 'category');
+
+        expect(screen.getByTestId('mock-tooltip')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-bar-chart-content')).toBeInTheDocument();
+    });
 })
