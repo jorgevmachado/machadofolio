@@ -95,7 +95,7 @@ describe('<PieChart/>', () => {
 
     const defaultProps = {
         pies: mockPies,
-        withoutTooltip: false,
+        withoutContentTooltip: false,
     }
 
     const renderComponent = (props: any = {}) => {
@@ -166,14 +166,14 @@ describe('<PieChart/>', () => {
                 bottom: 50,
                 left: 120,
             },
-            withoutTooltip: true,
+            withTooltip: false,
+            withoutContentTooltip: true,
             withDefaultActiveShape: true
         });
 
         expect(screen.getByTestId('mock-pie-chart')).toBeInTheDocument();
         expect(screen.getByTestId('ds-pie-chart-pie-straight-angle')).toBeInTheDocument();
         expect(screen.getByTestId('mock-active-shape')).toBeInTheDocument();
-        expect(screen.getByTestId('mock-tooltip')).toBeInTheDocument();
     });
 
     it('Pie Chart With Customized Label', () => {
@@ -211,7 +211,7 @@ describe('<PieChart/>', () => {
                     isAnimationActive: true,
                 }
             ],
-            withoutTooltip: true,
+            withoutContentTooltip: true,
             withDefaultCustomLabel: true
         });
 
@@ -256,7 +256,7 @@ describe('<PieChart/>', () => {
                     isAnimationActive: true,
                 }
             ],
-            withoutTooltip: true,
+            withoutContentTooltip: true,
             withDefaultCustomLabel: true
         });
 
@@ -293,6 +293,7 @@ describe('<PieChart/>', () => {
             style: { margin: '0 auto', width: 210, height: 120 },
             withNeedle: true,
             withLegends: true,
+            withoutContentTooltip: true,
         });
         expect(screen.getByTestId('mock-pie-chart')).toBeInTheDocument();
         expect(screen.getByTestId('ds-pie-chart-pie-pie_chart_with_needle')).toBeInTheDocument();

@@ -2,9 +2,9 @@ import React from 'react';
 
 import { Pie } from 'recharts';
 
-import { ChartTooltipProps } from '../../../chart';
+import type { DataChartItem, MarginProps, ChartTooltipParams  } from '../../types';
 
-export type PieChartDataItem = Record<string, string | number> & {
+export type PieChartDataItem = DataChartItem & {
     fill?: string;
     name: string;
     value: number;
@@ -17,24 +17,10 @@ export type PieProps = React.ComponentProps<typeof Pie> & {
     value?: number;
 };
 
-export type PieChartProps = {
-    pies: Array<PieProps>;
-    style?: React.CSSProperties;
-    margin?: { top: number; right: number; bottom: number; left: number };
-    responsive?: boolean;
-    withNeedle?: boolean;
-    withLegends?: boolean;
-    defaultIndex?: string;
-    tooltipContent?: (params: ChartTooltipProps) => React.ReactNode;
-    withoutTooltip?: boolean;
-    withDefaultCustomLabel?: boolean;
-    withDefaultActiveShape?: boolean;
-}
-
 export type PieCoordinate = {
     x: number;
     y: number;
-}
+};
 
 export type PieSectorData = {
     value?: number;
@@ -46,4 +32,19 @@ export type PieSectorData = {
     middleRadius?: number;
     paddingAngle?: number;
     tooltipPosition?: PieCoordinate;
+};
+
+export type PieChartProps = {
+    pies: Array<PieProps>;
+    style?: React.CSSProperties;
+    margin?: MarginProps;
+    responsive?: boolean;
+    withNeedle?: boolean;
+    withLegends?: boolean;
+    withTooltip?: boolean;
+    defaultIndex?: string;
+    tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
+    withoutContentTooltip?: boolean;
+    withDefaultCustomLabel?: boolean;
+    withDefaultActiveShape?: boolean;
 };

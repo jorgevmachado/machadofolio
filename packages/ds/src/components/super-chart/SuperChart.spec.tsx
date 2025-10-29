@@ -44,6 +44,12 @@ jest.mock('./charts', () => {
                 props.tooltipContent({});
             }
             return (<div {...props} data-testid="mock-area-chart"/>)
+        },
+        RadarChart: (props: any) => {
+            if (props.tooltipContent) {
+                props.tooltipContent({});
+            }
+            return (<div {...props} data-testid="mock-radar-chart"/>)
         }
     }
 });

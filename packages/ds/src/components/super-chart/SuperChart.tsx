@@ -8,7 +8,15 @@ import type {
 
 import ChartContent from './chart-content';
 import ChartTooltip from './chart-tooltip';
-import { BarChart, PieChart, type BarChartProps, type PieChartProps, type AreaChartProps, AreaChart } from './charts';
+import {
+    BarChart,
+    PieChart,
+    type BarChartProps,
+    type PieChartProps,
+    type AreaChartProps,
+    AreaChart,
+    RadarChartProps, RadarChart
+} from './charts';
 
 import './SuperChart.scss';
 
@@ -17,11 +25,12 @@ type SuperChartProps = {
     title: string;
     barChart?: BarChartProps;
     pieChart?: PieChartProps;
-    areaChart?: AreaChartProps
     subtitle?: string;
     fallback?: string;
     children?: React.ReactNode;
     className?: string;
+    areaChart?: AreaChartProps
+    radarChart?: RadarChartProps;
     wrapperType?: TWrapper;
     chartTooltip?: ChartTooltipParams;
     tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
@@ -34,9 +43,10 @@ export default function SuperChart({
     fallback = 'No data available',
     barChart,
     pieChart,
-    areaChart,
     children,
     className,
+    areaChart,
+    radarChart,
     wrapperType,
     chartTooltip,
     tooltipContent
@@ -55,6 +65,10 @@ export default function SuperChart({
         if(type === 'area' && areaChart) {
             const { areas } = areaChart;
             return areas.length <= 0;
+        }
+        if(type === 'radar' && radarChart) {
+            const { radars } = radarChart;
+            return radars.length <= 0;
         }
         return false;
     }
@@ -90,6 +104,14 @@ export default function SuperChart({
                             {...areaChart}
                             tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
                         />
+                )
+            }
+            {
+                (type === 'radar' && radarChart) && (
+                    <RadarChart
+                        {...radarChart}
+                        tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
+                    />
                 )
             }
             {children}

@@ -154,7 +154,7 @@ export const CustomActiveShapePieChart: Story = {
                 bottom: 50,
                 left: 120,
             },
-            withoutTooltip: true,
+            withoutContentTooltip: true,
             withDefaultActiveShape: true
         },
         children: undefined
@@ -199,7 +199,7 @@ export const PieChartWithCustomizedLabel: Story = {
                     isAnimationActive: true,
                 }
             ],
-            withoutTooltip: true,
+            withoutContentTooltip: true,
             withDefaultCustomLabel: true
         },
         children: undefined

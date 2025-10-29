@@ -1,2 +1,2 @@
 export { default } from './SuperChart';
-export type { BarChartProps } from './charts';
+export { type BarChartProps, AreaChart, BarChart, PieChart } from './charts';

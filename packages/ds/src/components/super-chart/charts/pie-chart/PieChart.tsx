@@ -35,10 +35,11 @@ export default function PieChart({
     margin,
     responsive = true,
     withNeedle,
+    withTooltip = true,
     withLegends = false,
     defaultIndex,
     tooltipContent,
-    withoutTooltip = false,
+    withoutContentTooltip = false,
     withDefaultCustomLabel = false,
     withDefaultActiveShape = false
 }: PieChartProps) {
@@ -116,7 +117,10 @@ export default function PieChart({
                         )}
                     </Pie>
                 ))}
-                <Tooltip content={ withoutTooltip ? () => null : tooltipContent} defaultIndex={defaultIndex}/>
+                {withTooltip && (
+                    <Tooltip content={ withoutContentTooltip ? () => null : tooltipContent} defaultIndex={defaultIndex}/>
+                )}
+
                 {withLegends && (<Legend />)}
             </PieChartComponent>
         </div>

@@ -111,6 +111,7 @@ describe('<AreaChart/>', () => {
     const renderComponent = (props: any = {}) => {
         return render(<AreaChart {...defaultProps} {...props}/>);
     }
+
     beforeEach(() => {
         jest.spyOn(colors, 'getRandomHarmonicPalette').mockImplementation(() => ({ color: '#000', fill: '#fff', stroke: '#aaa'}));
     })

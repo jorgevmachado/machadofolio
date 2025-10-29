@@ -51,12 +51,11 @@ export default function AreaChart ({
     withPercentFormatter
 }: AreaChartProps) {
     const list = useMemo(() => {
-        const { fill, stroke } = getRandomHarmonicPalette()
         return labels?.map((label) => {
             const type = !label?.curveCardinalTension
                 ? label.type
                 : curveCardinal.tension(label?.curveCardinalTension);
-
+            const { fill, stroke } = getRandomHarmonicPalette();
             return {
                 ...label,
                 type,

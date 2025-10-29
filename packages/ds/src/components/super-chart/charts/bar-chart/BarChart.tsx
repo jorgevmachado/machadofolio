@@ -26,6 +26,8 @@ export default function BarChart ({
     yAxis,
     labels = [],
     layout = 'vertical',
+    withLegend = true,
+    withTooltip = true,
     tooltipContent,
     withCurrencyTickFormatter
 }: BarChartProps) {
@@ -89,8 +91,12 @@ export default function BarChart ({
                         <YAxis key={index} {...y}/>
                     ))}
 
-                    <Tooltip content={tooltipContent}/>
-                    {isVertical &&  <Legend/> }
+                    { withTooltip && (
+                        <Tooltip content={tooltipContent}/>
+                    )}
+
+                    {withLegend &&  <Legend/> }
+
                     <BarContent data={list} labels={labels} isVertical={isVertical}/>
                 </BarChartComponent>
             </ResponsiveContainer>

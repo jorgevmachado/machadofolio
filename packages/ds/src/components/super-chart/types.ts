@@ -2,12 +2,15 @@ import React from 'react';
 
 import { XAxis, YAxis } from 'recharts';
 
-export type TChart = 'bar' | 'pie' | 'area';
+export type TChart = 'bar' | 'pie' | 'area' | 'radar';
 
 export type TWrapper = 'default' | 'card';
 
 export type XAxisProps = React.ComponentProps< typeof XAxis>;
+
 export type YAxisProps = React.ComponentProps< typeof YAxis>;
+
+export type MarginProps = { top: number; right: number; bottom: number; left: number };
 
 export type ChartTooltipParams = {
     active?: boolean;
@@ -39,3 +42,5 @@ export type ColorProps = {
     color: string;
     stroke: string;
 };
+
+export type DataChartItem = Record<string, string | number>;

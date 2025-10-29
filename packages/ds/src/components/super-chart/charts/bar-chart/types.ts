@@ -1,8 +1,8 @@
 import React from 'react';
 
-import type { ChartTooltipParams, XAxisProps, YAxisProps } from '../../types';
+import type { ChartTooltipParams, DataChartItem, XAxisProps, YAxisProps } from '../../types';
 
-export type BarChartDataItem = Record<string, string | number> & {
+export type BarChartDataItem = DataChartItem & {
     fill?: string;
     type?: string;
     name: string;
@@ -41,6 +41,8 @@ export type BarChartProps = {
     yAxis?: Array<YAxisProps>;
     layout?: 'vertical' | 'horizontal';
     labels?: Array<BarChartLabelsItem>;
+    withLegend?: boolean;
+    withTooltip?: boolean;
     tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
     withCurrencyTickFormatter?: boolean;
 }

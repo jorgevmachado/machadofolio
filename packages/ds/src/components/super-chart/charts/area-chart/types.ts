@@ -1,8 +1,8 @@
 import React from 'react';
-import type { ChartTooltipProps } from '../../../chart';
-import type { XAxisProps, YAxisProps } from '../../types';
 
-export type AreaChartDataItem = Record<string, string | number> & {
+import type { MarginProps, XAxisProps, YAxisProps, DataChartItem, ChartTooltipParams } from '../../types';
+
+export type AreaChartDataItem = DataChartItem & {
     name: string;
 };
 
@@ -40,7 +40,7 @@ export type AreaChartProps = {
     areas: Array<AreaChartDataItem>;
     style?: React.CSSProperties;
     labels?: Array<AreaChartLabelsItem>;
-    margin?: { top: number; right: number; bottom: number; left: number };
+    margin?: MarginProps;
     syncId?: string;
     withXAxis?: boolean;
     withYAxis?: boolean;
@@ -48,6 +48,6 @@ export type AreaChartProps = {
     stackOffset?: 'expand';
     withTooltip?:boolean;
     linearGradient?: AreaChartLinearGradient;
-    tooltipContent?: (params: ChartTooltipProps) => React.ReactNode;
+    tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
     withPercentFormatter?: boolean;
 };

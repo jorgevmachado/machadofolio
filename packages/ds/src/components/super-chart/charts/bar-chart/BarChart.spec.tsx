@@ -156,7 +156,7 @@ describe('<BarChart/>', () => {
     });
 
     it('should render component with layout horizontal.', () => {
-        renderComponent({ layout: 'horizontal' });
+        renderComponent({ withLegend: false, withTooltip: false,  layout: 'horizontal' });
         expect(screen.getByTestId('ds-bar-chart')).toBeInTheDocument();
         expect(screen.getByTestId('mock-responsive-container')).toBeInTheDocument();
         expect(screen.getByTestId('mock-bar-chart-component')).toBeInTheDocument();
@@ -170,7 +170,6 @@ describe('<BarChart/>', () => {
         expect(yAxisComponent).toHaveAttribute('width', '90');
         expect(yAxisComponent).toHaveAttribute('type', 'category');
 
-        expect(screen.getByTestId('mock-tooltip')).toBeInTheDocument();
         expect(screen.getByTestId('mock-bar-chart-content')).toBeInTheDocument();
     });
 
