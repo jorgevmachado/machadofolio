@@ -6,7 +6,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import LinearGradient from './LinearGradient';
 
 describe('<LinearGradient/>', () => {
-    const areas = [
+    const data = [
         {
             name: 'Page A',
             uv: 4000,
@@ -52,7 +52,7 @@ describe('<LinearGradient/>', () => {
     ];
     const defaultProps = {
         id: 'gradient1',
-        areas,
+        data,
         value: 'uv',
         stops: [
             {
@@ -101,9 +101,9 @@ describe('<LinearGradient/>', () => {
         expect(linearGradient).toHaveAttribute('y2', '0');
     });
 
-    it('should render component with positive areas', () => {
-        const mockPositiveAreas = areas.map((item) => item.uv <= 0 ? { ...item, uv: 2000 } : item);
-        renderComponent({ areas: mockPositiveAreas });
+    it('should render component with positive data', () => {
+        const mockPositiveAreas = data.map((item) => item.uv <= 0 ? { ...item, uv: 2000 } : item);
+        renderComponent({ data: mockPositiveAreas });
         expect(screen.getByTestId('ds-area-chart-linear-gradient')).toBeInTheDocument();
         const stop1 = screen.getByTestId('ds-area-chart-linear-gradient-stop-stop-green');
         expect(stop1).toBeInTheDocument();
@@ -114,9 +114,9 @@ describe('<LinearGradient/>', () => {
         expect(stop2).toHaveAttribute('offset', '1');
     });
 
-    it('should render component with negative areas', () => {
-        const mockNegativeAreas = areas.map((item) => ({ ...item, uv: -2000 }));
-        renderComponent({ areas: mockNegativeAreas });
+    it('should render component with negative data', () => {
+        const mockNegativeAreas = data.map((item) => ({ ...item, uv: -2000 }));
+        renderComponent({ data: mockNegativeAreas });
         expect(screen.getByTestId('ds-area-chart-linear-gradient')).toBeInTheDocument();
         const stop1 = screen.getByTestId('ds-area-chart-linear-gradient-stop-stop-green');
         expect(stop1).toBeInTheDocument();
@@ -140,8 +140,8 @@ describe('<LinearGradient/>', () => {
     });
 
     it('should render component with stops value strings', () => {
-        const mockAreasString = areas.map((item) => ({ ...item, uv: String(item.uv) }));
-        renderComponent({ areas: mockAreasString });
+        const mockAreasString = data.map((item) => ({ ...item, uv: String(item.uv) }));
+        renderComponent({ data: mockAreasString });
         expect(screen.getByTestId('ds-area-chart-linear-gradient')).toBeInTheDocument();
         const stop1 = screen.getByTestId('ds-area-chart-linear-gradient-stop-stop-green');
         expect(stop1).toBeInTheDocument();
@@ -153,8 +153,8 @@ describe('<LinearGradient/>', () => {
     });
 
     it('should render component with stops value isNan', () => {
-        const mockAreasString = areas.map((item) => ({ ...item, uv: 'IsNan' }));
-        renderComponent({ areas: mockAreasString });
+        const mockAreasString = data.map((item) => ({ ...item, uv: 'IsNan' }));
+        renderComponent({ data: mockAreasString });
         expect(screen.getByTestId('ds-area-chart-linear-gradient')).toBeInTheDocument();
         const stop1 = screen.getByTestId('ds-area-chart-linear-gradient-stop-stop-green');
         expect(stop1).toBeInTheDocument();

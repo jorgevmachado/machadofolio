@@ -34,9 +34,9 @@ const defaultMargin = {
 }
 
 export default function AreaChart ({
+    data,
     xAxis,
     yAxis,
-    areas,
     style,
     margin,
     syncId,
@@ -87,7 +87,7 @@ export default function AreaChart ({
 
     return (
         <AreaChartComponent
-            data={areas}
+            data={data}
             style={currentStyle}
             syncId={syncId}
             margin={currentMargin}
@@ -109,7 +109,7 @@ export default function AreaChart ({
             )}
 
             {linearGradient && (
-                <LinearGradient {...linearGradient} areas={areas}/>
+                <LinearGradient {...linearGradient} data={data}/>
             )}
 
             {list?.map((label, index) => (

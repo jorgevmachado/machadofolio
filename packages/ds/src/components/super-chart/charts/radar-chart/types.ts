@@ -23,9 +23,9 @@ export type RadarChartLabelsItem = {
 }
 
 export type RadarChartProps = {
+    data: Array<RadarChartDataItem>;
     value: PolarAngleAxisProps['dataKey'];
     style?: React.CSSProperties;
-    radars: Array<RadarChartDataItem>;
     labels: Array<RadarChartLabelsItem>;
     margin?: MarginProps;
     responsive?: boolean;

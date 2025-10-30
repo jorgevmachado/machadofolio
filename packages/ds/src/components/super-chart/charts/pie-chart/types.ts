@@ -35,7 +35,7 @@ export type PieSectorData = {
 };
 
 export type PieChartProps = {
-    pies: Array<PieProps>;
+    data: Array<PieProps>;
     style?: React.CSSProperties;
     margin?: MarginProps;
     responsive?: boolean;

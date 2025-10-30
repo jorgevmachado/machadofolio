@@ -60,17 +60,17 @@ export default function SuperChart({
             return data.length <= 0;
         }
         if(type === 'pie' && pieChart) {
-            const { pies } = pieChart;
-            return pies.length <= 0;
+            const { data } = pieChart;
+            return data.length <= 0;
         }
 
         if(type === 'area' && areaChart) {
-            const { areas } = areaChart;
-            return areas.length <= 0;
+            const { data } = areaChart;
+            return data.length <= 0;
         }
         if(type === 'radar' && radarChart) {
-            const { radars } = radarChart;
-            return radars.length <= 0;
+            const { data } = radarChart;
+            return data.length <= 0;
         }
         if(type === 'radial' && radialChart) {
             const { data } = radialChart;

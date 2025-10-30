@@ -142,7 +142,7 @@ describe('<SuperChart/>', () => {
             renderComponent({
                 type: 'pie',
                 pieChart: {
-                    pies: [
+                    data: [
                         {
                             cx: '50%',
                             cy: '50%',
@@ -202,7 +202,7 @@ describe('<SuperChart/>', () => {
             renderComponent({
                 type: 'area',
                 areaChart: {
-                    areas: [
+                    data: [
                         {
                             name: 'Page A',
                             uv: 4000,
@@ -273,7 +273,7 @@ describe('<SuperChart/>', () => {
             renderComponent({
                 type: 'radar',
                 radarChart: {
-                    radars: [
+                    data: [
                         {
                             name: '18-24',
                             uv: 31.47,

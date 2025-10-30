@@ -53,7 +53,7 @@ const meta = {
         type: 'area',
         title: 'Area Chart Title',
         areaChart: {
-            areas: data,
+            data,
             labels: [{
                 key: 'uv',
                 fill: '#8884d8',
@@ -85,7 +85,7 @@ export const StackedAreaChart: Story = {
         children: undefined,
         subtitle: undefined,
         areaChart: {
-            areas: data,
+            data,
             labels: [
                 {
                     key: 'uv',
@@ -122,7 +122,7 @@ export const AreaChartConnectNulls: Story = {
         children: undefined,
         subtitle: undefined,
         areaChart: {
-            areas: data.map((item) => {
+            data: data.map((item) => {
                 if(item.name === 'Page D') {
                     return {
                         name: 'Page D',
@@ -150,7 +150,7 @@ export const CardinalAreaChart: Story = {
         children: undefined,
         subtitle: undefined,
         areaChart: {
-            areas: data,
+            data,
             labels: [
                 {
                     key: 'uv',
@@ -182,7 +182,7 @@ export const PercentAreaChart: Story = {
         subtitle: undefined,
         areaChart: {
             xAxis: { dataKey: 'month' },
-            areas: [
+            data: [
                     {
                         name: 'month-1',
                         month: '2015.01',
@@ -278,7 +278,7 @@ export const TinyAreaChart: Story = {
         children: undefined,
         subtitle: undefined,
         areaChart: {
-            areas: data,
+            data,
             margin: {
                 top: 5,
                 right: 0,
@@ -306,7 +306,7 @@ export const AreaChartFillByValue: Story = {
         children: undefined,
         subtitle: undefined,
         areaChart: {
-            areas: [
+            data: [
                 {
                     name: 'Page A',
                     uv: 4000,

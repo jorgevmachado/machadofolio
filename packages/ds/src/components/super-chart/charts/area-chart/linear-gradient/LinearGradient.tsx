@@ -3,7 +3,7 @@ import React from 'react';
 import type { AreaChartDataItem, AreaChartLinearGradient } from '../types';
 
 type LinearGradientProps = AreaChartLinearGradient & {
-    areas: Array<AreaChartDataItem>;
+    data: Array<AreaChartDataItem>;
 };
 
 export default function LinearGradient({
@@ -12,13 +12,13 @@ export default function LinearGradient({
     y1 = '0',
     x2 = '0',
     y2 = '0',
+    data,
     value,
-    areas,
     stops,
 }: LinearGradientProps) {
 
     const gradientOffset = () => {
-        const values = areas.map((item) => {
+        const values = data.map((item) => {
             if(item?.[value]) {
                 const itemValue = item[value];
                 if(typeof itemValue === 'number') {
