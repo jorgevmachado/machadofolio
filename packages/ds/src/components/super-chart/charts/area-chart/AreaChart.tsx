@@ -65,13 +65,9 @@ export default function AreaChart ({
         });
     }, [labels]);
 
-    const currentStyle = useMemo(() => {
-        return { ...defaultStyle, ...style }
-    }, [style]);
+    const currentStyle = { ...defaultStyle, ...style };
 
-    const currentMargin = useMemo(() => {
-        return { ...defaultMargin, ...margin }
-    }, [margin]);
+    const currentMargin = { ...defaultMargin, ...margin };
 
     const axis = useMemo(() => {
         const x: XAxisProps = !xAxis ? { dataKey: 'name' } : xAxis;

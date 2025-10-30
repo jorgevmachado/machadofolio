@@ -53,9 +53,7 @@ export default function RadialChart({
         })
     }, [labels]);
 
-    const currentStyle = useMemo(() => {
-        return { ...defaultStyle, ...style }
-    }, [style]);
+    const currentStyle = { ...defaultStyle, ...style };
 
     const legendProps = useMemo(() => {
         const { layout, iconSize, wrapperStyle, verticalAlign } = legend || {} as LegendProps;

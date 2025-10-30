@@ -30,7 +30,7 @@ const defaultStyle = {
 
 
 export default function PieChart({
-    pies,
+    data,
     style,
     margin,
     responsive = true,
@@ -52,10 +52,10 @@ export default function PieChart({
 
     const list = useMemo(() => {
         if(withDefaultActiveShape || withDefaultCustomLabel || withNeedle) {
-            return pies.slice(0,1);
+            return data.slice(0,1);
         }
-        return pies;
-    }, [pies, withDefaultActiveShape, withDefaultCustomLabel, withNeedle]);
+        return data;
+    }, [data, withDefaultActiveShape, withDefaultCustomLabel, withNeedle]);
 
 
     const hasCustomLabel = (label?: PieProps['label']) => {

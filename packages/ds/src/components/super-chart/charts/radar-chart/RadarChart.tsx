@@ -28,10 +28,10 @@ const defaultMargin = {
 }
 
 export default function RadarChart({
+    data,
     value,
     style,
     margin,
-    radars,
     labels = [],
     responsive,
     withLegend = false,
@@ -42,13 +42,9 @@ export default function RadarChart({
     polarRadiusAxis
 }: RadarChartProps) {
 
-    const currentStyle = useMemo(() => {
-        return { ...defaultStyle, ...style }
-    }, [style]);
+    const currentStyle = { ...defaultStyle, ...style };
 
-    const currentMargin = useMemo(() => {
-        return { ...defaultMargin, ...margin }
-    }, [margin]);
+    const currentMargin = { ...defaultMargin, ...margin };
 
     const list = useMemo(() => {
         return labels?.map((label) => {
@@ -78,7 +74,7 @@ export default function RadarChart({
     return (
         <RadarChartComponent
             style={currentStyle}
-            data={radars}
+            data={data}
             margin={currentMargin}
             responsive={responsive}
             outerRadius={outerRadius}

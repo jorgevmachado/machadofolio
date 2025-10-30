@@ -94,7 +94,7 @@ describe('<PieChart/>', () => {
     ]
 
     const defaultProps = {
-        pies: mockPies,
+        data: mockPies,
         withoutContentTooltip: false,
     }
 
@@ -120,7 +120,7 @@ describe('<PieChart/>', () => {
 
     it('should render straight angle pie chart', () => {
         renderComponent({
-            pies: [
+            data: [
                 {
                     cx: '50%',
                     cy: '50%',
@@ -178,7 +178,7 @@ describe('<PieChart/>', () => {
 
     it('Pie Chart With Customized Label', () => {
         renderComponent({
-            pies: [
+            data: [
                 {
                     key: 'customized-label',
                     fill: '#8884d8',
@@ -223,7 +223,7 @@ describe('<PieChart/>', () => {
 
     it('Pie Chart With Customized Label without fill in data', () => {
         renderComponent({
-            pies: [
+            data: [
                 {
                     key: 'customized-label',
                     fill: '#8884d8',
@@ -269,7 +269,7 @@ describe('<PieChart/>', () => {
 
     it('Pie Chart With Needle', () => {
         renderComponent({
-            pies: [
+            data: [
                 {
                     key: 'pie_chart_with_needle',
                     cx: 100,
