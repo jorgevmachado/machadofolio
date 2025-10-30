@@ -2,7 +2,7 @@ import React from 'react';
 
 import { XAxis, YAxis } from 'recharts';
 
-export type TChart = 'bar' | 'pie' | 'area' | 'radar';
+export type TChart = 'bar' | 'pie' | 'area' | 'radar' |  'radial' | 'line';
 
 export type TWrapper = 'default' | 'card';
 

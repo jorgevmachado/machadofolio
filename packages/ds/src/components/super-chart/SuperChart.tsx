@@ -15,7 +15,7 @@ import {
     type PieChartProps,
     type AreaChartProps,
     AreaChart,
-    RadarChartProps, RadarChart
+    RadarChartProps, RadarChart, RadialChartProps, RadialChart
 } from './charts';
 
 import './SuperChart.scss';
@@ -31,6 +31,7 @@ type SuperChartProps = {
     className?: string;
     areaChart?: AreaChartProps
     radarChart?: RadarChartProps;
+    radialChart?: RadialChartProps;
     wrapperType?: TWrapper;
     chartTooltip?: ChartTooltipParams;
     tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
@@ -47,6 +48,7 @@ export default function SuperChart({
     className,
     areaChart,
     radarChart,
+    radialChart,
     wrapperType,
     chartTooltip,
     tooltipContent
@@ -69,6 +71,10 @@ export default function SuperChart({
         if(type === 'radar' && radarChart) {
             const { radars } = radarChart;
             return radars.length <= 0;
+        }
+        if(type === 'radial' && radialChart) {
+            const { data } = radialChart;
+            return data.length <= 0;
         }
         return false;
     }
@@ -112,6 +118,15 @@ export default function SuperChart({
                         {...radarChart}
                         tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
                     />
+                )
+            }
+            {
+                (type === 'radial' && radialChart ) && (
+                    <RadialChart
+                        {...radialChart}
+                        tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
+                    />
+
                 )
             }
             {children}
