@@ -44,3 +44,5 @@ export type ColorProps = {
 };
 
 export type DataChartItem = Record<string, string | number>;
+
+export type TLayout = 'vertical' | 'horizontal';

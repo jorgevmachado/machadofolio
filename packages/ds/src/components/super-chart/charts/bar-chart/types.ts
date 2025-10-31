@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { ChartTooltipParams, DataChartItem, XAxisProps, YAxisProps } from '../../types';
+import { ChartTooltipParams, DataChartItem, TLayout, XAxisProps, YAxisProps } from '../../types';
 
 export type BarChartDataItem = DataChartItem & {
     fill?: string;
@@ -39,7 +39,7 @@ export type BarChartProps = {
     data: Array<BarChartDataItem>;
     xAxis?: Array<XAxisProps>;
     yAxis?: Array<YAxisProps>;
-    layout?: 'vertical' | 'horizontal';
+    layout?: TLayout;
     labels?: Array<BarChartLabelsItem>;
     withLegend?: boolean;
     withTooltip?: boolean;

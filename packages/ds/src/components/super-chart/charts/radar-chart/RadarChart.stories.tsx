@@ -48,7 +48,7 @@ const meta = {
         title: 'Radar Chart Title',
         radarChart: {
             value: 'subject',
-            radars: data,
+            data,
             labels: [{
                 key: 'mike',
                 fill: '#8884d8',
@@ -81,7 +81,7 @@ export const SpecifiedDomainRadarChart: Story = {
         children: undefined,
         radarChart: {
             value: 'subject',
-            radars: data,
+            data,
             labels: [
                 {
                     key: 'mike',
