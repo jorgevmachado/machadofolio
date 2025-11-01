@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { Scatter, ScatterChart, Tooltip, TooltipContentProps, XAxis, YAxis, ZAxis } from 'recharts';
+import { Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from 'recharts';
 
-import { ScatterChartDataItem } from '../type';
-import { MarginProps, TooltipProps, XAxisProps, YAxisProps, ZAxisProps } from '../../../types';
+import type { MarginProps, TooltipProps, XAxisProps, YAxisProps, ZAxisProps } from '../../../types';
+
+import type { ScatterChartDataItem } from '../type';
 
 type AxisProps = {
     x: XAxisProps;
@@ -23,56 +24,6 @@ type BubbleScatterChartProps = {
     bubbleStyle?: React.CSSProperties;
 };
 
-type BubbleAxesProps = {
-    axis: AxisProps;
-    name: string;
-    range?: [number, number];
-    domain?: Array<number>;
-    showXTicks?: boolean;
-}
-
-const renderTooltip = (props: TooltipContentProps<string | number, string>) => {
-    const { active, payload } = props;
-
-    if (active && payload && payload.length) {
-        const data = payload[0] && payload[0].payload;
-
-        return (
-            <div
-                style={{
-                    backgroundColor: '#fff',
-                    border: '1px solid #999',
-                    margin: 0,
-                    padding: 10,
-                }}
-            >
-                <p>{data.hour}</p>
-                <p>
-                    <span>value: </span>
-                    {data.value}
-                </p>
-            </div>
-        );
-    }
-
-    return null;
-};
-
-const BubbleAxes = ({ axis, name, range = [16, 225], domain, showXTicks = false }: BubbleAxesProps) => {
-    return (
-        <>
-            <XAxis
-                {...axis.x}
-                tick={showXTicks || { fontSize: 0 }}
-            />
-            <YAxis
-                {...axis.y}
-                label={{  value: name }}
-            />
-            <ZAxis {...axis.z} domain={domain} range={range} />
-        </>
-    )
-};
 
 export default function BubbleScatterChart({
     data,
@@ -84,25 +35,44 @@ export default function BubbleScatterChart({
     tooltip,
     responsive,
     bubbleStyle
-}: BubbleScatterChartProps) {
+}: Readonly<BubbleScatterChartProps>) {
     return (
         <div style={bubbleStyle} data-testid="ds-bubble-scatter-chart">
             { data.map((item, index) => (
                 <ScatterChart
-                    key={`ds-bubble-scatter-chart-${index}`}
+                    key={`ds-bubble-scatter-chart-${item.key}-${index}`}
                     style={style}
                     margin={margin}
-                    responsive={responsive}>
-                    <BubbleAxes
-                        axis={axis}
-                        range={range}
-                        name={item?.name || ''}
-                        domain={domain}
-                        showXTicks={Boolean(item?.showTicks)}
+                    responsive={responsive}
+                    data-testid={`ds-bubble-scatter-chart-${index}`}
+                >
+
+                    <XAxis
+                        {...axis.x}
+                        tick={Boolean(item?.showTicks) || { fontSize: 0 }}
+                        data-testid={`ds-bubble-scatter-chart-x-axis-${index}`}
                     />
-                    <Scatter data={item.data} fill={item?.fill || '#8884d8'} />
-                    <Tooltip {...tooltip} />
-                    {/*<Tooltip cursor={{ strokeDasharray: '3 3' }} wrapperStyle={{ zIndex: 100 }} content={renderTooltip} />*/}
+                    <YAxis
+                        {...axis.y}
+                        label={{  value: item?.name }}
+                        data-testid={`ds-bubble-scatter-chart-y-axis-${index}`}
+                    />
+                    <ZAxis
+                        {...axis.z}
+                        domain={domain}
+                        range={range ?? [16, 225]}
+                        data-testid={`ds-bubble-scatter-chart-z-axis-${index}`}
+                    />
+
+                    <Scatter
+                        data={item.data}
+                        fill={item?.fill || '#8884d8'}
+                        data-testid={`ds-bubble-scatter-chart-scatter-${index}`}
+                    />
+                    <Tooltip
+                        {...tooltip}
+                        data-testid={`ds-bubble-scatter-chart-tooltip-${index}`}
+                    />
                 </ScatterChart>
             ))}
 

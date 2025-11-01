@@ -11,7 +11,8 @@ import {
     ZAxisProps
 } from '../../types';
 
-type ScatterProps = React.ComponentProps<typeof Scatter> & {
+type ScatterProps = Omit<React.ComponentProps<typeof Scatter>, 'key'> & {
+    key: string;
     withCell?: boolean;
     showTicks?: boolean;
     labelList?: LabelListProps

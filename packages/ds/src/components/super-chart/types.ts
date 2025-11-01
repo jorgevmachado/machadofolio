@@ -12,7 +12,9 @@ export type XAxisProps = React.ComponentProps< typeof XAxis>;
 
 export type YAxisProps = React.ComponentProps< typeof YAxis>;
 
-export type ZAxisProps = React.ComponentProps< typeof ZAxis>;
+export type ZAxisProps = React.ComponentProps< typeof ZAxis> & {
+    key?: string;
+};
 
 export type TooltipProps = React.ComponentProps<typeof Tooltip> & {
     withContent?: boolean;

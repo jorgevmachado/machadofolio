@@ -423,7 +423,7 @@ export const MultipleYAxesScatterChart: Story = {
             ],
             data: [
                 {
-                    yAxisId: "left",
+                    key: 'a-school-1',
                     name: "A school",
                     fill: "#8884d8",
                     data: [
@@ -433,10 +433,12 @@ export const MultipleYAxesScatterChart: Story = {
                         { x: 140, y: 250, z: 280 },
                         { x: 150, y: 400, z: 500 },
                         { x: 110, y: 280, z: 200 },
-                    ]
+                    ],
+                    yAxisId: "left",
                 },
                 {
-                    yAxisId:"right",
+                    key: 'a-school-2',
+                    fill:"#82ca9d",
                     name:"A school",
                     data: [
                         { x: 300, y: 300, z: 200 },
@@ -452,23 +454,22 @@ export const MultipleYAxesScatterChart: Story = {
                         { x: 500, y: 400, z: 500 },
                         { x: 420, y: 280, z: 200 },
                     ],
-                    fill:"#82ca9d",
+                    yAxisId:"right",
                 }
             ],
         }
     }
 };
 
-// TODO FALTA FINALIZAR
 export const ScatterChartWithCells: Story = {
     args: {
         title: 'Scatter Chart With Cells',
         subtitle: undefined,
         children: undefined,
         scatterChart: {
-            style: { width: '100%', maxWidth: '300px', maxHeight: '70vh', aspectRatio: 1.618 },
             data: [
                 {
+                    key: 'a-school',
                     name: "A school",
                     fill: "#8884d8",
                     data: [
