@@ -1,8 +1,10 @@
 import React from 'react';
 
-import { XAxis, YAxis } from 'recharts';
+import { Text } from '../../elements';
 
-export type TChart = 'bar' | 'pie' | 'area' | 'radar' |  'radial' | 'line';
+import { XAxis, YAxis, ZAxis, Tooltip } from 'recharts';
+
+export type TChart = 'bar' | 'pie' | 'area' | 'radar' |  'radial' | 'line' | 'scatter';
 
 export type TWrapper = 'default' | 'card';
 
@@ -10,14 +12,36 @@ export type XAxisProps = React.ComponentProps< typeof XAxis>;
 
 export type YAxisProps = React.ComponentProps< typeof YAxis>;
 
+export type ZAxisProps = React.ComponentProps< typeof ZAxis>;
+
+export type TooltipProps = React.ComponentProps<typeof Tooltip> & {
+    withContent?: boolean;
+};
+
+export type TextTooltipProps = Omit<React.ComponentProps<typeof Text>, 'children'> & {
+    type: string;
+    text?: string;
+    dataName: string | number;
+    withCurrencyFormatter?: boolean;
+};
+
+export type TextProps = Omit<Partial<TextTooltipProps>, 'type' | 'dataName'> & {
+  show?: boolean;
+};
+
 export type MarginProps = { top: number; right: number; bottom: number; left: number };
 
 export type ChartTooltipParams = {
+    style?: React.CSSProperties;
     active?: boolean;
     payload?: Array<PayloadItemProps>;
-    countText?: string;
-    valueText?: string;
-    percentageText?: string;
+    nameProps?: TextProps;
+    hourProps?: TextProps;
+    countProps?: TextProps;
+    valueProps?: TextProps;
+    percentageProps?: TextProps;
+    genericTextProps?: TextProps & { withCurrencyFormatter?: boolean };
+    withGenericProps?: boolean;
 };
 
 export type PayloadItemProps = {

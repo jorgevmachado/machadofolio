@@ -62,6 +62,12 @@ jest.mock('./charts', () => {
                 props.tooltipContent({});
             }
             return (<div {...props} data-testid="mock-line-chart"/>)
+        },
+        ScatterChart: (props: any) => {
+            if (props.tooltipContent) {
+                props.tooltipContent({});
+            }
+            return (<div {...props} data-testid="mock-scatter-chart"/>)
         }
     }
 });
@@ -797,6 +803,45 @@ describe('<SuperChart/>', () => {
                 },
             });
             expect(screen.getByTestId('mock-line-chart')).toBeInTheDocument();
+        });
+    });
+
+    describe('ScatterChart', () => {
+        const mockData = [
+            { x: 100, y: 200, z: 200 },
+            { x: 120, y: 100, z: 260 },
+            { x: 170, y: 300, z: 400 },
+            { x: 140, y: 250, z: 280 },
+            { x: 150, y: 400, z: 500 },
+            { x: 110, y: 280, z: 200 },
+        ];
+        it('should render component with type scatter without scatterChart.', () => {
+            renderComponent({ type: 'scatter' });
+            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.queryByTestId('mock-scatter-chart')).not.toBeInTheDocument();
+        });
+
+        it('should render component with type scatter and scatterChart.', () => {
+            renderComponent({
+                type: 'scatter',
+                scatterChart: {
+                    data: mockData,
+                    responsive: true,
+                },
+                chartTooltip: { countText: 'expenses', valueText: 'Total' }
+            });
+            expect(screen.getByTestId('mock-scatter-chart')).toBeInTheDocument();
+        });
+
+        it('should render component with type scatter and  without chartTooltip.', () => {
+            renderComponent({
+                type: 'scatter',
+                scatterChart: {
+                    data: mockData,
+                    responsive: true,
+                },
+            });
+            expect(screen.getByTestId('mock-scatter-chart')).toBeInTheDocument();
         });
     });
 });

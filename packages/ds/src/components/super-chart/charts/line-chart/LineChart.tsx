@@ -115,9 +115,6 @@ export default function LineChart({
 
     const { refAreaLeft, refAreaRight } = zoomGraph;
 
-    console.log('# => refAreaLeft => ', refAreaLeft)
-    console.log('# => refAreaRight => ', refAreaRight)
-
     const currentStyle = { ...defaultStyle, ...style };
 
     const currentMargin = { ...defaultMargin, ...margin };

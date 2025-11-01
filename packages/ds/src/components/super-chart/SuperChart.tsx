@@ -3,7 +3,7 @@ import React from 'react';
 import type {
     TChart,
     TWrapper,
-    ChartTooltipParams,
+    ChartTooltipParams, TooltipProps,
 } from './types';
 
 import ChartContent from './chart-content';
@@ -16,12 +16,14 @@ import {
     type RadarChartProps,
     type RadialChartProps,
     type LineChartProps,
+    type ScatterChartProps,
     BarChart,
     PieChart,
     AreaChart,
     RadarChart,
     RadialChart,
-    LineChart
+    LineChart,
+    ScatterChart
 } from './charts';
 
 import './SuperChart.scss';
@@ -29,6 +31,7 @@ import './SuperChart.scss';
 type SuperChartProps = {
     type?: TChart;
     title: string;
+    tooltip?: TooltipProps;
     barChart?: BarChartProps;
     pieChart?: PieChartProps;
     subtitle?: string;
@@ -40,6 +43,7 @@ type SuperChartProps = {
     radarChart?: RadarChartProps;
     radialChart?: RadialChartProps;
     wrapperType?: TWrapper;
+    scatterChart?: ScatterChartProps;
     chartTooltip?: ChartTooltipParams;
     tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
 }
@@ -47,6 +51,7 @@ type SuperChartProps = {
 export default function SuperChart({
     type = 'bar',
     title,
+    tooltip,
     subtitle,
     fallback = 'No data available',
     barChart,
@@ -59,6 +64,7 @@ export default function SuperChart({
     radialChart,
     wrapperType,
     chartTooltip,
+    scatterChart,
     tooltipContent
 }: SuperChartProps) {
 
@@ -67,6 +73,7 @@ export default function SuperChart({
             const { data = []} = barChart;
             return data.length <= 0;
         }
+
         if(type === 'pie' && pieChart) {
             const { data = [] } = pieChart;
             return data.length <= 0;
@@ -76,20 +83,27 @@ export default function SuperChart({
             const { data = [] } = areaChart;
             return data.length <= 0;
         }
+
         if(type === 'radar' && radarChart) {
             const { data = [] } = radarChart;
             return data.length <= 0;
         }
+
         if(type === 'radial' && radialChart) {
             const { data = [] } = radialChart;
             return data?.length <= 0;
         }
+
         if(type === 'line' && lineChart) {
             const { data = [] } = lineChart;
-
             return data?.length <= 0;
-
         }
+
+        if(type === 'scatter' && scatterChart) {
+            const { data = [] } = scatterChart;
+            return data?.length <= 0;
+        }
+
         return false;
     }
 
@@ -147,6 +161,15 @@ export default function SuperChart({
                 (type === 'line' && lineChart ) && (
                     <LineChart
                         {...lineChart}
+                        tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
+                    />
+                )
+            }
+            {
+                (type === 'scatter' && scatterChart ) && (
+                    <ScatterChart
+                        {...scatterChart}
+                        tooltip={tooltip}
                         tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
                     />
                 )
