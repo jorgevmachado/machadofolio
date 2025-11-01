@@ -29,7 +29,7 @@ function GenericTextTooltip({ data, genericTextProps }: GenericTextTooltipProps)
     }));
 
     return  list.map(({ name, value }, index) => (
-        <Text {...props} key={`name-${index}`} data-testid={`ds-chart-tooltip-${name}`}>
+        <Text {...props} key={`name-${index}`} data-testid={`ds-chart-tooltip-${name}-generic`}>
             {name}: {value}
         </Text>
     ))
@@ -141,53 +141,3 @@ export default function ChartTooltip({
     }
     return null;
 }
-
-// import React, { useMemo } from 'react';
-//
-// import { currencyFormatter } from '@repo/services';
-//
-// import { Text } from '../../../elements';
-//
-// import { ChartTooltipParams, TextProps, TextTooltipProps } from '../types';
-//
-// type ChartTooltipProps = ChartTooltipParams;
-
-
-
-
-//
-// export default function ChartTooltip({
-//                                          active,
-//                                          style,
-//                                          payload,
-//                                          hourProps,
-//                                          nameProps,
-//                                          countProps,
-//                                          valueProps,
-//                                          percentageProps,
-//                                          genericTextProps,
-//                                          withGenericProps = true,
-//                                      }: Readonly<ChartTooltipProps>) {
-//     if(active && payload && payload.length) {
-//
-//
-//         const currentPayload = payload[0];
-//         const data = currentPayload?.payload || {} as Record<string, string | number>;
-//         const value = Number(data?.value) || 0;
-//         const percentageTotal = Number(data?.percentageTotal) || 0;
-//         const percentage = !data.percentageTotal ? data?.percentageTotal : ((value / percentageTotal) * 100).toFixed(1);
-//
-//         const currentStyle =  style ?? defaultStyle;
-//
-//         return (
-//             <div style={currentStyle} data-testid="ds-chart-tooltip">
-//                 <Text variant="small" weight="bold" color="neutral-100" data-testid="ds-chart-tooltip-name">
-//                     {data.name}
-//                 </Text>
-//
-
-//             </div>
-//         )
-//     }
-//     return null;
-// }
