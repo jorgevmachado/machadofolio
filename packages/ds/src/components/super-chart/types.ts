@@ -2,11 +2,13 @@ import React from 'react';
 
 import { Text } from '../../elements';
 
-import { XAxis, YAxis, ZAxis, Tooltip } from 'recharts';
+import { XAxis, YAxis, ZAxis, Tooltip, Legend } from 'recharts';
 
 export type TChart = 'bar' | 'pie' | 'area' | 'radar' |  'radial' | 'line' | 'scatter';
 
 export type TWrapper = 'default' | 'card';
+
+export type LegendProps = React.ComponentProps<typeof Legend>;
 
 export type XAxisProps = React.ComponentProps< typeof XAxis>;
 

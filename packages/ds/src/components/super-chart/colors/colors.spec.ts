@@ -1,4 +1,4 @@
-import { BANK_COLORS, FALLBACK_COLOR, getRandomHarmonicPalette, mapColors, hslToHex } from './colors';
+import { BANK_COLORS, FALLBACK_COLOR, getRandomHarmonicPalette, mapColors, hslToHex, darkenColor, HIGHLIGHT_COLORS, HARMONY_COLORS, ORGANIC_COLORS, EMPHASIS_COLORS } from './colors';
 
 jest.mock('@repo/services', () => ({
   normalize: (str: string) => str,
@@ -98,12 +98,52 @@ describe('functions colors', () => {
             expect(result).toHaveProperty('color');
             expect(result).toHaveProperty('fill');
             expect(result).toHaveProperty('stroke');
-            expect(result.color).toMatch(/^#[0-9a-fA-F]{6}$/);
+            expect(result?.color).toMatch(/^#[0-9a-fA-F]{6}$/);
         });
 
         it('should normalize and snake_case the name before matching', () => {
             const result = mapColors({ type: 'bank', name: 'Banco do Brasil' });
             expect(result).toEqual(BANK_COLORS.find(b => b.name === 'banco_do_brasil'));
+        });
+
+        it('should return a palette for type highlight', () => {
+            const result = mapColors({ type: 'highlight', name: 'electric_blue' });
+            expect(result).toEqual(HIGHLIGHT_COLORS[0]);
+        });
+
+        it('should return a palette for type highlight fallback', () => {
+            const result = mapColors({ type: 'highlight', name: 'anything' });
+            expect(result).toEqual(HIGHLIGHT_COLORS[0]);
+        });
+
+        it('should return a palette for type harmony', () => {
+            const result = mapColors({ type: 'harmony', name: 'serene_blue' });
+            expect(result).toEqual(HARMONY_COLORS[0]);
+        });
+
+        it('should return a palette for type harmony fallback', () => {
+            const result = mapColors({ type: 'harmony', name: 'anything' });
+            expect(result).toEqual(HARMONY_COLORS[0]);
+        });
+
+        it('should return a palette for type organic', () => {
+            const result = mapColors({ type: 'organic', name: 'forest_green' });
+            expect(result).toEqual(ORGANIC_COLORS[0]);
+        });
+
+        it('should return a palette for type organic fallback', () => {
+            const result = mapColors({ type: 'organic', name: 'anything' });
+            expect(result).toEqual(ORGANIC_COLORS[0]);
+        });
+
+        it('should return a palette for type emphasis', () => {
+            const result = mapColors({ type: 'emphasis', name: 'black' });
+            expect(result).toEqual(EMPHASIS_COLORS[0]);
+        });
+
+        it('should return a palette for type emphasis fallback', () => {
+            const result = mapColors({ type: 'emphasis', name: 'anything' });
+            expect(result).toEqual(EMPHASIS_COLORS[0]);
         });
     });
 
@@ -130,6 +170,64 @@ describe('functions colors', () => {
             expect(strokeLum).toBe(0);
             const hex = hslToHex(240, 60, strokeLum);
             expect(hex).toMatch(/^#[0-9a-fA-F]{6}$/);
+        });
+    });
+
+    describe('darkenColor', () => {
+        it('should darken a 6-digit hex color', () => {
+            expect(darkenColor('#336699', 20)).toBe('#1f5285');
+        });
+
+        it('should darken a 3-digit hex color', () => {
+            expect(darkenColor('#369', 20)).toBe('#1f5285');
+        });
+
+        it('should not go below 0 for any channel', () => {
+            expect(darkenColor('#050505', 20)).toBe('#000000');
+        });
+
+        it('should return a valid hex string', () => {
+            expect(darkenColor('#abcdef')).toMatch(/^#[0-9a-fA-F]{6}$/);
+        });
+    });
+
+    describe('HIGHLIGHT_COLORS', () => {
+        it('should have 5 highlight colors with fill and stroke', () => {
+            expect(HIGHLIGHT_COLORS).toHaveLength(5);
+            HIGHLIGHT_COLORS.forEach(c => {
+                expect(c.fill).toBe(c.color);
+                expect(c.stroke).toBe(darkenColor(c.color));
+            });
+        });
+    });
+
+    describe('HARMONY_COLORS', () => {
+        it('should have 5 harmony colors with fill and stroke', () => {
+            expect(HARMONY_COLORS).toHaveLength(5);
+            HARMONY_COLORS.forEach(c => {
+                expect(c.fill).toBe(c.color);
+                expect(c.stroke).toBe(darkenColor(c.color));
+            });
+        });
+    });
+
+    describe('ORGANIC_COLORS', () => {
+        it('should have 5 organic colors with fill and stroke', () => {
+            expect(ORGANIC_COLORS).toHaveLength(5);
+            ORGANIC_COLORS.forEach(c => {
+                expect(c.fill).toBe(c.color);
+                expect(c.stroke).toBe(darkenColor(c.color));
+            });
+        });
+    });
+
+    describe('EMPHASIS_COLORS', () => {
+        it('should have 5 emphasis colors with fill and stroke', () => {
+            expect(EMPHASIS_COLORS).toHaveLength(5);
+            EMPHASIS_COLORS.forEach(c => {
+                expect(c.fill).toBe(c.color);
+                expect(c.stroke).toBe(darkenColor(c.color));
+            });
         });
     });
 });
