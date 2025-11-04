@@ -52,7 +52,7 @@ const meta = {
         type: 'pie',
         title: 'Pie Chart Title',
         pieChart: {
-            pies: mockPies
+            data: mockPies
         },
         subtitle: 'Pie Chart Subtitle',
         children: 'Hello, World!',
@@ -75,7 +75,7 @@ export const StraightAnglePieChart: Story = {
         title: 'Straight Angle Pie Chart',
         subtitle: undefined,
         pieChart: {
-            pies: [{
+            data: [{
                 cx: '50%',
                 cy: '100%',
                 key: 'straight-angle',
@@ -108,7 +108,7 @@ export const CustomActiveShapePieChart: Story = {
         title: 'Custom Active Shape Pie Chart',
         subtitle: undefined,
         pieChart: {
-            pies: [
+            data: [
                 {
                     cx: '50%',
                     cy: '50%',
@@ -166,7 +166,7 @@ export const PieChartWithCustomizedLabel: Story = {
         title: 'Pie Chart With Customized Label',
         subtitle: undefined,
         pieChart: {
-            pies: [
+            data: [
                 {
                     key: 'straight-angle',
                     fill: '#8884d8',
@@ -199,8 +199,10 @@ export const PieChartWithCustomizedLabel: Story = {
                     isAnimationActive: true,
                 }
             ],
-            withoutContentTooltip: true,
             withDefaultCustomLabel: true
+        },
+        tooltip: {
+            withContent: false
         },
         children: undefined
     }
@@ -211,7 +213,7 @@ export const PieChartWithGapAndRoundedCorners: Story = {
         title: 'Pie Chart with gap and rounded corners',
         subtitle: undefined,
         pieChart: {
-            pies: [
+            data: [
                 {
                     key: 'pie_chart_with_gap_and_rounded_corners',
                     fill: '#8884d8',
@@ -239,7 +241,7 @@ export const PieChartWithNeedle: Story = {
         title: 'Pie Chart With Needle',
         subtitle: undefined,
         pieChart: {
-            pies: [
+            data: [
                 {
                     key: 'pie_chart_with_needle',
                     cx: 100,

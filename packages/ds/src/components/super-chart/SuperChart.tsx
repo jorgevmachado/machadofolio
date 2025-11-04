@@ -1,13 +1,16 @@
 import React from 'react';
 
-import type {
+import {
     TChart,
     TWrapper,
-    ChartTooltipParams, TooltipProps,
+    ChartTooltipParams,
+    TooltipProps,
+    LegendProps,
 } from './types';
 
 import ChartContent from './chart-content';
 import ChartTooltip from './chart-tooltip';
+import FilteredChart from './filtered-chart';
 
 import {
     type BarChartProps,
@@ -23,14 +26,18 @@ import {
     RadarChart,
     RadialChart,
     LineChart,
-    ScatterChart
+    ScatterChart,
+    ComposedChart, ComposedChartProps
 } from './charts';
+
 
 import './SuperChart.scss';
 
-type SuperChartProps = {
+
+type SuperChartProps = Readonly<{
     type?: TChart;
     title: string;
+    legend?: LegendProps;
     tooltip?: TooltipProps;
     barChart?: BarChartProps;
     pieChart?: PieChartProps;
@@ -38,19 +45,68 @@ type SuperChartProps = {
     fallback?: string;
     children?: React.ReactNode;
     className?: string;
-    areaChart?: AreaChartProps
+    areaChart?: AreaChartProps;
     lineChart?: LineChartProps;
     radarChart?: RadarChartProps;
     radialChart?: RadialChartProps;
     wrapperType?: TWrapper;
     scatterChart?: ScatterChartProps;
     chartTooltip?: ChartTooltipParams;
+    composedChart?: ComposedChartProps;
     tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
+}>;
+
+function getTooltipContent(chartTooltip?: ChartTooltipParams, tooltipContent?: ((params: ChartTooltipParams) => React.ReactNode)) {
+    if (chartTooltip) {
+        return (params: any) => (<ChartTooltip {...params} {...chartTooltip}/>);
+    }
+    return tooltipContent;
+}
+
+function buildTooltip(tooltip: TooltipProps | undefined, chartTooltip: ChartTooltipParams | undefined) {
+    const defaultTooltip: TooltipProps = { ...tooltip };
+
+    if(tooltip?.show === false) {
+        return undefined;
+    }
+
+    const baseContent = chartTooltip
+        ? (params: any) => (<ChartTooltip {...params} {...chartTooltip}/>)
+        : defaultTooltip?.content;
+
+    if(defaultTooltip?.withContent === false) {
+        return { ...defaultTooltip, content: undefined };
+    }
+
+    if (defaultTooltip?.filterContent) {
+        return {
+            ...defaultTooltip,
+            content: (props: any) => <FilteredChart filteredTooltip={{ ...props, filterContent: defaultTooltip.filterContent }} />
+        };
+    }
+    return { ...defaultTooltip, content: baseContent };
+}
+
+function buildLegend(legend?: LegendProps) {
+    const defaultLegend: LegendProps = { ...legend };
+
+    if(defaultLegend?.show === false) {
+        return undefined;
+    }
+
+    if (defaultLegend?.filterContent) {
+        return {
+            ...legend,
+            content: (props: any) => <FilteredChart filteredLegend={{ ...props, filterContent: defaultLegend.filterContent }} />
+        };
+    }
+    return { ...defaultLegend };
 }
 
 export default function SuperChart({
     type = 'bar',
     title,
+    legend,
     tooltip,
     subtitle,
     fallback = 'No data available',
@@ -65,6 +121,7 @@ export default function SuperChart({
     wrapperType,
     chartTooltip,
     scatterChart,
+    composedChart,
     tooltipContent
 }: SuperChartProps) {
 
@@ -104,8 +161,16 @@ export default function SuperChart({
             return data?.length <= 0;
         }
 
+        if(type === 'composed' && composedChart) {
+            const { data = [] } = composedChart;
+            return data?.length <= 0;
+        }
+
         return false;
     }
+
+    const currentTooltip = buildTooltip(tooltip, chartTooltip);
+    const currentLegend = buildLegend(legend);
 
     return (
         <ChartContent
@@ -120,7 +185,7 @@ export default function SuperChart({
                 (type === 'bar' && barChart) && (
                     <BarChart
                         {...barChart}
-                        tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
+                        tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
                     />
                 )
             }
@@ -128,7 +193,7 @@ export default function SuperChart({
                 (type === 'pie' && pieChart) && (
                     <PieChart
                         {...pieChart}
-                        tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
+                        tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
                     />
                 )
             }
@@ -136,7 +201,7 @@ export default function SuperChart({
                 (type === 'area' && areaChart) && (
                         <AreaChart
                             {...areaChart}
-                            tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
+                            tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
                         />
                 )
             }
@@ -144,7 +209,7 @@ export default function SuperChart({
                 (type === 'radar' && radarChart) && (
                     <RadarChart
                         {...radarChart}
-                        tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
+                        tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
                     />
                 )
             }
@@ -152,7 +217,7 @@ export default function SuperChart({
                 (type === 'radial' && radialChart ) && (
                     <RadialChart
                         {...radialChart}
-                        tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
+                        tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
                     />
 
                 )
@@ -161,7 +226,7 @@ export default function SuperChart({
                 (type === 'line' && lineChart ) && (
                     <LineChart
                         {...lineChart}
-                        tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
+                        tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
                     />
                 )
             }
@@ -170,7 +235,16 @@ export default function SuperChart({
                     <ScatterChart
                         {...scatterChart}
                         tooltip={tooltip}
-                        tooltipContent={!chartTooltip? tooltipContent : (params) => (<ChartTooltip {...params} {...chartTooltip}/>)}
+                        tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
+                    />
+                )
+            }
+            {
+                (type === 'composed' && composedChart) && (
+                    <ComposedChart
+                        {...composedChart}
+                        tooltip={currentTooltip}
+                        legend={currentLegend}
                     />
                 )
             }

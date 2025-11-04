@@ -37,40 +37,84 @@ jest.mock('./charts', () => {
             if (props.tooltipContent) {
                 props.tooltipContent({});
             }
-            return (<div {...props} data-testid="mock-pie-chart"/>)
+            return <div {...props} data-testid="mock-pie-chart"/>;
         },
         AreaChart: (props: any) => {
             if (props.tooltipContent) {
                 props.tooltipContent({});
             }
-            return (<div {...props} data-testid="mock-area-chart"/>)
+            return <div {...props} data-testid="mock-area-chart"/>;
         },
         RadarChart: (props: any) => {
             if (props.tooltipContent) {
                 props.tooltipContent({});
             }
-            return (<div {...props} data-testid="mock-radar-chart"/>)
+            return <div {...props} data-testid="mock-radar-chart"/>;
         },
         RadialChart: (props: any) => {
             if (props.tooltipContent) {
                 props.tooltipContent({});
             }
-            return (<div {...props} data-testid="mock-radial-chart"/>)
+            return <div {...props} data-testid="mock-radial-chart"/>;
         },
         LineChart: (props: any) => {
             if (props.tooltipContent) {
                 props.tooltipContent({});
             }
-            return (<div {...props} data-testid="mock-line-chart"/>)
+            return <div {...props} data-testid="mock-line-chart"/>;
         },
         ScatterChart: (props: any) => {
             if (props.tooltipContent) {
                 props.tooltipContent({});
             }
-            return (<div {...props} data-testid="mock-scatter-chart"/>)
+            return <div {...props} data-testid="mock-scatter-chart"/>;
+        },
+        ComposedChart: (props: any) => {
+            let tooltipContent = null;
+            let legendContent = null;
+            if (props.tooltip) {
+                if (typeof props.tooltip.content === 'function') {
+                    tooltipContent = props.tooltip.content({});
+                } else if (props.tooltip.filterContent) {
+                    tooltipContent = (
+                        <div data-testid="mock-filtered-chart">
+                            <div data-testid="mock-filtered-tooltip" />
+                        </div>
+                    );
+                }
+            }
+
+            if (props.legend) {
+                if (typeof props.legend.content === 'function') {
+                    legendContent = props.legend.content({});
+                } else if (props.legend.filterContent) {
+                    legendContent = (
+                        <div data-testid="mock-filtered-chart">
+                            <div data-testid="mock-legend-tooltip" />
+                        </div>
+                    );
+                }
+            }
+            return (
+                <div {...props} data-testid="mock-composed-chart">
+                    {tooltipContent}
+                    {legendContent}
+                </div>
+            );
         }
     }
 });
+
+jest.mock('./filtered-chart', () => ({
+    __esModule: true,
+    default: (props: any) => (
+        <div {...props} data-testid="mock-filtered-chart">
+            {props.filteredTooltip && (<div {...props.filteredTooltip} data-testid="mock-filtered-tooltip"/>)}
+            {props.filteredLegend && (<div {...props.filteredLegend} data-testid="mock-filtered-legend"/>)}
+        </div>
+    ),
+    FilteredChart: (props: any) => (<div {...props} data-testid="mock-filtered-chart"/>)
+}))
 
 import SuperChart from './SuperChart';
 
@@ -844,4 +888,124 @@ describe('<SuperChart/>', () => {
             expect(screen.getByTestId('mock-scatter-chart')).toBeInTheDocument();
         });
     });
+
+    describe('ComposedChart', () => {
+        const mockData = [
+            { x: 100, y: 200, z: 200 },
+            { x: 120, y: 100, z: 260 },
+            { x: 170, y: 300, z: 400 },
+            { x: 140, y: 250, z: 280 },
+            { x: 150, y: 400, z: 500 },
+            { x: 110, y: 280, z: 200 },
+        ];
+        it('should render component with type composed without composedChart.', () => {
+            renderComponent({ type: 'composed' });
+            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.queryByTestId('mock-composed-chart')).not.toBeInTheDocument();
+        });
+
+        it('should render component with type composed and composedChart.', () => {
+            renderComponent({
+                type: 'composed',
+                composedChart: {
+                    data: mockData,
+                    responsive: true,
+                },
+                chartTooltip: { countText: 'expenses', valueText: 'Total' }
+            });
+            expect(screen.getByTestId('mock-composed-chart')).toBeInTheDocument();
+        });
+
+        it('should render component with type composed and  without chartTooltip.', () => {
+            renderComponent({
+                type: 'composed',
+                composedChart: {
+                    data: mockData,
+                    responsive: true,
+                },
+            });
+            expect(screen.getByTestId('mock-composed-chart')).toBeInTheDocument();
+        });
+
+        it('should render component with type composed and  with tooltip show false.', () => {
+            renderComponent({
+                type: 'composed',
+                tooltip: { show: false },
+                composedChart: {
+                    data: mockData,
+                    responsive: true,
+                },
+            });
+            expect(screen.getByTestId('mock-composed-chart')).toBeInTheDocument();
+        });
+
+        it('should render component with type composed and  with tooltip withContent false.', () => {
+            renderComponent({
+                type: 'composed',
+                tooltip: { withContent: false },
+                composedChart: {
+                    data: mockData,
+                    responsive: true,
+                },
+            });
+            expect(screen.getByTestId('mock-composed-chart')).toBeInTheDocument();
+        });
+
+        it('should render component with type composed and  with tooltip filterContent.', () => {
+            renderComponent({
+                type: 'composed',
+                tooltip: { filterContent: {
+                        label: 'dataKey',
+                        value: 'a',
+                        condition: '!=='
+                    } },
+                composedChart: {
+                    data: mockData,
+                    responsive: true,
+                },
+            });
+            expect(screen.getByTestId('mock-composed-chart')).toBeInTheDocument();
+        });
+
+        it('should render component with type composed and  with legend show false.', () => {
+            renderComponent({
+                type: 'composed',
+                legend: { show: false },
+                composedChart: {
+                    data: mockData,
+                    responsive: true,
+                },
+            });
+            expect(screen.getByTestId('mock-composed-chart')).toBeInTheDocument();
+        });
+
+        it('should render component with type composed and  with legend withContent false.', () => {
+            renderComponent({
+                type: 'composed',
+                legend: { withContent: false },
+                composedChart: {
+                    data: mockData,
+                    responsive: true,
+                },
+            });
+            expect(screen.getByTestId('mock-composed-chart')).toBeInTheDocument();
+        });
+
+        it('should render component with type composed and  with legend filterContent.', () => {
+            renderComponent({
+                type: 'composed',
+                legend: { filterContent: {
+                        label: 'dataKey',
+                        value: 'a',
+                        condition: '!=='
+                    } },
+                composedChart: {
+                    data: mockData,
+                    responsive: true,
+                },
+            });
+            expect(screen.getByTestId('mock-composed-chart')).toBeInTheDocument();
+        });
+    });
 });
+
