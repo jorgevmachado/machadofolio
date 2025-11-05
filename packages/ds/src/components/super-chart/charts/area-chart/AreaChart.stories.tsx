@@ -180,6 +180,9 @@ export const PercentAreaChart: Story = {
         title: 'Percent Area Chart',
         children: undefined,
         subtitle: undefined,
+        tooltip: {
+            withPercentFormatter: true
+        },
         areaChart: {
             xAxis: { dataKey: 'month' },
             data: [
@@ -267,7 +270,6 @@ export const PercentAreaChart: Story = {
             ],
             responsive: true,
             stackOffset: 'expand',
-            withPercentFormatter: true
         }
     }
 }

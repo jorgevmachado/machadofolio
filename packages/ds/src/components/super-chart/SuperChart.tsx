@@ -32,6 +32,7 @@ import {
 
 
 import './SuperChart.scss';
+import TooltipPercent from './tooltip-percent';
 
 
 type SuperChartProps = Readonly<{
@@ -63,6 +64,30 @@ function getTooltipContent(chartTooltip?: ChartTooltipParams, tooltipContent?: (
     return tooltipContent;
 }
 
+function buildTooltipContent(tooltip: TooltipProps) {
+    if (tooltip?.withContent === false) {
+        console.log('# => fuck you => not content');
+        return undefined;
+    }
+
+    if (tooltip?.withDefaultTooltip) {
+        console.log('# => fuck you => default');
+        return (props: any) => (<ChartTooltip {...props} {...tooltip}/>);
+    }
+
+    if (tooltip?.filterContent) {
+        console.log('# => fuck you => filter');
+        return (props: any) => <FilteredChart filteredTooltip={{ ...props, filterContent: tooltip.filterContent }}/>
+    }
+
+    if (tooltip?.withPercentFormatter) {
+        console.log('# => fuck you => percent');
+        return (props: any) => (<TooltipPercent {...props} />);
+    }
+
+    return tooltip?.content;
+}
+
 function buildTooltip(tooltip: TooltipProps | undefined, chartTooltip: ChartTooltipParams | undefined) {
     const defaultTooltip: TooltipProps = { ...tooltip };
 
@@ -70,21 +95,9 @@ function buildTooltip(tooltip: TooltipProps | undefined, chartTooltip: ChartTool
         return undefined;
     }
 
-    const baseContent = chartTooltip
-        ? (params: any) => (<ChartTooltip {...params} {...chartTooltip}/>)
-        : defaultTooltip?.content;
+    defaultTooltip.content = buildTooltipContent({...defaultTooltip, ...chartTooltip});
 
-    if(defaultTooltip?.withContent === false) {
-        return { ...defaultTooltip, content: undefined };
-    }
-
-    if (defaultTooltip?.filterContent) {
-        return {
-            ...defaultTooltip,
-            content: (props: any) => <FilteredChart filteredTooltip={{ ...props, filterContent: defaultTooltip.filterContent }} />
-        };
-    }
-    return { ...defaultTooltip, content: baseContent };
+    return defaultTooltip;
 }
 
 function buildLegend(legend?: LegendProps) {
@@ -201,7 +214,7 @@ export default function SuperChart({
                 (type === 'area' && areaChart) && (
                         <AreaChart
                             {...areaChart}
-                            tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
+                            tooltip={currentTooltip}
                         />
                 )
             }
@@ -243,8 +256,8 @@ export default function SuperChart({
                 (type === 'composed' && composedChart) && (
                     <ComposedChart
                         {...composedChart}
-                        tooltip={currentTooltip}
                         legend={currentLegend}
+                        tooltip={currentTooltip}
                     />
                 )
             }

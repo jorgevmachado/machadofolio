@@ -40,6 +40,8 @@ export type TooltipProps = React.ComponentProps<typeof Tooltip> & {
     percentageProps?: TextProps;
     genericTextProps?: TextProps & { withCurrencyFormatter?: boolean };
     withGenericProps?: boolean;
+    withDefaultTooltip?: boolean;
+    withPercentFormatter?: boolean;
 };
 
 export type TextProps = Omit<Partial<TextTooltipProps>, 'type' | 'dataName'> & {

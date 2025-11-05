@@ -32,12 +32,6 @@ jest.mock('@repo/services', () => ({
     convertToPercent: jest.fn().mockImplementation(() => '50%'),
 }))
 
-jest.mock('./tooltip-percent', () => ({
-    __esModule: true,
-    default: (props: any) => (<div {...props} data-testid="mock-tolltip-percent"></div>),
-    TooltipPercent: (props: any) => (<div {...props} data-testid="mock-tolltip-percent"></div>),
-}));
-
 jest.mock('./linear-gradient', () => ({
     __esModule: true,
     default: (props: any) => (<div {...props} data-testid="mock-linear-gradient"></div>),
@@ -105,7 +99,10 @@ describe('<AreaChart/>', () => {
 
     const defaultProps = {
         areas,
-        labels
+        labels,
+        tooltip: {
+            show: true
+        }
     }
 
     const renderComponent = (props: any = {}) => {

@@ -16,7 +16,6 @@ import type { XAxisProps, YAxisProps } from '../../types';
 import { getRandomHarmonicPalette } from '../../colors';
 
 import type { AreaChartProps } from './types';
-import TooltipPercent from './tooltip-percent';
 import LinearGradient from './linear-gradient';
 
 const defaultStyle = {
@@ -41,15 +40,13 @@ export default function AreaChart ({
     margin,
     syncId,
     labels = [],
+    tooltip,
     withXAxis = true,
     withYAxis = true,
     responsive,
     stackOffset,
-    withTooltip = true,
     linearGradient,
-    tooltipContent,
-    withPercentFormatter
-}: AreaChartProps) {
+}: Readonly<AreaChartProps>) {
     const list = useMemo(() => {
         return labels?.map((label) => {
             const type = !label?.curveCardinalTension
@@ -74,12 +71,12 @@ export default function AreaChart ({
 
         const y: YAxisProps = !yAxis ? { width: 'auto' } : yAxis;
 
-        if(withPercentFormatter) {
+        if(tooltip?.withPercentFormatter) {
             y.tickFormatter = (value) => convertToPercent(value);
         }
 
         return { x, y }
-    }, [xAxis, yAxis, withPercentFormatter]);
+    }, [xAxis, yAxis, tooltip?.withPercentFormatter]);
 
     return (
         <AreaChartComponent
@@ -100,8 +97,8 @@ export default function AreaChart ({
                 <YAxis {...axis.y} />
             )}
             
-            {withTooltip && (
-                <Tooltip content={withPercentFormatter ? TooltipPercent : tooltipContent}/>
+            {tooltip && (
+                <Tooltip {...tooltip}/>
             )}
 
             {linearGradient && (
