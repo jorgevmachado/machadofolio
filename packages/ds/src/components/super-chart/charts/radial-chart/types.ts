@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { ChartTooltipParams, DataChartItem } from '../../types';
+import type { DataChartItem, TooltipProps } from '../../types';
 
 export type LegendProps = {
     layout?: 'horizontal' | 'vertical';
@@ -18,7 +18,6 @@ export type RadialChartLabelsItem = {
     dataKey: string;
     position?: 'insideStart' | 'insideEnd' | 'center' | 'outside';
     background?: boolean;
-
 }
 
 export type RadialChartProps = {
@@ -27,8 +26,7 @@ export type RadialChartProps = {
     style?: React.CSSProperties;
     labels?: Array<RadialChartLabelsItem>;
     legend?: LegendProps;
+    tooltip?: TooltipProps;
     barSize?: number;
     responsive?: boolean;
-    withTooltip?:boolean;
-    tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
 };

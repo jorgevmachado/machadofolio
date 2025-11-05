@@ -52,6 +52,9 @@ const meta = {
     args: {
         type: 'radial',
         title: 'Radial Chart Title',
+        tooltip: {
+            withContent: false
+        },
         radialChart: {
             data,
             labels:  [{
@@ -60,7 +63,7 @@ const meta = {
                 dataKey: 'uv',
                 position: 'insideStart',
                 background: true
-            }]
+            }],
         },
         subtitle: 'Radial Chart Subtitle',
         children: 'Hello, World!',

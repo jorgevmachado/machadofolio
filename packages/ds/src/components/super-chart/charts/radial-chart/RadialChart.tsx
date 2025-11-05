@@ -26,9 +26,8 @@ export default function RadialChart({
     legend,
     labels,
     barSize = 14,
+    tooltip,
     responsive = true,
-    withTooltip = true,
-    tooltipContent
 }: RadialChartProps) {
 
     const dataList = useMemo(() => {
@@ -90,8 +89,8 @@ export default function RadialChart({
                 verticalAlign={legendProps.verticalAlign}
             />
 
-            {withTooltip && (
-                <Tooltip content={tooltipContent} />
+            {tooltip && (
+                <Tooltip {...tooltip} />
             )}
         </RadialBarChart>
     );

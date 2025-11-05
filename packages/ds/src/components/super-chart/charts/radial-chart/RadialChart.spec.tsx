@@ -79,6 +79,9 @@ describe('<RadialChart/>', () => {
             position: 'insideStart',
             background: true
         }],
+        tooltip: {
+            withContent: true
+        },
     };
 
     const renderComponent = (props: any = {}) => {
@@ -103,7 +106,7 @@ describe('<RadialChart/>', () => {
     });
 
     it('should render component without tooltip.', () => {
-        renderComponent({ withTooltip: false });
+        renderComponent({ tooltip: undefined });
         expect(screen.getByTestId('mock-radial-bar-chart')).toBeInTheDocument();
         expect(screen.queryByTestId('mock-tooltip')).not.toBeInTheDocument();
         expect(screen.getByTestId('ds-radial-chart-bar-0')).toBeInTheDocument();

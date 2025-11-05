@@ -224,7 +224,7 @@ export default function SuperChart({
                 (type === 'pie' && pieChart) && (
                     <PieChart
                         {...pieChart}
-                        tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
+                        tooltip={currentTooltip}
                     />
                 )
             }
@@ -248,7 +248,7 @@ export default function SuperChart({
                 (type === 'radial' && radialChart ) && (
                     <RadialChart
                         {...radialChart}
-                        tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
+                        tooltip={currentTooltip}
                     />
 
                 )
