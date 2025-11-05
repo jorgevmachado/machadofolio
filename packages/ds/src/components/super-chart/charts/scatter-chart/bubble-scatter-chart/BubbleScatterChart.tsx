@@ -36,6 +36,7 @@ export default function BubbleScatterChart({
     responsive,
     bubbleStyle
 }: Readonly<BubbleScatterChartProps>) {
+    console.log('# => tooltip => ', tooltip);
     return (
         <div style={bubbleStyle} data-testid="ds-bubble-scatter-chart">
             { data.map((item, index) => (

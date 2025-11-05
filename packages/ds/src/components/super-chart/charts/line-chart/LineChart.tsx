@@ -52,6 +52,7 @@ export default function LineChart({
                                       labels,
                                       xAxis,
                                       yAxis,
+                                      tooltip,
                                       layout = 'horizontal',
                                       withAxis = true,
                                       withZoom = false,
@@ -60,10 +61,8 @@ export default function LineChart({
                                       responsive = true,
                                       onMouseDown,
                                       onMouseMove,
-                                      withTooltip = true,
                                       referenceArea,
                                       buttonZoomOut,
-                                      tooltipContent,
                                       referenceLines
                                   }: LineChartProps) {
 
@@ -224,8 +223,8 @@ export default function LineChart({
                     />
                 ))}
 
-                {withTooltip && (
-                    <Tooltip content={tooltipContent}/>
+                {tooltip && (
+                    <Tooltip {...tooltip}/>
                 )}
 
                 {withLegend && (

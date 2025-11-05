@@ -226,9 +226,11 @@ describe('<AreaChart/>', () => {
                     dataKey: 'c'
                 }
             ],
+            tooltip: {
+                withPercentFormatter: true
+            },
             responsive: true,
             stackOffset: 'expand',
-            withPercentFormatter: true
         });
         expect(screen.getByTestId('mock-area-chart')).toBeInTheDocument();
         expect(screen.getByTestId('mock-cartesian-grid')).toBeInTheDocument();

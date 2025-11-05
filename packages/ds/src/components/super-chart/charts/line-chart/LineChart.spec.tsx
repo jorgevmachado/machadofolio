@@ -12,19 +12,19 @@ jest.mock('recharts', () => ({
       <div
         {...props}
         data-testid="mock-line-chart-component"
-        onMouseDown={e => {
+        onMouseDown={() => {
           if (!mouseDownCalled && props.onMouseDown) {
             mouseDownCalled = true;
             props.onMouseDown({ activeLabel: 1 });
           }
         }}
-        onMouseMove={e => {
+        onMouseMove={() => {
           if (!mouseMoveCalled && props.onMouseMove) {
             mouseMoveCalled = true;
             props.onMouseMove({ activeLabel: 2 });
           }
         }}
-        onMouseUp={e => {
+        onMouseUp={() => {
           if (!mouseUpCalled && props.onMouseUp) {
             mouseUpCalled = true;
             props.onMouseUp({ activeLabel: 3 });
@@ -177,7 +177,11 @@ describe('<LineChart/>', () => {
             }
     ];
 
-    const defaultProps = {}
+    const defaultProps = {
+        tooltip: {
+            withDefaultTooltip: true,
+        }
+    }
 
     const renderComponent = (props: any = {}) => {
         return render(<LineChart {...defaultProps} {...props}/>)

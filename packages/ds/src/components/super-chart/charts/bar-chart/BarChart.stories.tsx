@@ -59,6 +59,9 @@ const meta = {
     args: {
         type: 'bar',
         title: 'Bar Chart Title',
+        tooltip: {
+            withDefaultTooltip: true
+        },
         barChart: {
             data: [
                 {

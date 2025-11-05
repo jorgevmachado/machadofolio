@@ -7,6 +7,9 @@ const meta = {
     args: {
         type: 'scatter',
         title: 'Scatter Chart Title',
+        tooltip: {
+            withContent: false
+        },
         scatterChart: {
             data: [
                 {
@@ -215,7 +218,40 @@ export const BubbleChart: Story = {
         subtitle: undefined,
         children: undefined,
         tooltip: {
-            wrapperStyle: { zIndex: 100 }
+            style: {
+                color: '#000',
+                backgroundColor: '#fff',
+                border: '1px solid #999',
+                margin: 0,
+                padding: 10,
+            },
+            nameProps: {
+                show: false
+            },
+            valueProps: {
+                withCurrencyFormatter: false
+            },
+            filterContent: [
+                {
+                    by: 'value',
+                    label: 'name',
+                    value: 'sunday',
+                    condition: '!=='
+                },
+                {
+                    by: 'value',
+                    label: 'name',
+                    value: 'hour',
+                    condition: '!=='
+                },
+                {
+                    by: 'label',
+                    label: 'name',
+                    value: 'value',
+                    condition: '!=='
+                },
+            ],
+            wrapperStyle: { zIndex: 100 },
         },
         scatterChart: {
             type: 'bubble',
@@ -303,21 +339,6 @@ export const BubbleChart: Story = {
                 )],
             bubbleStyle: { width: '100%', maxWidth: '900px' },
         },
-        chartTooltip: {
-            style: {
-                color: '#000',
-                backgroundColor: '#fff',
-                border: '1px solid #999',
-                margin: 0,
-                padding: 10,
-            },
-            nameProps: {
-                show: false
-            },
-            valueProps: {
-                withCurrencyFormatter: false
-            }
-        }
     }
 };
 
@@ -364,10 +385,6 @@ export const ScatterChartWithLabels: Story = {
             bubbleStyle: { width: '100%', maxWidth: '900px' },
         },
         tooltip: {
-            wrapperStyle: { zIndex: 100 },
-            withContent: false
-        },
-        chartTooltip: {
             style: {
                 color: '#000',
                 backgroundColor: '#fff',
@@ -380,8 +397,10 @@ export const ScatterChartWithLabels: Story = {
             },
             valueProps: {
                 withCurrencyFormatter: false
-            }
-        }
+            },
+            wrapperStyle: { zIndex: 100 },
+            withContent: false
+        },
     }
 };
 

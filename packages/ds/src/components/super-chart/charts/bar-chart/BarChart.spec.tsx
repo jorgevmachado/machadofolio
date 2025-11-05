@@ -76,8 +76,10 @@ describe('<BarChart/>', () => {
                 stroke: '#333333'
             },
         ],
+        tooltip: {
+            content: mockTooltipContent
+        },
         labels: [{ key: 'value', fill: '#808080', activeBar: { type: 'rectangle' } }],
-        tooltipContent: mockTooltipContent
     }
 
     const renderComponent = (props: any = {}, breakpoint: any = { isMobile: false }) => {

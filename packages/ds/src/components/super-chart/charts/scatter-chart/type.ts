@@ -3,7 +3,6 @@ import React from 'react';
 import { LabelListProps, Scatter } from 'recharts';
 
 import {
-    ChartTooltipParams,
     MarginProps,
     TLayout, TooltipProps,
     XAxisProps,
@@ -34,7 +33,5 @@ export type ScatterChartProps = {
     tooltip?: TooltipProps;
     responsive?: boolean;
     withLegend?: boolean;
-    withTooltip?: boolean;
     bubbleStyle?: React.CSSProperties;
-    tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
 }

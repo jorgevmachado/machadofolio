@@ -1,6 +1,8 @@
 @use "../../styles/colors" as *;
 
 .ds-text {
+  margin: 0;
+
   &__variant {
     &--tiny{
       font-size: var(--dimensions-relative-12);

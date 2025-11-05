@@ -52,6 +52,9 @@ const meta = {
     args: {
         type: 'line',
         title: 'Line Chart Title',
+        tooltip: {
+            withDefaultTooltip: true,
+        },
         lineChart: {
             data,
             labels: [

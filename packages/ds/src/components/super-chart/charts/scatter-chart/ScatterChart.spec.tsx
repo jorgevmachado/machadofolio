@@ -98,7 +98,7 @@ describe('<ScatterChart/>', () => {
 
     it('should render component with tooltip.', () => {
         const mockTooltipContent = jest.fn();
-        renderComponent({ withTooltip: true, tooltip: { withContent: true }, tooltipContent: mockTooltipContent });
+        renderComponent({ withTooltip: true, tooltip: { withContent: true, content: mockTooltipContent } });
 
         expect(screen.getByTestId('mock-tooltip')).toBeInTheDocument();
         expect(mockTooltipContent).toHaveBeenCalled();

@@ -4,7 +4,14 @@ import { Line, MouseHandlerDataParam } from 'recharts';
 
 import Button from '../../../button';
 
-import { ChartTooltipParams, DataChartItem, MarginProps, TLayout, XAxisProps, YAxisProps } from '../../types';
+import {
+    DataChartItem,
+    MarginProps,
+    TLayout,
+    TooltipProps,
+    XAxisProps,
+    YAxisProps
+} from '../../types';
 
 type ButtonProps = React.ComponentProps<typeof Button>;
 
@@ -160,17 +167,16 @@ export type LineChartProps = {
     layout?: TLayout;
     labels?: Array<LineChartLabelsItem>;
     margin?: Partial<MarginProps>;
+    tooltip?: TooltipProps;
     withAxis?: boolean | { x: boolean; y: boolean; };
     withZoom?: boolean;
     onMouseUp?: (event: MouseHandlerDataParam) => void;
     withLegend?: boolean;
     responsive?: boolean;
-    withTooltip?: boolean;
     onMouseDown?: (event: MouseHandlerDataParam) => void;
     onMouseMove?: (event: MouseHandlerDataParam) => void;
     referenceArea?: ReferenceAreaProps;
     buttonZoomOut?: ButtonProps;
-    tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
     referenceLines?: Array<ReferenceLineProps>;
     withMultiSeries?: boolean;
 }

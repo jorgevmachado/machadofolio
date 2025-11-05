@@ -45,9 +45,7 @@ export default function ScatterChart({
     tooltip,
     withLegend,
     responsive = true,
-    withTooltip = true,
     bubbleStyle,
-    tooltipContent,
 }: ScatterChartProps) {
 
     const currentStyle = { ...defaultStyle, ...style };
@@ -85,15 +83,12 @@ export default function ScatterChart({
         const defaultTooltip: TooltipProps = {
             cursor: {
                 strokeDasharray: '3 3'
-            },
-            content: tooltipContent
+            }
         }
         if(!tooltip) {
-            return defaultTooltip;
+            return undefined;
         }
-        const { withContent = true, ...props } = tooltip;
-        defaultTooltip.content = withContent ? tooltipContent : undefined;
-        return {...defaultTooltip, ...props};
+        return {...defaultTooltip, ...tooltip};
 
     }, [tooltip]);
 
@@ -136,7 +131,7 @@ export default function ScatterChart({
                 <ZAxis {...z} key={key} data-testid={`ds-scatter-chart-z-axis-${index}`} />
             ))}
 
-            {withTooltip && (
+            {currentTooltip && (
                 <Tooltip {...currentTooltip}/>
             )}
 

@@ -78,6 +78,7 @@ export default function ChartTooltip({
 }: Readonly<ChartTooltipProps>) {
     if(active && payload && payload?.length) {
         const currentPayload = payload[0];
+        console.log('# => currentPayload => ', currentPayload);
         const data = currentPayload?.payload || {} as Record<string, string | number>;
         const value = Number(data?.value) || 0;
         const percentageTotal = Number(data?.percentageTotal) || 0;

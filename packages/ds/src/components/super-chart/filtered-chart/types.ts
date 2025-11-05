@@ -1,14 +1,6 @@
 import { DefaultLegendContentProps, TooltipContentProps } from 'recharts';
 
-export type FilterContent = {
-    label: 'dataKey';
-    value: string | number;
-    condition: '===' | '!==' | '>' |  '<' | '>=' | '<=';
-}
-
-export type CompareFilterParams = Omit<FilterContent, 'label'> & {
-    param: string | number;
-}
+import { FilterContent } from '../types';
 
 export type FilteredLegendProps = Omit<DefaultLegendContentProps, 'ref'> & {
     filterContent?: FilterContent;

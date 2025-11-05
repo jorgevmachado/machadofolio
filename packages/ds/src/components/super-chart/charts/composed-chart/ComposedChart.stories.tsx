@@ -52,6 +52,21 @@ const meta = {
     args: {
         type: 'composed',
         title: 'Composed Chart Title',
+        tooltip: {
+            filterContent: [
+                {
+                    by: 'label',
+                    label: 'name',
+                    condition: '!=='
+                },
+                {
+                    by: 'value',
+                    label: 'name',
+                    condition: 'empty'
+                }
+            ],
+            withDefaultTooltip: true
+        },
         composedChart: {
             areas: [{
                 key: 'amt',
@@ -108,7 +123,6 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     args: {}
 };
-
 
 export const SameDataComposedChart: Story = {
     args: {
@@ -317,11 +331,12 @@ export const BandedChart: Story = {
             }
         },
         tooltip: {
-            filterContent: {
+            filterContent: [{
                 label: 'dataKey',
                 value: 'a',
                 condition: '!=='
-            }
+            }],
+            withDefaultTooltip: true
         },
         composedChart: {
             data: [

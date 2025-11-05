@@ -26,9 +26,8 @@ export default function BarChart ({
     yAxis,
     labels = [],
     layout = 'vertical',
+    tooltip,
     withLegend = true,
-    withTooltip = true,
-    tooltipContent,
     withCurrencyTickFormatter
 }: BarChartProps) {
     const { isMobile } = useBreakpoint();
@@ -91,8 +90,12 @@ export default function BarChart ({
                         <YAxis key={index} {...y}/>
                     ))}
 
-                    { withTooltip && (
-                        <Tooltip content={tooltipContent}/>
+                    {/*{ withTooltip && (*/}
+                    {/*    <Tooltip content={tooltipContent}/>*/}
+                    {/*)}*/}
+
+                    { tooltip && (
+                        <Tooltip {...tooltip}/>
                     )}
 
                     {withLegend &&  <Legend/> }

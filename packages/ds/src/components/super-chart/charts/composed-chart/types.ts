@@ -36,10 +36,6 @@ export type ComposedChartLegendProps = LegendProps & {
     filterContent?: FilterContent;
 }
 
-export type ComposedChartTooltipProps = TooltipProps & {
-    filterContent?: FilterContent;
-}
-
 export type ComposedChartProps = {
     bars?: Array<BarProps>;
     data: Array<composedChartDataItem>;
@@ -51,7 +47,7 @@ export type ComposedChartProps = {
     layout?: 'vertical' | 'horizontal';
     margin?: MarginProps;
     legend?: ComposedChartLegendProps;
-    tooltip?: ComposedChartTooltipProps;
+    tooltip?: TooltipProps;
     scatters?: Array<ScatterProps>;
     responsive?: boolean;
     cartesianGrid?: CartesianGridProps;

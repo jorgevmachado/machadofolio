@@ -8,12 +8,6 @@ export type TChart = 'bar' | 'pie' | 'area' | 'radar' |  'radial' | 'line' | 'sc
 
 export type TWrapper = 'default' | 'card';
 
-export type FilterContent = {
-    label: 'dataKey';
-    value: string | number;
-    condition: '===' | '!==' | '>' |  '<' | '>=' | '<=';
-}
-
 export type LegendProps = React.ComponentProps<typeof Legend> & {
     show?: boolean;
     filterContent?: FilterContent;
@@ -23,8 +17,16 @@ export type TextTooltipProps = Omit<React.ComponentProps<typeof Text>, 'children
     type: string;
     text?: string;
     dataName: string | number;
+    appendText?: string;
     withCurrencyFormatter?: boolean;
 };
+
+export type GenericTextProps = TextProps & {
+    withName?: boolean;
+    withValue?: boolean;
+    withSubLevel?: boolean;
+    withTotalPercent?: boolean;
+}
 
 export type TooltipProps = React.ComponentProps<typeof Tooltip> & {
     show?: boolean;
@@ -32,14 +34,18 @@ export type TooltipProps = React.ComponentProps<typeof Tooltip> & {
     active?: boolean;
     payload?: Array<PayloadItemProps>;
     nameProps?: TextProps;
+    labelProps?: TextProps;
     hourProps?: TextProps;
     countProps?: TextProps;
     valueProps?: TextProps;
     withContent?: boolean;
-    filterContent?: FilterContent;
+    withSubLevel?: boolean;
+    filterContent?: FilterTooltipContent;
     percentageProps?: TextProps;
-    genericTextProps?: TextProps & { withCurrencyFormatter?: boolean };
+    genericTextProps?: GenericTextProps;
+    withTotalPercent?: boolean;
     withGenericProps?: boolean;
+    withCustomTooltip?: boolean;
     withDefaultTooltip?: boolean;
     withPercentFormatter?: boolean;
 };
@@ -63,6 +69,7 @@ export type MarginProps = { top: number; right: number; bottom: number; left: nu
 export type ChartTooltipParams = {
     style?: React.CSSProperties;
     active?: boolean;
+    label?: string | number;
     payload?: Array<PayloadItemProps>;
     nameProps?: TextProps;
     hourProps?: TextProps;
@@ -99,3 +106,32 @@ export type ColorProps = {
 export type DataChartItem = Record<string, string | number>;
 
 export type TLayout = 'vertical' | 'horizontal';
+
+export type FilterContent = {
+    label: 'dataKey';
+    value: string | number;
+    condition: '===' | '!==' | '>' |  '<' | '>=' | '<=';
+}
+
+
+type TByFilterTooltipContent = 'label' | 'value' | 'condition';
+
+type FilterTooltipContentItem = {
+    by?: TByFilterTooltipContent;
+    label: string;
+    value?: string | number;
+    condition: '===' | '!==' | '>' |  '<' | '>=' | '<=' | 'empty';
+}
+type FilterTooltipContent = Array<FilterTooltipContentItem>
+
+export type CompareFilterTooltipParams = Omit<FilterTooltipContentItem, 'by'> & {
+    by: TByFilterTooltipContent;
+    param?: string | number;
+
+}
+// Novo tipo para aceitar array ou único filtro
+export type FilterContentInput = FilterContent | FilterContent[];
+
+export type CompareFilterParams = Omit<FilterContent, 'label'> & {
+    param: string | number;
+}

@@ -33,6 +33,8 @@ import {
 
 import './SuperChart.scss';
 import TooltipPercent from './tooltip-percent';
+import ChartContentTooltip from './chart-content-tooltip';
+import { TooltipContentProps } from './chart-content-tooltip/types';
 
 
 type SuperChartProps = Readonly<{
@@ -65,6 +67,12 @@ function getTooltipContent(chartTooltip?: ChartTooltipParams, tooltipContent?: (
 }
 
 function buildTooltipContent(tooltip: TooltipProps) {
+    if(tooltip.content) {
+        return tooltip.content;
+    }
+    console.log('# => tooltip => ', tooltip?.withContent)
+    console.log('# => tooltip =>  false => ', tooltip?.withContent === false)
+
     if (tooltip?.withContent === false) {
         console.log('# => fuck you => not content');
         return undefined;
@@ -85,17 +93,27 @@ function buildTooltipContent(tooltip: TooltipProps) {
         return (props: any) => (<TooltipPercent {...props} />);
     }
 
-    return tooltip?.content;
+    // return tooltip?.content;
+    return (props: any) => (<ChartTooltip {...props} {...tooltip}/>);
 }
 
 function buildTooltip(tooltip: TooltipProps | undefined, chartTooltip: ChartTooltipParams | undefined) {
     const defaultTooltip: TooltipProps = { ...tooltip };
+    console.log('# => defaultTooltip => ', defaultTooltip)
 
     if(tooltip?.show === false) {
         return undefined;
     }
 
-    defaultTooltip.content = buildTooltipContent({...defaultTooltip, ...chartTooltip});
+    if(defaultTooltip.content) {
+        return defaultTooltip;
+    }
+
+
+    // defaultTooltip.content = buildTooltipContent({...defaultTooltip, ...chartTooltip});
+    defaultTooltip.content = tooltip?.withContent === false
+        ? undefined
+        : (props: TooltipContentProps) => ChartContentTooltip({ params: props, tooltip: defaultTooltip });
 
     return defaultTooltip;
 }
@@ -198,7 +216,7 @@ export default function SuperChart({
                 (type === 'bar' && barChart) && (
                     <BarChart
                         {...barChart}
-                        tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
+                        tooltip={currentTooltip}
                     />
                 )
             }
@@ -239,7 +257,7 @@ export default function SuperChart({
                 (type === 'line' && lineChart ) && (
                     <LineChart
                         {...lineChart}
-                        tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
+                        tooltip={currentTooltip}
                     />
                 )
             }
@@ -247,8 +265,7 @@ export default function SuperChart({
                 (type === 'scatter' && scatterChart ) && (
                     <ScatterChart
                         {...scatterChart}
-                        tooltip={tooltip}
-                        tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
+                        tooltip={currentTooltip}
                     />
                 )
             }

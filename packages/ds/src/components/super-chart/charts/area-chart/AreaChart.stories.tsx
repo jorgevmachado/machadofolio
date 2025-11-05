@@ -63,6 +63,18 @@ const meta = {
             }],
             responsive: true
         },
+        tooltip: {
+            labelProps: {
+                tag: 'h3',
+            },
+            nameProps: {
+                show: false
+            },
+            genericTextProps: {
+                withName: true,
+                withValue: true
+            }
+        },
         subtitle: 'Area Chart Subtitle',
         children: 'Hello, World!',
     },
@@ -181,7 +193,19 @@ export const PercentAreaChart: Story = {
         children: undefined,
         subtitle: undefined,
         tooltip: {
-            withPercentFormatter: true
+            labelProps: {
+                tag: 'h3',
+                weight: 'bold'
+            },
+            nameProps: {
+                show: false
+            },
+            genericTextProps: {
+                withName: true,
+                withValue: true,
+                withTotalPercent: true
+            },
+            withTotalPercent: true
         },
         areaChart: {
             xAxis: { dataKey: 'month' },
@@ -279,6 +303,9 @@ export const TinyAreaChart: Story = {
         title: 'Tiny Area Chart',
         children: undefined,
         subtitle: undefined,
+        tooltip: {
+            show: false
+        },
         areaChart: {
             data,
             margin: {
@@ -297,7 +324,6 @@ export const TinyAreaChart: Story = {
             }],
             withXAxis: false,
             withYAxis: false,
-            withTooltip: false,
         }
     }
 }
