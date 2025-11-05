@@ -9,11 +9,12 @@ import {
 } from 'recharts';
 
 
-import { PieChartProps, PieProps } from './types';
+import type { PieChartProps, PieProps } from './types';
 
 import ActiveShape from './active-shape';
 
 import { getRandomHarmonicPalette } from '../../colors';
+
 import CustomizeLabel from './customize-label';
 import PieNeedle from './pie-needle';
 
@@ -27,19 +28,14 @@ const defaultStyle = {
     aspectRatio: 1,
 }
 
-
-
 export default function PieChart({
     data,
     style,
     margin,
+    tooltip,
     responsive = true,
     withNeedle,
-    withTooltip = true,
     withLegends = false,
-    defaultIndex,
-    tooltipContent,
-    withoutContentTooltip = false,
     withDefaultCustomLabel = false,
     withDefaultActiveShape = false
 }: PieChartProps) {
@@ -117,8 +113,8 @@ export default function PieChart({
                         )}
                     </Pie>
                 ))}
-                {withTooltip && (
-                    <Tooltip content={ withoutContentTooltip ? () => null : tooltipContent} defaultIndex={defaultIndex}/>
+                {tooltip && (
+                    <Tooltip {...tooltip}/>
                 )}
 
                 {withLegends && (<Legend />)}

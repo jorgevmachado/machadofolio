@@ -154,8 +154,10 @@ export const CustomActiveShapePieChart: Story = {
                 bottom: 50,
                 left: 120,
             },
-            withoutContentTooltip: true,
             withDefaultActiveShape: true
+        },
+        tooltip: {
+            withContent: false
         },
         children: undefined
     }

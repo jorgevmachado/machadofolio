@@ -40,14 +40,11 @@ jest.mock('./pie-needle', () => ({
         PieNeedle: (props: any) => (<div {...props} data-testid="mock-pie-needle"></div>),
 }));
 
-
-
 import PieChart from './PieChart';
 
 jest.mock('../../colors');
 
 import * as colors from '../../colors';
-
 
 describe('<PieChart/>', () => {
 
@@ -95,7 +92,9 @@ describe('<PieChart/>', () => {
 
     const defaultProps = {
         data: mockPies,
-        withoutContentTooltip: false,
+        tooltip: {
+            show: true,
+        }
     }
 
     const renderComponent = (props: any = {}) => {

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Pie } from 'recharts';
 
-import type { DataChartItem, MarginProps, ChartTooltipParams  } from '../../types';
+import type { DataChartItem, MarginProps, TooltipProps } from '../../types';
 
 export type PieChartDataItem = DataChartItem & {
     fill?: string;
@@ -38,13 +38,10 @@ export type PieChartProps = {
     data: Array<PieProps>;
     style?: React.CSSProperties;
     margin?: MarginProps;
+    tooltip?: TooltipProps;
     responsive?: boolean;
     withNeedle?: boolean;
     withLegends?: boolean;
-    withTooltip?: boolean;
-    defaultIndex?: string;
-    tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
-    withoutContentTooltip?: boolean;
     withDefaultCustomLabel?: boolean;
     withDefaultActiveShape?: boolean;
 };
