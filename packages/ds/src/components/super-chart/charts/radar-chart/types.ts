@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { ChartTooltipParams, DataChartItem, MarginProps } from '../../types';
+import type { DataChartItem, MarginProps, TooltipProps } from '../../types';
 
 export type RadarChartDataItem = DataChartItem;
 
@@ -28,11 +28,10 @@ export type RadarChartProps = {
     style?: React.CSSProperties;
     labels: Array<RadarChartLabelsItem>;
     margin?: MarginProps;
+    tooltip?: TooltipProps;
     responsive?: boolean;
     withLegend?: boolean;
     outerRadius?: string;
-    withTooltip?:boolean;
-    tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
     polarAngleAxis?: PolarAngleAxisProps;
     polarRadiusAxis?: PolarRadiusAxisProps;
 }

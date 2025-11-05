@@ -33,12 +33,11 @@ export default function RadarChart({
     style,
     margin,
     labels = [],
+    tooltip,
     responsive,
     withLegend = false,
     outerRadius = '80%',
-    withTooltip = true,
     polarAngleAxis,
-    tooltipContent,
     polarRadiusAxis
 }: RadarChartProps) {
 
@@ -95,8 +94,8 @@ export default function RadarChart({
                 />
             ))}
 
-            {withTooltip && (
-                <Tooltip content={tooltipContent} />
+            {tooltip && (
+                <Tooltip {...tooltip} />
             )}
 
 

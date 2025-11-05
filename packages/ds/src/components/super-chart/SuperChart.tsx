@@ -240,6 +240,7 @@ export default function SuperChart({
                 (type === 'radar' && radarChart) && (
                     <RadarChart
                         {...radarChart}
+                        tooltip={currentTooltip}
                         tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
                     />
                 )

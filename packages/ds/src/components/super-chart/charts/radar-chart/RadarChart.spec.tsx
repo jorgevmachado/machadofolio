@@ -28,7 +28,7 @@ import { RadarChartProps } from './types';
 
 describe('<RadarChart/>', () => {
 
-    const radars = [
+    const data = [
         {
             A: 120,
             B: 110,
@@ -77,8 +77,11 @@ describe('<RadarChart/>', () => {
 
     const defaultProps: RadarChartProps = {
         value: 'subject',
-        radars,
+        data,
         labels,
+        tooltip: {
+            withDefaultTooltip: true
+        },
     };
 
     const renderComponent = (props: any = {}) => {
@@ -101,6 +104,7 @@ describe('<RadarChart/>', () => {
         expect(screen.getByTestId('mock-polar-grid')).toBeInTheDocument();
         expect(screen.getByTestId('mock-polar-angle-axis')).toBeInTheDocument();
         expect(screen.getByTestId('mock-polar-radius-axis')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-tooltip')).toBeInTheDocument();
         const radarArea = screen.getByTestId('ds-radar-chart-area-0');
         expect(radarArea).toBeInTheDocument();
         expect(radarArea).toHaveAttribute('fill', '#8884d8');

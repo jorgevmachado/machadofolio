@@ -46,6 +46,9 @@ const meta = {
     args: {
         type: 'radar',
         title: 'Radar Chart Title',
+        tooltip: {
+            withContent: false
+        },
         radarChart: {
             value: 'subject',
             data,
