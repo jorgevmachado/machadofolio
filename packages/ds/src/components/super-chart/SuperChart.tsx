@@ -7,8 +7,10 @@ import {
     LegendProps,
 } from './types';
 
-import ChartContent from './chart-content';
+import ChartContainer from './chart-container';
 import FilteredChart from './filtered-chart';
+
+import { ChartContentTooltip, type TooltipContentProps } from './chart-content-tooltip';
 
 import {
     type BarChartProps,
@@ -28,9 +30,8 @@ import {
     ComposedChart, ComposedChartProps
 } from './charts';
 
-
 import './SuperChart.scss';
-import { ChartContentTooltip, type TooltipContentProps } from './chart-content-tooltip';
+
 
 type SuperChartProps = Readonly<{
     type?: TChart;
@@ -107,54 +108,46 @@ export default function SuperChart({
 }: SuperChartProps) {
 
     const isFallback = () => {
-        if (type === 'bar' && barChart) {
-            const { data = []} = barChart;
-            return data.length <= 0;
+        const result = {
+            length: 0
         }
 
-        if(type === 'pie' && pieChart) {
-            const { data = [] } = pieChart;
-            return data.length <= 0;
+        switch (type) {
+            case 'bar':
+                result.length = barChart?.data?.length || 0;
+                break;
+            case 'pie':
+                result.length = pieChart?.data?.length || 0;
+                break;
+            case 'area':
+                result.length = areaChart?.data?.length || 0;
+                break;
+            case 'radar':
+                result.length = radarChart?.data?.length || 0;
+                break;
+            case 'radial':
+                result.length = radialChart?.data?.length || 0;
+                break;
+            case 'line':
+                result.length = lineChart?.data?.length || 0;
+                break;
+            case 'scatter':
+                result.length = scatterChart?.data?.length || 0;
+                break;
+            case 'composed':
+                result.length = composedChart?.data?.length || 0;
+                break;
+            default:
+                result.length = 0;
         }
-
-        if(type === 'area' && areaChart) {
-            const { data = [] } = areaChart;
-            return data.length <= 0;
-        }
-
-        if(type === 'radar' && radarChart) {
-            const { data = [] } = radarChart;
-            return data.length <= 0;
-        }
-
-        if(type === 'radial' && radialChart) {
-            const { data = [] } = radialChart;
-            return data?.length <= 0;
-        }
-
-        if(type === 'line' && lineChart) {
-            const { data = [] } = lineChart;
-            return data?.length <= 0;
-        }
-
-        if(type === 'scatter' && scatterChart) {
-            const { data = [] } = scatterChart;
-            return data?.length <= 0;
-        }
-
-        if(type === 'composed' && composedChart) {
-            const { data = [] } = composedChart;
-            return data?.length <= 0;
-        }
-
-        return false;
+        return result.length <= 0;
     }
 
     const currentTooltip = buildTooltip(tooltip);
     const currentLegend = buildLegend(legend);
 
     return (
-        <ChartContent
+        <ChartContainer
             title={title}
             subtitle={subtitle}
             fallback={fallback}
@@ -229,6 +222,6 @@ export default function SuperChart({
                 )
             }
             {children}
-        </ChartContent>
+        </ChartContainer>
     );
 };

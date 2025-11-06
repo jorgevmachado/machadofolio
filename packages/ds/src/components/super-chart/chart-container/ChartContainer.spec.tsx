@@ -17,13 +17,13 @@ jest.mock('../../../elements', () => ({
     Text: (props: any) => (<p {...props}/>),
 }));
 
-jest.mock('../chart-wrapper', () => ({
+jest.mock('../../card', () => ({
     __esModule: true,
-    default: (props: any) => (<div {...props} data-testid="mock-chart-wrapper"/>),
-    ChartWrapper: (props: any) => (<div {...props} data-testid="mock-chart-wrapper"/>),
+    default: ({ children, ...props}: any) => (<div {...props}>{children}</div>),
+    Card: ({ children, ...props}: any) => (<div {...props}>{children}</div>),
 }));
 
-import ChartContent from './ChartContent';
+import ChartContainer from './ChartContainer';
 
 describe('<ChartContent/>', () => {
     const defaultProps = {
@@ -34,7 +34,7 @@ describe('<ChartContent/>', () => {
     };
 
     const renderComponent = (props: any = {}) => {
-        return render(<ChartContent {...defaultProps} {...props}/>)
+        return render(<ChartContainer {...defaultProps} {...props}/>)
     }
 
     afterEach(() => {
@@ -45,28 +45,33 @@ describe('<ChartContent/>', () => {
 
     it('should render component with props default.', () => {
         renderComponent();
-        expect(screen.getByTestId('mock-chart-wrapper')).toBeInTheDocument();
-        const textComponent = screen.getByTestId('ds-chart-content-title');
+        expect(screen.getByTestId('ds-chart-container-default')).toBeInTheDocument();
+        const textComponent = screen.getByTestId('ds-chart-container-title');
         expect(textComponent).toBeInTheDocument();
         expect(textComponent).toHaveTextContent('title');
 
-        expect(screen.queryByTestId('ds-chart-content-fallback')).not.toBeInTheDocument();
-        expect(screen.queryByTestId('ds-chart-content-subtitle')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('ds-chart-container-fallback')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('ds-chart-container-subtitle')).not.toBeInTheDocument();
     });
 
     it('should render component with fallback.', () => {
         renderComponent({ isFallback: true, className: 'custom-class' });
-        expect(screen.getByTestId('ds-chart-content-fallback')).toBeInTheDocument();
-        const fallbackText = screen.getByTestId('ds-chart-content-fallback-text');
+        expect(screen.getByTestId('ds-chart-container-fallback')).toBeInTheDocument();
+        const fallbackText = screen.getByTestId('ds-chart-container-fallback-text');
         expect(fallbackText).toBeInTheDocument();
         expect(fallbackText).toHaveTextContent('fallback');
     });
 
     it('should render component with subtitle.', () => {
         renderComponent({ subtitle: 'subtitle' });
-        const subtitleText = screen.getByTestId('ds-chart-content-subtitle');
+        const subtitleText = screen.getByTestId('ds-chart-container-subtitle');
         expect(subtitleText).toBeInTheDocument();
         expect(subtitleText).toHaveTextContent('subtitle');
+    });
+
+    it('should render component with type card.', () => {
+        renderComponent({ wrapperType: 'card'});
+        expect(screen.getByTestId('ds-chart-container-card')).toBeInTheDocument();
     })
 
 })
