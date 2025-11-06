@@ -17,10 +17,8 @@ jest.mock('./chart-content', () => ({
         <div {...props} data-testid="mock-chart-content">{props.isFallback ? null : props.children}</div>),
 }));
 
-jest.mock('./chart-tooltip', () => ({
-    __esModule: true,
-    default: (props: any) => (<div {...props} data-testid="mock-chart-tooltip"/>),
-    ChartTooltip: (props: any) => (<div {...props} data-testid="mock-chart-tooltip"/>),
+jest.mock('./chart-content-tooltip', () => ({
+    ChartContentTooltip: (props: any) => (<div {...props} data-testid="mock-chart-tooltip"/>),
 }));
 
 jest.mock('./charts', () => {
@@ -180,13 +178,13 @@ describe('<SuperChart/>', () => {
         it('should render component with type bar and barChart.', () => {
             renderComponent({
                 barChart: { data: mockData },
-                chartTooltip: { countText: 'expenses', valueText: 'Total' }
+                tooltip: { countProps: {text: 'expenses' }, valueProps: { text: 'Total'} }
             });
             expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
             expect(screen.getByTestId('mock-bar-chart')).toBeInTheDocument();
         });
 
-        it('should render component with type bar and  without chartTooltip.', () => {
+        it('should render component with type bar and  without tooltip.', () => {
             renderComponent({
                 barChart: { data: mockData },
             });
@@ -248,13 +246,13 @@ describe('<SuperChart/>', () => {
                         }
                     ]
                 },
-                chartTooltip: { countText: 'expenses', valueText: 'Total' }
+                tooltip: { countProps: {text: 'expenses' }, valueProps: { text: 'Total'} }
             });
             expect(screen.getByTestId('mock-pie-chart')).toBeInTheDocument();
 
         });
 
-        it('should render component with type pie and  without chartTooltip.', () => {
+        it('should render component with type pie and  without tooltip.', () => {
             renderComponent({
                 type: 'pie',
                 pieChart: {
@@ -370,13 +368,13 @@ describe('<SuperChart/>', () => {
                     }],
                     responsive: true
                 },
-                chartTooltip: { countText: 'expenses', valueText: 'Total' }
+                tooltip: { countProps: {text: 'expenses' }, valueProps: { text: 'Total'} }
             });
             expect(screen.getByTestId('mock-area-chart')).toBeInTheDocument();
 
         });
 
-        it('should render component with type area and  without chartTooltip.', () => {
+        it('should render component with type area and  without tooltip.', () => {
             renderComponent({
                 type: 'area',
                 areaChart: {
@@ -503,12 +501,12 @@ describe('<SuperChart/>', () => {
                     }],
                     responsive: true
                 },
-                chartTooltip: { countText: 'expenses', valueText: 'Total' }
+                tooltip: { countProps: {text: 'expenses' }, valueProps: { text: 'Total'} }
             });
             expect(screen.getByTestId('mock-radar-chart')).toBeInTheDocument();
         });
 
-        it('should render component with type radar and  without chartTooltip.', () => {
+        it('should render component with type radar and  without tooltip.', () => {
             renderComponent({
                 type: 'radar',
                 radarChart: {
@@ -634,13 +632,13 @@ describe('<SuperChart/>', () => {
                     }],
                     responsive: true
                 },
-                chartTooltip: { countText: 'expenses', valueText: 'Total' }
+                tooltip: { countProps: {text: 'expenses' }, valueProps: { text: 'Total'} }
             });
             expect(screen.getByTestId('mock-radial-chart')).toBeInTheDocument();
 
         });
 
-        it('should render component with type radial and  without chartTooltip.', () => {
+        it('should render component with type radial and  without tooltip.', () => {
             renderComponent({
                 type: 'radial',
                 radialChart: {
@@ -775,12 +773,12 @@ describe('<SuperChart/>', () => {
                     ],
                     responsive: true,
                 },
-                chartTooltip: { countText: 'expenses', valueText: 'Total' }
+                tooltip: { countProps: {text: 'expenses' }, valueProps: { text: 'Total'} }
             });
             expect(screen.getByTestId('mock-line-chart')).toBeInTheDocument();
         });
 
-        it('should render component with type line and  without chartTooltip.', () => {
+        it('should render component with type line and  without tooltip.', () => {
             renderComponent({
                 type: 'line',
                 lineChart: {
@@ -872,12 +870,12 @@ describe('<SuperChart/>', () => {
                     data: mockData,
                     responsive: true,
                 },
-                chartTooltip: { countText: 'expenses', valueText: 'Total' }
+                tooltip: { countProps: {text: 'expenses' }, valueProps: { text: 'Total'} }
             });
             expect(screen.getByTestId('mock-scatter-chart')).toBeInTheDocument();
         });
 
-        it('should render component with type scatter and  without chartTooltip.', () => {
+        it('should render component with type scatter and  without tooltip.', () => {
             renderComponent({
                 type: 'scatter',
                 scatterChart: {
@@ -911,12 +909,12 @@ describe('<SuperChart/>', () => {
                     data: mockData,
                     responsive: true,
                 },
-                chartTooltip: { countText: 'expenses', valueText: 'Total' }
+                tooltip: { countProps: {text: 'expenses' }, valueProps: { text: 'Total'} }
             });
             expect(screen.getByTestId('mock-composed-chart')).toBeInTheDocument();
         });
 
-        it('should render component with type composed and  without chartTooltip.', () => {
+        it('should render component with type composed and  without tooltip.', () => {
             renderComponent({
                 type: 'composed',
                 composedChart: {

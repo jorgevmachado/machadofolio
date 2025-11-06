@@ -3,13 +3,11 @@ import React from 'react';
 import {
     TChart,
     TWrapper,
-    ChartTooltipParams,
     TooltipProps,
     LegendProps,
 } from './types';
 
 import ChartContent from './chart-content';
-import ChartTooltip from './chart-tooltip';
 import FilteredChart from './filtered-chart';
 
 import {
@@ -32,10 +30,7 @@ import {
 
 
 import './SuperChart.scss';
-import TooltipPercent from './tooltip-percent';
-import ChartContentTooltip from './chart-content-tooltip';
-import { TooltipContentProps } from './chart-content-tooltip/types';
-
+import { ChartContentTooltip, type TooltipContentProps } from './chart-content-tooltip';
 
 type SuperChartProps = Readonly<{
     type?: TChart;
@@ -54,52 +49,11 @@ type SuperChartProps = Readonly<{
     radialChart?: RadialChartProps;
     wrapperType?: TWrapper;
     scatterChart?: ScatterChartProps;
-    chartTooltip?: ChartTooltipParams;
     composedChart?: ComposedChartProps;
-    tooltipContent?: (params: ChartTooltipParams) => React.ReactNode;
 }>;
 
-function getTooltipContent(chartTooltip?: ChartTooltipParams, tooltipContent?: ((params: ChartTooltipParams) => React.ReactNode)) {
-    if (chartTooltip) {
-        return (params: any) => (<ChartTooltip {...params} {...chartTooltip}/>);
-    }
-    return tooltipContent;
-}
-
-function buildTooltipContent(tooltip: TooltipProps) {
-    if(tooltip.content) {
-        return tooltip.content;
-    }
-    console.log('# => tooltip => ', tooltip?.withContent)
-    console.log('# => tooltip =>  false => ', tooltip?.withContent === false)
-
-    if (tooltip?.withContent === false) {
-        console.log('# => fuck you => not content');
-        return undefined;
-    }
-
-    if (tooltip?.withDefaultTooltip) {
-        console.log('# => fuck you => default');
-        return (props: any) => (<ChartTooltip {...props} {...tooltip}/>);
-    }
-
-    if (tooltip?.filterContent) {
-        console.log('# => fuck you => filter');
-        return (props: any) => <FilteredChart filteredTooltip={{ ...props, filterContent: tooltip.filterContent }}/>
-    }
-
-    if (tooltip?.withPercentFormatter) {
-        console.log('# => fuck you => percent');
-        return (props: any) => (<TooltipPercent {...props} />);
-    }
-
-    // return tooltip?.content;
-    return (props: any) => (<ChartTooltip {...props} {...tooltip}/>);
-}
-
-function buildTooltip(tooltip: TooltipProps | undefined, chartTooltip: ChartTooltipParams | undefined) {
+function buildTooltip(tooltip?: TooltipProps) {
     const defaultTooltip: TooltipProps = { ...tooltip };
-    console.log('# => defaultTooltip => ', defaultTooltip)
 
     if(tooltip?.show === false) {
         return undefined;
@@ -109,8 +63,6 @@ function buildTooltip(tooltip: TooltipProps | undefined, chartTooltip: ChartTool
         return defaultTooltip;
     }
 
-
-    // defaultTooltip.content = buildTooltipContent({...defaultTooltip, ...chartTooltip});
     defaultTooltip.content = tooltip?.withContent === false
         ? undefined
         : (props: TooltipContentProps) => ChartContentTooltip({ params: props, tooltip: defaultTooltip });
@@ -150,10 +102,8 @@ export default function SuperChart({
     radarChart,
     radialChart,
     wrapperType,
-    chartTooltip,
     scatterChart,
     composedChart,
-    tooltipContent
 }: SuperChartProps) {
 
     const isFallback = () => {
@@ -200,7 +150,7 @@ export default function SuperChart({
         return false;
     }
 
-    const currentTooltip = buildTooltip(tooltip, chartTooltip);
+    const currentTooltip = buildTooltip(tooltip);
     const currentLegend = buildLegend(legend);
 
     return (
@@ -241,7 +191,6 @@ export default function SuperChart({
                     <RadarChart
                         {...radarChart}
                         tooltip={currentTooltip}
-                        tooltipContent={getTooltipContent(chartTooltip, tooltipContent)}
                     />
                 )
             }

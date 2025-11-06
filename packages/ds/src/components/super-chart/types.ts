@@ -66,20 +66,6 @@ export type CartesianGridProps = React.ComponentProps<typeof CartesianGrid>;
 
 export type MarginProps = { top: number; right: number; bottom: number; left: number };
 
-export type ChartTooltipParams = {
-    style?: React.CSSProperties;
-    active?: boolean;
-    label?: string | number;
-    payload?: Array<PayloadItemProps>;
-    nameProps?: TextProps;
-    hourProps?: TextProps;
-    countProps?: TextProps;
-    valueProps?: TextProps;
-    percentageProps?: TextProps;
-    genericTextProps?: TextProps & { withCurrencyFormatter?: boolean };
-    withGenericProps?: boolean;
-};
-
 export type PayloadItemProps = {
     hide: boolean;
     name: string;
@@ -129,8 +115,6 @@ export type CompareFilterTooltipParams = Omit<FilterTooltipContentItem, 'by'> & 
     param?: string | number;
 
 }
-// Novo tipo para aceitar array ou único filtro
-export type FilterContentInput = FilterContent | FilterContent[];
 
 export type CompareFilterParams = Omit<FilterContent, 'label'> & {
     param: string | number;

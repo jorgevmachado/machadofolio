@@ -60,7 +60,9 @@ const meta = {
         type: 'bar',
         title: 'Bar Chart Title',
         tooltip: {
-            withDefaultTooltip: true
+            countProps: {
+                show: false
+            },
         },
         barChart: {
             data: [
