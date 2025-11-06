@@ -50,6 +50,7 @@ export default function LineChart({
                                       style,
                                       margin,
                                       labels,
+                                      legend,
                                       xAxis,
                                       yAxis,
                                       tooltip,
@@ -57,14 +58,13 @@ export default function LineChart({
                                       withAxis = true,
                                       withZoom = false,
                                       onMouseUp,
-                                      withLegend = false,
                                       responsive = true,
                                       onMouseDown,
                                       onMouseMove,
                                       referenceArea,
                                       buttonZoomOut,
                                       referenceLines
-                                  }: LineChartProps) {
+                                  }: Readonly<LineChartProps>) {
 
     const [zoomGraph, setZoomGraph] = useState<CustomDomainItem>(INITIAL_STATE);
 
@@ -227,8 +227,8 @@ export default function LineChart({
                     <Tooltip {...tooltip}/>
                 )}
 
-                {withLegend && (
-                    <Legend/>
+                {legend && (
+                    <Legend {...legend}/>
                 )}
 
                 {list?.map(((item, index) => (

@@ -258,7 +258,7 @@ describe('<LineChart/>', () => {
     });
 
     it('should render component with legend.', () => {
-        renderComponent({ withLegend: true });
+        renderComponent({ legend: { show: true } });
         expect(screen.getByTestId('mock-legend')).toBeInTheDocument();
     });
 

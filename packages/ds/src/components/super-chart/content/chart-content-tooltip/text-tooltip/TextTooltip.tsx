@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 
 import { currencyFormatter } from '@repo/services';
 
-import { Text } from '../../../../elements';
+import { Text } from '../../../../../elements';
 
-import type { TextTooltipProps } from '../../types';
+import type { TextTooltipProps } from '../../../types';
 
 export default function TextTooltip({
                                         type,
@@ -34,7 +34,7 @@ export default function TextTooltip({
     }, [dataName, withCurrencyFormatter, text, appendText]);
 
     return (
-        <Text {...textProps} data-testid={`ds-chart-tooltip-${type}`}>
+        <Text {...textProps} data-testid={`ds-chart-content-tooltip-${type}`}>
             {label}
         </Text>
     )

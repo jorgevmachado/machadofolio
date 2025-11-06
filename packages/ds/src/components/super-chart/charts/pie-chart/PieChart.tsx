@@ -32,10 +32,10 @@ export default function PieChart({
     data,
     style,
     margin,
+    legend,
     tooltip,
     responsive = true,
     withNeedle,
-    withLegends = false,
     withDefaultCustomLabel = false,
     withDefaultActiveShape = false
 }: PieChartProps) {
@@ -117,7 +117,9 @@ export default function PieChart({
                     <Tooltip {...tooltip}/>
                 )}
 
-                {withLegends && (<Legend />)}
+                {legend && (
+                    <Legend {...legend}/>
+                )}
             </PieChartComponent>
         </div>
     )

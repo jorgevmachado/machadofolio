@@ -1,79 +1,43 @@
-import { CompareFilterParams, CompareFilterTooltipParams } from './types';
+import type { LegendProps, TooltipProps } from './types';
+import { ChartContentLegend, ChartContentTooltip, type LegendContentProps, type TooltipContentProps } from './content';
 
-export function compareFilter({ param, value, condition }: CompareFilterParams) {
-    if (!param) {
-        return true;
+export function buildTooltip(tooltip?: TooltipProps) {
+    const defaultTooltip: TooltipProps = { ...tooltip };
+
+    if(tooltip?.show === false) {
+        return undefined;
     }
-    if (!value) {
-        return true;
+
+    if(defaultTooltip.content) {
+        return defaultTooltip;
     }
-    if (!condition) {
-        return true;
-    }
-    switch (condition) {
-        case '===':
-            return param === value;
-        case '!==':
-            return param !== value;
-        case '>':
-            return param > value;
-        case '<':
-            return param < value;
-        case '>=':
-            return param >= value;
-        case '<=':
-            return param <= value;
-        default:
-            return true;
-    }
+
+    defaultTooltip.content = tooltip?.withContent === false
+        ? undefined
+        : (props: TooltipContentProps) => ChartContentTooltip({ params: props, tooltip: defaultTooltip });
+
+    return defaultTooltip;
 }
 
+export function buildLegend(legend?: LegendProps) {
+    const defaultLegend: LegendProps = { ...legend };
 
-function CurrentValue({ by = 'value', value, label }: CompareFilterTooltipParams) {
-    switch (by) {
-        case 'label':
-            return label;
-        case 'value':
-        default:
-            return value;
-    }
-}
-
-export function CompareFilterTooltip(props: CompareFilterTooltipParams){
-    const {
-        param,
-        condition
-    } = props
-
-    const currentValue =  CurrentValue(props);
-
-
-    if(condition === 'empty' && !param) {
-        return false;
+    if(defaultLegend?.show === false) {
+        return undefined;
     }
 
-    if (!param) {
-        return true;
+    if(defaultLegend?.content) {
+        return defaultLegend;
     }
 
-    if (!condition) {
-        return true;
+    if(defaultLegend?.withContent === false) {
+        return defaultLegend;
     }
 
-    switch (condition) {
-        case '===':
-            return param === currentValue;
-        case '!==':
-            return param !== currentValue;
-        case '>':
-            return param > (currentValue ?? 0);
-        case '<':
-            return param < (currentValue ?? 0);
-        case '>=':
-            return param >= (currentValue ?? 0);
-        case '<=':
-            return param <= (currentValue ?? 0);
-        default:
-            return true;
-    }
+    defaultLegend.content = (props) => ChartContentLegend({
+        params: props as LegendContentProps,
+        legend: defaultLegend
+    });
+
+    return defaultLegend;
 }

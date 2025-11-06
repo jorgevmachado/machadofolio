@@ -72,7 +72,6 @@ const meta = {
                     dataKey: 'uv',
                 }
             ],
-            withLegend: true,
         },
         subtitle: 'Line Chart Subtitle',
         children: 'Hello, World!',
@@ -113,7 +112,7 @@ export const DashedLineChart: Story = {
                     strokeDasharray: '3 4 5 2'
                 }
             ],
-            withLegend: true,
+
         }
     }
 };
@@ -146,7 +145,7 @@ export const VerticalLineChart: Story = {
                 }
             ],
             layout: 'vertical',
-            withLegend: true,
+
         }
     }
 };
@@ -180,7 +179,7 @@ export const BiaxialLineChart: Story = {
                 }
             ],
             margin: { top: 15, right: 0, left: 0, bottom: 5 },
-            withLegend: true,
+
         }
     }
 };
@@ -209,7 +208,7 @@ export const VerticalLineChartWithSpecifiedDomain: Story = {
             layout: 'vertical',
             style: { maxWidth: '300px', aspectRatio: 1 / 1.618 },
             margin: { top: 20, right: 0, left: 0, bottom: 5 },
-            withLegend: true,
+
         }
     }
 }
@@ -242,7 +241,7 @@ export const LineChartConnectNulls: Story = {
             ],
             style: { maxHeight: '30vh' },
             margin: { top: 10, right: 30, left: 0, bottom: 0 },
-            withLegend: true,
+
         }
     }
 }
@@ -270,7 +269,7 @@ export const LineChartWithXAxisPadding: Story = {
                     dataKey: 'uv',
                 }
             ],
-            withLegend: true,
+
         }
     }
 }
@@ -297,7 +296,7 @@ export const LineChartWithReferenceLines: Story = {
                 }
             ],
             margin: { top: 20, right: 0, left: 0, bottom: 5 },
-            withLegend: true,
+
             referenceLines: [
                 {
                     x: 'Page C',
@@ -339,7 +338,7 @@ export const CustomizedDotLineChart: Story = {
                 }
             ],
             margin: { top: 5, right: 10, left: 0, bottom: 5 },
-            withLegend: true,
+
         }
     }
 }
@@ -372,7 +371,7 @@ export const CustomizedLabelLineChart: Story = {
                 customAxisTick: { fill: '#666'}
             }],
             margin: { top: 20, right: 0, left: 0, bottom: 10 },
-            withLegend: true,
+
         }
     }
 }
@@ -447,7 +446,7 @@ export const HighlightAndZoomLineChart: Story = {
                 }
             ],
             withZoom: true,
-            withLegend: true,
+
             referenceArea: {
                 yAxisId: '1',
                 strokeOpacity: 0.3
@@ -515,7 +514,7 @@ export const LineChartHasMultiSeries: Story = {
                 },
             ],
             margin: { top: 10,  right: 5 },
-            withLegend: true,
+
         }
     }
 }

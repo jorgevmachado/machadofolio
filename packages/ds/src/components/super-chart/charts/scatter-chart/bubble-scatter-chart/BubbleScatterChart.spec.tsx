@@ -170,6 +170,7 @@ describe('<BubbleScatterChart/>', () => {
         })),
         axis: mockAxis,
         style: mockStyle,
+        tooltip: { show: true },
 
     }
 

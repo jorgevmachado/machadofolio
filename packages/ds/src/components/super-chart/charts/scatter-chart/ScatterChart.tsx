@@ -42,8 +42,8 @@ export default function ScatterChart({
     yAxis,
     zAxis,
     layout = 'horizontal',
+    legend,
     tooltip,
-    withLegend,
     responsive = true,
     bubbleStyle,
 }: ScatterChartProps) {
@@ -80,13 +80,14 @@ export default function ScatterChart({
     }, [xAxis, yAxis, zAxis]);
 
     const currentTooltip = useMemo(() => {
+        if(!tooltip) {
+            return undefined;
+        }
+
         const defaultTooltip: TooltipProps = {
             cursor: {
                 strokeDasharray: '3 3'
             }
-        }
-        if(!tooltip) {
-            return undefined;
         }
         return {...defaultTooltip, ...tooltip};
 
@@ -135,8 +136,8 @@ export default function ScatterChart({
                 <Tooltip {...currentTooltip}/>
             )}
 
-            {withLegend && (
-                <Legend />
+            {legend && (
+                <Legend {...legend} />
             )}
 
             {list.map((item, index) => (

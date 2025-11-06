@@ -2,8 +2,12 @@ import React, { useMemo } from 'react';
 
 import { Legend, RadialBar, RadialBarChart, Tooltip } from 'recharts';
 
-import type { LegendProps, RadialChartProps } from './types';
+import type { LegendProps } from '../../types';
+
 import { getRandomHarmonicPalette } from '../../colors';
+
+import type { RadialChartProps } from './types';
+
 
 const defaultStyle = {
     width: '100%',
@@ -28,7 +32,7 @@ export default function RadialChart({
     barSize = 14,
     tooltip,
     responsive = true,
-}: RadialChartProps) {
+}: Readonly<RadialChartProps>) {
 
     const dataList = useMemo(() => {
         return data.map((item) => {
@@ -47,21 +51,23 @@ export default function RadialChart({
                 ...item,
                 fill: item?.fill || fill,
                 position: item?.position || 'insideStart',
-                background: item?.background === undefined ? true : item.background,
+                background: item?.background ?? true,
             }
         })
     }, [labels]);
 
     const currentStyle = { ...defaultStyle, ...style };
 
-    const legendProps = useMemo(() => {
-        const { layout, iconSize, wrapperStyle, verticalAlign } = legend || {} as LegendProps;
-        return {
-            layout: !layout ? 'vertical' : layout,
-            iconSize: !iconSize ? 8 : iconSize,
-            wrapperStyle: { ...defaultWrapperStyle, ...wrapperStyle },
-            verticalAlign:  !verticalAlign ? 'middle' : verticalAlign,
-        };
+    const currentLegend = useMemo(() => {
+        if(!legend) {
+            return legend;
+        }
+        const defaultLegend : LegendProps = { ...legend };
+        defaultLegend.layout = legend?.layout ?? 'vertical';
+        defaultLegend.iconSize = legend?.iconSize ?? 8;
+        defaultLegend.wrapperStyle = { ...defaultWrapperStyle, ...legend?.wrapperStyle };
+        defaultLegend.verticalAlign = legend?.verticalAlign ?? 'middle';
+        return defaultLegend;
     }, [legend]);
 
     return (
@@ -82,12 +88,9 @@ export default function RadialChart({
                 />
             ))}
 
-            <Legend
-                layout={legendProps.layout}
-                iconSize={legendProps.iconSize}
-                wrapperStyle={legendProps.wrapperStyle}
-                verticalAlign={legendProps.verticalAlign}
-            />
+            {legend && (
+                <Legend {...currentLegend}/>
+            )}
 
             {tooltip && (
                 <Tooltip {...tooltip} />

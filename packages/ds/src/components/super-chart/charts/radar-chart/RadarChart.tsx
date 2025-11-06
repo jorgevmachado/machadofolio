@@ -32,14 +32,14 @@ export default function RadarChart({
     value,
     style,
     margin,
+    legend,
     labels = [],
     tooltip,
     responsive,
-    withLegend = false,
     outerRadius = '80%',
     polarAngleAxis,
     polarRadiusAxis
-}: RadarChartProps) {
+}: Readonly<RadarChartProps>) {
 
     const currentStyle = { ...defaultStyle, ...style };
 
@@ -99,8 +99,8 @@ export default function RadarChart({
             )}
 
 
-            { withLegend && (
-                    <Legend/>
+            { legend && (
+                    <Legend {...legend} />
             )}
 
         </RadarChartComponent>

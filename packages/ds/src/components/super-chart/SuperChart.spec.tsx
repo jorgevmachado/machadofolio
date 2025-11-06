@@ -9,16 +9,17 @@ jest.mock('d3-shape', () => ({
     }
 }));
 
-jest.mock('./chart-content', () => ({
+jest.mock('./chart-container', () => ({
     __esModule: true,
     default: (props: any) => (
-        <div {...props} data-testid="mock-chart-content">{props.isFallback ? null : props.children}</div>),
-    ChartContent: (props: any) => (
-        <div {...props} data-testid="mock-chart-content">{props.isFallback ? null : props.children}</div>),
+        <div {...props} data-testid="mock-chart-container">{props.isFallback ? null : props.children}</div>),
+    ChartContainer: (props: any) => (
+        <div {...props} data-testid="mock-chart-container">{props.isFallback ? null : props.children}</div>),
 }));
 
-jest.mock('./chart-content-tooltip', () => ({
+jest.mock('./content', () => ({
     ChartContentTooltip: (props: any) => (<div {...props} data-testid="mock-chart-tooltip"/>),
+    ChartContentLegend: (props: any) => (<div {...props} data-testid="mock-chart-legend"/>),
 }));
 
 jest.mock('./charts', () => {
@@ -103,16 +104,10 @@ jest.mock('./charts', () => {
     }
 });
 
-jest.mock('./filtered-chart', () => ({
-    __esModule: true,
-    default: (props: any) => (
-        <div {...props} data-testid="mock-filtered-chart">
-            {props.filteredTooltip && (<div {...props.filteredTooltip} data-testid="mock-filtered-tooltip"/>)}
-            {props.filteredLegend && (<div {...props.filteredLegend} data-testid="mock-filtered-legend"/>)}
-        </div>
-    ),
-    FilteredChart: (props: any) => (<div {...props} data-testid="mock-filtered-chart"/>)
-}))
+jest.mock('./utils', () => ({
+    buildTooltip: (tooltip: any) => tooltip,
+    buildLegend: (legend: any) => legend,
+}));
 
 import SuperChart from './SuperChart';
 
@@ -137,7 +132,17 @@ describe('<SuperChart/>', () => {
 
     it('should render component with props default.', () => {
         renderComponent();
-        expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-chart-container')).toBeInTheDocument();
+        expect(screen.queryByTestId('mock-bar-chart')).not.toBeInTheDocument();
+    });
+
+    it('should render component with type different', () => {
+        renderComponent({
+            type: 'other',
+            legend: { content: <h1>content</h1> },
+            tooltip: { content: <h1>content</h1> },
+        });
+        expect(screen.getByTestId('mock-chart-container')).toBeInTheDocument();
         expect(screen.queryByTestId('mock-bar-chart')).not.toBeInTheDocument();
     });
 
@@ -171,7 +176,7 @@ describe('<SuperChart/>', () => {
 
         it('should render component with type bar without barChart.', () => {
             renderComponent({ type: 'bar' });
-            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.getByTestId('mock-chart-container')).toBeInTheDocument();
             expect(screen.queryByTestId('mock-bar-chart')).not.toBeInTheDocument();
         });
 
@@ -180,7 +185,7 @@ describe('<SuperChart/>', () => {
                 barChart: { data: mockData },
                 tooltip: { countProps: {text: 'expenses' }, valueProps: { text: 'Total'} }
             });
-            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.getByTestId('mock-chart-container')).toBeInTheDocument();
             expect(screen.getByTestId('mock-bar-chart')).toBeInTheDocument();
         });
 
@@ -188,7 +193,7 @@ describe('<SuperChart/>', () => {
             renderComponent({
                 barChart: { data: mockData },
             });
-            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.getByTestId('mock-chart-container')).toBeInTheDocument();
             expect(screen.getByTestId('mock-bar-chart')).toBeInTheDocument();
         });
     });
@@ -196,7 +201,7 @@ describe('<SuperChart/>', () => {
     describe('PieChart', () => {
         it('should render component with type pie without pieChart.', () => {
             renderComponent({ type: 'pie' });
-            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.getByTestId('mock-chart-container')).toBeInTheDocument();
             expect(screen.queryByTestId('mock-pie-chart')).not.toBeInTheDocument();
         });
 
@@ -307,7 +312,7 @@ describe('<SuperChart/>', () => {
     describe('AreaChart', () => {
         it('should render component with type area without areaChart.', () => {
             renderComponent({ type: 'area' });
-            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.getByTestId('mock-chart-container')).toBeInTheDocument();
             expect(screen.queryByTestId('mock-area-chart')).not.toBeInTheDocument();
         });
 
@@ -440,7 +445,7 @@ describe('<SuperChart/>', () => {
     describe('RadarChart', () => {
         it('should render component with type radar without radarChart.', () => {
             renderComponent({ type: 'radar' });
-            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.getByTestId('mock-chart-container')).toBeInTheDocument();
             expect(screen.queryByTestId('mock-radar-chart')).not.toBeInTheDocument();
         });
 
@@ -571,7 +576,7 @@ describe('<SuperChart/>', () => {
     describe('RadialChart', () => {
         it('should render component with type radial without radialChart.', () => {
             renderComponent({ type: 'radial' });
-            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.getByTestId('mock-chart-container')).toBeInTheDocument();
             expect(screen.queryByTestId('mock-radial-chart')).not.toBeInTheDocument();
         });
 
@@ -704,7 +709,7 @@ describe('<SuperChart/>', () => {
     describe('LineChart', () => {
         it('should render component with type line without lineChart.', () => {
             renderComponent({ type: 'line' });
-            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.getByTestId('mock-chart-container')).toBeInTheDocument();
             expect(screen.queryByTestId('mock-line-chart')).not.toBeInTheDocument();
         });
 
@@ -859,7 +864,7 @@ describe('<SuperChart/>', () => {
         ];
         it('should render component with type scatter without scatterChart.', () => {
             renderComponent({ type: 'scatter' });
-            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.getByTestId('mock-chart-container')).toBeInTheDocument();
             expect(screen.queryByTestId('mock-scatter-chart')).not.toBeInTheDocument();
         });
 
@@ -898,7 +903,7 @@ describe('<SuperChart/>', () => {
         ];
         it('should render component with type composed without composedChart.', () => {
             renderComponent({ type: 'composed' });
-            expect(screen.getByTestId('mock-chart-content')).toBeInTheDocument();
+            expect(screen.getByTestId('mock-chart-container')).toBeInTheDocument();
             expect(screen.queryByTestId('mock-composed-chart')).not.toBeInTheDocument();
         });
 

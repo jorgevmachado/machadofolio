@@ -56,6 +56,9 @@ const meta = {
         },
         subtitle: 'Pie Chart Subtitle',
         children: 'Hello, World!',
+        legend: {
+            show: false
+        },
     },
     title: 'Components/SuperChart/PieChart',
     argTypes: {},

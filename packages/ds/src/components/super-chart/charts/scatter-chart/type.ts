@@ -2,22 +2,14 @@ import React from 'react';
 
 import { LabelListProps, Scatter } from 'recharts';
 
-import {
-    MarginProps,
-    TLayout, TooltipProps,
-    XAxisProps,
-    YAxisProps,
-    ZAxisProps
-} from '../../types';
+import type { LegendProps, MarginProps, TLayout, TooltipProps, XAxisProps, YAxisProps, ZAxisProps } from '../../types';
 
-type ScatterProps = Omit<React.ComponentProps<typeof Scatter>, 'key'> & {
+export type ScatterChartDataItem = Omit<React.ComponentProps<typeof Scatter>, 'key'> & {
     key: string;
     withCell?: boolean;
     showTicks?: boolean;
     labelList?: LabelListProps
 };
-
-export type ScatterChartDataItem = ScatterProps;
 
 export type ScatterChartProps = {
     type?: 'bubble' | 'scatter';
@@ -28,10 +20,10 @@ export type ScatterChartProps = {
     zAxis?: Array<ZAxisProps>;
     style?: React.CSSProperties;
     domain?: Array<number>;
+    legend?: LegendProps;
     margin?: Partial<MarginProps>;
     layout?: TLayout;
     tooltip?: TooltipProps;
     responsive?: boolean;
-    withLegend?: boolean;
     bubbleStyle?: React.CSSProperties;
 }

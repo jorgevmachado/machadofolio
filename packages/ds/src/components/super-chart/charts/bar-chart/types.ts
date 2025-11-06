@@ -1,4 +1,4 @@
-import type { DataChartItem, TLayout, TooltipProps, XAxisProps, YAxisProps } from '../../types';
+import { DataChartItem, LegendProps, TLayout, TooltipProps, XAxisProps, YAxisProps } from '../../types';
 
 export type BarChartDataItem = DataChartItem & {
     fill?: string;
@@ -38,8 +38,8 @@ export type BarChartProps = {
     xAxis?: Array<XAxisProps>;
     yAxis?: Array<YAxisProps>;
     layout?: TLayout;
+    legend?: LegendProps;
     labels?: Array<BarChartLabelsItem>;
     tooltip?: TooltipProps;
-    withLegend?: boolean;
     withCurrencyTickFormatter?: boolean;
 }

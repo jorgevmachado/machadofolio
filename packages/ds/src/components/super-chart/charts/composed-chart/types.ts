@@ -30,12 +30,6 @@ type ScatterProps = React.ComponentProps<typeof Scatter> & {
 
 type composedChartDataItem = Record<string, string | number | Array<string | number>>;
 
-
-export type ComposedChartLegendProps = LegendProps & {
-    show?: boolean;
-    filterContent?: FilterContent;
-}
-
 export type ComposedChartProps = {
     bars?: Array<BarProps>;
     data: Array<composedChartDataItem>;
@@ -46,7 +40,7 @@ export type ComposedChartProps = {
     style?: React.CSSProperties;
     layout?: 'vertical' | 'horizontal';
     margin?: MarginProps;
-    legend?: ComposedChartLegendProps;
+    legend?: LegendProps;
     tooltip?: TooltipProps;
     scatters?: Array<ScatterProps>;
     responsive?: boolean;

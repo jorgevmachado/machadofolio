@@ -127,7 +127,7 @@ describe('<RadarChart/>', () => {
 
     it('should render component with polarAngleAxis and polarRadiusAxis', () => {
         renderComponent({
-            withLegend: true,
+            legend: { show: true },
             polarAngleAxis: { dataKey: 'subject' },
             polarRadiusAxis: { angle: 30, domain: [0, 150] },
         });

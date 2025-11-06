@@ -46,6 +46,9 @@ const meta = {
     args: {
         type: 'radar',
         title: 'Radar Chart Title',
+        legend: {
+            show: false,
+        },
         tooltip: {
             withContent: false
         },
@@ -82,6 +85,9 @@ export const SpecifiedDomainRadarChart: Story = {
         title: 'Specified Domain Radar Chart',
         subtitle: undefined,
         children: undefined,
+        legend: {
+            show: true,
+        },
         radarChart: {
             value: 'subject',
             data,
@@ -103,7 +109,6 @@ export const SpecifiedDomainRadarChart: Story = {
                     fillOpacity: 0.6,
                 },
             ],
-            withLegend: true,
             polarRadiusAxis: {
                 angle: 30,
                 domain: [0, 150],

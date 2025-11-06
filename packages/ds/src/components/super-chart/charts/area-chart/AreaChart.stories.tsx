@@ -71,6 +71,7 @@ const meta = {
                 show: false
             },
             genericTextProps: {
+                show: true,
                 withName: true,
                 withValue: true
             }
@@ -201,6 +202,7 @@ export const PercentAreaChart: Story = {
                 show: false
             },
             genericTextProps: {
+                show: true,
                 withName: true,
                 withValue: true,
                 withTotalPercent: true

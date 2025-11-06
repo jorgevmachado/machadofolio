@@ -324,11 +324,11 @@ export const BandedChart: Story = {
         children: undefined,
         legend: {
             show: true,
-            filterContent: {
+            filterContent: [{
                 label: 'dataKey',
                 value: 'a',
                 condition: '!=='
-            }
+            }]
         },
         tooltip: {
             filterContent: [{

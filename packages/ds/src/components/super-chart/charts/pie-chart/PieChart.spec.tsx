@@ -290,6 +290,9 @@ describe('<PieChart/>', () => {
                 }
             ],
             style: { margin: '0 auto', width: 210, height: 120 },
+            legend: {
+                show: true
+            },
             withNeedle: true,
             withLegends: true,
             withoutContentTooltip: true,

@@ -26,7 +26,7 @@ const meta = {
                     name: 'A school',
                 }
             ],
-            withLegend: true,
+            
         },
         subtitle: 'Scatter Chart Subtitle',
         children: 'Hello, World!',
@@ -94,7 +94,6 @@ export const ThreeDimScatterChart: Story = {
                 range: [60, 400],
                 dataKey: 'z',
             }],
-            withLegend: true,
         },
     }
 }
@@ -153,7 +152,6 @@ export const JointLineScatterChart: Story = {
                 type: 'number',
                 range: [100, 100],
             }],
-            withLegend: true,
         },
     }
 };
@@ -407,6 +405,9 @@ export const ScatterChartWithLabels: Story = {
 export const MultipleYAxesScatterChart: Story = {
     args: {
         title: 'Multiple Y Axes Scatter Chart',
+        legend: {
+            show: false
+        },
         subtitle: undefined,
         children: undefined,
         scatterChart: {

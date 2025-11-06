@@ -4,14 +4,14 @@ import { DefaultTooltipContent } from 'recharts';
 
 import { convertToNumber } from '@repo/services';
 
-import { type TextProps, TooltipProps } from '../types';
+import { type TextProps, TooltipProps } from '../../types';
 
-import { CompareFilterTooltip } from '../utils';
+import { compareFilter } from '../utils';
 
 import type { TooltipContentProps } from './types';
 
 import TextTooltip from './text-tooltip';
-import GenericTextTooltip from './generic-text-tooltip';
+import GenericContentTooltip from './generic-content-tooltip';
 
 import './ChartContentTooltip.scss';
 
@@ -33,32 +33,39 @@ export default function ChartContentTooltip({
 
     const currentPayload = useMemo(() => {
         const payload = params?.payload || [];
-        const { filterContent } = tooltip;
-        if (filterContent && filterContent.length > 0) {
-            return  payload.filter((item) =>
-                filterContent.every(({ by = 'value', label, value, condition }) => CompareFilterTooltip({
-                    by,
-                    label,
-                    param: item?.[label],
-                    value,
-                    condition
-                }))
-            );
+        if (tooltip?.filterContent && tooltip?.filterContent.length > 0) {
+            const { filterContent } = tooltip;
+            return payload.filter((item) => filterContent.every(({ by = 'value', label, value, condition }) => compareFilter({
+                by,
+                label,
+                param: item?.[label],
+                value,
+                condition
+            })));
         }
         return payload;
     }, [params.payload, tooltip]);
 
-    if(!params?.active && params?.payload && params?.payload?.length === 0) {
+    if(!params?.active) {
+        return null;
+    }
+
+    if(!params?.payload) {
+        return null;
+    }
+
+    if( params?.payload?.length <= 0) {
         return null;
     }
 
     if(tooltip?.withDefaultTooltip) {
-        return <DefaultTooltipContent {...params} payload={currentPayload} data-testid="ds-filtered-chart-tooltip" />;
+        return <DefaultTooltipContent {...params} payload={currentPayload} data-testid="ds-chart-content-tooltip-default" />;
     }
 
     const firstItem = currentPayload[0];
 
     const data = (tooltip.withSubLevel ? firstItem?.payload?.payload : firstItem?.payload )|| {} as Record<string, string | number>;
+
     const total = currentPayload.reduce((result, entry) => result + (entry.value as number), 0);
 
     const value = convertToNumber(data?.value);
@@ -104,6 +111,7 @@ export default function ChartContentTooltip({
                     type="hour"
                     text={hourProps?.text}
                     dataName={data.hour}
+                    className="ds-chart-content-tooltip__text"
                 />
             )}
 
@@ -114,6 +122,7 @@ export default function ChartContentTooltip({
                     type="value"
                     text={valueProps?.text ?? 'Value'}
                     dataName={data.value}
+                    className="ds-chart-content-tooltip__text"
                     withCurrencyFormatter={valueProps?.withCurrencyFormatter ?? true}
                 />
             )}
@@ -124,6 +133,7 @@ export default function ChartContentTooltip({
                     type="count"
                     text={countProps?.text ?? 'Count'}
                     dataName={data.count}
+                    className="ds-chart-content-tooltip__text"
                 />
             )}
 
@@ -133,10 +143,16 @@ export default function ChartContentTooltip({
                     type="percentage"
                     text={countProps?.text ?? 'Percentage'}
                     dataName={`${percentage}%`}
+                    className="ds-chart-content-tooltip__text"
                 />
             )}
-            {showGeneric && (
-                <GenericTextTooltip data={data} genericTextProps={genericTextProps}/>
+
+            {(showGeneric && genericTextProps ) && (
+                <GenericContentTooltip
+                    data={data}
+                    total={total}
+                    payload={currentPayload}
+                    genericProps={genericTextProps} />
             )}
         </div>
     )

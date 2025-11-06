@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import {
     Area,
     AreaChart as AreaChartComponent,
-    CartesianGrid,
+    CartesianGrid, Legend,
     Tooltip,
     XAxis,
     YAxis
@@ -40,6 +40,7 @@ export default function AreaChart ({
     margin,
     syncId,
     labels = [],
+    legend,
     tooltip,
     withXAxis = true,
     withYAxis = true,
@@ -104,6 +105,11 @@ export default function AreaChart ({
             {linearGradient && (
                 <LinearGradient {...linearGradient} data={data}/>
             )}
+
+            {legend && (
+                <Legend {...legend} />
+            )}
+
 
             {list?.map((label, index) => (
                 <Area

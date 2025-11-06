@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { MarginProps, XAxisProps, YAxisProps, DataChartItem, ChartTooltipParams, TooltipProps } from '../../types';
+import type { MarginProps, XAxisProps, YAxisProps, DataChartItem, TooltipProps, LegendProps } from '../../types';
 
 export type AreaChartDataItem = DataChartItem & {
     name: string;
@@ -40,6 +40,7 @@ export type AreaChartProps = {
     data: Array<AreaChartDataItem>;
     style?: React.CSSProperties;
     labels?: Array<AreaChartLabelsItem>;
+    legend?: LegendProps;
     margin?: MarginProps;
     syncId?: string;
     tooltip?: TooltipProps;

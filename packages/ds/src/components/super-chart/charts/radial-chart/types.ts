@@ -1,13 +1,6 @@
 import React from 'react';
 
-import type { DataChartItem, TooltipProps } from '../../types';
-
-export type LegendProps = {
-    layout?: 'horizontal' | 'vertical';
-    iconSize?: number;
-    wrapperStyle?: React.CSSProperties;
-    verticalAlign?: 'top' | 'middle' | 'bottom';
-}
+import type { DataChartItem, TooltipProps, LegendProps } from '../../types';
 
 export type RadialChartDataItem = DataChartItem;
 

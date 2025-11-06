@@ -4,13 +4,18 @@ import { Text } from '../../elements';
 
 import { XAxis, YAxis, ZAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 
+import type { FilterContent } from './content';
+
 export type TChart = 'bar' | 'pie' | 'area' | 'radar' |  'radial' | 'line' | 'scatter' | 'composed';
 
 export type TWrapper = 'default' | 'card';
 
 export type LegendProps = React.ComponentProps<typeof Legend> & {
     show?: boolean;
+    style?: React.CSSProperties;
+    withContent?: boolean;
     filterContent?: FilterContent;
+    withDefaultLegend?: boolean;
 };
 
 export type TextTooltipProps = Omit<React.ComponentProps<typeof Text>, 'children'> & {
@@ -40,7 +45,7 @@ export type TooltipProps = React.ComponentProps<typeof Tooltip> & {
     valueProps?: TextProps;
     withContent?: boolean;
     withSubLevel?: boolean;
-    filterContent?: FilterTooltipContent;
+    filterContent?: FilterContent;
     percentageProps?: TextProps;
     genericTextProps?: GenericTextProps;
     withTotalPercent?: boolean;
@@ -92,30 +97,3 @@ export type ColorProps = {
 export type DataChartItem = Record<string, string | number>;
 
 export type TLayout = 'vertical' | 'horizontal';
-
-export type FilterContent = {
-    label: 'dataKey';
-    value: string | number;
-    condition: '===' | '!==' | '>' |  '<' | '>=' | '<=';
-}
-
-
-type TByFilterTooltipContent = 'label' | 'value' | 'condition';
-
-type FilterTooltipContentItem = {
-    by?: TByFilterTooltipContent;
-    label: string;
-    value?: string | number;
-    condition: '===' | '!==' | '>' |  '<' | '>=' | '<=' | 'empty';
-}
-type FilterTooltipContent = Array<FilterTooltipContentItem>
-
-export type CompareFilterTooltipParams = Omit<FilterTooltipContentItem, 'by'> & {
-    by: TByFilterTooltipContent;
-    param?: string | number;
-
-}
-
-export type CompareFilterParams = Omit<FilterContent, 'label'> & {
-    param: string | number;
-}

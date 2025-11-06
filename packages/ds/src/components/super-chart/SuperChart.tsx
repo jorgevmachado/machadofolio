@@ -8,9 +8,6 @@ import {
 } from './types';
 
 import ChartContainer from './chart-container';
-import FilteredChart from './filtered-chart';
-
-import { ChartContentTooltip, type TooltipContentProps } from './chart-content-tooltip';
 
 import {
     type BarChartProps,
@@ -31,7 +28,7 @@ import {
 } from './charts';
 
 import './SuperChart.scss';
-
+import { buildLegend, buildTooltip } from './utils';
 
 type SuperChartProps = Readonly<{
     type?: TChart;
@@ -52,40 +49,6 @@ type SuperChartProps = Readonly<{
     scatterChart?: ScatterChartProps;
     composedChart?: ComposedChartProps;
 }>;
-
-function buildTooltip(tooltip?: TooltipProps) {
-    const defaultTooltip: TooltipProps = { ...tooltip };
-
-    if(tooltip?.show === false) {
-        return undefined;
-    }
-
-    if(defaultTooltip.content) {
-        return defaultTooltip;
-    }
-
-    defaultTooltip.content = tooltip?.withContent === false
-        ? undefined
-        : (props: TooltipContentProps) => ChartContentTooltip({ params: props, tooltip: defaultTooltip });
-
-    return defaultTooltip;
-}
-
-function buildLegend(legend?: LegendProps) {
-    const defaultLegend: LegendProps = { ...legend };
-
-    if(defaultLegend?.show === false) {
-        return undefined;
-    }
-
-    if (defaultLegend?.filterContent) {
-        return {
-            ...legend,
-            content: (props: any) => <FilteredChart filteredLegend={{ ...props, filterContent: defaultLegend.filterContent }} />
-        };
-    }
-    return { ...defaultLegend };
-}
 
 export default function SuperChart({
     type = 'bar',
@@ -159,6 +122,7 @@ export default function SuperChart({
                 (type === 'bar' && barChart) && (
                     <BarChart
                         {...barChart}
+                        legend={currentLegend}
                         tooltip={currentTooltip}
                     />
                 )
@@ -167,6 +131,7 @@ export default function SuperChart({
                 (type === 'pie' && pieChart) && (
                     <PieChart
                         {...pieChart}
+                        legend={currentLegend}
                         tooltip={currentTooltip}
                     />
                 )
@@ -175,6 +140,7 @@ export default function SuperChart({
                 (type === 'area' && areaChart) && (
                         <AreaChart
                             {...areaChart}
+                            legend={currentLegend}
                             tooltip={currentTooltip}
                         />
                 )
@@ -183,6 +149,7 @@ export default function SuperChart({
                 (type === 'radar' && radarChart) && (
                     <RadarChart
                         {...radarChart}
+                        legend={currentLegend}
                         tooltip={currentTooltip}
                     />
                 )
@@ -191,6 +158,7 @@ export default function SuperChart({
                 (type === 'radial' && radialChart ) && (
                     <RadialChart
                         {...radialChart}
+                        legend={currentLegend}
                         tooltip={currentTooltip}
                     />
 
@@ -200,6 +168,7 @@ export default function SuperChart({
                 (type === 'line' && lineChart ) && (
                     <LineChart
                         {...lineChart}
+                        legend={currentLegend}
                         tooltip={currentTooltip}
                     />
                 )
@@ -208,6 +177,7 @@ export default function SuperChart({
                 (type === 'scatter' && scatterChart ) && (
                     <ScatterChart
                         {...scatterChart}
+                        legend={currentLegend}
                         tooltip={currentTooltip}
                     />
                 )
