@@ -33,6 +33,7 @@ export default function SuperChart({
                                        pieChart,
                                        children,
                                        className,
+   responsive,
                                        areaChart,
                                        lineChart,
                                        radarChart,
@@ -118,6 +119,7 @@ export default function SuperChart({
                         axis={axis}
                         legend={currentLegend}
                         tooltip={currentTooltip}
+                        responsive={responsive}
                     />
                 )
             }

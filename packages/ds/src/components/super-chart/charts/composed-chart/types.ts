@@ -8,8 +8,6 @@ import {
     LegendProps,
     MarginProps,
     TooltipProps,
-    XAxisProps,
-    YAxisProps
 } from '../../types';
 
 type AreaProps = React.ComponentProps<typeof Area> & {
@@ -32,12 +30,10 @@ type composedChartDataItem = Record<string, string | number | Array<string | num
 
 export type ComposedChartProps = {
     bars?: Array<BarProps>;
-    axis: AxisProps;
+    axis?: AxisProps;
     data: Array<composedChartDataItem>;
     areas?: Array<AreaProps>;
     lines?: Array<LineProps>;
-    xAxis?: Array<XAxisProps & { key: string; }>;
-    yAxis?: Array<YAxisProps & { key: string; }>;
     style?: React.CSSProperties;
     layout?: 'vertical' | 'horizontal';
     margin?: MarginProps;

@@ -164,6 +164,7 @@ export type SuperChartProps = Readonly<{
     className?: string;
     areaChart?: AreaChartProps;
     lineChart?: LineChartProps;
+    responsive?: boolean;
     radarChart?: RadarChartProps;
     radialChart?: RadialChartProps;
     wrapperType?: TWrapper;

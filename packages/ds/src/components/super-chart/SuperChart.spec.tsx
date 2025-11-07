@@ -107,6 +107,7 @@ jest.mock('./charts', () => {
 jest.mock('./utils', () => ({
     buildTooltip: (tooltip: any) => tooltip,
     buildLegend: (legend: any) => legend,
+    buildAxis: () => jest.fn(),
 }));
 
 import SuperChart from './SuperChart';

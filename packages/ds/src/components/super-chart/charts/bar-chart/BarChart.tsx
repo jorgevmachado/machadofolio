@@ -20,13 +20,10 @@ export default function BarChart ({
     top,
     axis,
     data,
-    xAxis,
-    yAxis,
     labels = [],
     legend,
     layout = 'vertical',
     tooltip,
-    withCurrencyTickFormatter
 }: Readonly<BarChartProps>) {
     const { isMobile } = useBreakpoint();
 

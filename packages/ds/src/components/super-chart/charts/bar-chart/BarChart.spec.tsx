@@ -38,6 +38,10 @@ describe('<BarChart/>', () => {
     const mockTooltipContent = jest.fn();
 
     const defaultProps = {
+        axis: {
+            xList: [{ key: 'x-axis-0', dataKey: 'name' }],
+            yList: [{ key: 'y-axis-0', width: 'auto' }],
+        },
         data: [
             {
                 type: 'bank',
@@ -158,7 +162,16 @@ describe('<BarChart/>', () => {
     });
 
     it('should render component with layout horizontal.', () => {
-        renderComponent({ withLegend: false, withTooltip: false,  layout: 'horizontal' });
+        renderComponent({
+            axis: {
+                xList: [{ key: 'x-axis-0', type: 'number' }],
+                yList: [{ key: 'y-axis-0', type: 'category', width: 90, dataKey: 'name' }],
+            },
+            layout: 'horizontal',
+            legend: undefined,
+            tooltip: undefined,
+
+        });
         expect(screen.getByTestId('ds-bar-chart')).toBeInTheDocument();
         expect(screen.getByTestId('mock-responsive-container')).toBeInTheDocument();
         expect(screen.getByTestId('mock-bar-chart-component')).toBeInTheDocument();
@@ -176,7 +189,13 @@ describe('<BarChart/>', () => {
     });
 
     it('should render component with layout horizontal and withCurrencyTickFormatter.', () => {
-        renderComponent({ layout: 'horizontal', withCurrencyTickFormatter: true });
+        renderComponent({
+            axis: {
+                xList: [{ key: 'x-axis-0', type: 'number', tickFormatter: jest.fn() }],
+                yList: [{ key: 'y-axis-0', type: 'category', width: 90, dataKey: 'name', tickFormatter: jest.fn() }],
+            },
+            layout: 'horizontal',
+        });
         expect(screen.getByTestId('ds-bar-chart')).toBeInTheDocument();
         expect(screen.getByTestId('mock-responsive-container')).toBeInTheDocument();
         expect(screen.getByTestId('mock-bar-chart-component')).toBeInTheDocument();

@@ -61,7 +61,6 @@ export function buildAxis(
     withPercentFormatter?: boolean,
     withAxisCurrencyTickFormatter?: boolean
 ): AxisProps {
-    console.log('# => utils => layout => ', layout);
     const axisItem: AxisItem =  {
         x: (layout === 'vertical')
             ? { key: 'x-axis-0', dataKey: 'name' }

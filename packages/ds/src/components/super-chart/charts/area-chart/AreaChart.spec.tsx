@@ -98,6 +98,10 @@ describe('<AreaChart/>', () => {
         }]
 
     const defaultProps = {
+        axis: {
+            xList: [{ key: 'x-axis-0', dataKey: 'name' }],
+            yList: [{ key: 'y-axis-0', width: 'auto' }],
+        },
         areas,
         labels,
         tooltip: {
@@ -131,7 +135,12 @@ describe('<AreaChart/>', () => {
     });
 
     it('should render component with props xAxis and yAxis.', () => {
-        renderComponent({ xAxis: { dataKey: 'value', width: 100 }, yAxis: { width: 90 } });
+        renderComponent({
+            axis: {
+                xList: [{ key: 'x-axis-0', dataKey: 'value', width: 100 }],
+                yList: [{ key: 'y-axis-0', width: 90 }]
+            },
+        });
         expect(screen.getByTestId('mock-area-chart')).toBeInTheDocument();
         expect(screen.getByTestId('mock-cartesian-grid')).toBeInTheDocument();
         const xAxisComponent = screen.getByTestId('mock-xaxis');

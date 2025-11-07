@@ -52,6 +52,17 @@ const meta = {
     args: {
         type: 'composed',
         title: 'Composed Chart Title',
+        xAxis: [{
+            key: 'x-axis',
+            label:{ value: 'Pages', position: 'insideBottomRight', offset: 0 },
+            scale: 'band',
+            dataKey:'name',
+        }],
+        yAxis: [{
+            key: 'y-axis',
+            width: 'auto',
+            label: { value: 'Index', angle: -90, position: 'insideLeft' },
+        }],
         tooltip: {
             filterContent: [
                 {
@@ -87,17 +98,6 @@ const meta = {
                 stroke: '#ff7300',
                 dataKey: 'uv',
             }],
-            xAxis: [{
-                key: 'x-axis',
-                label:{ value: 'Pages', position: 'insideBottomRight', offset: 0 },
-                scale: 'band',
-                dataKey:'name',
-            }],
-            yAxis: [{
-                key: 'y-axis',
-                width: 'auto',
-                label: { value: 'Index', angle: -90, position: 'insideLeft' },
-            }],
             scatters: [{
                 key: 'cnt',
                 fill: 'red',
@@ -127,19 +127,19 @@ export const Default: Story = {
 export const SameDataComposedChart: Story = {
     args: {
         title: 'Same Data Composed Chart',
+        xAxis: [{
+            key: 'x-axis',
+            scale: 'band',
+            dataKey:'name',
+        }],
+        yAxis: [{
+            key: 'y-axis',
+            width: 'auto',
+        }],
         subtitle: undefined,
         children: undefined,
         composedChart: {
             data,
-            xAxis: [{
-                key: 'x-axis',
-                scale: 'band',
-                dataKey:'name',
-            }],
-            yAxis: [{
-                key: 'y-axis',
-                width: 'auto',
-            }],
             bars: [{
                 key: 'uv',
                 fill: '#413ea0',
@@ -159,22 +159,22 @@ export const SameDataComposedChart: Story = {
 export const VerticalComposedChart: Story = {
     args: {
         title: 'Vertical Composed Chart',
+        xAxis: [{
+            key: 'x-axis',
+            type: 'number',
+        }],
+        yAxis: [{
+            key: 'y-axis',
+            type: 'category',
+            width: 'auto',
+            scale: 'band',
+            dataKey: 'name',
+        }],
         subtitle: undefined,
         children: undefined,
         composedChart: {
             data,
             layout: 'vertical',
-            xAxis: [{
-                key: 'x-axis',
-                type: 'number',
-            }],
-            yAxis: [{
-                key: 'y-axis',
-                type: 'category',
-                width: 'auto',
-                scale: 'band',
-                dataKey: 'name',
-            }],
             areas: [{
                 key: 'amt',
                 fill: '#8884d8',
@@ -199,29 +199,29 @@ export const VerticalComposedChart: Story = {
 export const ComposedChartWithAxisLabels: Story = {
     args: {
         title: 'Composed Chart With Axis Labels',
+        xAxis: [{
+            key: 'x-axis',
+            label: {
+                value: 'Pages',
+                offset: 0,
+                position: 'insideBottomRight'
+            },
+            scale: 'band',
+            dataKey: 'name',
+        }],
+        yAxis: [{
+            key: 'y-axis',
+            label: {
+                value: 'Index',
+                angle: -90,
+                position: 'insideLeft'
+            },
+            width: 'auto',
+        }],
         subtitle: undefined,
         children: undefined,
         composedChart: {
             data,
-            xAxis: [{
-                key: 'x-axis',
-                label: {
-                    value: 'Pages',
-                    offset: 0,
-                    position: 'insideBottomRight'
-                },
-                scale: 'band',
-                dataKey: 'name',
-            }],
-            yAxis: [{
-                key: 'y-axis',
-                label: {
-                    value: 'Index',
-                    angle: -90,
-                    position: 'insideLeft'
-                },
-                width: 'auto',
-            }],
             areas: [{
                 key: 'amt',
                 fill: '#8884d8',
@@ -248,6 +248,27 @@ export const ComposedChartWithAxisLabels: Story = {
 export const ScatterAndLineOfBestFit: Story = {
     args: {
         title: 'Scatter And Line Of Best Fit',
+        xAxis: [{
+            key: 'x-axis',
+            type: 'number',
+            label: {
+                value: 'Index',
+                offset: 0,
+                position: 'insideBottomRight'
+            },
+            dataKey: 'index',
+        }],
+        yAxis: [{
+            key: 'y-axis',
+            unit: 'ms',
+            type: 'number',
+            label: {
+                value: 'Time',
+                angle: -90,
+                position: 'insideLeft'
+            },
+            width: 'auto',
+        }],
         subtitle: undefined,
         children: undefined,
         composedChart: {
@@ -260,27 +281,6 @@ export const ScatterAndLineOfBestFit: Story = {
                 { index: 600, blueLine: 0 },
                 { index: 10000, blueLine: 678 },
             ],
-            xAxis: [{
-                key: 'x-axis',
-                type: 'number',
-                label: {
-                    value: 'Index',
-                    offset: 0,
-                    position: 'insideBottomRight'
-                },
-                dataKey: 'index',
-            }],
-            yAxis: [{
-                key: 'y-axis',
-                unit: 'ms',
-                type: 'number',
-                label: {
-                    value: 'Time',
-                    angle: -90,
-                    position: 'insideLeft'
-                },
-                width: 'auto',
-            }],
             lines: [
                 {
                     key: 'blue-line',
@@ -320,6 +320,14 @@ export const ScatterAndLineOfBestFit: Story = {
 export const BandedChart: Story = {
     args: {
         title: 'Banded Chart',
+        xAxis: [{
+            key: 'x-axis',
+            dataKey: 'name',
+        }],
+        yAxis: [{
+            key: 'y-axis',
+            width: 'auto',
+        }],
         subtitle: undefined,
         children: undefined,
         legend: {
@@ -370,14 +378,6 @@ export const BandedChart: Story = {
                     b: 623,
                 },
             ],
-            xAxis: [{
-                key: 'x-axis',
-                dataKey: 'name',
-            }],
-            yAxis: [{
-                key: 'y-axis',
-                width: 'auto',
-            }],
             areas: [{
                 key: 'a',
                 dot: false,

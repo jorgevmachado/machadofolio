@@ -78,6 +78,7 @@ const meta = {
         },
         subtitle: 'Area Chart Subtitle',
         children: 'Hello, World!',
+        responsive: true,
     },
     title: 'Components/SuperChart/AreaChart',
     argTypes: {},
@@ -152,7 +153,6 @@ export const AreaChartConnectNulls: Story = {
                 stroke: '#8884d8',
                 dataKey: 'uv'
             }],
-            responsive: true
         }
     }
 }
@@ -183,7 +183,6 @@ export const CardinalAreaChart: Story = {
                     curveCardinalTension: 0.2,
                 },
             ],
-            responsive: true,
         },
     }
 }
@@ -191,6 +190,7 @@ export const CardinalAreaChart: Story = {
 export const PercentAreaChart: Story = {
     args: {
         title: 'Percent Area Chart',
+        xAxis: [{ key: 'x-axis-0', dataKey: 'month' }],
         children: undefined,
         subtitle: undefined,
         tooltip: {
@@ -210,7 +210,6 @@ export const PercentAreaChart: Story = {
             withTotalPercent: true
         },
         areaChart: {
-            xAxis: { dataKey: 'month' },
             data: [
                     {
                         name: 'month-1',
@@ -294,7 +293,6 @@ export const PercentAreaChart: Story = {
                     dataKey: 'c'
                 }
             ],
-            responsive: true,
             stackOffset: 'expand',
         }
     }
@@ -303,6 +301,8 @@ export const PercentAreaChart: Story = {
 export const TinyAreaChart: Story = {
     args: {
         title: 'Tiny Area Chart',
+        xAxis: [],
+        yAxis: [],
         children: undefined,
         subtitle: undefined,
         tooltip: {
@@ -324,8 +324,6 @@ export const TinyAreaChart: Story = {
                 stroke: '#8884d8',
                 dataKey: 'uv'
             }],
-            withXAxis: false,
-            withYAxis: false,
         }
     }
 }

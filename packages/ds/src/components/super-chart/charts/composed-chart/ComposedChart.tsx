@@ -23,12 +23,11 @@ const defaultMargin = {
 }
 
 export default function ComposedChart({
+    axis,
     data,
     bars,
     areas,
     lines,
-    xAxis,
-    yAxis,
     style,
     layout = 'horizontal',
     margin,
@@ -55,11 +54,11 @@ export default function ComposedChart({
         >
             <CartesianGrid {...currentCartesianGrid} />
 
-            {(xAxis && xAxis.length > 0) && xAxis.map(({key, ...x}, index) => (
+            {(axis && axis?.xList && axis?.xList.length > 0) && axis?.xList.map(({key, ...x}, index) => (
                 <XAxis key={`${key}-${index}`} {...x} data-testid={`ds-composed-chart-x-axis-${index}`}/>
             ))}
 
-            {(yAxis && yAxis.length > 0) && yAxis.map(({key, ...y}, index) => (
+            {(axis && axis?.yList && axis?.yList?.length > 0) && axis?.yList.map(({key, ...y}, index) => (
                 <YAxis key={`${key}-${index}`} {...y} data-testid={`ds-composed-chart-y-axis-${index}`}/>
             ))}
 

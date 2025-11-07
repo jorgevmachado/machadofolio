@@ -104,17 +104,19 @@ describe('<ComposedChart/>', () => {
 
     it('should render component with props xAxis and yAxis.', () => {
         renderComponent({
-            xAxis: [{
-                key: 'x-axis',
-                label:{ value: 'Pages', position: 'insideBottomRight', offset: 0 },
-                scale: 'band',
-                dataKey:'name',
-            }],
-            yAxis: [{
-                key: 'y-axis',
-                width: 'auto',
-                label: { value: 'Index', angle: -90, position: 'insideLeft' },
-            }],
+            axis: {
+                xList: [{
+                    key: 'x-axis',
+                    label:{ value: 'Pages', position: 'insideBottomRight', offset: 0 },
+                    scale: 'band',
+                    dataKey:'name',
+                }],
+                yList: [{
+                    key: 'y-axis',
+                    width: 'auto',
+                    label: { value: 'Index', angle: -90, position: 'insideLeft' },
+                }],
+            },
         });
 
         expect(screen.getByTestId('ds-composed-chart-x-axis-0')).toBeInTheDocument();

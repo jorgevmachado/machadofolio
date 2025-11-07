@@ -10,9 +10,6 @@ import {
 } from 'recharts';
 import { curveCardinal } from 'd3-shape';
 
-import { convertToPercent } from '@repo/services';
-
-import type { XAxisProps, YAxisProps } from '../../types';
 import { getRandomHarmonicPalette } from '../../colors';
 
 import type { AreaChartProps } from './types';
@@ -33,17 +30,14 @@ const defaultMargin = {
 }
 
 export default function AreaChart ({
+    axis,
     data,
-    xAxis,
-    yAxis,
     style,
     margin,
     syncId,
     labels = [],
     legend,
     tooltip,
-    withXAxis = true,
-    withYAxis = true,
     responsive,
     stackOffset,
     linearGradient,
@@ -67,18 +61,6 @@ export default function AreaChart ({
 
     const currentMargin = { ...defaultMargin, ...margin };
 
-    const axis = useMemo(() => {
-        const x: Omit<XAxisProps, 'key'> = !xAxis ? { dataKey: 'name' } : xAxis;
-
-        const y: Omit<YAxisProps, 'key'> = !yAxis ? { width: 'auto' } : yAxis;
-
-        if(tooltip?.withPercentFormatter) {
-            y.tickFormatter = (value) => convertToPercent(value);
-        }
-
-        return { x, y }
-    }, [xAxis, yAxis, tooltip?.withPercentFormatter]);
-
     return (
         <AreaChartComponent
             data={data}
@@ -90,13 +72,13 @@ export default function AreaChart ({
         >
             <CartesianGrid strokeDasharray="3 3" />
 
-            {withXAxis && (
-                <XAxis {...axis.x} />
-            )}
+            {(axis && axis?.xList && axis?.xList?.length > 0) && axis.xList.map((item) => (
+                <XAxis {...item} />
+            ))}
 
-            {withYAxis && (
-                <YAxis {...axis.y} />
-            )}
+            {(axis && axis?.yList && axis?.yList?.length > 0) && axis.yList.map((item) => (
+                <YAxis {...item} />
+            ))}
             
             {tooltip && (
                 <Tooltip {...tooltip}/>
