@@ -1,74 +1,47 @@
 import React from 'react';
 
-import {
-    TChart,
-    TWrapper,
-    TooltipProps,
-    LegendProps,
-} from './types';
+import { SuperChartProps, } from './types';
 
 import ChartContainer from './chart-container';
 
 import {
-    type BarChartProps,
-    type PieChartProps,
-    type AreaChartProps,
-    type RadarChartProps,
-    type RadialChartProps,
-    type LineChartProps,
-    type ScatterChartProps,
-    BarChart,
-    PieChart,
     AreaChart,
+    BarChart,
+    ComposedChart,
+    LineChart,
+    PieChart,
     RadarChart,
     RadialChart,
-    LineChart,
-    ScatterChart,
-    ComposedChart, ComposedChartProps
+    ScatterChart
 } from './charts';
 
 import './SuperChart.scss';
-import { buildLegend, buildTooltip } from './utils';
-
-type SuperChartProps = Readonly<{
-    type?: TChart;
-    title: string;
-    legend?: LegendProps;
-    tooltip?: TooltipProps;
-    barChart?: BarChartProps;
-    pieChart?: PieChartProps;
-    subtitle?: string;
-    fallback?: string;
-    children?: React.ReactNode;
-    className?: string;
-    areaChart?: AreaChartProps;
-    lineChart?: LineChartProps;
-    radarChart?: RadarChartProps;
-    radialChart?: RadialChartProps;
-    wrapperType?: TWrapper;
-    scatterChart?: ScatterChartProps;
-    composedChart?: ComposedChartProps;
-}>;
+import { buildAxis, buildLegend, buildTooltip } from './utils';
 
 export default function SuperChart({
-    type = 'bar',
-    title,
-    legend,
-    tooltip,
-    subtitle,
-    fallback = 'No data available',
-    barChart,
-    pieChart,
-    children,
-    className,
-    areaChart,
-    lineChart,
-    radarChart,
-    radialChart,
-    wrapperType,
-    scatterChart,
-    composedChart,
-}: SuperChartProps) {
+                                       type = 'bar',
+                                       title,
+                                       xAxis,
+                                       yAxis,
+                                       zAxis,
+    layout = 'vertical',
+                                       legend,
+                                       tooltip,
+                                       subtitle,
+                                       fallback = 'No data available',
+                                       barChart,
+                                       pieChart,
+                                       children,
+                                       className,
+                                       areaChart,
+                                       lineChart,
+                                       radarChart,
+                                       radialChart,
+                                       wrapperType,
+                                       scatterChart,
+                                       composedChart,
+                                       withAxisCurrencyTickFormatter
+                                   }: SuperChartProps) {
 
     const isFallback = () => {
         const result = {
@@ -108,6 +81,7 @@ export default function SuperChart({
 
     const currentTooltip = buildTooltip(tooltip);
     const currentLegend = buildLegend(legend);
+    const axis = buildAxis(type, layout, xAxis, yAxis, zAxis, tooltip?.withPercentFormatter, withAxisCurrencyTickFormatter);
 
     return (
         <ChartContainer
@@ -122,6 +96,7 @@ export default function SuperChart({
                 (type === 'bar' && barChart) && (
                     <BarChart
                         {...barChart}
+                        axis={axis}
                         legend={currentLegend}
                         tooltip={currentTooltip}
                     />
@@ -138,11 +113,12 @@ export default function SuperChart({
             }
             {
                 (type === 'area' && areaChart) && (
-                        <AreaChart
-                            {...areaChart}
-                            legend={currentLegend}
-                            tooltip={currentTooltip}
-                        />
+                    <AreaChart
+                        {...areaChart}
+                        axis={axis}
+                        legend={currentLegend}
+                        tooltip={currentTooltip}
+                    />
                 )
             }
             {
@@ -155,7 +131,7 @@ export default function SuperChart({
                 )
             }
             {
-                (type === 'radial' && radialChart ) && (
+                (type === 'radial' && radialChart) && (
                     <RadialChart
                         {...radialChart}
                         legend={currentLegend}
@@ -165,18 +141,20 @@ export default function SuperChart({
                 )
             }
             {
-                (type === 'line' && lineChart ) && (
+                (type === 'line' && lineChart) && (
                     <LineChart
                         {...lineChart}
+                        axis={axis}
                         legend={currentLegend}
                         tooltip={currentTooltip}
                     />
                 )
             }
             {
-                (type === 'scatter' && scatterChart ) && (
+                (type === 'scatter' && scatterChart) && (
                     <ScatterChart
                         {...scatterChart}
+                        axis={axis}
                         legend={currentLegend}
                         tooltip={currentTooltip}
                     />
@@ -186,6 +164,7 @@ export default function SuperChart({
                 (type === 'composed' && composedChart) && (
                     <ComposedChart
                         {...composedChart}
+                        axis={axis}
                         legend={currentLegend}
                         tooltip={currentTooltip}
                     />

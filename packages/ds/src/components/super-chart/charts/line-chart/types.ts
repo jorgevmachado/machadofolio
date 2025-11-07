@@ -4,7 +4,16 @@ import { Line, MouseHandlerDataParam } from 'recharts';
 
 import Button from '../../../button';
 
-import { DataChartItem, LegendProps, MarginProps, TLayout, TooltipProps, XAxisProps, YAxisProps } from '../../types';
+import {
+    AxisProps,
+    DataChartItem,
+    LegendProps,
+    MarginProps,
+    TLayout,
+    TooltipProps,
+    XAxisProps,
+    YAxisProps
+} from '../../types';
 
 type ButtonProps = React.ComponentProps<typeof Button>;
 
@@ -153,6 +162,7 @@ export type AxisDomain =
     | (([dataMin, dataMax]: NumberDomain, allowDataOverflow: boolean) => NumberDomain);
 
 export type LineChartProps = {
+    axis: AxisProps;
     data?: Array<LineChartDataItem>;
     style?: React.CSSProperties;
     xAxis?: Array<CustomXAxisProps>;

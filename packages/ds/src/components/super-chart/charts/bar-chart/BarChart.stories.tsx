@@ -104,10 +104,10 @@ const meta = {
                 },
             ],
             labels: [{ key: 'value', fill: '#808080', activeBar: { type: 'rectangle' } }],
-            withCurrencyTickFormatter: true
         },
         subtitle: 'Bar Chart Subtitle',
         children: 'Hello, World!',
+        withAxisCurrencyTickFormatter: true
     },
     title: 'Components/SuperChart/BarChart',
     argTypes: {},
@@ -230,6 +230,7 @@ export const BarChartWithBackground: Story = {
 
 export const BarChartVertical: Story = {
     args: {
+        layout: 'horizontal',
         barChart: {
             data: [
                 {
@@ -271,7 +272,6 @@ export const BarChartVertical: Story = {
             ],
             layout: 'horizontal',
             labels: [{ key: 'value', fill: '#808080' }],
-            withCurrencyTickFormatter: true
         }
     }
 }

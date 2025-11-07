@@ -5,6 +5,14 @@ import { Text } from '../../elements';
 import { XAxis, YAxis, ZAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 
 import type { FilterContent } from './content';
+import {
+    AreaChartProps,
+    BarChartProps, ComposedChartProps,
+    LineChartProps,
+    PieChartProps,
+    RadarChartProps,
+    RadialChartProps, ScatterChartProps
+} from './charts';
 
 export type TChart = 'bar' | 'pie' | 'area' | 'radar' |  'radial' | 'line' | 'scatter' | 'composed';
 
@@ -59,9 +67,44 @@ export type TextProps = Omit<Partial<TextTooltipProps>, 'type' | 'dataName'> & {
   show?: boolean;
 };
 
-export type XAxisProps = React.ComponentProps< typeof XAxis>;
+type CustomAxisTick = {
+    x?: number;
+    y?: number;
+    dy?: number | string;
+    fill?: string;
+    transform?: string;
+    textAnchor?: string;
+}
 
-export type YAxisProps = React.ComponentProps< typeof YAxis>;
+export type CustomAxisTickParams = {
+    x: number;
+    y: number;
+    payload: { value: string; };
+    customAxisTick?: CustomAxisTick;
+}
+
+export type TCustomDomain =
+    'top'
+    | 'top2'
+    | 'left'
+    | 'right'
+    | 'bottom'
+    | 'bottom2'
+    | 'animation'
+    | 'refAreaLeft'
+    | 'refAreaRight';
+
+export type XAxisProps = React.ComponentProps< typeof XAxis>  & {
+    key: string;
+    customDomain?: Array<TCustomDomain>;
+    customAxisTick?: CustomAxisTick
+};
+
+export type YAxisProps = React.ComponentProps< typeof YAxis> & {
+    key: string;
+    customDomain?: Array<TCustomDomain>;
+    customAxisTick?: CustomAxisTick;
+};
 
 export type ZAxisProps = React.ComponentProps< typeof ZAxis> & {
     key?: string;
@@ -97,3 +140,34 @@ export type ColorProps = {
 export type DataChartItem = Record<string, string | number>;
 
 export type TLayout = 'vertical' | 'horizontal';
+
+export type AxisProps = {
+    xList?: Array<XAxisProps>;
+    yList?: Array<YAxisProps>;
+    zList?: Array<ZAxisProps>;
+}
+
+export type SuperChartProps = Readonly<{
+    type?: TChart;
+    title: string;
+    xAxis?: Array<XAxisProps>;
+    yAxis?: Array<YAxisProps>;
+    zAxis?: Array<ZAxisProps>;
+    layout?: TLayout;
+    legend?: LegendProps;
+    tooltip?: TooltipProps;
+    barChart?: BarChartProps;
+    pieChart?: PieChartProps;
+    subtitle?: string;
+    fallback?: string;
+    children?: React.ReactNode;
+    className?: string;
+    areaChart?: AreaChartProps;
+    lineChart?: LineChartProps;
+    radarChart?: RadarChartProps;
+    radialChart?: RadialChartProps;
+    wrapperType?: TWrapper;
+    scatterChart?: ScatterChartProps;
+    composedChart?: ComposedChartProps;
+    withAxisCurrencyTickFormatter?: boolean;
+}>;

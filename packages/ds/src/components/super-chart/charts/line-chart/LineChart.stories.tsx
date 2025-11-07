@@ -125,9 +125,11 @@ export const VerticalLineChart: Story = {
         lineChart: {
             data,
             xAxis: [{
+                key: 'x-0',
                 type: 'number',
             }],
             yAxis: [{
+                key: 'y-0',
                 type: 'category',
                 width: 'auto',
                 dataKey: 'name',
@@ -158,8 +160,8 @@ export const BiaxialLineChart: Story = {
         lineChart: {
             data,
             yAxis: [
-                { width: 'auto', yAxisId: 'left' },
-                { width: 'auto', yAxisId: 'right', orientation: 'right' },
+                { key: 'y-0', width: 'auto', yAxisId: 'left' },
+                { key: 'y-1', width: 'auto', yAxisId: 'right', orientation: 'right' },
             ],
             labels: [
                 {
@@ -191,8 +193,8 @@ export const VerticalLineChartWithSpecifiedDomain: Story = {
         children: undefined,
         lineChart: {
             data,
-            xAxis: [{ type: 'number', domain: [0, 'dataMax + 1000'] }],
-            yAxis: [{ type: 'category', width: 'auto', dataKey: 'name' }],
+            xAxis: [{ key: 'x-0', type: 'number', domain: [0, 'dataMax + 1000'] }],
+            yAxis: [{ key: 'y-0', type: 'category', width: 'auto', dataKey: 'name' }],
             labels: [
                 {
                     key: 'pv',
@@ -228,8 +230,7 @@ export const LineChartConnectNulls: Story = {
                 { name: 'Page F', uv: 2390 },
                 { name: 'Page G', uv: 3490 },
             ],
-            xAxis: [{ dataKey: 'name' }],
-            yAxis: [{}],
+            xAxis: [{ key: 'x-0', dataKey: 'name' }],
             labels: [
                 {
                     key: 'uv',
@@ -253,7 +254,7 @@ export const LineChartWithXAxisPadding: Story = {
         children: undefined,
         lineChart: {
             data,
-            xAxis: [{ dataKey: 'name', padding: {left: 30, right: 30 } }],
+            xAxis: [{ key: 'x-0', dataKey: 'name', padding: {left: 30, right: 30 } }],
             labels: [
                 {
                     key: 'pv',
@@ -366,6 +367,7 @@ export const CustomizedLabelLineChart: Story = {
                 }
             ],
             xAxis: [{
+                key: 'x-0',
                 height: 60,
                 dataKey: 'name',
                 customAxisTick: { fill: '#666'}
@@ -425,19 +427,23 @@ export const HighlightAndZoomLineChart: Story = {
                 }
             ],
             xAxis: [{
+                key: 'x-0',
                 type: 'number',
                 dataKey: 'name',
                 customDomain: ['left', 'right'],
                 allowDataOverflow: true,
             }],
             yAxis: [
-                {   type: 'number',
+                {
+                    key: 'y-0',
+                    type: 'number',
                     width: 'auto',
                     yAxisId: '1',
                     customDomain: ['bottom', 'top'],
                     allowDataOverflow: true,
                 },
-                {   type: 'number',
+                {   key: 'y-1',
+                    type: 'number',
                     width: 'auto',
                     yAxisId: '2',
                     orientation: 'right',
@@ -467,11 +473,13 @@ export const LineChartHasMultiSeries: Story = {
         children: undefined,
         lineChart: {
             xAxis: [{
+                key: 'x-0',
                 type: 'category',
                 dataKey: 'category',
                 allowDuplicatedCategory: false,
             }],
             yAxis: [{
+                key: 'y-0',
                     width: 'auto',
                     dataKey: 'value'
             }],
@@ -576,6 +584,7 @@ export const LineChartNegativeValuesWithReferenceLines: Story = {
         lineChart: {
             style: { width: '100%', maxWidth: '700px', maxHeight: '70vh', aspectRatio: 1.618 },
             yAxis: [{
+                key: 'y-0',
                 dataKey: 'y',
                 domain: ['auto', 'auto'],
                 type: 'number',
@@ -592,6 +601,7 @@ export const LineChartNegativeValuesWithReferenceLines: Story = {
                 width: 'auto',
             }],
             xAxis: [{
+                key: 'x-0',
                 dataKey:"x",
                 domain:['auto', 'auto'],
                 interval:0,

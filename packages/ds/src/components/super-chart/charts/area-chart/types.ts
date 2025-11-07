@@ -35,8 +35,8 @@ export type AreaChartLinearGradient = {
 }
 
 export type AreaChartProps = {
-    xAxis?: XAxisProps;
-    yAxis?: YAxisProps;
+    xAxis?: Omit<XAxisProps, 'key'>;
+    yAxis?: Omit<YAxisProps, 'key'>;
     data: Array<AreaChartDataItem>;
     style?: React.CSSProperties;
     labels?: Array<AreaChartLabelsItem>;

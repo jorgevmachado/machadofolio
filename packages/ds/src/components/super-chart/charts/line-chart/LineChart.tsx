@@ -28,6 +28,7 @@ import CustomizedLabel from './customized-label';
 import CustomizedAxisTick from './customized-axis-tick';
 
 import './LineChart.scss';
+import { XAxisProps, YAxisProps } from '../../types';
 
 const defaultStyle = {
     width: '100%',
@@ -133,11 +134,11 @@ export default function LineChart({
     }, [withAxis]);
 
     const axis = useMemo(() => {
-        const x: CustomXAxisProps = { dataKey: 'name' };
-        const y: CustomYAxisProps = { width: 'auto' };
+        const x: XAxisProps = { key: 'x', dataKey: 'name' };
+        const y: YAxisProps = { key: 'y', width: 'auto' };
 
-        const xList: Array<CustomXAxisProps> = !xAxis ? [x] : xAxis;
-        const yList: Array<CustomYAxisProps> = !yAxis ? [y] : yAxis;
+        const xList: Array<XAxisProps> = !xAxis ? [x] : xAxis;
+        const yList: Array<YAxisProps> = !yAxis ? [y] : yAxis;
 
         return { xList, yList }
     }, [xAxis, yAxis]);
@@ -194,9 +195,8 @@ export default function LineChart({
                     }
                 })}
 
-                {showXAxis && axis.xList.map((item, index) => (
+                {showXAxis && axis.xList.map((item) => (
                     <XAxis
-                        key={index}
                         {...item}
                         tick={!item?.customAxisTick ? item?.tick : ({ x, y, payload }) => CustomizedAxisTick({
                             x,
@@ -209,9 +209,8 @@ export default function LineChart({
                 ))}
 
 
-                {showYAxis && axis.yList.map((item, index) => (
+                {showYAxis && axis.yList.map((item) => (
                     <YAxis
-                        key={index}
                         {...item}
                         tick={!item?.customAxisTick ? item?.tick : ({ x, y, payload }) => CustomizedAxisTick({
                             x,

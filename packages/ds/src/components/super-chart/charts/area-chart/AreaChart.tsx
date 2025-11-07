@@ -68,9 +68,9 @@ export default function AreaChart ({
     const currentMargin = { ...defaultMargin, ...margin };
 
     const axis = useMemo(() => {
-        const x: XAxisProps = !xAxis ? { dataKey: 'name' } : xAxis;
+        const x: Omit<XAxisProps, 'key'> = !xAxis ? { dataKey: 'name' } : xAxis;
 
-        const y: YAxisProps = !yAxis ? { width: 'auto' } : yAxis;
+        const y: Omit<YAxisProps, 'key'> = !yAxis ? { width: 'auto' } : yAxis;
 
         if(tooltip?.withPercentFormatter) {
             y.tickFormatter = (value) => convertToPercent(value);

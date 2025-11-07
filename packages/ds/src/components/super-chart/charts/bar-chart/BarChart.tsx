@@ -9,11 +9,8 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
-import { currencyFormatter } from '@repo/services';
 
 import { useBreakpoint } from '../../../../hooks';
-
-import type { XAxisProps, YAxisProps } from '../../types';
 
 import BarContent from './bar-content';
 
@@ -21,6 +18,7 @@ import type { BarChartProps } from './types';
 
 export default function BarChart ({
     top,
+    axis,
     data,
     xAxis,
     yAxis,
@@ -39,35 +37,6 @@ export default function BarChart ({
         return limitedData.filter((item) => item !== undefined);
     }, [data, top])
 
-    const formatAxis = (value: number) => {
-        return currencyFormatter(value);
-    };
-
-    const axis = useMemo(() => {
-        const x : XAxisProps = isVertical
-            ? { dataKey: 'name' }
-            : { type: 'number' };
-
-        const y: YAxisProps = isVertical
-            ? { width: 'auto' }
-            : {
-                type: 'category',
-                width: 90,
-                dataKey: 'name'
-            };
-
-        if(withCurrencyTickFormatter) {
-            x.tickFormatter = isVertical ? undefined : formatAxis;
-            y.tickFormatter = isVertical ? formatAxis : undefined;
-        }
-
-        const xList: Array<XAxisProps> = !xAxis ? [x] : xAxis;
-
-        const yList: Array<YAxisProps> = !yAxis ? [y] : yAxis;
-
-        return { xList, yList }
-    }, [xAxis, yAxis, withCurrencyTickFormatter]);
-
     const chartMargin = isMobile
         ? { top: 20, right: 20, left: 20, bottom: 20 }
         : { top: 30, right: 30, left: 100, bottom: 30 };
@@ -82,12 +51,12 @@ export default function BarChart ({
                 >
                     <CartesianGrid strokeDasharray="3 3"/>
 
-                    {axis.xList.map((x, index) => (
-                        <XAxis key={index} {...x}/>
+                    { (axis?.xList && axis.xList.length > 0) && axis?.xList?.map((x) => (
+                        <XAxis {...x}/>
                     ))}
 
-                    {axis.yList.map((y, index) => (
-                        <YAxis key={index} {...y}/>
+                    { (axis?.yList && axis.yList.length > 0) && axis?.yList?.map((y) => (
+                        <YAxis {...y}/>
                     ))}
 
                     { tooltip && (

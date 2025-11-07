@@ -2,9 +2,9 @@ import React from 'react';
 
 import { Area, Bar, Line, Scatter,  } from 'recharts';
 
-import type {
+import {
+    AxisProps,
     CartesianGridProps,
-    FilterContent,
     LegendProps,
     MarginProps,
     TooltipProps,
@@ -32,6 +32,7 @@ type composedChartDataItem = Record<string, string | number | Array<string | num
 
 export type ComposedChartProps = {
     bars?: Array<BarProps>;
+    axis: AxisProps;
     data: Array<composedChartDataItem>;
     areas?: Array<AreaProps>;
     lines?: Array<LineProps>;

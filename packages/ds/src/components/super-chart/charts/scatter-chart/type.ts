@@ -2,7 +2,16 @@ import React from 'react';
 
 import { LabelListProps, Scatter } from 'recharts';
 
-import type { LegendProps, MarginProps, TLayout, TooltipProps, XAxisProps, YAxisProps, ZAxisProps } from '../../types';
+import {
+    AxisProps,
+    LegendProps,
+    MarginProps,
+    TLayout,
+    TooltipProps,
+    XAxisProps,
+    YAxisProps,
+    ZAxisProps
+} from '../../types';
 
 export type ScatterChartDataItem = Omit<React.ComponentProps<typeof Scatter>, 'key'> & {
     key: string;
@@ -13,6 +22,7 @@ export type ScatterChartDataItem = Omit<React.ComponentProps<typeof Scatter>, 'k
 
 export type ScatterChartProps = {
     type?: 'bubble' | 'scatter';
+    axis: AxisProps;
     data: Array<ScatterChartDataItem>;
     range?: [number, number];
     xAxis?: Array<XAxisProps>;
