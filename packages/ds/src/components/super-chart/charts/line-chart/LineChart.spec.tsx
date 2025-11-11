@@ -178,6 +178,10 @@ describe('<LineChart/>', () => {
     ];
 
     const defaultProps = {
+        axis: {
+          xList: [{ key: 'x-axis-0', dataKey: 'name'}],
+          yList: [{ key: 'y-axis-0', width: 'auto'}],
+        },
         tooltip: {
             withDefaultTooltip: true,
         }
@@ -219,26 +223,39 @@ describe('<LineChart/>', () => {
         expect(screen.queryByTestId('ds-line-chart-line-0')).not.toBeInTheDocument();
     });
 
+    it('should render component with props label withCustomColor equal false', () => {
+        renderComponent({
+            labels: mockLabels.map((item) => ({
+                ...item,
+                withCustomColor: false
+            }))
+        });
+        const lineChart = screen.getAllByTestId('mock-line')
+        lineChart.forEach((line) => {
+            expect(line).toBeInTheDocument();
+            expect(line).not.toHaveAttribute('stroke', '#fff');
+        })
+
+    })
+
     it('should render component with props xAxis and yAxis and with custom domain.', () => {
         renderComponent({
             data: mockData,
-            xAxis: [{
-                type: 'number',
-                customDomain: ['left', 'right'],
-                customAxisTick: { fill: '#666'},
-            }],
-            yAxis: [{
-                type: 'category',
-                width: 'auto',
-                dataKey: 'name',
-                customDomain: ['bottom', 'top'],
-                customAxisTick: { fill: '#000'},
-            }],
+            axis: {
+                xList: [{
+                    type: 'number',
+                    customDomain: ['left', 'right'],
+                    customAxisTick: { fill: '#666'},
+                }],
+                yList: [{
+                    type: 'category',
+                    width: 'auto',
+                    dataKey: 'name',
+                    customDomain: ['bottom', 'top'],
+                    customAxisTick: { fill: '#000'},
+                }],
+            },
             labels: mockLabels,
-            withAxis: {
-                x: true,
-                y: true
-            }
         });
 
         expect(screen.getByTestId('mock-line-chart-component')).toBeInTheDocument();
@@ -341,31 +358,33 @@ describe('<LineChart/>', () => {
         const minY = Math.min(...lineChartNegativeValuesWithReferenceLinesData.map(d => d.y));
         renderComponent({
             style: { width: '100%', maxWidth: '700px', maxHeight: '70vh', aspectRatio: 1.618 },
-            yAxis: [{
-                dataKey: 'y',
-                domain: ['auto', 'auto'],
-                type: 'number',
-                interval: 0,
-                label: {
-                    value: 'y',
-                    style: { textAnchor: 'middle' },
-                    angle: -90,
-                    position: 'left',
-                    offset: 0,
-                },
-                allowDataOverflow: true,
-                strokeWidth: minX < 0 ? 0 : 1,
-                width: 'auto',
-            }],
-            xAxis: [{
-                dataKey:"x",
-                domain:['auto', 'auto'],
-                interval:0,
-                type:"number",
-                label:{ key: 'xAxisLabel', value: 'x', position: 'bottom' },
-                allowDataOverflow: true,
-                strokeWidth: minY < 0 ? 0 : 1,
-            }],
+            axis: {
+                xList: [{
+                    dataKey:"x",
+                    domain:['auto', 'auto'],
+                    interval:0,
+                    type:"number",
+                    label:{ key: 'xAxisLabel', value: 'x', position: 'bottom' },
+                    allowDataOverflow: true,
+                    strokeWidth: minY < 0 ? 0 : 1,
+                }],
+                yList: [{
+                    dataKey: 'y',
+                    domain: ['auto', 'auto'],
+                    type: 'number',
+                    interval: 0,
+                    label: {
+                        value: 'y',
+                        style: { textAnchor: 'middle' },
+                        angle: -90,
+                        position: 'left',
+                        offset: 0,
+                    },
+                    allowDataOverflow: true,
+                    strokeWidth: minX < 0 ? 0 : 1,
+                    width: 'auto',
+                }]
+            },
             labels: [{
                 key: 'y',
                 strokeWidth: 2,
@@ -470,9 +489,11 @@ describe('<LineChart/>', () => {
             const mockOnMouseDown = jest.fn();
             renderComponent({
                 data: mockData,
+                axis: {
+                    xList: mockXAxis,
+                    yList: mockYAxis
+                },
                 labels: mockLabels,
-                xAxis: mockXAxis,
-                yAxis: mockYAxis,
                 withZoom: true,
                 onMouseUp: mockOnMouseUp,
                 withLegend: true,
@@ -512,9 +533,11 @@ describe('<LineChart/>', () => {
             const mockOnMouseDown = jest.fn();
             renderComponent({
                 data: mockData,
+                axis: {
+                    xList: mockXAxis,
+                    yList: mockYAxis
+                },
                 labels: mockLabels,
-                xAxis: mockXAxis,
-                yAxis: mockYAxis,
                 withZoom: true,
                 onMouseUp: mockOnMouseUp,
                 withLegend: true,
@@ -550,9 +573,11 @@ describe('<LineChart/>', () => {
             const mockOnMouseDown = jest.fn();
             renderComponent({
                 data: mockData,
+                axis: {
+                    xList: mockXAxis,
+                    yList: mockYAxis
+                },
                 labels: mockLabels,
-                xAxis: mockXAxis,
-                yAxis: mockYAxis,
                 withZoom: true,
                 onMouseUp: mockOnMouseUp,
                 withLegend: true,
@@ -591,9 +616,11 @@ describe('<LineChart/>', () => {
             const mockOnMouseMove = jest.fn();
             renderComponent({
                 data: mockData,
+                axis: {
+                    xList: mockXAxis,
+                    yList: mockYAxis
+                },
                 labels: mockLabels,
-                xAxis: mockXAxis,
-                yAxis: mockYAxis,
                 withZoom: true,
                 withLegend: true,
                 onMouseMove: mockOnMouseMove,

@@ -109,6 +109,7 @@ export type LineChartLabelsItem = {
     customLabel?: CustomLabel;
     tooltipType?: 'none',
     strokeWidth?: string | number;
+    withCustomColor?: boolean;
     strokeDasharray?: string | number;
     animationDuration?: number;
 }
@@ -162,17 +163,14 @@ export type AxisDomain =
     | (([dataMin, dataMax]: NumberDomain, allowDataOverflow: boolean) => NumberDomain);
 
 export type LineChartProps = {
-    axis: AxisProps;
+    axis?: AxisProps;
     data?: Array<LineChartDataItem>;
     style?: React.CSSProperties;
-    xAxis?: Array<CustomXAxisProps>;
-    yAxis?: Array<CustomYAxisProps>;
     layout?: TLayout;
     legend?: LegendProps;
     labels?: Array<LineChartLabelsItem>;
     margin?: Partial<MarginProps>;
     tooltip?: TooltipProps;
-    withAxis?: boolean | { x: boolean; y: boolean; };
     withZoom?: boolean;
     onMouseUp?: (event: MouseHandlerDataParam) => void;
     responsive?: boolean;

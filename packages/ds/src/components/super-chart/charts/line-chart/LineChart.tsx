@@ -19,16 +19,15 @@ import Button from '../../../button';
 
 import { getRandomHarmonicPalette } from '../../colors';
 
-import { CustomXAxisProps, CustomYAxisProps, LineChartProps } from './types';
+import { LineChartProps } from './types';
 
-import { buildDomain, INITIAL_STATE, updateDomainItem, type CustomDomainItem } from './domain';
+import { buildDomain, type CustomDomainItem, INITIAL_STATE, updateDomainItem } from './domain';
 
 import CustomizedDot from './customized-dot';
 import CustomizedLabel from './customized-label';
 import CustomizedAxisTick from './customized-axis-tick';
 
 import './LineChart.scss';
-import { XAxisProps, YAxisProps } from '../../types';
 
 const defaultStyle = {
     width: '100%',
@@ -47,16 +46,14 @@ const defaultMargin = {
 
 
 export default function LineChart({
+                                      axis,
                                       data,
                                       style,
                                       margin,
                                       labels,
                                       legend,
-                                      xAxis,
-                                      yAxis,
                                       tooltip,
                                       layout = 'horizontal',
-                                      withAxis = true,
                                       withZoom = false,
                                       onMouseUp,
                                       responsive = true,
@@ -119,32 +116,11 @@ export default function LineChart({
 
     const currentMargin = { ...defaultMargin, ...margin };
 
-    const showXAxis = useMemo(() => {
-        if (typeof withAxis === 'boolean') {
-            return withAxis;
-        }
-        return withAxis?.x;
-    }, [withAxis]);
-
-    const showYAxis = useMemo(() => {
-        if (typeof withAxis === 'boolean') {
-            return withAxis;
-        }
-        return withAxis?.y;
-    }, [withAxis]);
-
-    const axis = useMemo(() => {
-        const x: XAxisProps = { key: 'x', dataKey: 'name' };
-        const y: YAxisProps = { key: 'y', width: 'auto' };
-
-        const xList: Array<XAxisProps> = !xAxis ? [x] : xAxis;
-        const yList: Array<YAxisProps> = !yAxis ? [y] : yAxis;
-
-        return { xList, yList }
-    }, [xAxis, yAxis]);
-
     const list = useMemo(() => {
-        return labels?.map((label) => {
+        return labels?.map(({ withCustomColor = true, ...label }) => {
+            if (!withCustomColor) {
+                return label;
+            }
             const { stroke } = getRandomHarmonicPalette();
             return {
                 ...label,
@@ -191,11 +167,12 @@ export default function LineChart({
 
                 {listReferenceLine?.length > 0 && listReferenceLine.map(({ show, ...referenceLine }, index) => {
                     if (show) {
-                        return (<ReferenceLine key={index} {...referenceLine} data-testid={`ds-line-chart-reference-line-${index}`} />)
+                        return (<ReferenceLine key={index} {...referenceLine}
+                                               data-testid={`ds-line-chart-reference-line-${index}`}/>)
                     }
                 })}
 
-                {showXAxis && axis.xList.map((item) => (
+                {(axis && axis?.xList && axis?.xList?.length > 0) && axis.xList.map((item) => (
                     <XAxis
                         {...item}
                         tick={!item?.customAxisTick ? item?.tick : ({ x, y, payload }) => CustomizedAxisTick({
@@ -209,7 +186,7 @@ export default function LineChart({
                 ))}
 
 
-                {showYAxis && axis.yList.map((item) => (
+                {(axis && axis?.yList && axis?.yList && axis?.yList?.length > 0) && axis.yList.map((item) => (
                     <YAxis
                         {...item}
                         tick={!item?.customAxisTick ? item?.tick : ({ x, y, payload }) => CustomizedAxisTick({

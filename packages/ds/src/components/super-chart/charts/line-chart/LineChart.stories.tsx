@@ -52,6 +52,7 @@ const meta = {
     args: {
         type: 'line',
         title: 'Line Chart Title',
+        layout: 'horizontal',
         tooltip: {
             withDefaultTooltip: true,
         },
@@ -120,20 +121,21 @@ export const DashedLineChart: Story = {
 export const VerticalLineChart: Story = {
     args: {
         title: 'Vertical Line Chart',
+        layout: 'vertical',
+        xAxis: [{
+            key: 'x-0',
+            type: 'number',
+        }],
+        yAxis: [{
+            key: 'y-0',
+            type: 'category',
+            width: 'auto',
+            dataKey: 'name',
+        }],
         subtitle: undefined,
         children: undefined,
         lineChart: {
             data,
-            xAxis: [{
-                key: 'x-0',
-                type: 'number',
-            }],
-            yAxis: [{
-                key: 'y-0',
-                type: 'category',
-                width: 'auto',
-                dataKey: 'name',
-            }],
             labels: [
                 {
                     key: 'pv',
@@ -146,7 +148,6 @@ export const VerticalLineChart: Story = {
                     dataKey: 'uv',
                 }
             ],
-            layout: 'vertical',
 
         }
     }
@@ -155,14 +156,14 @@ export const VerticalLineChart: Story = {
 export const BiaxialLineChart: Story = {
     args: {
         title: 'Biaxial Line Chart',
+        yAxis: [
+            { key: 'y-0', width: 'auto', yAxisId: 'left' },
+            { key: 'y-1', width: 'auto', yAxisId: 'right', orientation: 'right' },
+        ],
         subtitle: undefined,
         children: undefined,
         lineChart: {
             data,
-            yAxis: [
-                { key: 'y-0', width: 'auto', yAxisId: 'left' },
-                { key: 'y-1', width: 'auto', yAxisId: 'right', orientation: 'right' },
-            ],
             labels: [
                 {
                     key: 'pv',
@@ -189,12 +190,13 @@ export const BiaxialLineChart: Story = {
 export const VerticalLineChartWithSpecifiedDomain: Story = {
     args: {
         title: 'Vertical Line Chart With Specified Domain',
+        layout: 'vertical',
+        xAxis: [{ key: 'x-0', type: 'number', domain: [0, 'dataMax + 1000'] }],
+        yAxis: [{ key: 'y-0', type: 'category', width: 'auto', dataKey: 'name' }],
         subtitle: undefined,
         children: undefined,
         lineChart: {
             data,
-            xAxis: [{ key: 'x-0', type: 'number', domain: [0, 'dataMax + 1000'] }],
-            yAxis: [{ key: 'y-0', type: 'category', width: 'auto', dataKey: 'name' }],
             labels: [
                 {
                     key: 'pv',
@@ -207,7 +209,6 @@ export const VerticalLineChartWithSpecifiedDomain: Story = {
                     dataKey: 'uv',
                 }
             ],
-            layout: 'vertical',
             style: { maxWidth: '300px', aspectRatio: 1 / 1.618 },
             margin: { top: 20, right: 0, left: 0, bottom: 5 },
 
@@ -218,6 +219,7 @@ export const VerticalLineChartWithSpecifiedDomain: Story = {
 export const LineChartConnectNulls: Story = {
     args: {
         title: 'Line Chart Connect Nulls',
+        xAxis: [{ key: 'x-0', dataKey: 'name' }],
         subtitle: undefined,
         children: undefined,
         lineChart: {
@@ -230,7 +232,6 @@ export const LineChartConnectNulls: Story = {
                 { name: 'Page F', uv: 2390 },
                 { name: 'Page G', uv: 3490 },
             ],
-            xAxis: [{ key: 'x-0', dataKey: 'name' }],
             labels: [
                 {
                     key: 'uv',
@@ -250,11 +251,11 @@ export const LineChartConnectNulls: Story = {
 export const LineChartWithXAxisPadding: Story = {
     args: {
         title: 'Line Chart With X Axis Padding',
+        xAxis: [{ key: 'x-0', dataKey: 'name', padding: {left: 30, right: 30 } }],
         subtitle: undefined,
         children: undefined,
         lineChart: {
             data,
-            xAxis: [{ key: 'x-0', dataKey: 'name', padding: {left: 30, right: 30 } }],
             labels: [
                 {
                     key: 'pv',
@@ -297,7 +298,6 @@ export const LineChartWithReferenceLines: Story = {
                 }
             ],
             margin: { top: 20, right: 0, left: 0, bottom: 5 },
-
             referenceLines: [
                 {
                     x: 'Page C',
@@ -347,6 +347,12 @@ export const CustomizedDotLineChart: Story = {
 export const CustomizedLabelLineChart: Story = {
     args: {
         title: 'Customized Label Line Chart',
+        xAxis: [{
+            key: 'x-0',
+            height: 60,
+            dataKey: 'name',
+            customAxisTick: { fill: '#666'}
+        }],
         subtitle: undefined,
         children: undefined,
         lineChart: {
@@ -366,12 +372,6 @@ export const CustomizedLabelLineChart: Story = {
                     dataKey: 'uv',
                 }
             ],
-            xAxis: [{
-                key: 'x-0',
-                height: 60,
-                dataKey: 'name',
-                customAxisTick: { fill: '#666'}
-            }],
             margin: { top: 20, right: 0, left: 0, bottom: 10 },
 
         }
@@ -381,6 +381,31 @@ export const CustomizedLabelLineChart: Story = {
 export const HighlightAndZoomLineChart: Story = {
     args: {
         title: 'Highlight And Zoom Line Chart',
+        xAxis: [{
+            key: 'x-0',
+            type: 'number',
+            dataKey: 'name',
+            customDomain: ['left', 'right'],
+            allowDataOverflow: true,
+        }],
+        yAxis: [
+            {
+                key: 'y-0',
+                type: 'number',
+                width: 'auto',
+                yAxisId: '1',
+                customDomain: ['bottom', 'top'],
+                allowDataOverflow: true,
+            },
+            {   key: 'y-1',
+                type: 'number',
+                width: 'auto',
+                yAxisId: '2',
+                orientation: 'right',
+                customDomain: ['bottom2', 'top2'],
+                allowDataOverflow: true,
+            }
+        ],
         subtitle: undefined,
         children: undefined,
         lineChart: {
@@ -426,33 +451,7 @@ export const HighlightAndZoomLineChart: Story = {
                     animationDuration: 300
                 }
             ],
-            xAxis: [{
-                key: 'x-0',
-                type: 'number',
-                dataKey: 'name',
-                customDomain: ['left', 'right'],
-                allowDataOverflow: true,
-            }],
-            yAxis: [
-                {
-                    key: 'y-0',
-                    type: 'number',
-                    width: 'auto',
-                    yAxisId: '1',
-                    customDomain: ['bottom', 'top'],
-                    allowDataOverflow: true,
-                },
-                {   key: 'y-1',
-                    type: 'number',
-                    width: 'auto',
-                    yAxisId: '2',
-                    orientation: 'right',
-                    customDomain: ['bottom2', 'top2'],
-                    allowDataOverflow: true,
-                }
-            ],
             withZoom: true,
-
             referenceArea: {
                 yAxisId: '1',
                 strokeOpacity: 0.3
@@ -469,20 +468,20 @@ export const HighlightAndZoomLineChart: Story = {
 export const LineChartHasMultiSeries: Story = {
     args: {
         title: 'Line Chart Has Multi Series',
+        xAxis: [{
+            key: 'x-axis-0',
+            type: 'category',
+            dataKey: 'category',
+            allowDuplicatedCategory: false,
+        }],
+        yAxis: [{
+            key: 'y-axis-0',
+            width: 'auto',
+            dataKey: 'value'
+        }],
         subtitle: undefined,
         children: undefined,
         lineChart: {
-            xAxis: [{
-                key: 'x-0',
-                type: 'category',
-                dataKey: 'category',
-                allowDuplicatedCategory: false,
-            }],
-            yAxis: [{
-                key: 'y-0',
-                    width: 'auto',
-                    dataKey: 'value'
-            }],
             style: {
                 width: '100%',
                 maxWidth: '700px',
@@ -499,6 +498,7 @@ export const LineChartHasMultiSeries: Story = {
                         { key: 'B', name: 'B', category: 'B', value: 0.2 },
                         { key: 'C', name: 'C', category: 'C', value: 0.3 },
                     ],
+                    withCustomColor: false
                 },
                 {
                     key: 'series-2',
@@ -509,6 +509,7 @@ export const LineChartHasMultiSeries: Story = {
                         { key: 'C2', name: 'C', category: 'C', value: 0.5 },
                         { key: 'D2', name: 'D', category: 'D', value: 0.6 },
                     ],
+                    withCustomColor: false
                 },
                 {
                     key: 'series-3',
@@ -519,6 +520,7 @@ export const LineChartHasMultiSeries: Story = {
                         { key: 'D3', name: 'D', category: 'D', value: 0.8 },
                         { key: 'E3', name: 'E', category: 'E', value: 0.9 },
                     ],
+                    withCustomColor: false
                 },
             ],
             margin: { top: 10,  right: 5 },
@@ -579,37 +581,38 @@ const minY = Math.min(...lineChartNegativeValuesWithReferenceLinesData.map(d => 
 export const LineChartNegativeValuesWithReferenceLines: Story = {
     args: {
         title: 'Line Chart Negative Values With Reference Lines',
+        yAxis: [{
+            key: 'y-0',
+            dataKey: 'y',
+            domain: ['auto', 'auto'],
+            type: 'number',
+            interval: 0,
+            label: {
+                value: 'y',
+                style: { textAnchor: 'middle' },
+                angle: -90,
+                position: 'left',
+                offset: 0,
+            },
+            allowDataOverflow: true,
+            strokeWidth: minX < 0 ? 0 : 1,
+            width: 'auto',
+        }],
+        xAxis: [{
+            key: 'x-0',
+            dataKey:"x",
+            domain:['auto', 'auto'],
+            interval:0,
+            type:"number",
+            label:{ key: 'xAxisLabel', value: 'x', position: 'bottom' },
+            allowDataOverflow: true,
+            strokeWidth: minY < 0 ? 0 : 1,
+        }],
+        legend: { show: false },
         subtitle: undefined,
         children: undefined,
         lineChart: {
             style: { width: '100%', maxWidth: '700px', maxHeight: '70vh', aspectRatio: 1.618 },
-            yAxis: [{
-                key: 'y-0',
-                dataKey: 'y',
-                domain: ['auto', 'auto'],
-                type: 'number',
-                interval: 0,
-                label: {
-                    value: 'y',
-                    style: { textAnchor: 'middle' },
-                    angle: -90,
-                    position: 'left',
-                    offset: 0,
-                },
-                allowDataOverflow: true,
-                strokeWidth: minX < 0 ? 0 : 1,
-                width: 'auto',
-            }],
-            xAxis: [{
-                key: 'x-0',
-                dataKey:"x",
-                domain:['auto', 'auto'],
-                interval:0,
-                type:"number",
-                label:{ key: 'xAxisLabel', value: 'x', position: 'bottom' },
-                allowDataOverflow: true,
-                strokeWidth: minY < 0 ? 0 : 1,
-            }],
             labels: [{
                 key: 'y',
                 strokeWidth: 2,

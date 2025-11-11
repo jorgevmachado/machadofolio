@@ -36,15 +36,15 @@ describe('<CustomizedDot/>', () => {
     it('should render component with default svg.', () => {
         renderComponent({ cx: 60, cy: 303.68 });
         expect(screen.queryByTestId('ds-line-chart-customized-dot-null')).not.toBeInTheDocument();
-        const defaultSvgComponent = screen.getByTestId('ds-line-chart-customized-dot-default')
+        const defaultSvgComponent = screen.getByTestId('ds-line-chart-customized-dot-default-min')
         expect(defaultSvgComponent).toBeInTheDocument();
         expect(defaultSvgComponent).toHaveAttribute('fill', 'green');
     });
 
     it('should render component with default svg and value greater then max value.', () => {
-        renderComponent({ cx: 60, cy: 303.68, customDot: { maxValue: 2000 } });
+        renderComponent({ cx: 60, cy: 303.68, type: 'max', customDot: { maxValue: 2000 } });
         expect(screen.queryByTestId('ds-line-chart-customized-dot-null')).not.toBeInTheDocument();
-        const defaultSvgComponent = screen.getByTestId('ds-line-chart-customized-dot-default')
+        const defaultSvgComponent = screen.getByTestId('ds-line-chart-customized-dot-default-max')
         expect(defaultSvgComponent).toBeInTheDocument();
         expect(defaultSvgComponent).toHaveAttribute('fill', 'red');
     });

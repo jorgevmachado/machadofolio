@@ -15,6 +15,10 @@ export function buildTooltip(tooltip?: TooltipProps) {
         return defaultTooltip;
     }
 
+    if(defaultTooltip.withDefaultTooltip) {
+        return defaultTooltip;
+    }
+
     defaultTooltip.content = tooltip?.withContent === false
         ? undefined
         : (props: TooltipContentProps) => ChartContentTooltip({ params: props, tooltip: defaultTooltip });
@@ -31,6 +35,10 @@ export function buildLegend(legend?: LegendProps) {
 
     if(defaultLegend?.content) {
         return defaultLegend;
+    }
+
+    if(defaultLegend?.withDefaultLegend) {
+         return defaultLegend;
     }
 
     if(defaultLegend?.withContent === false) {
@@ -75,6 +83,11 @@ export function buildAxis(
         axisItem.x = { key: 'x-axis-0', unit: 'cm', type: 'number', name: 'stature', dataKey: 'x' };
         axisItem.y = { key: 'y-axis-0', unit: 'kg', type: 'number', name: 'weight',  dataKey: 'y', width: 'auto' };
         axisItem.z = { key: 'z-axis-0', type: 'number', range: [100, 100] };
+    }
+
+    if(type === 'line') {
+        axisItem.x = { key: 'x-axis-0', dataKey: 'name'};
+        axisItem.y = { key: 'y-axis-0', width: 'auto'};
     }
 
     const x: Array<XAxisProps> = xAxis ?? [axisItem.x];

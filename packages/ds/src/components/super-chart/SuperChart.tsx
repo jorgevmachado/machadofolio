@@ -66,6 +66,10 @@ export default function SuperChart({
                 result.length = radialChart?.data?.length || 0;
                 break;
             case 'line':
+                if(!lineChart?.data && lineChart?.labels) {
+                    result.length = lineChart?.labels?.length;
+                    break;
+                }
                 result.length = lineChart?.data?.length || 0;
                 break;
             case 'scatter':
@@ -109,6 +113,7 @@ export default function SuperChart({
                         {...pieChart}
                         legend={currentLegend}
                         tooltip={currentTooltip}
+                        responsive={responsive}
                     />
                 )
             }
@@ -129,6 +134,7 @@ export default function SuperChart({
                         {...radarChart}
                         legend={currentLegend}
                         tooltip={currentTooltip}
+                        responsive={responsive}
                     />
                 )
             }
@@ -138,6 +144,7 @@ export default function SuperChart({
                         {...radialChart}
                         legend={currentLegend}
                         tooltip={currentTooltip}
+                        responsive={responsive}
                     />
 
                 )
@@ -147,8 +154,10 @@ export default function SuperChart({
                     <LineChart
                         {...lineChart}
                         axis={axis}
+                        layout={layout}
                         legend={currentLegend}
                         tooltip={currentTooltip}
+                        responsive={responsive}
                     />
                 )
             }
@@ -159,6 +168,7 @@ export default function SuperChart({
                         axis={axis}
                         legend={currentLegend}
                         tooltip={currentTooltip}
+                        responsive={responsive}
                     />
                 )
             }
@@ -169,6 +179,7 @@ export default function SuperChart({
                         axis={axis}
                         legend={currentLegend}
                         tooltip={currentTooltip}
+                        responsive={responsive}
                     />
                 )
             }

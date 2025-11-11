@@ -852,6 +852,41 @@ describe('<SuperChart/>', () => {
             });
             expect(screen.getByTestId('mock-line-chart')).toBeInTheDocument();
         });
+
+        it('should render component with type line and without data.', () => {
+            renderComponent({
+                type: 'line',
+                lineChart: {
+                    labels: [
+                        {
+                            key: 'pv',
+                            type: 'monotone',
+                            stroke: '#8884d8',
+                            dataKey: 'pv',
+                            activeDot: { r: 8 },
+                        },
+                        {
+                            key: 'uv',
+                            type: 'monotone',
+                            stroke: '#82ca9d',
+                            dataKey: 'uv',
+                        }
+                    ],
+                    responsive: true,
+                },
+            });
+            expect(screen.getByTestId('mock-line-chart')).toBeInTheDocument();
+        });
+
+        it('should render component with type line and without data and labels.', () => {
+            renderComponent({
+                type: 'line',
+                lineChart: {
+                    responsive: true,
+                },
+            });
+            expect(screen.queryByTestId('mock-line-chart')).not.toBeInTheDocument();
+        });
     });
 
     describe('ScatterChart', () => {

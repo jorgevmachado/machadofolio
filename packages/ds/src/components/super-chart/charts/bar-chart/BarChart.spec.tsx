@@ -212,4 +212,9 @@ describe('<BarChart/>', () => {
         expect(screen.getByTestId('mock-tooltip')).toBeInTheDocument();
         expect(screen.getByTestId('mock-bar-chart-content')).toBeInTheDocument();
     });
+
+    it('should render component with legend', () => {
+        renderComponent({ legend: { show: true }});
+        expect(screen.getByTestId('mock-legend')).toBeInTheDocument();
+    });
 })
