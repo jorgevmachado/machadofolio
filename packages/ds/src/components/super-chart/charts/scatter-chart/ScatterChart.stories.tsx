@@ -26,7 +26,6 @@ const meta = {
                     name: 'A school',
                 }
             ],
-            
         },
         subtitle: 'Scatter Chart Subtitle',
         children: 'Hello, World!',
@@ -47,6 +46,22 @@ export const Default: Story = {
 export const ThreeDimScatterChart: Story = {
     args: {
         title: 'Three Dim Scatter Chart',
+        yAxis: [{
+            key: 'y-axis-0',
+            unit: 'kg',
+            type: 'number',
+            name: 'weight',
+            width: 'auto',
+            dataKey: 'y',
+        }],
+        zAxis: [{
+            key: 'z-axis-0',
+            unit: 'km',
+            type: 'number',
+            name: 'score',
+            range: [60, 400],
+            dataKey: 'z',
+        }],
         subtitle: undefined,
         children: undefined,
         scatterChart: {
@@ -81,6 +96,7 @@ export const ThreeDimScatterChart: Story = {
                 }
             ],
             yAxis: [{
+                key: 'y-axis-0',
                 unit: 'kg',
                 type: 'number',
                 name: 'weight',
@@ -88,6 +104,7 @@ export const ThreeDimScatterChart: Story = {
                 dataKey: 'y',
             }],
             zAxis: [{
+                key: 'z-axis-0',
                 unit: 'km',
                 type: 'number',
                 name: 'score',
@@ -101,6 +118,25 @@ export const ThreeDimScatterChart: Story = {
 export const JointLineScatterChart: Story = {
     args: {
         title: 'Joint Line Scatter Chart',
+        xAxis: [{
+            key: 'x-axis-0',
+            unit: 'cm',
+            type: 'number',
+            name: 'stature',
+            dataKey: 'x'
+        }],
+        yAxis: [{
+            key: 'y-axis-0',
+            unit: 'kg',
+            type: 'number',
+            name: 'weight',
+            width: 'auto',
+            dataKey: 'y',
+        }],
+        zAxis: [{
+            type: 'number',
+            range: [100, 100],
+        }],
         subtitle: undefined,
         children: undefined,
         scatterChart: {
@@ -136,12 +172,14 @@ export const JointLineScatterChart: Story = {
                 }
             ],
             xAxis: [{
+                key: 'x-axis-0',
                 unit: 'cm',
                 type: 'number',
                 name: 'stature',
                 dataKey: 'x'
             }],
             yAxis: [{
+                key: 'y-axis-0',
                 unit: 'kg',
                 type: 'number',
                 name: 'weight',
@@ -213,6 +251,32 @@ const data2 = [
 export const BubbleChart: Story = {
     args: {
         title: 'Bubble Chart',
+        xAxis: [{
+            key: 'x-axis-0',
+            tick: { fontSize: 0 },
+            type: "category",
+            name: "hour",
+            dataKey: "hour",
+            interval: 0,
+            tickLine: { transform: 'translate(0, -6)' },
+        }],
+        yAxis: [{
+            key: 'y-axis-0',
+            tick: false,
+            name: 'sunday',
+            type: 'number',
+            width: 80,
+            height: 10,
+            dataKey: 'index',
+            tickLine: false,
+            axisLine: false,
+            label: { position: 'insideRight' },
+        }],
+        zAxis: [{
+            key: 'z-axis-0',
+            type: 'number',
+            dataKey: 'value',
+        }],
         subtitle: undefined,
         children: undefined,
         tooltip: {
@@ -302,6 +366,7 @@ export const BubbleChart: Story = {
             style: { width: '100%', minWidth: '700px', maxWidth: '900px', height: '60px' },
             margin: { top: 10, right: 0, bottom: 0, left: 0 },
             xAxis: [{
+                key: 'x-axis-0',
                 tick: { fontSize: 0 },
                 type: "category",
                 name: "hour",
@@ -310,6 +375,7 @@ export const BubbleChart: Story = {
                 tickLine: { transform: 'translate(0, -6)' },
             }],
             yAxis: [{
+                key: 'y-axis-0',
                 tick: false,
                 name: 'sunday',
                 type: 'number',
@@ -321,6 +387,7 @@ export const BubbleChart: Story = {
                 label: { position: 'insideRight' },
             }],
             zAxis: [{
+                key: 'z-axis-0',
                 type: 'number',
                 dataKey: 'value',
             }],
@@ -343,6 +410,10 @@ export const BubbleChart: Story = {
 export const ScatterChartWithLabels: Story = {
     args: {
         title: 'Scatter Chart With Labels',
+        zAxis: [{
+            range: [900, 4000],
+            dataKey: 'z',
+        }],
         subtitle: undefined,
         children: undefined,
         scatterChart: {
@@ -405,6 +476,38 @@ export const ScatterChartWithLabels: Story = {
 export const MultipleYAxesScatterChart: Story = {
     args: {
         title: 'Multiple Y Axes Scatter Chart',
+        xAxis: [
+            {
+                key: 'x-axis-0',
+                type: "number",
+                dataKey: "x",
+                name: "stature",
+                unit: "cm"
+            },
+        ],
+        yAxis: [
+            {
+                key: 'y-axis-0',
+                yAxisId:"left",
+                type:"number",
+                dataKey:"y",
+                name:"weight",
+                unit:"kg",
+                stroke:"#8884d8",
+                width:"auto"
+            },
+            {
+                key: 'y-axis-1',
+                yAxisId: "right",
+                type: "number",
+                dataKey: "y",
+                name: "weight",
+                unit: "kg",
+                orientation: "right",
+                stroke: "#82ca9d",
+                width: "auto",
+            }
+        ],
         legend: {
             show: false
         },
@@ -414,6 +517,7 @@ export const MultipleYAxesScatterChart: Story = {
             style: { width: '100%', maxWidth: '300px', maxHeight: '70vh', aspectRatio: 1.618 },
             xAxis: [
                 {
+                    key: 'x-axis-0',
                     type: "number",
                     dataKey: "x",
                     name: "stature",
@@ -422,6 +526,7 @@ export const MultipleYAxesScatterChart: Story = {
             ],
             yAxis: [
                 {
+                    key: 'y-axis-0',
                     yAxisId:"left",
                     type:"number",
                     dataKey:"y",
@@ -431,6 +536,7 @@ export const MultipleYAxesScatterChart: Story = {
                     width:"auto"
                 },
                 {
+                    key: 'y-axis-1',
                     yAxisId: "right",
                     type: "number",
                     dataKey: "y",

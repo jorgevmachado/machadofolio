@@ -7,9 +7,9 @@ import type { MarginProps, TooltipProps, XAxisProps, YAxisProps, ZAxisProps } fr
 import type { ScatterChartDataItem } from '../type';
 
 type AxisProps = {
-    x: XAxisProps;
-    y: YAxisProps;
-    z: ZAxisProps;
+    x?: XAxisProps;
+    y?: YAxisProps;
+    z?: ZAxisProps;
 }
 
 type BubbleScatterChartProps = {

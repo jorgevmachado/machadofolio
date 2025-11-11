@@ -8,9 +8,6 @@ import {
     MarginProps,
     TLayout,
     TooltipProps,
-    XAxisProps,
-    YAxisProps,
-    ZAxisProps
 } from '../../types';
 
 export type ScatterChartDataItem = Omit<React.ComponentProps<typeof Scatter>, 'key'> & {
@@ -22,12 +19,9 @@ export type ScatterChartDataItem = Omit<React.ComponentProps<typeof Scatter>, 'k
 
 export type ScatterChartProps = {
     type?: 'bubble' | 'scatter';
-    axis: AxisProps;
+    axis?: AxisProps;
     data: Array<ScatterChartDataItem>;
     range?: [number, number];
-    xAxis?: Array<XAxisProps>;
-    yAxis?: Array<YAxisProps>;
-    zAxis?: Array<ZAxisProps>;
     style?: React.CSSProperties;
     domain?: Array<number>;
     legend?: LegendProps;

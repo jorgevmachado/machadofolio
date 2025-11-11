@@ -52,6 +52,11 @@ describe('<ScatterChart/>', () => {
 
     const defaultProps = {
         data: mockData,
+        axis: {
+            xList: [{ key: 'x-axis-0', unit: 'cm', type: 'number', name: 'stature', dataKey: 'x' }],
+            yList: [{ key: 'y-axis-0', unit: 'kg', type: 'number', name: 'weight',  dataKey: 'y', width: 'auto' }],
+            zList: [{ key: 'z-axis-0', type: 'number', range: [100, 100] }],
+        },
         withLegend: false,
         withTooltip: false,
     }

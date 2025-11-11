@@ -11,7 +11,7 @@ import {
     Legend, LabelList, Cell, ScatterProps
 } from 'recharts';
 
-import { XAxisProps, YAxisProps, ZAxisProps, TooltipProps } from '../../types';
+import {TooltipProps } from '../../types';
 
 import { getRandomHarmonicPalette } from '../../colors';
 
@@ -34,13 +34,11 @@ const defaultMargin = {
 }
 
 export default function ScatterChart({
+    axis,
     type = 'scatter',
     data,
     style,
     margin,
-    xAxis,
-    yAxis,
-    zAxis,
     layout = 'horizontal',
     legend,
     tooltip,
@@ -51,33 +49,6 @@ export default function ScatterChart({
     const currentStyle = { ...defaultStyle, ...style };
 
     const currentMargin = { ...defaultMargin, ...margin };
-
-    const axis = useMemo(() => {
-        const xDefault: XAxisProps = { key: 'x-axis-0', unit: 'cm', type: 'number', name: 'stature', dataKey: 'x' };
-        const yDefault: YAxisProps = { key: 'y-axis-0', unit: 'kg', type: 'number', name: 'weight',  dataKey: 'y', width: 'auto' };
-        const zDefault: ZAxisProps = { key: 'z-axis-0', type: 'number', range: [100, 100] };
-
-        const xList: Array<XAxisProps> = (xAxis ?? [xDefault]).map((x, index) => ({
-            ...x,
-            key: `x-axis-${index}`,
-        }));
-
-        const yList: Array<YAxisProps> = (yAxis ?? [yDefault]).map((y, index) => ({
-            ...y,
-            key: `y-axis-${index}`,
-        }));
-
-        const zList: Array<ZAxisProps> = (zAxis ?? [zDefault]).map((z, index) => ({
-            ...z,
-            key: `z-axis-${index}`,
-        }));
-
-        const x: XAxisProps = xList[0] as XAxisProps;
-        const y = yList[0] as YAxisProps;
-        const z = zList[0] as ZAxisProps;
-
-        return { xList, yList, zList, x, y, z }
-    }, [xAxis, yAxis, zAxis]);
 
     const currentTooltip = useMemo(() => {
         if(!tooltip) {
@@ -120,15 +91,15 @@ export default function ScatterChart({
         >
             <CartesianGrid />
 
-            {axis.xList.map(({ key, ...x}, index) => (
+            {(axis && axis?.xList && axis?.xList.length > 0) && axis.xList.map(({ key, ...x}, index) => (
                 <XAxis {...x} key={key} data-testid={`ds-scatter-chart-x-axis-${index}`} />
             ))}
 
-            {axis.yList.map(({key, ...y}, index) => (
+            {(axis && axis?.yList && axis?.yList?.length > 0) && axis.yList.map(({key, ...y}, index) => (
                 <YAxis {...y} key={key} data-testid={`ds-scatter-chart-y-axis-${index}`} />
             ))}
 
-            {axis.zList.map(({ key,...z}, index) => (
+            {(axis && axis?.zList && axis?.zList?.length > 0) && axis.zList.map(({ key,...z}, index) => (
                 <ZAxis {...z} key={key} data-testid={`ds-scatter-chart-z-axis-${index}`} />
             ))}
 
@@ -166,9 +137,9 @@ export default function ScatterChart({
     ) : (
         <BubbleScatterChart
             axis={{
-                x: axis.x,
-                y: axis.y,
-                z: axis.z
+                x: axis?.xList?.[0],
+                y: axis?.yList?.[0],
+                z: axis?.zList?.[0],
             }}
             data={list}
             style={currentStyle}
