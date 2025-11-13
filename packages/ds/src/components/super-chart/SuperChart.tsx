@@ -24,7 +24,7 @@ export default function SuperChart({
                                        xAxis,
                                        yAxis,
                                        zAxis,
-    layout = 'vertical',
+                                       layout = 'vertical',
                                        legend,
                                        tooltip,
                                        subtitle,
@@ -33,7 +33,7 @@ export default function SuperChart({
                                        pieChart,
                                        children,
                                        className,
-   responsive,
+                                       responsive,
                                        areaChart,
                                        lineChart,
                                        radarChart,
@@ -66,7 +66,7 @@ export default function SuperChart({
                 result.length = radialChart?.data?.length || 0;
                 break;
             case 'line':
-                if(!lineChart?.data && lineChart?.labels) {
+                if (!lineChart?.data && lineChart?.labels) {
                     result.length = lineChart?.labels?.length;
                     break;
                 }
@@ -86,7 +86,15 @@ export default function SuperChart({
 
     const currentTooltip = buildTooltip(tooltip);
     const currentLegend = buildLegend(legend);
-    const axis = buildAxis(type, layout, xAxis, yAxis, zAxis, tooltip?.withPercentFormatter, withAxisCurrencyTickFormatter);
+    const axis = buildAxis({
+        type,
+        layout,
+        xAxis,
+        yAxis,
+        zAxis,
+        withPercentFormatter: tooltip?.withPercentFormatter,
+        withAxisCurrencyTickFormatter
+    });
 
     return (
         <ChartContainer

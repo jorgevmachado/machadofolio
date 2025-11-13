@@ -7,15 +7,15 @@ import { ChartContentLegend, ChartContentTooltip, type LegendContentProps, type 
 export function buildTooltip(tooltip?: TooltipProps) {
     const defaultTooltip: TooltipProps = { ...tooltip };
 
-    if(tooltip?.show === false) {
+    if (tooltip?.show === false) {
         return undefined;
     }
 
-    if(defaultTooltip.content) {
+    if (defaultTooltip.content) {
         return defaultTooltip;
     }
 
-    if(defaultTooltip.withDefaultTooltip) {
+    if (defaultTooltip.withDefaultTooltip) {
         return defaultTooltip;
     }
 
@@ -29,19 +29,19 @@ export function buildTooltip(tooltip?: TooltipProps) {
 export function buildLegend(legend?: LegendProps) {
     const defaultLegend: LegendProps = { ...legend };
 
-    if(defaultLegend?.show === false) {
+    if (defaultLegend?.show === false) {
         return undefined;
     }
 
-    if(defaultLegend?.content) {
+    if (defaultLegend?.content) {
         return defaultLegend;
     }
 
-    if(defaultLegend?.withDefaultLegend) {
-         return defaultLegend;
+    if (defaultLegend?.withDefaultLegend) {
+        return defaultLegend;
     }
 
-    if(defaultLegend?.withContent === false) {
+    if (defaultLegend?.withContent === false) {
         return defaultLegend;
     }
 
@@ -60,7 +60,7 @@ type AxisItem = {
     z: ZAxisProps;
 }
 
-export function buildAxis(
+type BuildAxisParams = {
     type: TChart,
     layout: TLayout,
     xAxis?: Array<XAxisProps>,
@@ -68,8 +68,18 @@ export function buildAxis(
     zAxis?: Array<ZAxisProps>,
     withPercentFormatter?: boolean,
     withAxisCurrencyTickFormatter?: boolean
-): AxisProps {
-    const axisItem: AxisItem =  {
+}
+
+export function buildAxis({
+                              type,
+                              layout,
+                              xAxis,
+                              yAxis,
+                              zAxis,
+                              withPercentFormatter,
+                              withAxisCurrencyTickFormatter
+                          }: BuildAxisParams): AxisProps {
+    const axisItem: AxisItem = {
         x: (layout === 'vertical')
             ? { key: 'x-axis-0', dataKey: 'name' }
             : { key: 'x-axis-0', type: 'number' },
@@ -79,15 +89,15 @@ export function buildAxis(
         z: { key: 'z-axis-0', type: 'number', range: [100, 100] }
     };
 
-    if(type === 'scatter') {
+    if (type === 'scatter') {
         axisItem.x = { key: 'x-axis-0', unit: 'cm', type: 'number', name: 'stature', dataKey: 'x' };
-        axisItem.y = { key: 'y-axis-0', unit: 'kg', type: 'number', name: 'weight',  dataKey: 'y', width: 'auto' };
+        axisItem.y = { key: 'y-axis-0', unit: 'kg', type: 'number', name: 'weight', dataKey: 'y', width: 'auto' };
         axisItem.z = { key: 'z-axis-0', type: 'number', range: [100, 100] };
     }
 
-    if(type === 'line') {
-        axisItem.x = { key: 'x-axis-0', dataKey: 'name'};
-        axisItem.y = { key: 'y-axis-0', width: 'auto'};
+    if (type === 'line') {
+        axisItem.x = { key: 'x-axis-0', dataKey: 'name' };
+        axisItem.y = { key: 'y-axis-0', width: 'auto' };
     }
 
     const x: Array<XAxisProps> = xAxis ?? [axisItem.x];
@@ -95,17 +105,17 @@ export function buildAxis(
     const zList: Array<ZAxisProps> = zAxis ?? [axisItem.z];
 
     const xList = x.map((item) => {
-        if(withAxisCurrencyTickFormatter) {
+        if (withAxisCurrencyTickFormatter) {
             item.tickFormatter = layout === 'vertical' ? undefined : (value: number) => currencyFormatter(value);
         }
         return item;
     });
 
     const yList = y.map((item) => {
-        if(withAxisCurrencyTickFormatter) {
+        if (withAxisCurrencyTickFormatter) {
             item.tickFormatter = layout === 'vertical' ? (value: number) => currencyFormatter(value) : undefined;
         }
-        if(withPercentFormatter) {
+        if (withPercentFormatter) {
             item.tickFormatter = (value) => convertToPercent(value);
         }
         return item;
