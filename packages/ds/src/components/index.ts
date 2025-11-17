@@ -16,6 +16,7 @@ export { default as Switch } from './switch';
 export { default as Chart, type ChartTooltipProps, type DataChartItem } from './chart';
 export {
     default as Charts,
+    type TooltipProps,
     type AreaChartProps,
     type BarChartProps,
     type ComposedChartProps,

@@ -1,5 +1,5 @@
 export { default } from './Charts';
-export type { ChartsProps } from './types';
+export type { ChartsProps, TooltipProps } from './types';
 export {
     type AreaChartProps,
     type BarChartProps,

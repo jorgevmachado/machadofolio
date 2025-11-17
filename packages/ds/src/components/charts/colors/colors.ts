@@ -4,25 +4,25 @@ import type { ColorProps } from '../types';
 
 export const BANK_COLORS: Array<ColorProps> = [
     {
-        fill: '#bc8ae1',
         type: 'bank',
         name: 'nubank',
-        color: '#9c44dc',
-        stroke: '#442c61'
+        fill: '#9c44dc',
+        color: '#bc8ae1',
+        stroke: '#442c61',
     },
     {
-        fill: '#FF9933',
         type: 'bank',
         name: 'caixa',
-        color: '#002060',
-        stroke: '#3b82f6',
+        fill: '#002060',
+        color: '#FF9933',
+        stroke: '#3b82f6'
 
     },
     {
-        fill: '#FF6200',
         type: 'bank',
         name: 'itau',
-        color: '#F88104',
+        fill: '#F88104',
+        color: '#FF6200',
         stroke: '#004387'
     },
     {
@@ -33,10 +33,10 @@ export const BANK_COLORS: Array<ColorProps> = [
         stroke: '#808080',
     },
     {
-        fill: '#c2c2c2',
         type: 'bank',
         name: 'santander',
-        color: '#EA1D25',
+        fill: '#EA1D25',
+        color: '#c2c2c2',
         stroke: '#333333'
     }
 ];

@@ -110,6 +110,7 @@ export default function Charts({
                     <BarChart
                         {...barChart}
                         axis={axis}
+                        layout={layout}
                         legend={currentLegend}
                         tooltip={currentTooltip}
                     />

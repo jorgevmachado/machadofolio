@@ -5,7 +5,7 @@ import { useI18n } from '@repo/i18n';
 
 import { BillEntity } from '@repo/business';
 
-import { Button, Chart, Text, type DataChartItem } from '@repo/ds';
+import { Button, Charts, Text, type BarChartProps, type TooltipProps } from '@repo/ds';
 
 import { billBusiness, expenseBusiness } from '../../../../shared';
 
@@ -21,21 +21,20 @@ export default function BankInfo({ bills, className, totalRegisteredBanks }: Ban
 
     const list = billBusiness.mapBillListByFilter(bills, 'bank');
 
-    const data = useMemo(() => {
-        const bankMap = new Map<string, Omit<DataChartItem, 'color'>>();
-        list.forEach((item) => {
+    const barChart = useMemo(() => {
+        const bankMap = new Map<string, BarChartProps['data'][number]>();
+        list.forEach((item, index) => {
             const expenses = item.list.flatMap((bill) => bill.expenses).filter((expense) => expense !== undefined);
             const calculate = expenseBusiness.calculateAll(expenses);
             const bankName = item.title;
             if (bankMap.has(bankName)) {
                 const current = bankMap.get(bankName);
                 if (current) {
-                    const currentCount = current?.count ?? 0;
                     bankMap.set(bankName, {
                         type: 'bank',
                         name: bankName,
-                        value: current.value + calculate.total,
-                        count: currentCount + 1
+                        value: calculate.total,
+                        count: index + 1
                     });
                 }
             } else {
@@ -43,29 +42,47 @@ export default function BankInfo({ bills, className, totalRegisteredBanks }: Ban
                     type: 'bank',
                     name: bankName,
                     value: calculate.total,
-                    count: 1
+                    count: index + 1
                 });
             }
         });
+        const data = Array.from(bankMap.values());
+        const props: BarChartProps = {
+            top: 5,
+            data,
+            labels: [{ key: 'value', fill: '#FFF', activeBar: { type: 'rectangle' } }],
+        }
+        return props;
+    }, [list])
 
-        return Array.from(bankMap.values());
-    }, [list]);
+    const tooltip = useMemo(() => {
+        const props: TooltipProps = {
+            countProps: {
+                show: true,
+                text: t('expenses'),
+            },
+            valueProps: {
+                show: true,
+                text: 'Total',
+                withCurrencyFormatter: true
+            }
+        }
+        return props;
+    }, [t])
 
     return (
-        <Chart
-            top={5}
+        <Charts
             type="bar"
-            data={data}
             title={`Top 5 ${t('banks')}`}
+            layout="horizontal"
             fallback={t('no_banks_registered')}
+            legend={{ show: false }}
             subtitle={`${t('banks')} ${t('with_the_highest_expenses')}`}
             className={className}
-            layoutType="horizontal"
+            barChart={barChart}
+            tooltip={tooltip}
             wrapperType="card"
-            chartTooltip={{
-                countText: t('expenses'),
-                valueText: 'Total'
-            }}
+            withAxisCurrencyTickFormatter
         >
             <Text variant="medium" color="neutral-80">
                 {totalRegisteredBanks} {t('registered_banks')}
@@ -76,6 +93,6 @@ export default function BankInfo({ bills, className, totalRegisteredBanks }: Ban
                 onClick={() => router.push('/banks')}>
                 {t('view_details')}
             </Button>
-        </Chart>
+        </Charts>
     );
 }
