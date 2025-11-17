@@ -1,4 +1,4 @@
-import { AxisProps, DataChartItem, LegendProps, TLayout, TooltipProps, XAxisProps, YAxisProps } from '../../types';
+import { AxisProps, DataChartItem, LegendProps, TLayout, TooltipProps } from '../../types';
 
 export type BarChartDataItem = DataChartItem & {
     fill?: string;
