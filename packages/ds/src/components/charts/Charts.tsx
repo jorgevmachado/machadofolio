@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SuperChartProps, } from './types';
+import { ChartsProps, } from './types';
 
 import ChartContainer from './chart-container';
 
@@ -13,12 +13,12 @@ import {
     RadarChart,
     RadialChart,
     ScatterChart
-} from './charts';
+} from './chart';
 
-import './SuperChart.scss';
+import './Charts.scss';
 import { buildAxis, buildLegend, buildTooltip } from './utils';
 
-export default function SuperChart({
+export default function Charts({
                                        type = 'bar',
                                        title,
                                        xAxis,
@@ -42,7 +42,7 @@ export default function SuperChart({
                                        scatterChart,
                                        composedChart,
                                        withAxisCurrencyTickFormatter
-                                   }: SuperChartProps) {
+                                   }: ChartsProps) {
 
     const isFallback = () => {
         const result = {

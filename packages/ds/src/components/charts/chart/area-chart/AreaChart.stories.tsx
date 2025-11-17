@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import SuperChart from '../../SuperChart';
+import Charts from '../../Charts';
 
 const data = [
     {
@@ -80,11 +80,11 @@ const meta = {
         children: 'Hello, World!',
         responsive: true,
     },
-    title: 'Components/SuperChart/AreaChart',
+    title: 'Components/Charts/AreaChart',
     argTypes: {},
-    component: SuperChart,
+    component: Charts,
     parameters: {},
-} satisfies Meta<typeof SuperChart>;
+} satisfies Meta<typeof Charts>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

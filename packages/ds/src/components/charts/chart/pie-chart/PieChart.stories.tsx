@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import SuperChart from '../../SuperChart';
+import Charts from '../../Charts';
 
 const mockPies = [
     {
@@ -60,11 +60,11 @@ const meta = {
             show: false
         },
     },
-    title: 'Components/SuperChart/PieChart',
+    title: 'Components/Charts/PieChart',
     argTypes: {},
-    component: SuperChart,
+    component: Charts,
     parameters: {},
-} satisfies Meta<typeof SuperChart>;
+} satisfies Meta<typeof Charts>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

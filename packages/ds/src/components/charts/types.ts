@@ -7,12 +7,14 @@ import { XAxis, YAxis, ZAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 import type { FilterContent } from './content';
 import {
     AreaChartProps,
-    BarChartProps, ComposedChartProps,
+    BarChartProps,
+    ComposedChartProps,
     LineChartProps,
     PieChartProps,
     RadarChartProps,
-    RadialChartProps, ScatterChartProps
-} from './charts';
+    RadialChartProps,
+    ScatterChartProps
+} from './chart';
 
 export type TChart = 'bar' | 'pie' | 'area' | 'radar' |  'radial' | 'line' | 'scatter' | 'composed';
 
@@ -147,7 +149,7 @@ export type AxisProps = {
     zList?: Array<ZAxisProps>;
 }
 
-export type SuperChartProps = Readonly<{
+export type ChartsProps = Readonly<{
     type?: TChart;
     title: string;
     xAxis?: Array<XAxisProps>;

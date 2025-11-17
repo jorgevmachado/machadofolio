@@ -22,8 +22,8 @@ jest.mock('./content', () => ({
     ChartContentLegend: (props: any) => (<div {...props} data-testid="mock-chart-legend"/>),
 }));
 
-jest.mock('./charts', () => {
-    const originalModule = jest.requireActual('./charts') as Record<string, any>;
+jest.mock('./chart', () => {
+    const originalModule = jest.requireActual('./chart') as Record<string, any>;
     return {
         ...originalModule,
         BarChart: (props: any) => {
@@ -110,9 +110,9 @@ jest.mock('./utils', () => ({
     buildAxis: () => jest.fn(),
 }));
 
-import SuperChart from './SuperChart';
+import Charts from './Charts';
 
-describe('<SuperChart/>', () => {
+describe('<Charts/>', () => {
     const defaultProps = {
         type: 'bar',
         title: 'Super Chart Title',
@@ -122,7 +122,7 @@ describe('<SuperChart/>', () => {
     };
 
     const renderComponent = (props: any = {}) => {
-        return render(<SuperChart {...defaultProps} {...props}/>);
+        return render(<Charts {...defaultProps} {...props}/>);
     }
 
     afterEach(() => {

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import SuperChart from '../../SuperChart';
+import Charts from '../../Charts';
 
 const meta = {
     tags: ['autodocs'],
@@ -30,11 +30,11 @@ const meta = {
         subtitle: 'Scatter Chart Subtitle',
         children: 'Hello, World!',
     },
-    title: 'Components/SuperChart/ScatterChart',
+    title: 'Components/Charts/ScatterChart',
     argTypes: {},
-    component: SuperChart,
+    component: Charts,
     parameters: {},
-} satisfies Meta<typeof SuperChart>;
+} satisfies Meta<typeof Charts>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -95,22 +95,6 @@ export const ThreeDimScatterChart: Story = {
                     shape: 'triangle',
                 }
             ],
-            yAxis: [{
-                key: 'y-axis-0',
-                unit: 'kg',
-                type: 'number',
-                name: 'weight',
-                width: 'auto',
-                dataKey: 'y',
-            }],
-            zAxis: [{
-                key: 'z-axis-0',
-                unit: 'km',
-                type: 'number',
-                name: 'score',
-                range: [60, 400],
-                dataKey: 'z',
-            }],
         },
     }
 }
@@ -171,25 +155,6 @@ export const JointLineScatterChart: Story = {
                     shape: 'diamond',
                 }
             ],
-            xAxis: [{
-                key: 'x-axis-0',
-                unit: 'cm',
-                type: 'number',
-                name: 'stature',
-                dataKey: 'x'
-            }],
-            yAxis: [{
-                key: 'y-axis-0',
-                unit: 'kg',
-                type: 'number',
-                name: 'weight',
-                width: 'auto',
-                dataKey: 'y',
-            }],
-            zAxis: [{
-                type: 'number',
-                range: [100, 100],
-            }],
         },
     }
 };
@@ -365,32 +330,6 @@ export const BubbleChart: Story = {
             range: [16, 225],
             style: { width: '100%', minWidth: '700px', maxWidth: '900px', height: '60px' },
             margin: { top: 10, right: 0, bottom: 0, left: 0 },
-            xAxis: [{
-                key: 'x-axis-0',
-                tick: { fontSize: 0 },
-                type: "category",
-                name: "hour",
-                dataKey: "hour",
-                interval: 0,
-                tickLine: { transform: 'translate(0, -6)' },
-            }],
-            yAxis: [{
-                key: 'y-axis-0',
-                tick: false,
-                name: 'sunday',
-                type: 'number',
-                width: 80,
-                height: 10,
-                dataKey: 'index',
-                tickLine: false,
-                axisLine: false,
-                label: { position: 'insideRight' },
-            }],
-            zAxis: [{
-                key: 'z-axis-0',
-                type: 'number',
-                dataKey: 'value',
-            }],
             domain: [ 0,
                 Math.max(
                     Math.max.apply(
@@ -436,10 +375,6 @@ export const ScatterChartWithLabels: Story = {
                     }
                 },
             ],
-            zAxis: [{
-                range: [900, 4000],
-                dataKey: 'z',
-            }],
             domain: [ 0,
                 Math.max(
                     Math.max.apply(
@@ -515,38 +450,6 @@ export const MultipleYAxesScatterChart: Story = {
         children: undefined,
         scatterChart: {
             style: { width: '100%', maxWidth: '300px', maxHeight: '70vh', aspectRatio: 1.618 },
-            xAxis: [
-                {
-                    key: 'x-axis-0',
-                    type: "number",
-                    dataKey: "x",
-                    name: "stature",
-                    unit: "cm"
-                },
-            ],
-            yAxis: [
-                {
-                    key: 'y-axis-0',
-                    yAxisId:"left",
-                    type:"number",
-                    dataKey:"y",
-                    name:"weight",
-                    unit:"kg",
-                    stroke:"#8884d8",
-                    width:"auto"
-                },
-                {
-                    key: 'y-axis-1',
-                    yAxisId: "right",
-                    type: "number",
-                    dataKey: "y",
-                    name: "weight",
-                    unit: "kg",
-                    orientation: "right",
-                    stroke: "#82ca9d",
-                    width: "auto",
-                }
-            ],
             data: [
                 {
                     key: 'a-school-1',
