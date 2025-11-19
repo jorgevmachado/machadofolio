@@ -27,6 +27,12 @@ export default function SupplierInfo({ expenses, className, totalRegisteredSuppl
         expenses.forEach((expense, index) => {
             const supplierId = expense.supplier.id;
             const supplierName = expense.supplier.name;
+            const result = { name: supplierName }
+            const split = supplierName.split('-');
+            if(split && split.length > 1) {
+                result.name = split?.[0]?.trim() ?? supplierName;
+            }
+            console.log('# => split => ', split)
             if (supplierMap.has(supplierId)) {
                 const current = supplierMap.get(supplierId);
                 if (current) {
@@ -34,7 +40,7 @@ export default function SupplierInfo({ expenses, className, totalRegisteredSuppl
                     const count = convertToNumber(current?.count);
                     supplierMap.set(supplierId, {
                         type: 'highlight',
-                        name: supplierName,
+                        name: result.name,
                         index,
                         value: value + expense.total,
                         count: count + 1
@@ -43,7 +49,7 @@ export default function SupplierInfo({ expenses, className, totalRegisteredSuppl
             } else {
                 supplierMap.set(supplierId, {
                     type: 'highlight',
-                    name: supplierName,
+                    name: result.name,
                     index,
                     value: expense.total,
                     count: 1
@@ -107,7 +113,7 @@ export default function SupplierInfo({ expenses, className, totalRegisteredSuppl
             <Button
                 size="small"
                 context="primary"
-                onClick={() => router.push('/banks')}>
+                onClick={() => router.push('/suppliers')}>
                 {t('view_details')}
             </Button>
         </Charts>
