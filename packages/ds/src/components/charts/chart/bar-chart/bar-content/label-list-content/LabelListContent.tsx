@@ -1,10 +1,6 @@
 import React from 'react';
 
-import { LabelProps } from 'recharts';
-
-type LabelListComponentProps = LabelProps & {
-    fillText?: string
-}
+import type { LabelListContent as LabelListComponentProps } from '../../types';
 
 export default function LabelListContent({x, y, fill, width, value, fillText }: LabelListComponentProps ) {
     if(x == null || y == null || width == null) {

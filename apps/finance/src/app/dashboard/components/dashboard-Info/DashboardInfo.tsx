@@ -64,7 +64,6 @@ export default function DashboardInfo({
                         className="finance-info__content--group-item"
                         totalPending={totalPending}
                         totalRegisteredExpenses={expenses.length}
-
                     />
                 </section>
                 <section className="finance-info__content--group">

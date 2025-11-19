@@ -34,7 +34,7 @@ export default function BarChart ({
         const limitedData = typeof top === 'number' ? data.slice(0, top) : data;
         const filteredList = limitedData.filter((item) => item !== undefined);
         return filteredList.map((item) => {
-            const colors = mapColors({ type: item.type, name: item.name });
+            const colors = mapColors({ type: item.type, name: item.name, colorName: item.colorName });
             if(!item.fill && colors?.fill) {
                 item.fill = colors?.fill;
             }

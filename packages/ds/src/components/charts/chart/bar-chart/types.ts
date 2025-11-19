@@ -1,11 +1,15 @@
+import { LabelListProps, LabelProps } from 'recharts';
+
 import { AxisProps, DataChartItem, LegendProps, TLayout, TooltipProps } from '../../types';
 
 export type BarChartDataItem = DataChartItem & {
     fill?: string;
     type?: string;
     name: string;
+    value?: string | number;
     color?: string;
     stroke?: string;
+    colorName?: string;
 };
 
 export type ActiveBar = {
@@ -14,16 +18,22 @@ export type ActiveBar = {
     stroke?: string;
 }
 
-export type LabelList = {
+export type LabelListContent = LabelProps & {
+    fillText?: string
+}
+
+export type LabelList = LabelListProps & {
     fill?: string;
     dataKey: string;
     position?: 'top' | 'bottom' | 'center';
-    withContent?: boolean;
+    withCustomContent?: boolean;
+    withCurrencyFormatter?: boolean;
 }
 
 export type BarChartLabelsItem = {
     key: string;
     fill?: string;
+    radius?: [number, number, number, number];
     stroke?: string;
     stackId?: string;
     labelList?: LabelList;

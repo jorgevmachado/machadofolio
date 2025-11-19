@@ -32,7 +32,6 @@ export default function SupplierInfo({ expenses, className, totalRegisteredSuppl
             if(split && split.length > 1) {
                 result.name = split?.[0]?.trim() ?? supplierName;
             }
-            console.log('# => split => ', split)
             if (supplierMap.has(supplierId)) {
                 const current = supplierMap.get(supplierId);
                 if (current) {

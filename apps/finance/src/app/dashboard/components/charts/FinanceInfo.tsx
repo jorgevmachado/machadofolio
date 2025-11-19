@@ -1,9 +1,9 @@
 'use client'
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { useI18n } from '@repo/i18n';
 
-import { Chart, Text } from '@repo/ds';
+import { type BarChartProps, Charts, Text } from '@repo/ds';
 
 type FinanceBarChartProps = {
     total: number;
@@ -13,43 +13,58 @@ type FinanceBarChartProps = {
     totalRegisteredExpenses: number;
 }
 
-export default function FinanceInfo({ total, totalPaid, className, totalPending, totalRegisteredExpenses }: FinanceBarChartProps) {
+export default function FinanceInfo({ total, totalPaid, className, totalPending, totalRegisteredExpenses }: Readonly<FinanceBarChartProps>) {
     const { t } = useI18n();
 
-    return (
-        <Chart
-            type="bar"
-            data={[
+    const barChart = useMemo(() => {
+        const props: BarChartProps = {
+            data: [
                 {
                     type: 'highlight',
                     name: t('total'),
                     value: Number(total.toFixed(2)),
-                    fill: '#8b5cf6'
+                    colorName: 'electric_blue'
                 },
                 {
                     type: 'highlight',
                     name: t('paid'),
                     value: Number(totalPaid.toFixed(2)),
-                    fill: '#10b981'
+                    colorName: 'emerald_green'
                 },
                 {
                     type: 'highlight',
                     name: t('pending'),
                     value: Number(totalPending.toFixed(2)),
-                    fill: '#ef4444'
+                    colorName: 'intense_red'
                 }
-            ]}
+            ],
+            labels: [{ key: 'value', fill: '#8b5cf6', labelList: { dataKey: 'value', position: 'top', withCurrencyFormatter: true } }],
+
+        }
+        return props;
+    }, [t])
+
+    return (
+        <Charts
+            type="bar"
             title={t('financial_overview')}
+            tooltip={{
+                valueProps: {
+                    show: true,
+                    text: t('value')
+                }
+            }}
+            legend={{
+                show: false,
+            }}
+            barChart={barChart}
             subtitle={t('comparison_between_total_values')}
             className={className}
-            layoutType="vertical"
-            chartTooltip={{
-                valueText: t('value')
-            }}
+            withAxisCurrencyTickFormatter
         >
             <Text variant="medium" color="neutral-80">
                 {totalRegisteredExpenses} {t('registered_expenses')}
             </Text>
-        </Chart>
+        </Charts>
     );
 }

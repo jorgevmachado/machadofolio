@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { Bar, Cell, LabelList } from 'recharts';
 
+import { currencyFormatter } from '@repo/services';
+
 import type { ActiveBar, BarChartLabelsItem, BarChartDataItem } from '../types';
 
 import { getRandomHarmonicPalette } from '../../../colors';
@@ -42,24 +44,44 @@ export default function BarContent({ data = [], labels = [], isVertical }: BarCo
         return null;
     }
 
+    const mapperLabelList = (labelList: BarChartLabelsItem['labelList']) => {
+        if(!labelList) {
+            return labelList;
+        }
+
+
+        if(labelList?.withCustomContent) {
+            labelList.content = (props) =>  LabelListContent({...props, fillText: labelList?.fill });
+        }
+
+        if(labelList?.withCurrencyFormatter && !labelList?.formatter) {
+            labelList.formatter = (value) => {
+                if (typeof value === 'number') {
+                    return currencyFormatter(value);
+                }
+                return value;
+            }
+        }
+
+        return labelList;
+    }
+
     const list = useMemo(() => {
 
-        const barData: Array<ListItem> = labels.map((label, index) => {
-            return {
-                key: `${label.key}-${index}`,
-                fill: label?.fill || '#808080',
-                index,
-                cells: [],
-                radius: [0, 8, 8, 0],
-                stroke: label?.stroke || '#0072bb',
-                dataKey: label.key,
-                stackId: label?.stackId,
-                activeBar: label?.activeBar,
-                labelList: label?.labelList,
-                background: label?.background,
-                minPointSize: label?.minPointSize,
-            }
-        });
+        const barData: Array<ListItem> = labels.map((label, index) => ({
+            key: `${label.key}-${index}`,
+            fill: label?.fill || '#808080',
+            index,
+            cells: [],
+            radius: label?.radius ?? [0, 8, 8, 0],
+            stroke: label?.stroke || '#0072bb',
+            dataKey: label.key,
+            stackId: label?.stackId,
+            activeBar: label?.activeBar,
+            labelList: mapperLabelList(label?.labelList),
+            background: label?.background,
+            minPointSize: label?.minPointSize,
+        }));
 
         const cellData: Array<CellItem> = data.map((item, index) => {
             const { fill, stroke } = getRandomHarmonicPalette();
@@ -121,10 +143,7 @@ export default function BarContent({ data = [], labels = [], isVertical }: BarCo
                 data-testid={`ds-bar-content-${item.dataKey}-${isVertical ? 'vertical' : 'horizontal'}`}
             >
                 {item?.labelList && (
-                    <LabelList
-                        dataKey={item.labelList.dataKey}
-                        position={item.labelList?.position}
-                        content={ !item.labelList?.withContent ? undefined : <LabelListContent fillText={item.labelList?.fill}  />}/>
+                    <LabelList{...item.labelList }/>
                 )}
 
                 {item.cells.map((cell) => (

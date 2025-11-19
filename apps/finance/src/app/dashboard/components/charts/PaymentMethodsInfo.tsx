@@ -74,7 +74,7 @@ export function PaymentMethodsInfo({ bills, className, totalRegisteredBills }: R
             data: data.map((item) => ({
                 ...item,
                 name: t(item.name)
-            })),
+            })).filter((item) => item.value as number > 0),
             labels: [{ key: 'value', fill: '#808080' }],
         }
         return props;

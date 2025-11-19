@@ -257,6 +257,32 @@ export function hslToHex(h: number, s: number, l: number): string {
     return `#${f(0)}${f(8)}${f(4)}`;
 }
 
+const usedColorIndexes = new Set<number>();
+
+export function getRandomByPalette(palette: Array<ColorProps>) {
+    if(palette && palette.length > 0) {
+        const availableIndexes = palette
+            .map((_, idx) => idx)
+            .filter(idx => !usedColorIndexes.has(idx));
+
+        if (availableIndexes.length === 0) {
+            usedColorIndexes.clear();
+            availableIndexes.push(...palette.map((_, idx) => idx));
+        }
+
+        const randomIdx = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
+        if(!randomIdx) {
+            return getRandomHarmonicPalette();
+        }
+        usedColorIndexes.add(randomIdx);
+
+        return palette[randomIdx];
+    }
+
+    return getRandomHarmonicPalette();
+
+}
+
 export function getRandomHarmonicPalette() {
     const baseHue = Math.floor(Math.random() * 360);
     const baseSat = 60 + Math.floor(Math.random() * 30);
@@ -293,11 +319,14 @@ export function getPalette(type: string) {
     }
 }
 
-export function mapColors(item: { type?: string; name: string;}) {
+export function mapColors(item: { type?: string; name: string; colorName?: string}) {
     if(!item.type) {
         return getRandomHarmonicPalette();
     }
-    const currentName = toSnakeCase(normalize(item.name.toLowerCase()));
+
+    const name = item?.colorName ?? item.name;
+
+    const currentName = toSnakeCase(normalize(name.toLowerCase()));
 
     const palette = getPalette(item.type);
 
@@ -307,5 +336,5 @@ export function mapColors(item: { type?: string; name: string;}) {
         return currentPalette;
     }
 
-    return getRandomHarmonicPalette();
+    return getRandomByPalette(palette);
 }

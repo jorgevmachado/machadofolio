@@ -216,7 +216,7 @@ export const BarChartWithMinHeight: Story = {
         barChart: {
             data,
             labels: [
-                { key: 'uv', fill: '#9c44dc', minPointSize: 5, labelList: { dataKey: 'name', withContent: true } },
+                { key: 'uv', fill: '#9c44dc', minPointSize: 5, labelList: { dataKey: 'name', withCustomContent: true } },
                 { key: 'pv', fill: '#002060', minPointSize: 10 },
             ]
         }
@@ -292,6 +292,20 @@ export const BarChartVerticalHighlight: Story = {
             ],
             layout: 'horizontal',
             labels: [{ key: 'value', fill: '#808080' }],
+        }
+    }
+}
+
+export const BarChartCustomLabelList: Story = {
+    args: {
+        barChart: {
+            data: [
+                { type: 'highlight', name: 'Total', value: 30738.48 },
+                { type: 'highlight', name: 'Paid', value: 24282.45 },
+                { type: 'highlight', name: 'Pending', value: 6456.03 },
+            ],
+            layout: 'horizontal',
+            labels: [{ key: 'value', fill: '#808080', labelList: { fill: '#808080', dataKey: 'value', position: 'top', withCurrencyFormatter: true } }],
         }
     }
 }
