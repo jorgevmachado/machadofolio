@@ -7,6 +7,7 @@ export const BANK_COLORS: Array<ColorProps> = [
         type: 'bank',
         name: 'nubank',
         fill: '#9c44dc',
+        index: 0,
         color: '#bc8ae1',
         stroke: '#442c61',
     },
@@ -14,6 +15,7 @@ export const BANK_COLORS: Array<ColorProps> = [
         type: 'bank',
         name: 'caixa',
         fill: '#002060',
+        index: 1,
         color: '#FF9933',
         stroke: '#3b82f6'
 
@@ -22,6 +24,7 @@ export const BANK_COLORS: Array<ColorProps> = [
         type: 'bank',
         name: 'itau',
         fill: '#F88104',
+        index: 2,
         color: '#FF6200',
         stroke: '#004387'
     },
@@ -29,6 +32,7 @@ export const BANK_COLORS: Array<ColorProps> = [
         fill: '#0072bb',
         type: 'bank',
         name: 'banco_do_brasil',
+        index: 3,
         color: '#FFD700',
         stroke: '#808080',
     },
@@ -36,6 +40,7 @@ export const BANK_COLORS: Array<ColorProps> = [
         type: 'bank',
         name: 'santander',
         fill: '#EA1D25',
+        index: 4,
         color: '#c2c2c2',
         stroke: '#333333'
     }
@@ -58,6 +63,7 @@ export const HIGHLIGHT_COLORS: Array<ColorProps> = [
         name: 'electric_blue',
         color: '#007BFF',
         fill: '#007BFF',
+        index: 0,
         stroke: darkenColor('#007BFF')
     },
     {
@@ -65,6 +71,7 @@ export const HIGHLIGHT_COLORS: Array<ColorProps> = [
         name: 'emerald_green',
         color: '#28A745',
         fill: '#28A745',
+        index: 1,
         stroke: darkenColor('#28A745')
     },
     {
@@ -72,6 +79,7 @@ export const HIGHLIGHT_COLORS: Array<ColorProps> = [
         name: 'vibrant_orange',
         color: '#FD7E14',
         fill: '#FD7E14',
+        index: 2,
         stroke: darkenColor('#FD7E14')
     },
     {
@@ -79,6 +87,7 @@ export const HIGHLIGHT_COLORS: Array<ColorProps> = [
         name: 'deep_purple',
         color: '#6F42C1',
         fill: '#6F42C1',
+        index: 3,
         stroke: darkenColor('#6F42C1')
     },
     {
@@ -86,6 +95,7 @@ export const HIGHLIGHT_COLORS: Array<ColorProps> = [
         name: 'intense_red',
         color: '#DC3545',
         fill: '#DC3545',
+        index: 4,
         stroke: darkenColor('#DC3545')
     }
 ];
@@ -96,6 +106,7 @@ export const HARMONY_COLORS: Array<ColorProps> = [
         name: 'serene_blue',
         color: '#ADD8E6',
         fill: '#ADD8E6',
+        index: 0,
         stroke: darkenColor('#ADD8E6')
     },
     {
@@ -103,6 +114,7 @@ export const HARMONY_COLORS: Array<ColorProps> = [
         name: 'mint_green',
         color: '#98FB98',
         fill: '#98FB98',
+        index: 1,
         stroke: darkenColor('#98FB98')
     },
     {
@@ -110,6 +122,7 @@ export const HARMONY_COLORS: Array<ColorProps> = [
         name: 'soft_lavender',
         color: '#E6E6FA',
         fill: '#E6E6FA',
+        index: 2,
         stroke: darkenColor('#E6E6FA')
     },
     {
@@ -117,6 +130,7 @@ export const HARMONY_COLORS: Array<ColorProps> = [
         name: 'light_peach',
         color: '#FFDAB9',
         fill: '#FFDAB9',
+        index: 3,
         stroke: darkenColor('#FFDAB9')
     },
     {
@@ -124,6 +138,7 @@ export const HARMONY_COLORS: Array<ColorProps> = [
         name: 'light_gray',
         color: '#D3D3D3',
         fill: '#D3D3D3',
+        index: 4,
         stroke: darkenColor('#D3D3D3')
     }
 ];
@@ -134,6 +149,7 @@ export const ORGANIC_COLORS: Array<ColorProps> = [
         name: 'forest_green',
         color: '#228B22',
         fill: '#228B22',
+        index: 0,
         stroke: darkenColor('#228B22')
     },
     {
@@ -141,6 +157,7 @@ export const ORGANIC_COLORS: Array<ColorProps> = [
         name: 'earth_brown',
         color: '#8B4513',
         fill: '#8B4513',
+        index: 1,
         stroke: darkenColor('#8B4513')
     },
     {
@@ -148,6 +165,7 @@ export const ORGANIC_COLORS: Array<ColorProps> = [
         name: 'sky_blue',
         color: '#87CEEB',
         fill: '#87CEEB',
+        index: 2,
         stroke: darkenColor('#87CEEB')
     },
     {
@@ -155,6 +173,7 @@ export const ORGANIC_COLORS: Array<ColorProps> = [
         name: 'sand',
         color: '#F4A460',
         fill: '#F4A460',
+        index: 3,
         stroke: darkenColor('#F4A460')
     },
     {
@@ -162,6 +181,7 @@ export const ORGANIC_COLORS: Array<ColorProps> = [
         name: 'moss_green',
         color: '#8FBC8F',
         fill: '#8FBC8F',
+        index: 4,
         stroke: darkenColor('#8FBC8F')
     }
 ];
@@ -172,6 +192,7 @@ export const EMPHASIS_COLORS: Array<ColorProps> = [
         name: 'black',
         color: '#000000',
         fill: '#000000',
+        index: 0,
         stroke: darkenColor('#000000')
     },
     {
@@ -179,6 +200,7 @@ export const EMPHASIS_COLORS: Array<ColorProps> = [
         name: 'dark_gray',
         color: '#2F4F4F',
         fill: '#2F4F4F',
+        index: 1,
         stroke: darkenColor('#2F4F4F')
     },
     {
@@ -186,6 +208,7 @@ export const EMPHASIS_COLORS: Array<ColorProps> = [
         name: 'medium_gray',
         color: '#696969',
         fill: '#696969',
+        index: 2,
         stroke: darkenColor('#696969')
     },
     {
@@ -193,6 +216,7 @@ export const EMPHASIS_COLORS: Array<ColorProps> = [
         name: 'light_gray',
         color: '#DCDCDC',
         fill: '#DCDCDC',
+        index: 3,
         stroke: darkenColor('#DCDCDC')
     },
     {
@@ -200,14 +224,23 @@ export const EMPHASIS_COLORS: Array<ColorProps> = [
         name: 'white',
         color: '#FFFFFF',
         fill: '#FFFFFF',
+        index: 4,
         stroke: darkenColor('#FFFFFF')
     }
+];
+
+export const ALL_COLORS: Array<ColorProps> = [
+    ...HIGHLIGHT_COLORS,
+    ...HARMONY_COLORS,
+    ...ORGANIC_COLORS,
+    ...EMPHASIS_COLORS
 ];
 
 export const FALLBACK_COLOR: ColorProps = {
     fill: '#6ee7b7',
     type: 'highlight',
     name: 'other',
+    index: 0,
     color: '#10b981',
     stroke: '#047857'
 }
@@ -243,20 +276,36 @@ export function getRandomHarmonicPalette() {
     };
 }
 
-export function mapColors(item: { type: string; name: string; }) {
-    const currentName = toSnakeCase(normalize(item.name.toLowerCase()));
-    switch (item.type) {
+export function getPalette(type: string) {
+    switch (type) {
         case 'bank':
-            return BANK_COLORS.find(bank => bank.name === currentName) ?? FALLBACK_COLOR;
+            return BANK_COLORS;
         case 'highlight':
-            return HIGHLIGHT_COLORS.find(highlight => highlight.name === currentName) ?? HIGHLIGHT_COLORS[0];
+            return HIGHLIGHT_COLORS;
         case 'harmony':
-            return HARMONY_COLORS.find(harmony => harmony.name === currentName) ?? HARMONY_COLORS[0];
+            return HARMONY_COLORS;
         case 'organic':
-            return ORGANIC_COLORS.find(organic => organic.name === currentName) ?? ORGANIC_COLORS[0];
+            return ORGANIC_COLORS;
         case 'emphasis':
-            return EMPHASIS_COLORS.find(emphasis => emphasis.name === currentName) ?? EMPHASIS_COLORS[0];
+            return EMPHASIS_COLORS;
         default:
-            return getRandomHarmonicPalette();
+            return ALL_COLORS;
     }
+}
+
+export function mapColors(item: { type?: string; name: string;}) {
+    if(!item.type) {
+        return getRandomHarmonicPalette();
+    }
+    const currentName = toSnakeCase(normalize(item.name.toLowerCase()));
+
+    const palette = getPalette(item.type);
+
+    const currentPalette = palette.find((item) => item.name === currentName);
+
+    if(currentPalette) {
+        return currentPalette;
+    }
+
+    return getRandomHarmonicPalette();
 }

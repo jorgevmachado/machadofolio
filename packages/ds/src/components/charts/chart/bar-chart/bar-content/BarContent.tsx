@@ -112,6 +112,7 @@ export default function BarContent({ data = [], labels = [], isVertical }: BarCo
             <Bar
                 key={item.key}
                 fill={item.fill}
+                radius={item.radius}
                 dataKey={item.dataKey}
                 stackId={item?.stackId}
                 activeBar={Boolean(item?.activeBar) ? <ActiveRectangle activeBar={item.activeBar}/> : undefined}

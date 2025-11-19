@@ -135,6 +135,7 @@ export type ColorProps = {
     fill: string;
     type: string;
     name: string;
+    index: number;
     color: string;
     stroke: string;
 };

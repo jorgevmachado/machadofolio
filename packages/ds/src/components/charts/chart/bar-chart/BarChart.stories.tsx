@@ -192,8 +192,18 @@ export const MixBarChart: Story = {
                 },
             ],
             labels: [
-                { key: 'uv', fill: '#9c44dc', stackId: 'a', activeBar: { type: 'rectangle', fill: '#bc8ae1', stroke: '#442c61', } },
-                { key: 'pv', fill: '#002060', stackId: 'a', activeBar: { type: 'rectangle', fill: '#FF9933', stroke: '#3b82f6' } },
+                {
+                    key: 'uv',
+                    fill: '#9c44dc',
+                    stackId: 'a',
+                    activeBar: { type: 'rectangle', fill: '#bc8ae1', stroke: '#442c61', }
+                },
+                {
+                    key: 'pv',
+                    fill: '#002060',
+                    stackId: 'a',
+                    activeBar: { type: 'rectangle', fill: '#FF9933', stroke: '#3b82f6' }
+                },
                 { key: 'amt', fill: '#F88104', activeBar: { type: 'rectangle', fill: '#FF6200', stroke: '#004387' } },
             ]
         }
@@ -219,7 +229,7 @@ export const BarChartWithBackground: Story = {
         barChart: {
             data,
             labels: [
-                { key: 'uv', fill: '#9c44dc', background: {  fill: '#eee' } },
+                { key: 'uv', fill: '#9c44dc', background: { fill: '#eee' } },
                 { key: 'pv', fill: '#002060', activeBar: { type: 'rectangle', fill: '#FF9933', stroke: '#3b82f6' } },
                 { key: 'amt', fill: '#F88104', activeBar: { type: 'rectangle', fill: '#FF6200', stroke: '#004387' } },
             ]
@@ -235,40 +245,50 @@ export const BarChartVertical: Story = {
             data: [
                 {
                     type: 'bank',
+                    name: 'Saffa',
+                    value: 500,
+                    count: 5
+                },
+                {
+                    type: 'bank',
                     name: 'Nubank',
                     value: 400,
-                    count: 4,
-                    fill: '#9c44dc',
-                    color: '#bc8ae1',
-                    stroke: '#442c61',
+                    count: 4
                 },
                 {
                     type: 'bank',
                     name: 'Caixa',
                     value: 300,
-                    count: 3,
-                    fill: '#002060',
-                    color: '#FF9933',
-                    stroke: '#3b82f6'
+                    count: 3
                 },
                 {
                     type: 'bank',
                     name: 'Itaú',
                     value: 200,
-                    count: 2,
-                    fill: '#F88104',
-                    color: '#FF6200',
-                    stroke: '#004387'
+                    count: 2
                 },
                 {
                     type: 'bank',
                     name: 'Santander',
                     value: 100,
-                    count: 1,
-                    fill: '#EA1D25',
-                    color: '#c2c2c2',
-                    stroke: '#333333'
+                    count: 1
                 },
+            ],
+            layout: 'horizontal',
+            labels: [{ key: 'value', fill: '#808080' }],
+        }
+    }
+}
+
+export const BarChartVerticalHighlight: Story = {
+    args: {
+        layout: 'horizontal',
+        barChart: {
+            data: [
+                { type: 'highlight', name: 'Credit Card', value: 6517.35, count: 1 },
+                { type: 'highlight', name: 'Bank Slip', value: 15782.800000000001, count: 1 },
+                { type: 'highlight', name: 'Account Debit', value: 8438.33, count: 1 },
+                { type: 'highlight', name: 'Pix', value: 0, count: 1 }
             ],
             layout: 'horizontal',
             labels: [{ key: 'value', fill: '#808080' }],

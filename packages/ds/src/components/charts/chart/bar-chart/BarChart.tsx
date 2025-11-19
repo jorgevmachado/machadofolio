@@ -34,17 +34,15 @@ export default function BarChart ({
         const limitedData = typeof top === 'number' ? data.slice(0, top) : data;
         const filteredList = limitedData.filter((item) => item !== undefined);
         return filteredList.map((item) => {
-            if(item.type === 'bank') {
-                const colors = mapColors({ type: 'bank', name: item.name })
-                if(!item.fill && colors?.fill) {
-                    item.fill = colors?.fill;
-                }
-                if(!item.color && colors?.color) {
-                    item.color = colors?.color;
-                }
-                if(!item.stroke && colors?.stroke) {
-                    item.stroke = colors?.stroke;
-                }
+            const colors = mapColors({ type: item.type, name: item.name });
+            if(!item.fill && colors?.fill) {
+                item.fill = colors?.fill;
+            }
+            if(!item.color && colors?.color) {
+                item.color = colors?.color;
+            }
+            if(!item.stroke && colors?.stroke) {
+                item.stroke = colors?.stroke;
             }
             return item;
         });

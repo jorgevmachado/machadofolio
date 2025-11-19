@@ -3,9 +3,11 @@ import { useRouter } from 'next/navigation';
 
 import { useI18n } from '@repo/i18n';
 
+import { convertToNumber } from '@repo/services';
+
 import { BillEntity } from '@repo/business';
 
-import { Button, Chart, type DataChartItem, Text } from '@repo/ds';
+import { type BarChartProps, Button, Charts, Text, type TooltipProps } from '@repo/ds';
 
 import { billBusiness, expenseBusiness } from '../../../../shared';
 
@@ -15,27 +17,44 @@ type BankInfoProps = {
     totalRegisteredBills: number;
 }
 
-export default function PaymentMethodsInfo({ bills, className, totalRegisteredBills }: BankInfoProps) {
+export function PaymentMethodsInfo({ bills, className, totalRegisteredBills }: Readonly<BankInfoProps>) {
     const { t } = useI18n();
     const router = useRouter();
 
     const list = billBusiness.mapBillListByFilter(bills, 'type');
 
-    const data = useMemo(() => {
-        const paymentMethodMap = new Map<string, Omit<DataChartItem, 'color'>>();
-        list.forEach((item) => {
+    const tooltip = useMemo(() => {
+        const props: TooltipProps = {
+            countProps: {
+                show: true,
+                text: t('expenses'),
+            },
+            valueProps: {
+                show: true,
+                text: 'Total',
+                withCurrencyFormatter: true
+            }
+        }
+        return props;
+    }, [t])
+
+    const barChart = useMemo(() => {
+        const paymentMethodMap = new Map<string, BarChartProps['data'][number]>();
+
+        for (const item of list) {
             const expenses = item.list.flatMap((bill) => bill.expenses).filter((expense) => expense !== undefined);
             const calculate = expenseBusiness.calculateAll(expenses);
             const paymentMethodName = item.title;
             if (paymentMethodMap.has(paymentMethodName)) {
                 const current = paymentMethodMap.get(paymentMethodName);
                 if (current) {
-                    const currentCount = current?.count ?? 0;
+                    const value = convertToNumber(current?.value);
+                    const count = convertToNumber(current?.count);
                     paymentMethodMap.set(paymentMethodName, {
                         type: 'highlight',
                         name: paymentMethodName,
-                        value: current.value + calculate.total,
-                        count: currentCount + 1
+                        value: value + calculate.total,
+                        count: count + 1
                     });
                 }
             } else {
@@ -46,25 +65,34 @@ export default function PaymentMethodsInfo({ bills, className, totalRegisteredBi
                     count: 1
                 });
             }
-        });
+        }
 
-        return Array.from(paymentMethodMap.values());
-    }, [list]);
+        const data = Array.from(paymentMethodMap.values());
+
+        const props: BarChartProps = {
+            top: 5,
+            data: data.map((item) => ({
+                ...item,
+                name: t(item.name)
+            })),
+            labels: [{ key: 'value', fill: '#808080' }],
+        }
+        return props;
+    }, [list, t])
 
     return (
-        <Chart
-            top={5}
+        <Charts
             type="bar"
-            data={data}
             title={`Top ${t('payment_methods')}`}
+            layout="horizontal"
+            legend={{ show: false }}
             subtitle={`${t('payment_methods')} ${t('with_the_highest_expenses')}`}
             fallback={t('no_payment_methods_registered')}
             className={className}
+            barChart={barChart}
+            tooltip={tooltip}
             wrapperType="card"
-            chartTooltip={{
-                countText: t('expenses'),
-                valueText: 'Total'
-            }}
+            withAxisCurrencyTickFormatter
         >
             <Text variant="medium" color="neutral-80">
                 {totalRegisteredBills} {t('registered_bills')}
@@ -75,6 +103,6 @@ export default function PaymentMethodsInfo({ bills, className, totalRegisteredBi
                 onClick={() => router.push('/bills')}>
                 {t('view_details')}
             </Button>
-        </Chart>
+        </Charts>
     );
 }
