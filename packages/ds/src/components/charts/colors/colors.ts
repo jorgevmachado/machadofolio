@@ -50,7 +50,7 @@ export function darkenColor(hex: string, amount: number = 20): string {
     const col = hex.replace('#', '').length === 3
         ? hex.replace('#', '').split('').map(c => c + c).join('')
         : hex.replace('#', '');
-    const num = parseInt(col, 16);
+    const num = Number.parseInt(col, 16);
     const r = Math.max(0, ((num >> 16) - amount));
     const g = Math.max(0, (((num >> 8) & 0x00FF) - amount));
     const b = Math.max(0, ((num & 0x0000FF) - amount));
@@ -271,7 +271,7 @@ export function getRandomByPalette(palette: Array<ColorProps>) {
         }
 
         const randomIdx = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
-        if(!randomIdx) {
+        if(randomIdx === undefined) {
             return getRandomHarmonicPalette();
         }
         usedColorIndexes.add(randomIdx);
@@ -292,8 +292,8 @@ export function getRandomHarmonicPalette() {
     const strokeHue = (baseHue + 240) % 360;
 
     const color = hslToHex(baseHue, baseSat, baseLum);
-    const fill = hslToHex(fillHue, baseSat, baseLum + 10 > 100 ? 100 : baseLum + 10);
-    const stroke = hslToHex(strokeHue, baseSat - 10 < 0 ? 0 : baseSat - 10, baseLum - 10 < 0 ? 0 : baseLum - 10);
+    const fill = hslToHex(fillHue, baseSat, Math.min(baseLum + 10, 100));
+    const stroke = hslToHex(strokeHue, Math.max(baseSat - 10, 0), Math.max(baseLum - 10, 0));
 
     return {
         color,
