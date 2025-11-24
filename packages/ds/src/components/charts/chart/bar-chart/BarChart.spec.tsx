@@ -217,4 +217,18 @@ describe('<BarChart/>', () => {
         renderComponent({ legend: { show: true }});
         expect(screen.getByTestId('mock-legend')).toBeInTheDocument();
     });
+    
+    it('should render component with custom colors', () => {
+        const customData = [
+            {
+                type: 'bank',
+                name: 'Nubank',
+                value: 400,
+                count: 4
+            }
+        ];
+        renderComponent({ data: customData });
+        expect(screen.getByTestId('ds-bar-chart')).toBeInTheDocument();
+    })
+    
 })

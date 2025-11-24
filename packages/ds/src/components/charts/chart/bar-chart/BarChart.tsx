@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 
+
 import {
     BarChart as BarChartComponent,
     ResponsiveContainer,
@@ -12,10 +13,12 @@ import {
 
 import { useBreakpoint } from '../../../../hooks';
 
+import { mapColors } from '../../colors';
+
 import BarContent from './bar-content';
 
 import type { BarChartProps } from './types';
-import { mapColors } from '../../colors';
+
 
 export default function BarChart ({
     top,
