@@ -103,7 +103,12 @@ const meta = {
                     stroke: '#333333'
                 },
             ],
-            labels: [{ key: 'value', fill: '#808080', activeBar: { type: 'rectangle' } }],
+            labels: [{
+                key: 'value',
+                fill: '#808080',
+                radius: [8, 8, 0, 0],
+                activeBar: { type: 'rectangle' }
+            }],
         },
         subtitle: 'Bar Chart Subtitle',
         children: 'Hello, World!',

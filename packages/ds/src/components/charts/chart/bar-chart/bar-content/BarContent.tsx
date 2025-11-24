@@ -40,10 +40,6 @@ type ListItem = {
 }
 
 export default function BarContent({ data = [], labels = [], isVertical }: BarContentProps) {
-    if(labels?.length <= 0) {
-        return null;
-    }
-
     const mapperLabelList = (labelList: BarChartLabelsItem['labelList']) => {
         if(!labelList) {
             return labelList;
@@ -73,7 +69,7 @@ export default function BarContent({ data = [], labels = [], isVertical }: BarCo
             fill: label?.fill || '#808080',
             index,
             cells: [],
-            radius: label?.radius ?? [0, 8, 8, 0],
+            radius: label?.radius ?? [0,0,0,0],
             stroke: label?.stroke || '#0072bb',
             dataKey: label.key,
             stackId: label?.stackId,
@@ -102,7 +98,7 @@ export default function BarContent({ data = [], labels = [], isVertical }: BarCo
             }));
         }
 
-        const orderedBarData: Array<ListItem> = barData.sort((a, b) => b.index - a.index);
+        const orderedBarData: Array<ListItem> = [...barData].sort((a, b) => b.index - a.index);
 
         if(!isVertical) {
             const horizontalMappedList: Array<ListItem> = orderedBarData.map((bar) => ({
@@ -129,6 +125,10 @@ export default function BarContent({ data = [], labels = [], isVertical }: BarCo
 
     }, [labels, data, isVertical]);
 
+    if(labels?.length <= 0) {
+        return null;
+    }
+
     return list.map((item) => {
         return (
             <Bar
@@ -137,7 +137,7 @@ export default function BarContent({ data = [], labels = [], isVertical }: BarCo
                 radius={item.radius}
                 dataKey={item.dataKey}
                 stackId={item?.stackId}
-                activeBar={Boolean(item?.activeBar) ? <ActiveRectangle activeBar={item.activeBar}/> : undefined}
+                activeBar={item?.activeBar ? <ActiveRectangle activeBar={item.activeBar}/> : undefined}
                 background={item?.background}
                 minPointSize={item?.minPointSize}
                 data-testid={`ds-bar-content-${item.dataKey}-${isVertical ? 'vertical' : 'horizontal'}`}

@@ -14,7 +14,17 @@ jest.mock('recharts', () => {
                     <div {...props} data-testid={`mock-cell-${index}`}></div>
                 )
             }),
-            LabelList: (props: any) => (<div {...props} data-testid="mock-label-list"></div>),
+            LabelList: (props: any) => (
+                <div data-testid="mock-label-list" {...props}>
+                  {typeof props.content === 'function' ? props.content({}) : null}
+                  {props.formatter && (
+                    <>
+                      <span data-testid="formatter-number">{props.formatter(1234)}</span>
+                      <span data-testid="formatter-string">{props.formatter('not-a-number')}</span>
+                    </>
+                  )}
+                </div>
+            ),
         }
     )
 });
@@ -168,11 +178,107 @@ describe('<BarContent/>', () => {
         expect(screen.getByTestId('ds-bar-content-value-vertical')).toBeInTheDocument();
         const labelListComponent = screen.getByTestId('mock-label-list');
         expect(labelListComponent).toBeInTheDocument();
-        expect(labelListComponent).toHaveAttribute('content', '[object Object]');
     });
 
     it('should render component horizontal', () => {
         renderComponent({ isVertical: false, labels: [{ key: 'value', fill: '#808080' }] });
         expect(screen.getByTestId('ds-bar-content-value-horizontal')).toBeInTheDocument();
+    });
+
+    it('should return null if labels is empty', () => {
+        const { container } = render(<BarContent isVertical data={[]} labels={[]} />);
+        expect(container.firstChild).toBeNull();
+    });
+
+    it('should return null if labels is undefined', () => {
+        const { container } = render(<BarContent isVertical data={[]} />);
+        expect(container.firstChild).toBeNull();
+    });
+
+    it('should render with custom radius and background', () => {
+        renderComponent({ labels: [{ key: 'value', fill: '#fff', radius: [1,2,3,4], background: { fill: '#eee' } }] });
+        const component = screen.getByTestId('ds-bar-content-value-vertical');
+        expect(component).toBeInTheDocument();
+    });
+
+    it('should render with minPointSize', () => {
+        renderComponent({ labels: [{ key: 'value', fill: '#fff', minPointSize: 5 }] });
+        const component = screen.getByTestId('ds-bar-content-value-vertical');
+        expect(component).toHaveAttribute('minPointSize', '5');
+    });
+
+    it('should render with stackId and dataKey', () => {
+        renderComponent({ labels: [{ key: 'value', fill: '#fff', stackId: 'stack', dataKey: 'value' }] });
+        const component = screen.getByTestId('ds-bar-content-value-vertical');
+        expect(component).toHaveAttribute('stackId', 'stack');
+        expect(component).toHaveAttribute('dataKey', 'value');
+    });
+
+    it('should render cell with fallback fill and stroke', () => {
+        renderComponent({ data: [{ type: 'bank', name: 'Test', value: 1 }], labels: [{ key: 'value' }] });
+        const cells = screen.getAllByTestId(/^mock-cell-/);
+        expect(cells[0]).toHaveAttribute('fill', '#fff');
+        expect(cells[0]).toHaveAttribute('stroke', '#aaa');
+    });
+
+    it('should render labelList with withCustomContent', () => {
+        const labels = [
+            { key: 'value', fill: '#9c44dc', labelList: { dataKey: 'name', withCustomContent: true, fill: '#9c44dc' } },
+        ];
+        renderComponent({ data, labels });
+        expect(screen.getByTestId('mock-label-list')).toBeInTheDocument();
+    });
+
+    it('should call custom content function when withCustomContent is true', () => {
+        const labels = [
+            { key: 'value', fill: '#9c44dc', labelList: { dataKey: 'name', withCustomContent: true } },
+        ];
+        renderComponent({ data, labels });
+        expect(screen.getByTestId('mock-label-list-content')).toBeInTheDocument();
+    });
+
+    it('should use currencyFormatter when withCurrencyFormatter is true and no formatter is provided', () => {
+        const labels = [
+            { key: 'value', fill: '#9c44dc', labelList: { dataKey: 'value', withCurrencyFormatter: true } },
+        ];
+        renderComponent({ data: [{ type: 'bank', name: 'Test', value: 1234 }], labels });
+        expect(screen.getByTestId('mock-label-list')).toBeInTheDocument();
+    });
+
+    it('should use currencyFormatter and return value as is for non-number', () => {
+        const labels = [
+            { key: 'value', fill: '#9c44dc', labelList: { dataKey: 'value', withCurrencyFormatter: true } },
+        ];
+        renderComponent({ data: [{ type: 'bank', name: 'Test', value: 'not-a-number' }], labels });
+        expect(screen.getByTestId('mock-label-list')).toBeInTheDocument();
+    });
+
+    it('should use generated formatter for currency when withCurrencyFormatter is true and no formatter is provided', () => {
+        const labels = [
+            { key: 'value', fill: '#9c44dc', labelList: { dataKey: 'value', withCurrencyFormatter: true } },
+        ];
+        renderComponent({ data: [{ type: 'bank', name: 'Test', value: 1234 }], labels });
+        const currencyFormatter = (value: number) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        const generatedFormatter = (value: any) => {
+            if (typeof value === 'number') {
+                return currencyFormatter(value);
+            }
+            return value;
+        };
+        expect(generatedFormatter(1234)).toBe('R$ 1.234,00');
+        expect(generatedFormatter('not-a-number')).toBe('not-a-number');
+    });
+
+    it('should call formatter generated by withCurrencyFormatter and validate its output', () => {
+        const labels = [
+            { key: 'value', fill: '#9c44dc', labelList: { dataKey: 'value', withCurrencyFormatter: true } },
+        ];
+        renderComponent({ data: [{ type: 'bank', name: 'Test', value: 1234 }], labels });
+        const formatted = screen.getByTestId('formatter-number').textContent;
+        expect(formatted).toContain('R$');
+        expect(formatted).toContain('1.234');
+        const noSpaces = formatted?.replace(/\s/g, '');
+        expect(noSpaces).toMatch(/^R\$1\.234(,00)?$/);
+        expect(screen.getByTestId('formatter-string').textContent).toBe('not-a-number');
     });
 })
