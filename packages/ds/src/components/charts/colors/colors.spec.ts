@@ -6,6 +6,11 @@ jest.mock('@repo/services', () => ({
 }));
 
 describe('functions colors', () => {
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
     describe('BANK_COLORS', () => {
         it('should contain 5 banks with expected names', () => {
             const names = colors.BANK_COLORS.map(b => b.name);
