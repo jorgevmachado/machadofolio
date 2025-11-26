@@ -4,7 +4,7 @@ import { DefaultTooltipContent } from 'recharts';
 
 import { convertToNumber } from '@repo/services';
 
-import { type TextProps, TooltipProps } from '../../types';
+import { GenericTextProps, type TextProps, TooltipProps } from '../../types';
 
 import { compareFilter } from '../utils';
 
@@ -17,13 +17,22 @@ import './ChartContentTooltip.scss';
 
 type ChartContentTooltipProps = {
     params: TooltipContentProps;
-    tooltip: TooltipProps
+    tooltip: Omit<TooltipProps, 'show'>;
 }
 
 const defaultProps: TextProps = {
     color: 'neutral-100',
     weight: 'bold',
     variant: 'regular',
+}
+
+function omitShow<T extends object>(props: T | undefined): Omit<T, 'show'> | undefined {
+  if (!props) return props;
+  const result = { ...props };
+  if ('show' in result) {
+    delete (result as Partial<T> & { show?: unknown }).show;
+  }
+  return result;
 }
 
 export default function ChartContentTooltip({
@@ -76,83 +85,92 @@ export default function ChartContentTooltip({
 
     const showGeneric = Boolean(genericTextProps?.show);
 
+    const tooltipConfigs = [
+      {
+        shouldRender: labelProps && params?.label && labelProps?.show !== false,
+        props: omitShow(labelProps),
+        extra: {
+          type: 'label',
+          color: 'neutral-100' as const,
+          style: { margin: 0 },
+          dataName: params.label as string | number,
+          appendText: withTotalPercent ? ` (Total: ${total})` : undefined,
+        },
+      },
+      {
+        shouldRender: (nameProps?.show ?? true) && data?.name,
+        props: omitShow(nameProps),
+        extra: {
+          type: 'name',
+          style: { margin: 0 },
+          dataName: data.name as string | number,
+        },
+      },
+      {
+        shouldRender: (hourProps?.show ?? true) && data?.hour,
+        props: omitShow(hourProps),
+        extra: {
+          type: 'hour',
+          style: { margin: 0 },
+          text: hourProps?.text,
+          dataName: data.hour as string | number,
+        },
+      },
+      {
+        shouldRender: (valueProps?.show ?? true) && data?.value,
+        props: omitShow(valueProps),
+        extra: {
+          type: 'value',
+          style: { margin: 0 },
+          text: valueProps?.text ?? 'Value',
+          dataName: data.value as string | number,
+          withCurrencyFormatter: valueProps?.withCurrencyFormatter ?? true,
+        },
+      },
+      {
+        shouldRender: (countProps?.show ?? true) && data?.count,
+        props: omitShow(countProps),
+        extra: {
+          type: 'count',
+          style: { margin: 0 },
+          text: countProps?.text ?? 'Count',
+          dataName: data.count as string | number,
+        },
+      },
+      {
+        shouldRender: (percentageProps?.show ?? true) && percentage,
+        props: omitShow(percentageProps),
+        extra: {
+          type: 'percentage',
+          style: { margin: 0 },
+          text: countProps?.text ?? 'Percentage',
+          dataName: `${percentage}%`,
+        },
+      },
+    ];
+
     return (
         <div
             className="ds-chart-content-tooltip"
             style={tooltip?.style}
             data-testid="ds-chart-content-tooltip">
-            {(labelProps && params?.label && labelProps?.show !== false) && (
+            {tooltipConfigs.map((cfg) =>
+              cfg.shouldRender ? (
                 <TextTooltip
-                    {...defaultProps}
-                    {...labelProps}
-                    type="label"
-                    color="neutral-100"
-                    style={{margin: 0}}
-                    dataName={params.label}
-                    appendText={withTotalPercent ? ` (Total: ${total})` : undefined}
-                    className="ds-chart-content-tooltip__text"
+                  key={`${cfg.extra.type}-${String(cfg.extra.dataName)}`}
+                  {...defaultProps}
+                  {...cfg.props}
+                  {...cfg.extra}
+                  className="ds-chart-content-tooltip__text"
                 />
+              ) : null
             )}
-            {((nameProps?.show ?? true) && data?.name) && (
-                <TextTooltip
-                    {...defaultProps}
-                    {...nameProps}
-                    type="name"
-                    style={{margin: 0}}
-                    dataName={data.name}
-                    className="ds-chart-content-tooltip__text"
-                />
-            )}
-
-            {((hourProps?.show ?? true) && data?.hour) && (
-                <TextTooltip
-                    {...defaultProps}
-                    {...hourProps}
-                    type="hour"
-                    text={hourProps?.text}
-                    dataName={data.hour}
-                    className="ds-chart-content-tooltip__text"
-                />
-            )}
-
-            {((valueProps?.show ?? true) && data?.value) && (
-                <TextTooltip
-                    {...defaultProps}
-                    {...valueProps}
-                    type="value"
-                    text={valueProps?.text ?? 'Value'}
-                    dataName={data.value}
-                    className="ds-chart-content-tooltip__text"
-                    withCurrencyFormatter={valueProps?.withCurrencyFormatter ?? true}
-                />
-            )}
-
-            {((countProps?.show ?? true) && data?.count) && (
-                <TextTooltip
-                    {...countProps}
-                    type="count"
-                    text={countProps?.text ?? 'Count'}
-                    dataName={data.count}
-                    className="ds-chart-content-tooltip__text"
-                />
-            )}
-
-            {((percentageProps?.show ?? true) && percentage) && (
-                <TextTooltip
-                    {...percentageProps}
-                    type="percentage"
-                    text={countProps?.text ?? 'Percentage'}
-                    dataName={`${percentage}%`}
-                    className="ds-chart-content-tooltip__text"
-                />
-            )}
-
             {(showGeneric && genericTextProps ) && (
                 <GenericContentTooltip
                     data={data}
                     total={total}
                     payload={currentPayload}
-                    genericProps={genericTextProps} />
+                    genericProps={omitShow(genericTextProps) as GenericTextProps} />
             )}
         </div>
     )
