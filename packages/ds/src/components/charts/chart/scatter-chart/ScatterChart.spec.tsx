@@ -66,7 +66,14 @@ describe('<ScatterChart/>', () => {
     }
 
     beforeEach(() => {
-        jest.spyOn(colors, 'getRandomHarmonicPalette').mockImplementation(() => ({ color: '#000', fill: '#fff', stroke: '#aaa'}));
+        jest.spyOn(colors, 'mapListColors').mockImplementation((list) => {
+            return list.map((item) => ({
+                ...item,
+                color: item?.color ?? '#000',
+                fill: item?.fill ?? '#fff',
+                stroke: item?.stroke ?? '#aaa'
+            }));
+        });
     })
 
     afterEach(() => {

@@ -260,27 +260,25 @@ export function hslToHex(h: number, s: number, l: number): string {
 const usedColorIndexes = new Set<number>();
 
 export function getRandomByPalette(palette: Array<ColorProps>) {
-    if(palette && palette.length > 0) {
-        const availableIndexes = palette
-            .map((_, idx) => idx)
-            .filter(idx => !usedColorIndexes.has(idx));
+  if (palette && palette.length > 0) {
+    const availableIndexes = palette
+      .map((_, idx) => idx)
+      .filter(idx => !usedColorIndexes.has(idx));
 
-        if (availableIndexes.length === 0) {
-            usedColorIndexes.clear();
-            availableIndexes.push(...palette.map((_, idx) => idx));
-        }
-
-        const randomIdx = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
-        if(randomIdx === undefined) {
-            return getRandomHarmonicPalette();
-        }
-        usedColorIndexes.add(randomIdx);
-
-        return palette[randomIdx];
+    if (availableIndexes.length === 0) {
+      usedColorIndexes.clear();
+      availableIndexes.push(...palette.map((_, idx) => idx));
     }
 
-    return getRandomHarmonicPalette();
+    const randomIdx = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
+    if (availableIndexes.length === 0 || randomIdx === undefined) {
+      return getRandomHarmonicPalette();
+    }
+    usedColorIndexes.add(randomIdx);
+    return palette[randomIdx];
+  }
 
+  return getRandomHarmonicPalette();
 }
 
 export function getRandomHarmonicPalette() {

@@ -10,13 +10,13 @@ import type { ChartFallbackProps } from './types';
 
 import './ChartFallback.scss';
 
-export default function ChartFallback ({
- text,
-    action,
-    className,
-'data-testid': dataTestId = 'ds-chart-fallback',
-...props
-}: ChartFallbackProps) {
+export default function ChartFallback({
+                                          text,
+                                          action,
+                                          className,
+                                          'data-testid': dataTestId = 'ds-chart-fallback',
+                                          ...props
+                                      }: ChartFallbackProps) {
 
     const classNameList = joinClass([
         'ds-chart-fallback',
@@ -37,7 +37,7 @@ export default function ChartFallback ({
                 {text}
             </Text>
             {action && (
-                <Button{...action} id="ds-chart-fallback-action"/>
+                <Button{...action} id="ds-chart-fallback-action" data-testid={`${dataTestId}-action`}/>
             )}
         </div>
     );

@@ -17,9 +17,9 @@ import { joinClass } from '../../../../utils';
 
 import Button from '../../../button';
 
-import { getRandomHarmonicPalette, mapListColors } from '../../colors';
+import { mapListColors } from '../../colors';
 
-import { LineChartLabelsItem, LineChartProps } from './types';
+import { LineChartLabelsItem, LineChartProps, ReferenceLineProps } from './types';
 
 import { buildDomain, type CustomDomainItem, INITIAL_STATE, updateDomainItem } from './domain';
 
@@ -122,13 +122,10 @@ export default function LineChart({
 
     const listReferenceLine = useMemo(() => {
         const currentReferenceLines = [...(referenceLines ?? [])];
-        return currentReferenceLines.map((line) => {
-            const { stroke } = getRandomHarmonicPalette();
-            return {
-                ...line,
-                stroke: line?.stroke || stroke,
-            }
-        })
+        return mapListColors<ReferenceLineProps>(currentReferenceLines).map((item) => {
+            delete item.fill;
+            return item;
+        });
     }, [referenceLines]);
 
     return (

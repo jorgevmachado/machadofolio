@@ -23,6 +23,23 @@ jest.mock('../../card', () => ({
     Card: ({ children, ...props}: any) => (<div {...props}>{children}</div>),
 }));
 
+jest.mock('../fallback', () => ({
+    __esModule: true,
+    default: (props: any) => (<div {...props} data-testid="ds-chart-container-fallback">
+        <p data-testid="ds-chart-container-fallback-text">{props.text}</p>
+        {props.action && (
+            <button data-testid="ds-chart-container-fallback-action"/>
+        )}
+    </div>),
+    ChartFallback: (props: any) => (<div {...props} data-testid="ds-chart-container-fallback">
+        <p data-testid="ds-chart-container-fallback-text">{props.text}</p>
+        {props.action && (
+            <button data-testid="ds-chart-container-fallback-action"/>
+        )}
+    </div>)
+}));
+
+
 import ChartContainer from './ChartContainer';
 
 describe('<ChartContent/>', () => {
@@ -59,7 +76,7 @@ describe('<ChartContent/>', () => {
         expect(screen.getByTestId('ds-chart-container-fallback')).toBeInTheDocument();
         const fallbackText = screen.getByTestId('ds-chart-container-fallback-text');
         expect(fallbackText).toBeInTheDocument();
-        expect(fallbackText).toHaveTextContent('fallback');
+        expect(fallbackText).toHaveTextContent('No data available');
     });
 
     it('should render component with subtitle.', () => {

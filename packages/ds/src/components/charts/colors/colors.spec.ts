@@ -211,6 +211,11 @@ describe('functions colors', () => {
             expect(colors.darkenColor('#369', 20)).toBe('#1f5285');
         });
 
+        it('should darken a 3-digit hex color (cobertura linha 51)', () => {
+            // '#369' => '#336699' => darken 20 => '#1f5285'
+            expect(colors.darkenColor('#369', 20)).toBe('#1f5285');
+        });
+
         it('should not go below 0 for any channel', () => {
             expect(colors.darkenColor('#050505', 20)).toBe('#000000');
         });
@@ -273,27 +278,31 @@ describe('functions colors', () => {
         });
 
         it('should return each color from palette once before repeating (mocked random)', () => {
+            jest.resetModules();
+            const colors = require('./colors');
             const palette = [
                 { type: 'test', name: 'one', index: 0, color: '#111111', fill: '#111111', stroke: '#111111' },
                 { type: 'test', name: 'two', index: 1, color: '#222222', fill: '#222222', stroke: '#222222' },
                 { type: 'test', name: 'three', index: 2, color: '#333333', fill: '#333333', stroke: '#333333' }
             ];
-            const randomValues = [0, 0.5, 0.9];
-            let call = 0;
             const originalRandom = Math.random;
-            // @ts-ignore
-            Math.random = () => randomValues[call++];
-            const results = [];
+            Math.random = () => 0;
+            const results: string[] = [];
             for (let i = 0; i < palette.length; i++) {
-                // @ts-ignore
-                results.push(colors.getRandomByPalette(palette).name);
+                const result = colors.getRandomByPalette(palette);
+                if (result && typeof result === 'object' && 'name' in result && typeof result.name === 'string') {
+                  results.push(result.name);
+                } else {
+                  results.push('random');
+                }
             }
-
             expect(new Set(results)).toEqual(new Set(['one', 'two', 'three']));
             Math.random = originalRandom;
         });
 
         it('should reset and allow repeats after all colors are used (mocked random)', () => {
+            jest.resetModules();
+            const colors = require('./colors');
             const palette = [
                 { type: 'test', name: 'one', index: 0, color: '#111111', fill: '#111111', stroke: '#111111' },
                 { type: 'test', name: 'two', index: 1, color: '#222222', fill: '#222222', stroke: '#222222' }
@@ -301,15 +310,14 @@ describe('functions colors', () => {
             const randomValues = [0, 0.9, 0];
             let call = 0;
             const originalRandom = Math.random;
-            // @ts-ignore
-            Math.random = () => randomValues[call++];
+            Math.random = () => randomValues[call++] ?? 0;
             const results = [];
             for (let i = 0; i < palette.length; i++) {
-                // @ts-ignore
-                results.push(colors.getRandomByPalette(palette).name);
+                const result = colors.getRandomByPalette(palette);
+                results.push(result && 'name' in result ? result.name : 'random');
             }
-            // @ts-ignore
-            const next = colors.getRandomByPalette(palette).name;
+            const nextResult = colors.getRandomByPalette(palette);
+            const next = nextResult && 'name' in nextResult ? nextResult.name : 'random';
             expect(new Set(results)).toEqual(new Set(['one', 'two']));
             expect(['one', 'two']).toContain(next);
             Math.random = originalRandom;
@@ -329,24 +337,55 @@ describe('functions colors', () => {
         });
 
         it('should clear usedColorIndexes and repopulate availableIndexes when all colors have been used', () => {
-            jest.resetModules();
-            const colors = require('./colors');
+            (colors as any).usedColorIndexes?.clear?.();
             const palette = [
                 { type: 'test', name: 'one', index: 0, color: '#111111', fill: '#111111', stroke: '#111111' },
                 { type: 'test', name: 'two', index: 1, color: '#222222', fill: '#222222', stroke: '#222222' },
                 { type: 'test', name: 'three', index: 2, color: '#333333', fill: '#333333', stroke: '#333333' }
             ];
-            // Use todos os índices
             const results = [];
             for (let i = 0; i < palette.length; i++) {
-                results.push(colors.getRandomByPalette(palette).name);
+                const result = colors.getRandomByPalette(palette);
+                results.push(result && 'name' in result ? result.name : 'random');
             }
             // Próxima chamada: todos já usados, força o reset
-            const next = colors.getRandomByPalette(palette).name;
+            const nextResult = colors.getRandomByPalette(palette);
+            const next = nextResult && 'name' in nextResult ? nextResult.name : 'random';
             // Deve retornar um dos nomes da paleta (reset ocorreu)
             expect(['one', 'two', 'three']).toContain(next);
             // Todos os nomes únicos foram usados antes do reset
             expect(new Set(results)).toEqual(new Set(['one', 'two', 'three']));
         });
+    });
+
+    describe('mapListColors', () => {
+        type mockItem = {
+            id: string;
+            emit: boolean;
+            [key: string]: unknown;
+        }
+        const mockList: Array<mockItem> = [
+            { id: '1', emit: true },
+            { id: '2', type: 'bank', name: 'nubank', emit: true },
+            { id: '3', type: 'home', name: 'house', colorName: 'electric_blue', emit: true },
+            { id: '4', fill: '#FFF', color: '#111', stroke: '#000', emit: true },
+        ];
+
+        const result = colors.mapListColors<mockItem>(mockList);
+        expect(result[0]).toHaveProperty('fill');
+        expect(result[0]).toHaveProperty('color');
+        expect(result[0]).toHaveProperty('stroke');
+
+        expect(result[1]).toHaveProperty('fill');
+        expect(result[1]).toHaveProperty('color');
+        expect(result[1]).toHaveProperty('stroke');
+        expect(result[1]).toEqual({ ...mockList[1], fill: '#9c44dc',color: '#bc8ae1', stroke: '#442c61' });
+
+        expect(result[2]).toHaveProperty('fill');
+        expect(result[2]).toHaveProperty('color');
+        expect(result[2]).toHaveProperty('stroke');
+        expect(result[2]).toEqual({ ...mockList[2], fill: '#007BFF', color: '#007BFF', stroke: colors.darkenColor('#007BFF') });
+
+        expect(result[3]).toEqual(mockList[3]);
     });
 });

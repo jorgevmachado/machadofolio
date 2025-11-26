@@ -206,6 +206,57 @@ describe('<Charts/>', () => {
             expect(screen.queryByTestId('mock-pie-chart')).not.toBeInTheDocument();
         });
 
+        it('should render component with type pie with pieChart and nonZeroValues is false.', () => {
+            renderComponent({
+                type: 'pie',
+                pieChart: {
+                    data: [
+                        {
+                            cx: '50%',
+                            cy: '50%',
+                            key: 'inner',
+                            fill: '#8884d8',
+                            data: [
+                                { name: 'Group A', value: 0 },
+                                { name: 'Group B', value: 0 },
+                                { name: 'Group C', value: 0 },
+                                { name: 'Group D', value: 0 },
+                            ],
+                            dataKey: 'value',
+                            outerRadius: '50%',
+                            isAnimationActive: true
+                        },
+                        {
+                            cx: '50%',
+                            cy: '50%',
+                            key: 'outer',
+                            fill: '#82ca9d',
+                            data: [
+                                { name: 'A1', value: 0 },
+                                { name: 'A2', value: 0 },
+                                { name: 'B1', value: 0 },
+                                { name: 'B2', value: 0 },
+                                { name: 'B3', value: 0 },
+                                { name: 'B4', value: 0 },
+                                { name: 'B5', value: 0 },
+                                { name: 'C1', value: 0 },
+                                { name: 'C2', value: 0 },
+                                { name: 'D1', value: 0 },
+                                { name: 'D2', value: 0 },
+                            ],
+                            label: true,
+                            dataKey: 'value',
+                            innerRadius: '60%',
+                            outerRadius: '80%',
+                            isAnimationActive: true
+                        }
+                    ]
+                },
+            });
+            expect(screen.getByTestId('mock-chart-container')).toBeInTheDocument();
+            expect(screen.queryByTestId('mock-pie-chart')).not.toBeInTheDocument();
+        });
+
         it('should render component with type pie and pieChart.', () => {
             renderComponent({
                 type: 'pie',

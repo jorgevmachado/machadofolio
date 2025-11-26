@@ -20,6 +20,7 @@ jest.mock('recharts', () => ({
         return (<div {...props} data-testid="mock-tooltip"></div>);
     },
     Area: (props: any) => (<div {...props}/>),
+    Legend: (props: any) => (<div {...props} data-testid="mock-legend"/>),
 }));
 
 jest.mock('d3-shape', () => ({
@@ -114,7 +115,14 @@ describe('<AreaChart/>', () => {
     }
 
     beforeEach(() => {
-        jest.spyOn(colors, 'getRandomHarmonicPalette').mockImplementation(() => ({ color: '#000', fill: '#fff', stroke: '#aaa'}));
+        jest.spyOn(colors, 'mapListColors').mockImplementation((list) => {
+            return list.map((item) => ({
+                ...item,
+                color: item?.color ?? '#000',
+                fill: item?.fill ?? '#fff',
+                stroke: item?.stroke ?? '#aaa'
+            }));
+        });
     })
 
     afterEach(() => {
@@ -134,15 +142,17 @@ describe('<AreaChart/>', () => {
         expect(screen.getByTestId('ds-area-chart-area-0')).toBeInTheDocument();
     });
 
-    it('should render component with props xAxis and yAxis.', () => {
+    it('should render component with props xAxis and yAxis and legend.', () => {
         renderComponent({
             axis: {
                 xList: [{ key: 'x-axis-0', dataKey: 'value', width: 100 }],
                 yList: [{ key: 'y-axis-0', width: 90 }]
             },
+            legend: { show: true }
         });
         expect(screen.getByTestId('mock-area-chart')).toBeInTheDocument();
         expect(screen.getByTestId('mock-cartesian-grid')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-legend')).toBeInTheDocument();
         const xAxisComponent = screen.getByTestId('mock-xaxis');
         expect(xAxisComponent).toBeInTheDocument();
         expect(xAxisComponent).toHaveAttribute('width', '100');

@@ -195,7 +195,14 @@ describe('<LineChart/>', () => {
         mouseDownCalled = false;
         mouseMoveCalled = false;
         mouseUpCalled = false;
-        jest.spyOn(colors, 'getRandomHarmonicPalette').mockImplementation(() => ({ color: '#000', fill: '#fff', stroke: '#aaa'}));
+        jest.spyOn(colors, 'mapListColors').mockImplementation((list) => {
+            return list.map((item) => ({
+                ...item,
+                color: item?.color ?? '#000',
+                fill: item?.fill ?? '#fff',
+                stroke: item?.stroke ?? '#aaa'
+            }));
+        });
         jest.spyOn(domain, 'buildDomain').mockImplementation(() => ([ 0, 1000 ]));
         jest.spyOn(domain, 'updateDomainItem').mockImplementation(({ prev }) => ({
             ...prev,
