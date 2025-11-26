@@ -493,6 +493,8 @@ export const LineChartHasMultiSeries: Story = {
                     key: 'series-1',
                     name: 'Series 1',
                     dataKey: 'value',
+                    fill: '#8884d8',
+                    stroke: '#8884d8',
                     data: [
                         { key: 'A', name: 'A', category: 'A', value: 0.1 },
                         { key: 'B', name: 'B', category: 'B', value: 0.2 },
@@ -504,6 +506,8 @@ export const LineChartHasMultiSeries: Story = {
                     key: 'series-2',
                     name: 'Series 2',
                     dataKey: 'value',
+                    fill: '#8884d8',
+                    stroke: '#8884d8',
                     data: [
                         { key: 'B2', name: 'B', category: 'B', value: 0.4 },
                         { key: 'C2', name: 'C', category: 'C', value: 0.5 },
@@ -515,6 +519,8 @@ export const LineChartHasMultiSeries: Story = {
                     key: 'series-3',
                     name: 'Series 3',
                     dataKey: 'value',
+                    fill: '#8884d8',
+                    stroke: '#8884d8',
                     data: [
                         { key: 'C3', name: 'C', category: 'C', value: 0.7 },
                         { key: 'D3', name: 'D', category: 'D', value: 0.8 },

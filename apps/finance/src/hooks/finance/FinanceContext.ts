@@ -1,6 +1,14 @@
 import React from 'react';
 
-import { FinanceInfo } from '@repo/business';
+import { Expense, FinanceInfo } from '@repo/business';
+
+export type ExpensesCache = {
+    [key: string]: {
+        results: Array<Expense>;
+        totalPages: number;
+        billVersion: string;
+    };
+};
 
 export type FinanceContextProps = {
     total: number;
@@ -21,10 +29,12 @@ export type FinanceContextProps = {
     updateBanks: (banks: FinanceInfo['banks']) => void;
     totalPending: number;
     updateGroups: (groups: FinanceInfo['groups']) => void;
+    expensesCache: ExpensesCache;
     updateFinance: (finance: FinanceInfo['finance']) => void;
     supplierTypes: FinanceInfo['supplierTypes'];
     updateExpenses: (expenses: FinanceInfo['expenses']) => void;
     updateSuppliers: (suppliers: FinanceInfo['suppliers']) => void;
+    setExpensesCache: React.Dispatch<React.SetStateAction<ExpensesCache>>;
     updateSupplierTypes: (supplierTypes: FinanceInfo['supplierTypes']) => void;
 };
 
@@ -46,9 +56,11 @@ export const FinanceContext = React.createContext<FinanceContextProps>({
     updateBanks: () => {},
     totalPending: 0,
     updateGroups: () => {},
+    expensesCache: {},
     updateFinance: () => {},
     supplierTypes: [],
     updateExpenses: () => {},
     updateSuppliers: () => {},
+    setExpensesCache: () => {},
     updateSupplierTypes: () => {},
 });

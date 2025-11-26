@@ -8,7 +8,7 @@ import {
     Radar, Legend, Tooltip
 } from 'recharts';
 
-import { getRandomHarmonicPalette } from '../../colors';
+import { mapListColors } from '../../colors';
 
 import type { PolarAngleAxisProps, PolarRadiusAxisProps, RadarChartProps } from './types';
 
@@ -46,15 +46,7 @@ export default function RadarChart({
     const currentMargin = { ...defaultMargin, ...margin };
 
     const list = useMemo(() => {
-        return labels?.map((label) => {
-            const { fill, stroke } = getRandomHarmonicPalette();
-            return {
-                ...label,
-                fill: label?.fill || fill,
-                stroke: label?.stroke || stroke,
-                fillOpacity: label?.fillOpacity || 0.6,
-            }
-        })
+        return mapListColors<RadarChartProps['labels'][number]>(labels);
     }, [labels]);
 
     const axis = useMemo(() => {

@@ -15,8 +15,9 @@ import {
     ScatterChart
 } from './chart';
 
-import './Charts.scss';
 import { buildAxis, buildLegend, buildTooltip } from './utils';
+
+import './Charts.scss';
 
 export default function Charts({
                                        type = 'bar',
@@ -28,7 +29,7 @@ export default function Charts({
                                        legend,
                                        tooltip,
                                        subtitle,
-                                       fallback = 'No data available',
+                                       fallback,
                                        barChart,
                                        pieChart,
                                        children,
@@ -55,6 +56,14 @@ export default function Charts({
                 break;
             case 'pie':
                 result.length = pieChart?.data?.length || 0;
+                if(result.length > 0) {
+                    const nonZeroValues = pieChart?.data
+                        .some(pie => pie.data.some(item => item.value !== 0));
+                    if(!nonZeroValues) {
+                        result.length = 0;
+                        break;
+                    }
+                }
                 break;
             case 'area':
                 result.length = areaChart?.data?.length || 0;

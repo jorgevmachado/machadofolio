@@ -6,7 +6,7 @@ import { useLoading } from '@repo/ui';
 
 import { financeService } from '../../shared';
 
-import { FinanceContext, FinanceContextProps } from './FinanceContext';
+import { ExpensesCache, FinanceContext, FinanceContextProps } from './FinanceContext';
 
 export default function FinanceProvider({ children }: React.PropsWithChildren) {
     const isMounted = useRef(false);
@@ -22,6 +22,7 @@ export default function FinanceProvider({ children }: React.PropsWithChildren) {
     const [expenses, setExpenses] = useState<Array<Expense>>([]);
     const [suppliers, setSuppliers] = useState<Array<Supplier>>([]);
     const [supplierTypes, setSupplierTypes] = useState<Array<SupplierType>>([]);
+    const [expensesCache, setExpensesCache] = useState<ExpensesCache>({});
 
     const initializeFinanceInfo = (financeInfo: FinanceInfo) => {
         setFinanceInfo(financeInfo);
@@ -40,7 +41,7 @@ export default function FinanceProvider({ children }: React.PropsWithChildren) {
             initializeFinanceInfo(response);
         } catch (error) {
             const errorMessage = (error instanceof Error) ? error.message : 'Error fetching Finance Info';
-            console.log('# => fetchFinanceInfo => error => ', errorMessage)
+            console.error('# => fetchFinanceInfo => error => ', errorMessage)
         } finally {
             hide()
         }
@@ -91,11 +92,13 @@ export default function FinanceProvider({ children }: React.PropsWithChildren) {
         updateBills: (bills) => setBills(bills),
         updateBanks: (banks) => setBanks(banks),
         totalPending: financeInfo?.totalPending ?? 0,
+        expensesCache,
         updateGroups: (groups) => setGroups(groups),
         updateFinance: (finance) => setFinance(finance),
         supplierTypes,
         updateExpenses: (expenses) => setExpenses(expenses),
         updateSuppliers: (suppliers) => setSuppliers(suppliers),
+        setExpensesCache,
         updateSupplierTypes: (supplierTypes) => setSupplierTypes(supplierTypes)
     }
 

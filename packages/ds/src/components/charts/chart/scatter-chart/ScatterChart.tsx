@@ -13,7 +13,7 @@ import {
 
 import {TooltipProps } from '../../types';
 
-import { getRandomHarmonicPalette } from '../../colors';
+import { mapListColors } from '../../colors';
 
 import type { ScatterChartProps } from './type';
 
@@ -70,14 +70,7 @@ export default function ScatterChart({
 
     const cellList = (data: ScatterProps['data'], withCell?: boolean) => {
         if(withCell && Array.isArray(data)) {
-            return data.map((item, index) => {
-                const { fill } = getRandomHarmonicPalette();
-                return {
-                    ...item,
-                    key: `cell-${index}`,
-                    fill: item?.fill || fill,
-                }
-            })
+            return mapListColors(data);
         }
         return [];
     }

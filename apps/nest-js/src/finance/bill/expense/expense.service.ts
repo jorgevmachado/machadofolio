@@ -19,7 +19,6 @@ import { Supplier } from '../../entities/supplier.entity';
 import { SupplierService } from '../../supplier/supplier.service';
 
 import { MonthService } from '../../month/month.service';
-import { PersistMonthDto } from '../../month/dto/persist-month.dto';
 
 import { CreateExpenseDto } from './dto/create-expense.dto';
 
@@ -244,39 +243,37 @@ export class ExpenseService extends Service<Expense> {
                 instalment_number: 1,
             });
 
-            const existExpense = await this.validateExistExpense(bill, builtExpense);
+            const existExpense = await this.validateExistExpense(bill, builtExpense, false);
 
-            const isCreate = !existExpense?.id;
-
-            const savedExpense = isCreate ? await this.save(builtExpense) as Expense : { ...existExpense };
-
-            const expenseMonths: Array<PersistMonthDto> = isCreate
-                ? this.monthService.business.generateMonthListCreationParameters({
-                    year: savedExpense?.year,
-                    paid: savedExpense?.paid,
-                    months: persistExpenseDto?.months,
-                    received_at: savedExpense?.created_at
-                })
-                : savedExpense?.months?.map((month) => {
-                const monthToUpdate = persistExpenseDto?.months?.find((monthToUpdate) => monthToUpdate.code === month.code);
-
-                if (!monthToUpdate) {
-                    return month;
+            if (existExpense) {
+                existExpense.months = existExpense.months ?? [];
+                for (const monthToAdd of persistExpenseDto.months ?? []) {
+                    const monthExists = existExpense.months.some(
+                        (m) => m.code === monthToAdd.code
+                    );
+                    if (!monthExists) {
+                        // Aqui, se necessário, converta monthToAdd para Month
+                        existExpense.months.push(monthToAdd as any); // Ajuste o tipo conforme necessário
+                        // Não some em existExpense.value, some em existExpense.total se existir, ou apenas atualize os meses
+                    }
                 }
-
-                month.paid = Boolean(monthToUpdate.paid);
-                month.value = monthToUpdate.value !== month.value ? monthToUpdate.value : month.value;
-                month.received_at = monthToUpdate.received_at !== month.received_at ? monthToUpdate.received_at : month.received_at;
-                return month;
-            }) ?? [];
-
-            if (expenseMonths?.length > 0) {
-                savedExpense.months = await this.monthService.persistList(expenseMonths, { expense: savedExpense });
-                const savedExpenseCalculated = this.business.calculate(savedExpense);
-                return await this.save(savedExpenseCalculated);
+                const expenseCalculated = this.business.calculate(existExpense);
+                const updatedExpense = await this.save(expenseCalculated);
+                if (updatedExpense) {
+                    expenses.push(updatedExpense);
+                }
+            } else {
+                const savedExpense = await this.save(builtExpense) as Expense;
+                if ((persistExpenseDto.months?.length ?? 0) > 0) {
+                    savedExpense.months = await this.monthService.persistList(persistExpenseDto.months ?? [], { expense: savedExpense });
+                    const savedExpenseCalculated = this.business.calculate(savedExpense);
+                    const finalExpense = await this.save(savedExpenseCalculated);
+                    if (finalExpense) {
+                        expenses.push(finalExpense);
+                    }
+                }
+                expenses.push(savedExpense);
             }
-
-            expenses.push(savedExpense);
         }
 
         return expenses;

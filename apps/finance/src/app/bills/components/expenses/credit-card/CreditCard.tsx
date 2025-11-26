@@ -5,19 +5,33 @@ import { MONTHS, truncateString } from '@repo/services';
 
 import { Expense } from '@repo/business';
 
-import { Accordion, ETypeTableHeader, Table, type TColors } from '@repo/ds';
+import { Accordion, ETypeTableHeader, Pagination, Table, type TColors } from '@repo/ds';
+
+import { expenseBusiness } from '../../../../../shared';
 
 import Summary from '../summary';
 
 import './CreditCard.scss';
-import { expenseBusiness } from '../../../../../shared';
+
 
 type CreditCardProps = {
     items: Array<Expense>;
     action?: (expense?: Expense, parent?: Expense, parents?: Array<Expense>) => void;
     loading?: boolean;
+    totalPages: number;
+    currentPage: number;
+    handlePageChange?: (page: number) => void;
+    calculatedExternalExpenses: Array<Expense>;
 }
-export default function CreditCard({ items, action, loading }: CreditCardProps) {
+export default function CreditCard({
+        items,
+        action,
+        loading,
+        totalPages,
+        currentPage,
+        handlePageChange,
+        calculatedExternalExpenses
+}: CreditCardProps) {
     const [expenses, setExpenses] = useState<Array<Expense>>([]);
     const [isParent, setIsParent] = useState<boolean>(false);
     const [childrenOpenAccordion, setChildrenOpenAccordion] = useState<string | undefined>(undefined);
@@ -90,7 +104,7 @@ export default function CreditCard({ items, action, loading }: CreditCardProps) 
 
     return (
         <div className="credit-card" data-testid="credit-card">
-            <Summary expenses={expenses} action={() => action?.()}/>
+            <Summary expenses={calculatedExternalExpenses} action={() => action?.()}/>
             <div className="credit-card__table">
                 <Table
                     headers={generateHeaders(isParent)}
@@ -98,6 +112,17 @@ export default function CreditCard({ items, action, loading }: CreditCardProps) 
                     onRowClick={(item) => handleOnRowClick(item as Expense)}
                     loading={loading}
                 />
+                {currentPage && totalPages > 1 && (
+                    <Pagination
+                        fluid
+                        type="numbers"
+                        total={totalPages}
+                        range={10}
+                        current={currentPage}
+                        limitDots={true}
+                        handleNew={handlePageChange}
+                    />
+                )}
             </div>
             {isParent && (
                 <div className="credit-card__accordions" data-testid="credit-card-accordions">

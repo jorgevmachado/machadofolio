@@ -7,6 +7,7 @@ import { Text } from '../../../elements';
 import Card from '../../card';
 
 import type { TWrapper } from '../types';
+import ChartFallback, { ChartFallbackProps } from '../fallback';
 
 import './ChartContainer.scss';
 
@@ -14,7 +15,7 @@ type ChartContentProps = {
     title: string;
     children?: React.ReactNode;
     subtitle?: string;
-    fallback?: string;
+    fallback?: ChartFallbackProps;
     className?: string;
     isFallback: boolean;
     wrapperType?: TWrapper;
@@ -39,16 +40,16 @@ export default function ChartContainer ({
                 {title}
             </Text>
             { isFallback ? (
-                    <div className="ds-chart-container__fallback" data-testid="ds-chart-container-fallback">
-                        <Text
-                            color="neutral-80"
-                            variant="medium"
-                            className="ds-chart-container__subtitle"
-                            data-testid="ds-chart-container-fallback-text">
-                            {fallback}
-                        </Text>
-                    </div>
-
+                <ChartFallback {...fallback} text={fallback?.text ?? 'No data available'} />
+                    // <div className="ds-chart-container__fallback" data-testid="ds-chart-container-fallback">
+                    //     <Text
+                    //         color="neutral-80"
+                    //         variant="medium"
+                    //         className="ds-chart-container__subtitle"
+                    //         data-testid="ds-chart-container-fallback-text">
+                    //         {fallback}
+                    //     </Text>
+                    // </div>
             ) : (
                 <>
                     {subtitle && (

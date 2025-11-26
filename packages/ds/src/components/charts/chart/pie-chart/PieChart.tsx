@@ -9,11 +9,11 @@ import {
 } from 'recharts';
 
 
-import type { PieChartProps, PieProps } from './types';
+import { PieChartDataItem, PieChartProps, PieProps } from './types';
 
 import ActiveShape from './active-shape';
 
-import { getRandomHarmonicPalette } from '../../colors';
+import { mapListColors } from '../../colors';
 
 import CustomizeLabel from './customize-label';
 import PieNeedle from './pie-needle';
@@ -47,10 +47,11 @@ export default function PieChart({
     }, [style, withDefaultActiveShape]) ;
 
     const list = useMemo(() => {
+        const dataColorMap = mapListColors<PieProps>(data);
         if(withDefaultActiveShape || withDefaultCustomLabel || withNeedle) {
-            return data.slice(0,1);
+            return dataColorMap.slice(0,1);
         }
-        return data;
+        return dataColorMap;
     }, [data, withDefaultActiveShape, withDefaultCustomLabel, withNeedle]);
 
 
@@ -61,6 +62,11 @@ export default function PieChart({
 
         return typeof label !== 'boolean';
     }
+
+    const pieData = (list: Array<PieChartDataItem>) => {
+        return mapListColors<PieChartDataItem>(list);
+    };
+
 
     return (
         <div data-testid="ds-pie-chart" className="ds-pie-chart">
@@ -89,17 +95,14 @@ export default function PieChart({
                         isAnimationActive={pie?.isAnimationActive}
                         data-testid={`ds-pie-chart-pie-${key}`}
                     >
-                        {(withDefaultCustomLabel || hasCustomLabel(pie?.label)) && pie.data.map((item, index) => {
-                            const { fill } = getRandomHarmonicPalette()
-                            const currentFill = item?.fill as string || fill as string;
-                            return (
+                        {(withDefaultCustomLabel || hasCustomLabel(pie?.label)) && pieData(pie?.data).map((item, index) => (
                                 <Cell
+                                    {...item}
                                     key={`cell-${item.name}`}
-                                    fill={currentFill}
                                     data-testid={`ds-pie-chart-cell-${index}`}
                                 />
                             )
-                        })}
+                        )}
                         {withNeedle && (
                             <PieNeedle
                                 cx={pie?.cx}

@@ -18,29 +18,36 @@ export default function FinanceInfo({ total, totalPaid, className, totalPending,
 
     const barChart = useMemo(() => {
         const props: BarChartProps = {
-            data: [
-                {
-                    type: 'highlight',
-                    name: t('total'),
-                    value: Number(total.toFixed(2)),
-                    colorName: 'electric_blue'
-                },
-                {
-                    type: 'highlight',
-                    name: t('paid'),
-                    value: Number(totalPaid.toFixed(2)),
-                    colorName: 'emerald_green'
-                },
-                {
-                    type: 'highlight',
-                    name: t('pending'),
-                    value: Number(totalPending.toFixed(2)),
-                    colorName: 'intense_red'
-                }
-            ],
-            labels: [{ key: 'value', fill: '#8b5cf6', labelList: { dataKey: 'value', position: 'top', withCurrencyFormatter: true } }],
-
+            data: [],
+            labels: []
         }
+
+        if(total === 0 && totalPaid === 0 && totalPending === 0) {
+            return props;
+        }
+
+        props.data = [
+            {
+                type: 'highlight',
+                name: t('total'),
+                value: Number(total.toFixed(2)),
+                colorName: 'electric_blue'
+            },
+            {
+                type: 'highlight',
+                name: t('paid'),
+                value: Number(totalPaid.toFixed(2)),
+                colorName: 'emerald_green'
+            },
+            {
+                type: 'highlight',
+                name: t('pending'),
+                value: Number(totalPending.toFixed(2)),
+                colorName: 'intense_red'
+            }
+        ];
+        props.labels = [{ key: 'value', fill: '#8b5cf6', labelList: { dataKey: 'value', position: 'top', withCurrencyFormatter: true } }];
+
         return props;
     }, [t])
 
@@ -59,6 +66,7 @@ export default function FinanceInfo({ total, totalPaid, className, totalPending,
             }}
             barChart={barChart}
             subtitle={t('comparison_between_total_values')}
+            fallback={{text: t('not_found_finance_info')}}
             className={className}
             withAxisCurrencyTickFormatter
         >

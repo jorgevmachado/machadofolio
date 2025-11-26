@@ -1,5 +1,4 @@
 'use client'
-
 import { useI18n } from '@repo/i18n';
 
 import { snakeCaseToNormal } from '@repo/services';
@@ -13,6 +12,7 @@ import { billBusiness } from '../../../../shared';
 import Expenses from '../expenses';
 
 import './ListCard.scss';
+import ExpensesProvider from '../../../../hooks/expenses/ExpensesProvider';
 
 type ListCardProps = {
     list: Array<Bill>;
@@ -71,7 +71,9 @@ export default function ListCard({ list, handleOpenDeleteModal, handleUploadFile
                             subtitle={bill.year?.toString()}
                             childrenTitle={renderChildrenTitle(bill)}
                         >
-                            <Expenses bill={bill} />
+                            <ExpensesProvider bill={bill}>
+                                <Expenses bill={bill}/>
+                            </ExpensesProvider>
                         </Accordion>
                     ))}
                 </div>

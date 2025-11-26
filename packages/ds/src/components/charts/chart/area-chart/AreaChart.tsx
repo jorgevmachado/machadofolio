@@ -1,18 +1,11 @@
 import React, { useMemo } from 'react';
 
-import {
-    Area,
-    AreaChart as AreaChartComponent,
-    CartesianGrid, Legend,
-    Tooltip,
-    XAxis,
-    YAxis
-} from 'recharts';
+import { Area, AreaChart as AreaChartComponent, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts';
 import { curveCardinal } from 'd3-shape';
 
-import { getRandomHarmonicPalette } from '../../colors';
+import { mapListColors } from '../../colors';
 
-import type { AreaChartProps } from './types';
+import type { AreaChartLabelsItem, AreaChartProps } from './types';
 import LinearGradient from './linear-gradient';
 
 const defaultStyle = {
@@ -29,32 +22,24 @@ const defaultMargin = {
     bottom: 0
 }
 
-export default function AreaChart ({
-    axis,
-    data,
-    style,
-    margin,
-    syncId,
-    labels = [],
-    legend,
-    tooltip,
-    responsive,
-    stackOffset,
-    linearGradient,
-}: Readonly<AreaChartProps>) {
+export default function AreaChart({
+                                      axis,
+                                      data,
+                                      style,
+                                      margin,
+                                      syncId,
+                                      labels = [],
+                                      legend,
+                                      tooltip,
+                                      responsive,
+                                      stackOffset,
+                                      linearGradient,
+                                  }: Readonly<AreaChartProps>) {
     const list = useMemo(() => {
-        return labels?.map((label) => {
-            const type = !label?.curveCardinalTension
-                ? label.type
-                : curveCardinal.tension(label?.curveCardinalTension);
-            const { fill, stroke } = getRandomHarmonicPalette();
-            return {
-                ...label,
-                type,
-                fill: label?.fill || fill,
-                stroke: label?.stroke || stroke,
-            }
-        });
+        return mapListColors<AreaChartLabelsItem>(labels).map((label) => ({
+            ...label,
+            type: !label?.curveCardinalTension ? label.type : curveCardinal.tension(label?.curveCardinalTension)
+        }))
     }, [labels]);
 
     const currentStyle = { ...defaultStyle, ...style };
@@ -70,7 +55,7 @@ export default function AreaChart ({
             responsive={responsive}
             stackOffset={stackOffset}
         >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3"/>
 
             {(axis && axis?.xList && axis?.xList?.length > 0) && axis.xList.map((item) => (
                 <XAxis {...item} />
@@ -79,7 +64,7 @@ export default function AreaChart ({
             {(axis && axis?.yList && axis?.yList?.length > 0) && axis.yList.map((item) => (
                 <YAxis {...item} />
             ))}
-            
+
             {tooltip && (
                 <Tooltip {...tooltip}/>
             )}

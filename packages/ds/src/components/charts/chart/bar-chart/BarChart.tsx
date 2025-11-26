@@ -3,9 +3,9 @@ import React, { useMemo } from 'react';
 
 import {
     BarChart as BarChartComponent,
-    ResponsiveContainer,
     CartesianGrid,
     Legend,
+    ResponsiveContainer,
     Tooltip,
     XAxis,
     YAxis,
@@ -13,22 +13,22 @@ import {
 
 import { useBreakpoint } from '../../../../hooks';
 
-import { mapColors } from '../../colors';
+import { mapListColors } from '../../colors';
 
 import BarContent from './bar-content';
 
 import type { BarChartProps } from './types';
 
 
-export default function BarChart ({
-    top,
-    axis,
-    data,
-    labels = [],
-    legend,
-    layout = 'vertical',
-    tooltip,
-}: Readonly<BarChartProps>) {
+export default function BarChart({
+                                     top,
+                                     axis,
+                                     data,
+                                     labels = [],
+                                     legend,
+                                     layout = 'vertical',
+                                     tooltip,
+                                 }: Readonly<BarChartProps>) {
     const { isMobile } = useBreakpoint();
 
     const isVertical = layout === 'vertical';
@@ -36,19 +36,7 @@ export default function BarChart ({
     const list = useMemo(() => {
         const limitedData = typeof top === 'number' ? data.slice(0, top) : data;
         const filteredList = limitedData.filter((item) => item !== undefined);
-        return filteredList.map((item) => {
-            const colors = mapColors({ type: item.type, name: item.name, colorName: item.colorName });
-            if(!item.fill && colors?.fill) {
-                item.fill = colors?.fill;
-            }
-            if(!item.color && colors?.color) {
-                item.color = colors?.color;
-            }
-            if(!item.stroke && colors?.stroke) {
-                item.stroke = colors?.stroke;
-            }
-            return item;
-        });
+        return mapListColors<BarChartProps['data'][number]>(filteredList);
     }, [data, top])
 
     const chartMargin = isMobile
@@ -65,20 +53,20 @@ export default function BarChart ({
                 >
                     <CartesianGrid strokeDasharray="3 3"/>
 
-                    { (axis?.xList && axis.xList.length > 0) && axis?.xList?.map(({ key, ...x}) => (
+                    {(axis?.xList && axis.xList.length > 0) && axis?.xList?.map(({ key, ...x }) => (
                         <XAxis key={key} {...x}/>
                     ))}
 
-                    { (axis?.yList && axis.yList.length > 0) && axis?.yList?.map(({ key, ...y}) => (
+                    {(axis?.yList && axis.yList.length > 0) && axis?.yList?.map(({ key, ...y }) => (
                         <YAxis key={key} {...y}/>
                     ))}
 
-                    { tooltip && (
+                    {tooltip && (
                         <Tooltip {...tooltip}/>
                     )}
 
-                    {legend &&  (
-                            <Legend {...legend}/>
+                    {legend && (
+                        <Legend {...legend}/>
                     )}
 
                     <BarContent data={list} labels={labels} isVertical={isVertical}/>

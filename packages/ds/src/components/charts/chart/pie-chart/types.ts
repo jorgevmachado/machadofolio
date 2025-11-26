@@ -15,6 +15,8 @@ export type PieProps = React.ComponentProps<typeof Pie> & {
     data: Array<PieChartDataItem>;
     color?: string;
     value?: number;
+    colorName?: string;
+    [key: string]: unknown;
 };
 
 export type PieCoordinate = {

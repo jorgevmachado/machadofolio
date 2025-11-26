@@ -17,9 +17,9 @@ import { joinClass } from '../../../../utils';
 
 import Button from '../../../button';
 
-import { getRandomHarmonicPalette } from '../../colors';
+import { getRandomHarmonicPalette, mapListColors } from '../../colors';
 
-import { LineChartProps } from './types';
+import { LineChartLabelsItem, LineChartProps } from './types';
 
 import { buildDomain, type CustomDomainItem, INITIAL_STATE, updateDomainItem } from './domain';
 
@@ -117,17 +117,7 @@ export default function LineChart({
     const currentMargin = { ...defaultMargin, ...margin };
 
     const list = useMemo(() => {
-        return labels?.map(({ withCustomColor = true, ...label }) => {
-            if (!withCustomColor) {
-                return label;
-            }
-            const { stroke } = getRandomHarmonicPalette();
-            return {
-                ...label,
-                stroke: label?.stroke || stroke,
-            }
-        });
-
+        return mapListColors<LineChartLabelsItem>(labels ?? []);
     }, [labels]);
 
     const listReferenceLine = useMemo(() => {

@@ -71,7 +71,7 @@ export default function GroupInfo({ bills, className, totalRegisteredGroups }: R
             labels: [{ key: 'value', fill: '#808080' }],
         }
         return props;
-    }, [])
+    }, [list, t])
 
     const tooltip = useMemo(() => {
         const props: TooltipProps = {
@@ -95,7 +95,15 @@ export default function GroupInfo({ bills, className, totalRegisteredGroups }: R
             layout="horizontal"
             legend={{ show: false }}
             subtitle={`${t('groups')} ${t('with_the_highest_expenses')}`}
-            fallback={`${t('no_groups_registered')}`}
+            fallback={{
+                text: `${t('no_groups_registered')}`,
+                action: {
+                    size: 'small',
+                    onClick: () => router.push('/groups'),
+                    context: 'primary',
+                    children: `${t('create_new')} ${t('group')}`
+                }
+            }}
             className={className}
             barChart={barChart}
             tooltip={tooltip}
@@ -103,7 +111,7 @@ export default function GroupInfo({ bills, className, totalRegisteredGroups }: R
             withAxisCurrencyTickFormatter
         >
             <Text variant="medium" color="neutral-80">
-                {totalRegisteredGroups} {t('registered')} {t('suppliers')}
+                {totalRegisteredGroups} {t('registered')} {t('groups')}
             </Text>
             <Button
                 size="small"

@@ -75,7 +75,15 @@ export default function BankInfo({ bills, className, totalRegisteredBanks }: Ban
             type="bar"
             title={`Top 5 ${t('banks')}`}
             layout="horizontal"
-            fallback={t('no_banks_registered')}
+            fallback={{
+                text: t('no_banks_registered'),
+                action: {
+                    size: 'small',
+                    onClick: () => router.push('/banks'),
+                    context: 'primary',
+                    children: `${t('create_new')} ${t('bank')}`
+                }
+            }}
             legend={{ show: false }}
             subtitle={`${t('banks')} ${t('with_the_highest_expenses')}`}
             className={className}

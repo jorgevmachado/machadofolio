@@ -333,8 +333,53 @@ export function mapColors(item: { type?: string; name: string; colorName?: strin
     const currentPalette = palette.find((item) => item.name === currentName);
 
     if(currentPalette) {
+        const currentPaletteIndex = palette.indexOf(currentPalette);
+        usedColorIndexes.add(currentPaletteIndex);
         return currentPalette;
     }
 
     return getRandomByPalette(palette);
+}
+
+type MapItemColorResult = {
+    fill: string;
+    color: string;
+    stroke: string;
+}
+
+export function mapListColors<T extends { [key: string]: unknown }>(list: Array<T>): Array<T> {
+    return list.map((item: T) => {
+        const type = item?.['type'] as string | undefined;
+        const currentName = item?.['name'] as string | undefined;
+        const colorName = item?.['colorName'] as string | undefined;
+
+        const name  = currentName ?? 'default';
+
+        const colors = mapColors({ type, name, colorName });
+
+        const currentFill = item?.['fill'] as string | undefined;
+        const currentColor = item?.['color'] as string | undefined;
+        const currentStroke = item?.['stroke'] as string | undefined;
+
+        const result: MapItemColorResult = {
+            fill: currentFill ?? '',
+            color: currentColor ?? '',
+            stroke: currentStroke ?? '',
+        };
+
+        if(result.fill === '' && colors?.fill) {
+            result.fill = colors?.fill;
+        }
+        if(result.color === '' && colors?.color) {
+            result.color = colors?.color;
+        }
+        if(result.stroke === '' && colors?.stroke) {
+            result.stroke = colors?.stroke;
+        }
+
+        return {
+            ...item,
+            ...result
+        };
+    })
 }

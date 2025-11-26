@@ -37,6 +37,8 @@
   "error_deleting_supplier": "Error deleting Supplier",
   "error_fetching_suppliers": "Error fetching Suppliers",
   "no_expenses_registered": "No expenses registered",
+  "not_found_finance_info": "It has no recorded financial information",
+  "no_suppliers_registered": "No suppliers registered",
   "register_expense_by_file": "Register Expense by File",
   "distribution_of_expenses": "Distribution of Expenses",
   "with_the_highest_expenses": "with the highest expenses",

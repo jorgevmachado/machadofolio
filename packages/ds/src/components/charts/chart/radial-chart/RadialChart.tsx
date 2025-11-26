@@ -4,9 +4,9 @@ import { Legend, RadialBar, RadialBarChart, Tooltip } from 'recharts';
 
 import type { LegendProps } from '../../types';
 
-import { getRandomHarmonicPalette } from '../../colors';
+import { mapListColors } from '../../colors';
 
-import type { RadialChartProps } from './types';
+import { RadialChartLabelsItem, RadialChartProps } from './types';
 
 
 const defaultStyle = {
@@ -35,25 +35,21 @@ export default function RadialChart({
 }: Readonly<RadialChartProps>) {
 
     const dataList = useMemo(() => {
-        return data.map((item) => {
-            const { fill } = getRandomHarmonicPalette();
-            return {
-                ...item,
-                fill: item?.fill || fill,
-            }
-        })
+        return mapListColors<RadialChartProps['data'][number]>(data).map((item) => {
+            delete item.stroke;
+            return item;
+        });
     }, [data]);
 
     const labelList = useMemo(() => {
-        return labels?.map((item) => {
-            const { fill } = getRandomHarmonicPalette();
+        return mapListColors<RadialChartLabelsItem>(labels ?? []).map((item) => {
+            delete item.stroke;
             return {
                 ...item,
-                fill: item?.fill || fill,
                 position: item?.position || 'insideStart',
                 background: item?.background ?? true,
             }
-        })
+        });
     }, [labels]);
 
     const currentStyle = { ...defaultStyle, ...style };

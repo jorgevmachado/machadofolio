@@ -1,0 +1,9 @@
+.ds-chart-fallback {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  &__subtitle {
+    margin-bottom: 0.5rem;
+  }
+}

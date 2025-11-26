@@ -273,3 +273,26 @@ export const PieChartWithNeedle: Story = {
         children: undefined
     }
 };
+
+export const DistributionOfExpensesPieChart: Story = {
+    args: {
+        legend: { show: true },
+        pieChart: {
+            data: [
+                {
+                    key: 'straight-angle',
+                    cx: '50%',
+                    cy: '50%',
+                    data: [
+                        { type: 'highlight', name: 'Fixed', value: 4000 },
+                        { type: 'highlight', name: 'Variable', value: 6000 },
+                    ],
+                    dataKey: 'value',
+                    labelLine: false,
+                    isAnimationActive: true,
+                }
+            ],
+            withDefaultCustomLabel: true
+        }
+    }
+}

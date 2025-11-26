@@ -15,6 +15,7 @@ import {
     RadialChartProps,
     ScatterChartProps
 } from './chart';
+import type { ChartFallbackProps } from './fallback';
 
 export type TChart = 'bar' | 'pie' | 'area' | 'radar' |  'radial' | 'line' | 'scatter' | 'composed';
 
@@ -162,7 +163,7 @@ export type ChartsProps = Readonly<{
     barChart?: BarChartProps;
     pieChart?: PieChartProps;
     subtitle?: string;
-    fallback?: string;
+    fallback?: ChartFallbackProps;
     children?: React.ReactNode;
     className?: string;
     areaChart?: AreaChartProps;

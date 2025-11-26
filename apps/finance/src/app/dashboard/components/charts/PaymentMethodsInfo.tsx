@@ -87,7 +87,7 @@ export function PaymentMethodsInfo({ bills, className, totalRegisteredBills }: R
             layout="horizontal"
             legend={{ show: false }}
             subtitle={`${t('payment_methods')} ${t('with_the_highest_expenses')}`}
-            fallback={t('no_payment_methods_registered')}
+            fallback={{ text: t('no_payment_methods_registered')}}
             className={className}
             barChart={barChart}
             tooltip={tooltip}

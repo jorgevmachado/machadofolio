@@ -99,7 +99,15 @@ export default function SupplierInfo({ expenses, className, totalRegisteredSuppl
             layout="horizontal"
             legend={{ show: false }}
             subtitle={`${t('suppliers')} ${t('with_the_highest_expenses')}`}
-            fallback={t('no_expenses_registered')}
+            fallback={{
+                text: `${t('no_suppliers_registered')}`,
+                action: {
+                    size: 'small',
+                    onClick: () => router.push('/suppliers'),
+                    context: 'primary',
+                    children: `${t('create_new')} ${t('supplier')}`
+                }
+            }}
             className={className}
             barChart={barChart}
             tooltip={tooltip}

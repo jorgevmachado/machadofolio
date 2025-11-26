@@ -33,6 +33,8 @@
   "error_fetching_group": "Erro ao buscar Grupo",
   "error_fetching_banks": "Erro ao buscar Bancos",
   "error_fetching_bills": "Error ao buscar Contas",
+  "not_found_finance_info": "Não possui nenhuma informação financeira registrada",
+  "no_suppliers_registered": "Nenhum fornecedor cadastrado",
   "error_deleting_supplier": "Erro ao excluir Fornecedor",
   "error_fetching_suppliers": "Erro ao buscar fornecedores",
   "no_groups_registered": "Nenhum grupo cadastrado",
