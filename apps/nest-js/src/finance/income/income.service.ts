@@ -9,7 +9,7 @@ import INCOME_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/inc
 import INCOME_LIST_STAGING_JSON from '../../../seeds/staging/finance/incomes.json';
 import INCOME_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/incomes.json';
 
-import { type FilterParams, GenerateSeeds, Service } from '../../shared';
+import { type FilterParams, SeedsGenerated, Service } from '../../shared';
 
 import type { FinanceSeederParams } from '../types';
 
@@ -25,7 +25,6 @@ import { IncomeSourceService } from './source/source.service';
 import { CreateIncomeDto } from './dto/create-income.dto';
 import { UpdateIncomeDto } from './dto/update-income.dto';
 
-
 type IncomeSeederParams = FinanceSeederParams & {
     finance: Finance;
 }
@@ -34,8 +33,8 @@ type createToSheetParams = Record<string, string | number | boolean | object | F
 
 type IncomeGenerateSeeds = {
     months: Array<Month>;
-    incomes: GenerateSeeds<Income>;
-    incomeSources: GenerateSeeds<IncomeSource>;
+    incomes: SeedsGenerated<Income>;
+    incomeSources: SeedsGenerated<IncomeSource>;
 }
 
 @Injectable()
@@ -270,7 +269,7 @@ export class IncomeService extends Service<Income> {
             production: INCOME_LIST_PRODUCTION_JSON,
             development: INCOME_LIST_DEVELOPMENT_JSON,
             withRelations: true,
-            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.source.name_code === item.source.name_code,
+            filterGenerateEntityFn: (json, item) => json.name === item.name || json.name_code === item.name_code || json.source.name_code === item.source.name_code,
         });
 
         return {
@@ -283,7 +282,7 @@ export class IncomeService extends Service<Income> {
     async persistSeeds(withIncomeSource: boolean, withIncome: boolean) {
 
         const incomeSources = await this.sourceService.persistSeeds(!withIncomeSource && !withIncome);
-        const incomes = await this.persistEntitySeeds({
+        const incomes = await this.seeder.persistEntity({
             withSeed: withIncome,
             staging: INCOME_LIST_STAGING_JSON,
             production: INCOME_LIST_PRODUCTION_JSON,

@@ -10,108 +10,108 @@ import { TypeController } from './type.controller';
 import { type UpdateTypeDto } from './dto/update-type.dto';
 
 describe('TypeController', () => {
-  let controller: TypeController;
-  let service: SupplierTypeService;
+    let controller: TypeController;
+    let service: SupplierTypeService;
 
-  const mockEntity: SupplierType = SUPPLIER_TYPE_MOCK;
+    const mockEntity: SupplierType = SUPPLIER_TYPE_MOCK;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [TypeController],
-      providers: [
-        {
-          provide: SupplierTypeService,
-          useValue: {
-            findAll: jest.fn(),
-            create: jest.fn(),
-            update: jest.fn(),
-            remove: jest.fn(),
-            findOne: jest.fn(),
-            seed: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
+    beforeEach(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            controllers: [TypeController],
+            providers: [
+                {
+                    provide: SupplierTypeService,
+                    useValue: {
+                        findAll: jest.fn(),
+                        create: jest.fn(),
+                        update: jest.fn(),
+                        remove: jest.fn(),
+                        findOne: jest.fn(),
+                        seed: jest.fn(),
+                    },
+                },
+            ],
+        }).compile();
 
-    controller = module.get<TypeController>(TypeController);
-    service = module.get<SupplierTypeService>(SupplierTypeService);
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-    expect(service).toBeDefined();
-  });
-
-  describe('findAll', () => {
-    it('Should return an list of suppliers type', async () => {
-      jest
-          .spyOn(service, 'findAll')
-          .mockResolvedValue([mockEntity]);
-
-      expect(await controller.findAll({})).toEqual([mockEntity]);
+        controller = module.get<TypeController>(TypeController);
+        service = module.get<SupplierTypeService>(SupplierTypeService);
     });
-  });
 
-  describe('create', () => {
-    it('should create a new supplierType and save it', async () => {
-      const createDto: CreateTypeDto = {
-        name: mockEntity.name,
-      };
-
-      jest
-          .spyOn(service, 'create')
-          .mockResolvedValueOnce(mockEntity);
-
-      expect(await controller.create(createDto)).toEqual(
-          mockEntity,
-      );
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
-  });
 
-  describe('findOne', () => {
-    it('Should return  suppliers type', async () => {
-      jest
-          .spyOn(service, 'findOne')
-          .mockResolvedValue(mockEntity);
-
-      expect(
-          await controller.findOne(mockEntity.name),
-      ).toEqual(mockEntity);
+    it('should be defined', () => {
+        expect(controller).toBeDefined();
+        expect(service).toBeDefined();
     });
-  });
 
-  describe('update', () => {
-    it('should update a supplierType and save it', async () => {
-      const updateDto: UpdateTypeDto = {
-        name: `${mockEntity.name}2`,
-      };
+    describe('findAll', () => {
+        it('Should return an list of suppliers type', async () => {
+            jest
+                .spyOn(service, 'findAll')
+                .mockResolvedValue([mockEntity]);
 
-      const expected: SupplierType = {
-        ...mockEntity,
-        ...updateDto,
-      };
-
-      jest.spyOn(service, 'update').mockResolvedValueOnce(expected);
-
-      expect(
-          await controller.update(mockEntity.id, updateDto),
-      ).toEqual(expected);
+            expect(await controller.findAll({})).toEqual([mockEntity]);
+        });
     });
-  });
 
-  describe('remove', () => {
-    it('should remove SupplierType when there are no associated suppliers', async () => {
-      jest
-          .spyOn(service, 'remove')
-          .mockResolvedValueOnce({ message: 'Successfully removed' });
+    describe('create', () => {
+        it('should create a new supplierType and save it', async () => {
+            const createDto: CreateTypeDto = {
+                name: mockEntity.name,
+            };
 
-      expect(await controller.remove(mockEntity.id)).toEqual(
-          { message: 'Successfully removed' },
-      );
+            jest
+                .spyOn(service, 'create')
+                .mockResolvedValueOnce(mockEntity);
+
+            expect(await controller.create(createDto)).toEqual(
+                mockEntity,
+            );
+        });
     });
-  });
+
+    describe('findOne', () => {
+        it('Should return  suppliers type', async () => {
+            jest
+                .spyOn(service, 'findOne')
+                .mockResolvedValue(mockEntity);
+
+            expect(
+                await controller.findOne(mockEntity.name),
+            ).toEqual(mockEntity);
+        });
+    });
+
+    describe('update', () => {
+        it('should update a supplierType and save it', async () => {
+            const updateDto: UpdateTypeDto = {
+                name: `${mockEntity.name}2`,
+            };
+
+            const expected: SupplierType = {
+                ...mockEntity,
+                ...updateDto,
+            };
+
+            jest.spyOn(service, 'update').mockResolvedValueOnce(expected);
+
+            expect(
+                await controller.update(mockEntity.id, updateDto),
+            ).toEqual(expected);
+        });
+    });
+
+    describe('remove', () => {
+        it('should remove SupplierType when there are no associated suppliers', async () => {
+            jest
+                .spyOn(service, 'remove')
+                .mockResolvedValueOnce({ message: 'Successfully removed' });
+
+            expect(await controller.remove(mockEntity.id)).toEqual(
+                { message: 'Successfully removed' },
+            );
+        });
+    });
 });

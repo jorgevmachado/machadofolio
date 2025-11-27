@@ -8,12 +8,12 @@ import { AbilityController } from './ability.controller';
 import { PokemonAbilityService } from './ability.service';
 
 @Module({
-  imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-    TypeOrmModule.forFeature([PokemonAbility]),
-  ],
-  controllers: [AbilityController],
-  providers: [PokemonAbilityService],
-  exports: [PokemonAbilityService]
+    imports: [
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        TypeOrmModule.forFeature([PokemonAbility]),
+    ],
+    controllers: [AbilityController],
+    providers: [PokemonAbilityService],
+    exports: [PokemonAbilityService]
 })
 export class AbilityModule {}

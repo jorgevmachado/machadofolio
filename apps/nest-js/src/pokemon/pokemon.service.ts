@@ -6,22 +6,23 @@ import { EStatus } from '@repo/business';
 
 import { type PaginateParameters, PokeApiService } from '@repo/business';
 
-import { type FindOneByParams, GenerateSeeds, ListParams, Service } from '../shared';
+import { type FindOneByParams, SeedsGenerated, ListParams, Service } from '../shared';
 
 import { Pokemon } from './entities/pokemon.entity';
 import { PokemonAbility } from './entities/ability.entity';
 import { PokemonAbilityService } from './ability/ability.service';
 import { PokemonMove } from './entities/move.entity';
 import { PokemonMoveService } from './move/move.service';
-import type { PokemonSeederParams } from './types';
+import type { PokemonSeederParams, PokemonSeedsResult } from './types';
 import { PokemonType } from './entities/type.entity';
 import { PokemonTypeService } from './type/type.service';
+import { CreatePokemonSeedsDto } from './dto/create-pokemon-seeds.dto';
 
 export type PokemonGenerateSeeds = {
-    moves: GenerateSeeds<PokemonMove>;
-    types: GenerateSeeds<PokemonType>;
-    pokemons: GenerateSeeds<Pokemon>;
-    abilities: GenerateSeeds<PokemonAbility>;
+    type: SeedsGenerated<PokemonType>;
+    move: SeedsGenerated<PokemonMove>;
+    ability: SeedsGenerated<PokemonAbility>;
+    pokemon: SeedsGenerated<Pokemon>;
 }
 
 @Injectable()
@@ -35,6 +36,25 @@ export class PokemonService extends Service<Pokemon> {
         protected pokemonAbilityService: PokemonAbilityService,
     ) {
         super('pokemons', ['moves', 'types', 'abilities', 'evolutions'], repository);
+    }
+
+    private readonly DEFAULT_SEEDS_RESULT: PokemonGenerateSeeds = {
+        type: {
+            list: [],
+            added: []
+        },
+        move: {
+            list: [],
+            added: []
+        },
+        ability: {
+            list: [],
+            added: []
+        },
+        pokemon: {
+            list: [],
+            added: []
+        },
     }
 
     async findAll(listParams: ListParams): Promise<Array<Pokemon> | PaginateParameters<Pokemon>> {
@@ -184,5 +204,98 @@ export class PokemonService extends Service<Pokemon> {
                 .map(async (name) => await this.validateEntity(name, false))
         )
         return result?.filter((value) => value !== undefined)
+    }
+
+    async generateSeeds(createPokemonSeedsDto: CreatePokemonSeedsDto): Promise<PokemonSeedsResult> {
+        const seedsDto = this.validatePokemonSeedsDto(createPokemonSeedsDto);
+        const result: PokemonGenerateSeeds = this.DEFAULT_SEEDS_RESULT;
+
+        const rootSeedsDir = this.file.getSeedsDirectory();
+        const pokemonSeedsDir = this.file.createDirectory('pokemon', rootSeedsDir);
+
+        result.move = await this.pokemonMoveService.generateSeeds(Boolean(seedsDto.move), pokemonSeedsDir);
+        result.type = await this.pokemonTypeService.generateSeeds(Boolean(seedsDto.move), pokemonSeedsDir);
+        result.ability = await this.pokemonAbilityService.generateSeeds(Boolean(seedsDto.move), pokemonSeedsDir);
+
+        result.pokemon = await this.generateSeed(Boolean(seedsDto.pokemon), pokemonSeedsDir);
+
+        return this.mapperPokemonSeedsResult(result);
+    }
+
+    async persistSeeds(createPokemonSeedsDto: CreatePokemonSeedsDto): Promise<PokemonSeedsResult> {
+        const seedsDto = this.validatePokemonSeedsDto(createPokemonSeedsDto);
+        const result: PokemonGenerateSeeds = this.DEFAULT_SEEDS_RESULT;
+
+        result.move = await this.pokemonMoveService.persistSeeds(Boolean(seedsDto.move));
+        result.type = await this.pokemonTypeService.persistSeeds(Boolean(seedsDto.move));
+        result.ability = await this.pokemonAbilityService.persistSeeds(Boolean(seedsDto.move));
+
+        result.pokemon = await this.persistSeed(Boolean(seedsDto.pokemon));
+
+        return this.mapperPokemonSeedsResult(result);
+    }
+
+    private async generateSeed(withSeed: boolean, pokemonSeedsDir: string): Promise<SeedsGenerated<Pokemon>>{
+        console.log('# => pokemonSeedsDir => ', pokemonSeedsDir);
+        if(!withSeed) {
+            return {
+                list: [],
+                added: [],
+            };
+        }
+        return {
+            list: [],
+            added: [],
+        }
+    }
+
+    private async persistSeed(withSeed: boolean): Promise<SeedsGenerated<Pokemon>>{
+        if(!withSeed) {
+            return {
+                list: [],
+                added: [],
+            };
+        }
+        return {
+            list: [],
+            added: [],
+        }
+    }
+
+    validatePokemonSeedsDto(createPokemonSeedsDto: CreatePokemonSeedsDto):CreatePokemonSeedsDto {
+        const seedsDto = { ...createPokemonSeedsDto };
+        if(createPokemonSeedsDto.pokemon) {
+            seedsDto.move = true;
+            seedsDto.type = true;
+            seedsDto.ability = true;
+        }
+        return seedsDto;
+    }
+
+    private mapperPokemonSeedsResult(generateSeeds: PokemonGenerateSeeds): PokemonSeedsResult {
+        const {
+            type,
+            move,
+            ability,
+            pokemon,
+        } = generateSeeds;
+        return {
+            type: {
+                list: type.list.length,
+                added: type.added.length
+            },
+            move: {
+                list: move.list.length,
+                added: move.added.length
+            },
+            ability: {
+                list: ability.list.length,
+                added: ability.added.length
+            },
+            pokemon: {
+                list: pokemon.list.length,
+                added: pokemon.added.length
+            },
+        };
     }
 }

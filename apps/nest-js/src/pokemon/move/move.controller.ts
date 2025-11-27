@@ -11,15 +11,15 @@ import {  PokemonMoveService } from './move.service';
 @Controller('pokemon')
 @UseGuards(AuthGuard(), AuthRoleGuard, AuthStatusGuard)
 export class MoveController {
-  constructor(private readonly service: PokemonMoveService) {}
+    constructor(private readonly service: PokemonMoveService) {}
 
-  @Get('/list/move')
-  findAll(@Query() parameters: QueryParameters) {
-    return this.service.findAll({ parameters });
-  }
+    @Get('/list/move')
+    findAll(@Query() parameters: QueryParameters) {
+        return this.service.findAll({ parameters });
+    }
 
-  @Get(':param/move')
-  findOne(@Param('param') param: string) {
-    return this.service.findOne({ value: param });
-  }
+    @Get(':param/move')
+    findOne(@Param('param') param: string) {
+        return this.service.findOne({ value: param });
+    }
 }

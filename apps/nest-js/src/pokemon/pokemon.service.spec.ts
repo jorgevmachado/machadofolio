@@ -4,6 +4,10 @@ jest.mock('../shared', () => {
     class ServiceMock {
         save = jest.fn();
         error = jest.fn();
+        file = {
+            createDirectory: jest.fn(),
+            getSeedsDirectory: jest.fn(),
+        };
         seeder = {
             entities: jest.fn(),
             executeSeed: jest.fn(),
@@ -34,9 +38,11 @@ import type { PokemonAbility } from './entities/ability.entity';
 import { PokemonAbilityService } from './ability/ability.service';
 import type { PokemonMove } from './entities/move.entity';
 import { PokemonMoveService } from './move/move.service';
-import { PokemonService } from './pokemon.service';
+import { PokemonGenerateSeeds, PokemonService } from './pokemon.service';
 import type { PokemonType } from './entities/type.entity';
 import { PokemonTypeService } from './type/type.service';
+import type { CreatePokemonSeedsDto } from './dto/create-pokemon-seeds.dto';
+import type { PokemonSeedsResult } from './types';
 
 describe('PokemonService', () => {
     const limit: number = 10;
@@ -50,6 +56,40 @@ describe('PokemonService', () => {
     const pokemonMoveMockEntity: PokemonMove = POKEMON_MOVE_MOCK;
     const pokemonTypeMockEntity: PokemonType = POKEMON_TYPE_MOCK;
     const pokemonAbilityMockEntity: PokemonAbility = POKEMON_ABILITY_MOCK;
+
+    const createPokemonSeedsDto:CreatePokemonSeedsDto = {
+        move: true,
+        type: true,
+        ability: true,
+        pokemon: true,
+    };
+
+    const pokemonGenerateSeeds: PokemonGenerateSeeds = {
+        type: {
+            list: [pokemonTypeMockEntity],
+            added: [pokemonTypeMockEntity],
+        },
+        move: {
+            list: [pokemonMoveMockEntity],
+            added: [pokemonMoveMockEntity],
+        },
+        ability: {
+            list: [pokemonAbilityMockEntity],
+            added: [pokemonAbilityMockEntity],
+        },
+        pokemon: {
+            list: [mockEntity],
+            added: [mockEntity],
+        },
+
+    };
+
+    const pokemonSeedsResult: PokemonSeedsResult = {
+        move: { list: 1, added: 1 },
+        type: { list: 1, added: 1 },
+        ability: { list: 1, added: 1 },
+        pokemon: { list: 1, added: 1 },
+    };
 
     beforeEach(async () => {
         jest.clearAllMocks();
@@ -70,6 +110,8 @@ describe('PokemonService', () => {
                     useValue: {
                         seeds: jest.fn(),
                         findList: jest.fn(),
+                        persistSeeds: jest.fn(),
+                        generateSeeds: jest.fn(),
                     },
                 },
                 {
@@ -77,6 +119,8 @@ describe('PokemonService', () => {
                     useValue: {
                         seeds: jest.fn(),
                         findList: jest.fn(),
+                        persistSeeds: jest.fn(),
+                        generateSeeds: jest.fn(),
                     },
                 },
                 {
@@ -84,6 +128,8 @@ describe('PokemonService', () => {
                     useValue: {
                         seeds: jest.fn(),
                         findList: jest.fn(),
+                        persistSeeds: jest.fn(),
+                        generateSeeds: jest.fn(),
                     },
                 },
             ],
@@ -303,6 +349,39 @@ describe('PokemonService', () => {
         });
     });
 
+    describe('generateSeeds', () => {
+        it('should generate seeds successfully.', async () => {
+            jest.spyOn(service, 'validatePokemonSeedsDto' as any).mockResolvedValueOnce(createPokemonSeedsDto);
+            jest.spyOn(service.file, 'getSeedsDirectory').mockReturnValue('dir');
+            jest.spyOn(service.file, 'createDirectory').mockReturnValue('dir/pokemon');
+            jest.spyOn(moveService, 'generateSeeds').mockResolvedValueOnce(pokemonGenerateSeeds.move);
+            jest.spyOn(typeService, 'generateSeeds').mockResolvedValueOnce(pokemonGenerateSeeds.type);
+            jest.spyOn(abilityService, 'generateSeeds').mockResolvedValueOnce(pokemonGenerateSeeds.ability);
+            jest.spyOn(service, 'generateSeed' as any).mockResolvedValueOnce(pokemonGenerateSeeds.pokemon);
+            const result = await service.generateSeeds(createPokemonSeedsDto);
+            expect(result.move).toEqual(pokemonSeedsResult.move);
+            expect(result.type).toEqual(pokemonSeedsResult.type);
+            expect(result.ability).toEqual(pokemonSeedsResult.ability);
+            expect(result.pokemon).toEqual(pokemonSeedsResult.pokemon);
+        })
+    });
+
+    describe('persistSeeds', () => {
+        it('should persist seeds successfully.', async () => {
+            jest.spyOn(service, 'validatePokemonSeedsDto' as any).mockResolvedValueOnce(createPokemonSeedsDto);
+
+            jest.spyOn(moveService, 'persistSeeds').mockResolvedValueOnce(pokemonGenerateSeeds.move);
+            jest.spyOn(typeService, 'persistSeeds').mockResolvedValueOnce(pokemonGenerateSeeds.type);
+            jest.spyOn(abilityService, 'persistSeeds').mockResolvedValueOnce(pokemonGenerateSeeds.ability);
+            jest.spyOn(service, 'persistSeed' as any).mockResolvedValueOnce(pokemonGenerateSeeds.pokemon);
+            const result = await service.persistSeeds(createPokemonSeedsDto);
+            expect(result.move).toEqual(pokemonSeedsResult.move);
+            expect(result.type).toEqual(pokemonSeedsResult.type);
+            expect(result.ability).toEqual(pokemonSeedsResult.ability);
+            expect(result.pokemon).toEqual(pokemonSeedsResult.pokemon);
+        })
+    })
+
     describe('privates', () => {
         describe('createList', () => {
             it('Should create a list of pokemon', async () => {
@@ -409,6 +488,44 @@ describe('PokemonService', () => {
                 jest.spyOn(service, 'validateEntity' as any).mockResolvedValueOnce(mockEntity);
                 const result = await service['findEvolutions']('/pokemon/url');
                 expect(result).toEqual([mockEntity]);
+            });
+        });
+
+        describe('validatePokemonSeedsDto', () => {
+            it('should validate seeds dto', () => {
+                const result = service['validatePokemonSeedsDto'](createPokemonSeedsDto);
+                expect(result).toEqual(createPokemonSeedsDto);
+            });
+        });
+
+        describe('mapperPokemonSeedsResult', () => {
+            it('should map seeds result', () => {
+                const result = service['mapperPokemonSeedsResult'](pokemonGenerateSeeds);
+                expect(result).toEqual(pokemonSeedsResult);
+            });
+        })
+
+        describe('generateSeed', () => {
+            it('should generate a pokemon seed', async () => {
+                const result = await service['generateSeed'](true, '');
+                expect(result).toEqual({ list: [], added: []});
+            });
+
+            it('should return empty list when flag withSeed is false', async () => {
+                const result = await service['generateSeed'](false, '');
+                expect(result).toEqual({ list: [], added: []});
+            });
+        });
+
+        describe('persistSeed', () => {
+            it('should persist a pokemon seed', async () => {
+                const result = await service['persistSeed'](true);
+                expect(result).toEqual({ list: [], added: []});
+            });
+
+            it('should return empty list when flag withSeed is false', async () => {
+                const result = await service['persistSeed'](false);
+                expect(result).toEqual({ list: [], added: []});
             });
         });
     });

@@ -10,7 +10,7 @@ import MONTH_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/mont
 import MONTH_LIST_STAGING_JSON from '../../../seeds/staging/finance/months.json';
 import MONTH_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/months.json';
 
-import { type FilterParams, GenerateSeeds, Service } from '../../shared';
+import { type FilterParams, SeedsGenerated, Service } from '../../shared';
 
 import { Expense } from '../entities/expense.entity';
 import { Income } from '../entities/incomes.entity';
@@ -120,7 +120,7 @@ export class MonthService extends Service<Month> {
         }
     }
 
-    async generateSeeds(listMonth: Array<Month>, financeSeedsDir: string): Promise<GenerateSeeds<Month>> {
+    async generateSeeds(listMonth: Array<Month>, financeSeedsDir: string): Promise<SeedsGenerated<Month>> {
         return await this.generateEntitySeeds({
             staging: MONTH_LIST_STAGING_JSON,
             seedsDir: financeSeedsDir,
@@ -128,7 +128,7 @@ export class MonthService extends Service<Month> {
             production: MONTH_LIST_PRODUCTION_JSON,
             development: MONTH_LIST_DEVELOPMENT_JSON,
             withRelations: true,
-            filterGenerateEntitySeedsFn: (json, item) => {
+            filterGenerateEntityFn: (json, item) => {
                 if(json.label === item.label || json.code === item.code) {
                     return json.expense?.name_code === item.expense?.name_code || json.income?.name_code === item.income?.name_code;
                 } else {
@@ -139,7 +139,7 @@ export class MonthService extends Service<Month> {
     }
 
     async persistSeeds(listMonth: Array<Month>) {
-        return await this.persistEntitySeeds({
+        return await this.seeder.persistEntity({
             withSeed: listMonth.length > 0,
             staging: MONTH_LIST_STAGING_JSON,
             production: MONTH_LIST_PRODUCTION_JSON,

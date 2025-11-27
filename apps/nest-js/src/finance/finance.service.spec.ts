@@ -1,17 +1,13 @@
-import { spreadsheetMock } from '../../jest.setup';
-
 import { Test, type TestingModule } from '@nestjs/testing';
+import { NotFoundException } from '@nestjs/common';
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
-import { Buffer } from 'buffer';
-import { ConflictException, NotFoundException } from '@nestjs/common';
-import { Readable } from 'stream';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { INCOME_MOCK, INCOME_MONTH_MOCK } from '../mocks/income.mock';
 import { BANK_MOCK } from '../mocks/bank.mock';
 import { BILL_MOCK } from '../mocks/bill.mock';
-import { EXPENSE_MOCK } from '../mocks/expense.mock';
+import { EXPENSE_MOCK, EXPENSE_MONTH_MOCK } from '../mocks/expense.mock';
 import { FINANCE_MOCK } from '../mocks/finance.mock';
 import { GROUP_MOCK } from '../mocks/group.mock';
 import { INCOME_SOURCE_MOCK } from '../mocks/income-source.mock';
@@ -32,20 +28,30 @@ import { type User } from '../auth/entities/user.entity';
 
 import { BankService } from './bank/bank.service';
 import { BillService } from './bill/bill.service';
-import { FinanceService } from './finance.service';
+import { FinanceGenerateSeeds, FinanceService } from './finance.service';
 import { GroupService } from './group/group.service';
 import { IncomeService } from './income/income.service';
 import { type IncomeSource } from './entities/income-source.entity';
 import { SupplierService } from './supplier/supplier.service';
+import { MonthService } from './month/month.service';
+import type { CreateFinanceSeedsDto } from './dto/create-finance-seeds.dto';
+import type { FinanceSeedsResult } from './types';
 
 jest.mock('../shared', () => {
     class ServiceMock {
         save = jest.fn();
         findOne = jest.fn();
+        file = {
+            createDirectory: jest.fn(),
+            getSeedsDirectory: jest.fn(),
+        };
+        generateEntitySeeds = jest.fn();
         seeder = {
             entities: jest.fn(),
             executeSeed: jest.fn(),
             currentSeeds: jest.fn(),
+            persistEntity: jest.fn(),
+            generateEntity: jest.fn(),
         };
     }
 
@@ -112,38 +118,116 @@ describe('FinanceService', () => {
     let supplierService: SupplierService;
     let billService: BillService;
     let incomeService: IncomeService;
+    let monthService: MonthService;
 
     const mockEntity: Finance = FINANCE_MOCK;
-    const bankMockEntity: Bank = BANK_MOCK;
-    const groupMockEntity: Group = GROUP_MOCK;
-    const supplierMockEntity: Supplier = SUPPLIER_MOCK;
-    const supplierTypeMockEntity: SupplierType = SUPPLIER_TYPE_MOCK;
-    const billMockEntity: Bill = BILL_MOCK;
-    const expenseMockEntity: Expense = EXPENSE_MOCK;
+    const mockBankEntity: Bank = BANK_MOCK;
+    const mockGroupEntity: Group = GROUP_MOCK;
+    const mockSupplierEntity: Supplier = SUPPLIER_MOCK;
+    const mockSupplierTypeEntity: SupplierType = SUPPLIER_TYPE_MOCK;
+    const mockBillEntity: Bill = BILL_MOCK;
+    const mockExpenseMonthEntity: Month = EXPENSE_MONTH_MOCK as unknown as Month;
+    const mockExpenseEntity: Expense = { ...EXPENSE_MOCK, months: [mockExpenseMonthEntity] };
     const mockUser: User = USER_MOCK;
-    const mockIncome: Income = { ...INCOME_MOCK, months: [INCOME_MONTH_MOCK as unknown as Month] };
+    const mockIncomeMonthEntity: Month = INCOME_MONTH_MOCK as unknown as Month;
+    const mockIncome: Income = { ...INCOME_MOCK, months: [mockIncomeMonthEntity] };
     const mockIncomeSource: IncomeSource = INCOME_SOURCE_MOCK;
+
+    const createFinanceSeedsDto: CreateFinanceSeedsDto = {
+        bank: true,
+        bill: true,
+        group: true,
+        expense: true,
+        supplier: true,
+        finance: true,
+        income: true,
+        incomeSource: true,
+        supplierType: true,
+    };
+    const financeGenerateSeeds: FinanceGenerateSeeds = {
+        banks: { list: [mockBankEntity], added: [mockBankEntity] },
+        bills: { list: [mockBillEntity], added: [mockBillEntity] },
+        groups: { list: [mockGroupEntity], added: [mockGroupEntity] },
+        months: { list: [mockExpenseMonthEntity, mockIncomeMonthEntity], added: [mockExpenseMonthEntity, mockIncomeMonthEntity] },
+        incomes: { list: [mockIncome], added: [mockIncome] },
+        expenses: { list: [mockExpenseEntity], added: [mockExpenseEntity] },
+        finances: { list: [mockEntity], added: [mockEntity] },
+        suppliers: { list: [mockSupplierEntity], added: [mockSupplierEntity] },
+        incomeSources: { list: [mockIncomeSource], added: [mockIncomeSource] },
+        supplierTypes: { list: [mockSupplierTypeEntity], added: [mockSupplierTypeEntity] },
+    }
+    const financeSeedsResult: FinanceSeedsResult = {
+        bank: { list: 1, added: 1 },
+        bill: { list: 1, added: 1 },
+        group: { list: 1, added: 1 },
+        months: { list: 2, added: 2 },
+        income: { list: 1, added: 1 },
+        expense: { list: 1, added: 1 },
+        finance: { list: 1, added: 1 },
+        supplier: { list: 1, added: 1 },
+        incomeSource: { list: 1, added: 1 },
+        supplierType: { list: 1, added: 1 },
+    }
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 FinanceService,
                 { provide: getRepositoryToken(Finance), useClass: Repository },
-                { provide: BankService, useValue: { seeds: jest.fn(), findAll: jest.fn() } },
-                { provide: GroupService, useValue: { seeds: jest.fn(), findAll: jest.fn() } },
-                { provide: SupplierService, useValue: { seeds: jest.fn(), findAll: jest.fn(), type: { findAll: jest.fn() } } },
-                { provide: IncomeService, useValue: { seeds: jest.fn(), findAll: jest.fn(), source: { findAll: jest.fn() } } },
+                {
+                    provide: BankService,
+                    useValue: {
+                        findAll: jest.fn(),
+                        persistSeeds: jest.fn(),
+                        generateSeeds: jest.fn(),
+                    }
+                },
+                {
+                    provide: MonthService,
+                    useValue: {
+                        persistSeeds: jest.fn(),
+                        generateSeeds: jest.fn()
+                    }
+                },
+                {
+                    provide: GroupService,
+                    useValue: {
+                        findAll: jest.fn(),
+                        generateSeeds: jest.fn(),
+                        persistSeeds: jest.fn()
+                    }
+                },
+                {
+                    provide: SupplierService,
+                    useValue: {
+                        generateSeeds: jest.fn(),
+                        persistSeeds: jest.fn(),
+                        findAll: jest.fn(),
+                        type: {
+                            findAll: jest.fn()
+                        }
+                    }
+                },
+                {
+                    provide: IncomeService,
+                    useValue: {
+                        generateSeeds: jest.fn(),
+                        persistSeeds: jest.fn(),
+                        findAll: jest.fn(),
+                        source: { findAll: jest.fn() }
+                    }
+                },
                 {
                     provide: BillService,
                     useValue: {
-                        seeds: jest.fn(),
                         findAll: jest.fn(),
                         expense: {
-                            seeds: jest.fn(),
                             business: {
                                 calculateAll: jest.fn()
                             }
                         },
+                        generateSeeds: jest.fn(),
+                        persistSeeds: jest.fn(),
                         spreadsheetProcessing: jest.fn(),
                         initializeBySpreadsheet: jest.fn(),
                     },
@@ -154,6 +238,7 @@ describe('FinanceService', () => {
         repository = module.get<Repository<Finance>>(getRepositoryToken(Finance));
         billService = module.get<BillService>(BillService);
         bankService = module.get<BankService>(BankService);
+        monthService = module.get<MonthService>(MonthService);
         groupService = module.get<GroupService>(GroupService);
         supplierService = module.get<SupplierService>(SupplierService);
         incomeService = module.get<IncomeService>(IncomeService);
@@ -173,9 +258,9 @@ describe('FinanceService', () => {
         expect(service).toBeDefined();
     });
 
-    describe('initialize', () => {
+    describe('create', () => {
         it('should return existing finance if it already exists', async () => {
-            const result = await service.initialize(mockUser);
+            const result = await service.create(mockUser);
             expect(result).toEqual({
                 ...mockEntity,
                 user: mockUser,
@@ -184,259 +269,162 @@ describe('FinanceService', () => {
 
         it('should create a new finance if it does not exist', async () => {
             jest.spyOn(service, 'save').mockResolvedValueOnce(mockEntity);
-            expect(await service.initialize(mockEntity.user)).toEqual(
+            expect(await service.create(mockEntity.user)).toEqual(
                 mockEntity,
             );
         });
     });
 
-    describe('generateDocument', () => {
-        it('Should generate a document successfully', async () => {
-            jest.spyOn(service, 'validateFinance' as any).mockResolvedValueOnce(mockEntity);
-            jest.spyOn(service, 'fetchGroups' as any).mockResolvedValueOnce([groupMockEntity]);
-            jest.spyOn(billService, 'spreadsheetProcessing').mockImplementation(async () => undefined);
-            spreadsheetMock.generateSheetBuffer.mockImplementation(async () => Buffer.from('mock-buffer'));
-            const result = await service.generateDocument(USER_MOCK, 2025);
-            expect(result).toEqual(Buffer.from('mock-buffer'));
-        });
-    });
-
-    describe('seeds', () => {
-        it('should run all seeds and return list of total seeds', async () => {
-            jest.spyOn(service, 'seed' as any).mockResolvedValueOnce([mockEntity]);
-
-            jest.spyOn(service.seeder, 'executeSeed').mockImplementation(async ({ seedMethod }: any) => {
-                seedMethod(bankMockEntity);
-                return [bankMockEntity];
-            });
-            jest.spyOn(bankService, 'seeds').mockResolvedValueOnce([bankMockEntity]);
-
-            jest.spyOn(supplierService, 'seeds').mockResolvedValueOnce({
-                supplierList: [supplierMockEntity],
-                supplierTypeList: [supplierTypeMockEntity]
-            });
-
-            jest.spyOn(service.seeder, 'executeSeed').mockImplementation(async ({ seedMethod }: any) => {
-                seedMethod(groupMockEntity);
-                return [groupMockEntity];
-            });
-            jest.spyOn(groupService, 'seeds').mockResolvedValueOnce([groupMockEntity]);
-
-            jest.spyOn(service.seeder, 'currentSeeds').mockReturnValue([mockEntity]);
-
-            jest.spyOn(service.seeder, 'executeSeed').mockImplementation(async ({ seedMethod }: any) => {
-                seedMethod(billMockEntity);
-                return [billMockEntity];
-            });
-            jest.spyOn(billService, 'seeds').mockResolvedValueOnce([billMockEntity]);
-
-            jest.spyOn(service.seeder, 'executeSeed').mockImplementation(async ({ seedMethod }: any) => {
-                seedMethod(expenseMockEntity);
-                return [expenseMockEntity];
-            });
-            jest.spyOn(billService.expense, 'seeds').mockResolvedValueOnce([expenseMockEntity]);
-
-            jest.spyOn(incomeService, 'seeds').mockResolvedValueOnce({
-                incomeList: [mockIncome],
-                incomeSourceList: [mockIncomeSource]
-            });
-
-            const result = await service.seeds({
-                users: [mockUser],
-                billListJson: [billMockEntity],
-                bankListJson: [bankMockEntity],
-                groupListJson: [groupMockEntity],
-                financeListJson: [mockEntity],
-                expenseListJson: [expenseMockEntity],
-                supplierListJson: [supplierMockEntity],
-                supplierTypeListJson: [supplierTypeMockEntity]
-            });
-
-            expect(result.bills.length).toEqual(1);
-            expect(result.groups.length).toEqual(1);
-            expect(result.banks.length).toEqual(1);
-            expect(result.expenses.length).toEqual(1);
-            expect(result.finances.length).toEqual(1);
-            expect(result.suppliers.length).toEqual(1);
-            expect(result.supplierTypes.length).toEqual(1);
-            expect(result.incomes.length).toEqual(1);
-            expect(result.incomeSources.length).toEqual(1);
-        });
-
-        it('should run all seeds and return list of total seeds with some seeds empty', async () => {
-            jest.spyOn(service, 'seed' as any).mockResolvedValueOnce([mockEntity]);
-
-            jest.spyOn(service.seeder, 'executeSeed').mockImplementation(async ({ seedMethod }: any) => {
-                seedMethod();
-                return [];
-            });
-            jest.spyOn(bankService, 'seeds').mockResolvedValueOnce({ message: 'Successfully' });
-
-
-            jest.spyOn(supplierService, 'seeds').mockResolvedValueOnce({
-                supplierList: [supplierMockEntity],
-                supplierTypeList: [supplierTypeMockEntity]
-            });
-
-            jest.spyOn(groupService, 'seeds').mockResolvedValueOnce({ message: 'Successfully' });
-
-            jest.spyOn(service.seeder, 'currentSeeds').mockReturnValue([mockEntity]);
-
-            jest.spyOn(billService, 'seeds').mockResolvedValueOnce({ message: 'Successfully' });
-
-            jest.spyOn(billService.expense, 'seeds').mockResolvedValueOnce([expenseMockEntity]);
-
-            jest.spyOn(incomeService, 'seeds').mockResolvedValueOnce({
-                incomeList: [mockIncome],
-                incomeSourceList: [mockIncomeSource]
-            });
-
-            const result = await service.seeds({
-                users: [mockUser],
-                billListJson: [billMockEntity],
-                bankListJson: [bankMockEntity],
-                groupListJson: [groupMockEntity],
-                financeListJson: [mockEntity],
-                expenseListJson: [expenseMockEntity],
-                supplierListJson: [supplierMockEntity],
-                supplierTypeListJson: [supplierTypeMockEntity]
-            });
-
-            expect(result.bills.length).toEqual(0);
-            expect(result.groups.length).toEqual(0);
-            expect(result.banks.length).toEqual(0);
-            expect(result.expenses.length).toEqual(0);
-            expect(result.finances.length).toEqual(1);
-            expect(result.suppliers.length).toEqual(1);
-            expect(result.supplierTypes.length).toEqual(1);
-            expect(result.incomes.length).toEqual(1);
-            expect(result.incomeSources.length).toEqual(1);
-        });
-
-        it('should run all seeds and return list of total seeds empty', async () => {
-            const financeMockEntity = {
-                ...mockEntity,
-                user: {
-                    ...mockEntity.user,
-                    cpf: '10482980001',
-                }
-            }
-            jest.spyOn(service, 'seed' as any).mockResolvedValueOnce([]);
-
-            jest.spyOn(service.seeder, 'executeSeed').mockImplementation(async ({ seedMethod }: any) => {
-                seedMethod();
-                return [];
-            });
-
-            jest.spyOn(bankService, 'seeds').mockResolvedValueOnce({ message: 'Successfully' });
-
-            jest.spyOn(supplierService, 'seeds').mockResolvedValueOnce({
-                supplierList: [supplierMockEntity],
-                supplierTypeList: [supplierTypeMockEntity]
-            });
-
-            jest.spyOn(groupService, 'seeds').mockResolvedValueOnce({ message: 'Successfully' });
-
-            jest.spyOn(service.seeder, 'currentSeeds').mockReturnValue([]);
-
-            jest.spyOn(billService, 'seeds').mockResolvedValueOnce({ message: 'Successfully' });
-
-            jest.spyOn(billService.expense, 'seeds').mockResolvedValueOnce([]);
-
-            jest.spyOn(incomeService, 'seeds').mockResolvedValueOnce({
-                incomeList: [],
-                incomeSourceList: []
-            });
-
-            const result = await service.seeds({
-                users: [mockUser],
-                billListJson: [billMockEntity],
-                bankListJson: [bankMockEntity],
-                groupListJson: [groupMockEntity],
-                financeListJson: [financeMockEntity],
-                expenseListJson: [expenseMockEntity],
-                supplierListJson: [supplierMockEntity],
-                supplierTypeListJson: [supplierTypeMockEntity]
-            });
-
-            expect(result.bills.length).toEqual(0);
-            expect(result.groups.length).toEqual(0);
-            expect(result.banks.length).toEqual(0);
-            expect(result.expenses.length).toEqual(0);
-            expect(result.finances.length).toEqual(0);
-            expect(result.suppliers.length).toEqual(1);
-            expect(result.supplierTypes.length).toEqual(1);
-            expect(result.incomes.length).toEqual(0);
-            expect(result.incomeSources.length).toEqual(0);
-        });
-    });
-
-    describe('initializeWithDocument', () => {
-        const mockedStream = new Readable();
-        mockedStream.push('mock stream content');
-        mockedStream.push(null);
-        const mockFile: Express.Multer.File = {
-            fieldname: 'file',
-            originalname: 'test-image.jpeg',
-            encoding: '7bit',
-            mimetype: 'image/jpeg',
-            size: 1024,
-            buffer: Buffer.from('mock file content'),
-            destination: 'uploads/',
-            filename: 'test-image.jpeg',
-            path: 'uploads/test-image.jpeg',
-            stream: mockedStream,
-        };
-        it('Should return trow error when dont have file', async () => {
-            await expect(
-                service.initializeWithDocument({ ...mockFile, buffer: undefined } as any, mockUser)
-            ).rejects.toThrowError(ConflictException);
-        });
-
-        it('Should initialize finance with document successfully', async () => {
-            jest.spyOn(service, 'initialize').mockResolvedValueOnce(mockEntity);
-
-            jest.spyOn(billService, 'initializeBySpreadsheet').mockResolvedValueOnce([{
-                groupName: '',
-                bills: 1,
-                expenses: 1,
-            }]);
-            const result = await service.initializeWithDocument(mockFile, mockUser);
-            expect(result).toHaveLength(1);
-        });
-    });
-
     describe('getByUser', () => {
         it('should return finance entities by user successfully', async () => {
-            const mockFinance = { ...mockEntity, groups: [groupMockEntity] };
+            const mockFinance = { ...mockEntity, groups: [mockGroupEntity] };
             jest.spyOn(service,'validateFinance' as any).mockReturnValue(mockFinance);
             jest.spyOn(service,'findOne').mockResolvedValueOnce(mockFinance);
-            jest.spyOn(service, 'fetchBills' as any).mockResolvedValueOnce([billMockEntity]);
+            jest.spyOn(billService, 'findAll').mockResolvedValueOnce([mockBillEntity]);
             jest.spyOn(billService.expense.business, 'calculateAll' as any).mockReturnValue({
                 total: 1000,
                 allPaid: true,
                 totalPaid: 500,
                 totalPending: 500
             });
-            jest.spyOn(bankService, 'findAll' as any).mockResolvedValueOnce([bankMockEntity]);
-            jest.spyOn(supplierService, 'findAll' as any).mockResolvedValueOnce([supplierMockEntity]);
-            jest.spyOn(supplierService.type, 'findAll' as any).mockResolvedValueOnce([supplierTypeMockEntity]);
+            jest.spyOn(bankService, 'findAll' as any).mockResolvedValueOnce([mockBankEntity]);
+            jest.spyOn(supplierService, 'findAll' as any).mockResolvedValueOnce([mockSupplierEntity]);
+            jest.spyOn(supplierService.type, 'findAll' as any).mockResolvedValueOnce([mockSupplierTypeEntity]);
             jest.spyOn(incomeService, 'findAll' as any).mockResolvedValueOnce([mockIncome]);
             jest.spyOn(incomeService.source, 'findAll' as any).mockResolvedValueOnce([mockIncomeSource]);
             const result = await service.getByUser(mockUser);
             expect(result.finance).toEqual(mockFinance);
-            expect(result.groups).toEqual([groupMockEntity]);
-            expect(result.bills).toEqual([billMockEntity]);
-            expect(result.banks).toEqual([bankMockEntity]);
-            expect(result.suppliers).toEqual([supplierMockEntity]);
-            expect(result.supplierTypes).toEqual([supplierTypeMockEntity]);
-            expect(result.expenses).toEqual(billMockEntity.expenses);
+            expect(result.groups).toEqual([mockGroupEntity]);
+            expect(result.bills).toEqual([mockBillEntity]);
+            expect(result.banks).toEqual([mockBankEntity]);
+            expect(result.suppliers).toEqual([mockSupplierEntity]);
+            expect(result.supplierTypes).toEqual([mockSupplierTypeEntity]);
+            expect(result.expenses).toEqual(mockBillEntity.expenses);
+            expect(result.incomes).toEqual([mockIncome]);
+            expect(result.incomeSources).toEqual([mockIncomeSource]);
+        });
+
+        it('should return finance entities by user with groups empty', async () => {
+            const mockFinance = { ...mockEntity, groups: undefined };
+            jest.spyOn(service,'validateFinance' as any).mockReturnValue(mockFinance);
+            jest.spyOn(service,'findOne').mockResolvedValueOnce(mockFinance);
+            jest.spyOn(billService, 'findAll').mockResolvedValueOnce([mockBillEntity]);
+            jest.spyOn(billService.expense.business, 'calculateAll' as any).mockReturnValue({
+                total: 1000,
+                allPaid: true,
+                totalPaid: 500,
+                totalPending: 500
+            });
+            jest.spyOn(bankService, 'findAll' as any).mockResolvedValueOnce([mockBankEntity]);
+            jest.spyOn(supplierService, 'findAll' as any).mockResolvedValueOnce([mockSupplierEntity]);
+            jest.spyOn(supplierService.type, 'findAll' as any).mockResolvedValueOnce([mockSupplierTypeEntity]);
+            jest.spyOn(incomeService, 'findAll' as any).mockResolvedValueOnce([mockIncome]);
+            jest.spyOn(incomeService.source, 'findAll' as any).mockResolvedValueOnce([mockIncomeSource]);
+            const result = await service.getByUser(mockUser);
+            expect(result.finance).toEqual(mockFinance);
+            expect(result.groups).toEqual([]);
+            expect(result.bills).toEqual([mockBillEntity]);
+            expect(result.banks).toEqual([mockBankEntity]);
+            expect(result.suppliers).toEqual([mockSupplierEntity]);
+            expect(result.supplierTypes).toEqual([mockSupplierTypeEntity]);
+            expect(result.expenses).toEqual(mockBillEntity.expenses);
             expect(result.incomes).toEqual([mockIncome]);
             expect(result.incomeSources).toEqual([mockIncomeSource]);
         });
     });
 
+    describe('generateSeeds', () => {
+        it('should generate seeds successfully', async () => {
+            jest.spyOn(service, 'validateFinanceSeedsDto' as any).mockResolvedValueOnce(createFinanceSeedsDto);
+            jest.spyOn(service.file, 'getSeedsDirectory').mockReturnValue('dir');
+            jest.spyOn(service.file, 'createDirectory').mockReturnValue('dir/finance');
+            jest.spyOn(bankService, 'generateSeeds').mockResolvedValueOnce(financeGenerateSeeds.banks);
+            jest.spyOn(supplierService, 'generateSeeds').mockResolvedValueOnce({
+                suppliers: financeGenerateSeeds.suppliers,
+                supplierTypes: financeGenerateSeeds.supplierTypes
+            });
+            jest.spyOn(service, 'generateEntitySeeds').mockResolvedValueOnce(financeGenerateSeeds.finances);
+            jest.spyOn(incomeService, 'generateSeeds').mockResolvedValueOnce({
+                months: [mockIncomeMonthEntity],
+                incomes: financeGenerateSeeds.incomes,
+                incomeSources: financeGenerateSeeds.incomeSources
+            });
+            jest.spyOn(groupService, 'generateSeeds').mockResolvedValueOnce(financeGenerateSeeds.groups);
+
+            jest.spyOn(billService, 'generateSeeds').mockResolvedValueOnce({
+                bills: financeGenerateSeeds.bills,
+                months: [mockIncomeMonthEntity],
+                expenses: financeGenerateSeeds.expenses,
+            });
+            jest.spyOn(monthService, 'generateSeeds').mockResolvedValueOnce(financeGenerateSeeds.months);
+            jest.spyOn(service, 'mapperFinanceSeedsResult' as any).mockResolvedValueOnce(financeSeedsResult);
+
+            const result = await service.generateSeeds(createFinanceSeedsDto);
+            expect(result.bank).toEqual(financeSeedsResult.bank);
+            expect(result.supplier).toEqual(financeSeedsResult.supplier);
+            expect(result.supplierType).toEqual(financeSeedsResult.supplierType);
+            expect(result.income).toEqual(financeSeedsResult.income);
+            expect(result.incomeSource).toEqual(financeSeedsResult.incomeSource);
+            expect(result.group).toEqual(financeSeedsResult.group);
+            expect(result.bill).toEqual(financeSeedsResult.bill);
+            expect(result.months).toEqual(financeSeedsResult.months);
+            expect(result.finance).toEqual(financeSeedsResult.finance);
+
+        })
+    });
+
+    describe('persistSeeds', () => {
+        it('should persist seeds successfully', async () => {
+            jest.spyOn(service, 'validateFinanceSeedsDto' as any).mockResolvedValueOnce(createFinanceSeedsDto);
+            jest.spyOn(bankService, 'persistSeeds').mockResolvedValueOnce(financeGenerateSeeds.banks);
+            jest.spyOn(supplierService, 'persistSeeds').mockResolvedValueOnce({
+                suppliers: financeGenerateSeeds.suppliers,
+                supplierTypes: financeGenerateSeeds.supplierTypes
+            });
+            jest.spyOn(service.seeder, 'persistEntity').mockResolvedValueOnce(financeGenerateSeeds.finances);
+            jest.spyOn(incomeService, 'persistSeeds').mockResolvedValueOnce({
+                months: [mockIncomeMonthEntity],
+                incomes: financeGenerateSeeds.incomes,
+                incomeSources: financeGenerateSeeds.incomeSources
+            });
+            jest.spyOn(groupService, 'persistSeeds').mockResolvedValueOnce(financeGenerateSeeds.groups);
+
+            jest.spyOn(billService, 'persistSeeds').mockResolvedValueOnce({
+                bills: financeGenerateSeeds.bills,
+                months: [mockIncomeMonthEntity],
+                expenses: financeGenerateSeeds.expenses,
+            });
+            jest.spyOn(monthService, 'persistSeeds').mockResolvedValueOnce(financeGenerateSeeds.months);
+            jest.spyOn(service, 'mapperFinanceSeedsResult' as any).mockResolvedValueOnce(financeSeedsResult);
+
+            const result = await service.persistSeeds(createFinanceSeedsDto);
+            expect(result.bank).toEqual(financeSeedsResult.bank);
+            expect(result.supplier).toEqual(financeSeedsResult.supplier);
+            expect(result.supplierType).toEqual(financeSeedsResult.supplierType);
+            expect(result.income).toEqual(financeSeedsResult.income);
+            expect(result.incomeSource).toEqual(financeSeedsResult.incomeSource);
+            expect(result.group).toEqual(financeSeedsResult.group);
+            expect(result.bill).toEqual(financeSeedsResult.bill);
+            expect(result.months).toEqual(financeSeedsResult.months);
+            expect(result.finance).toEqual(financeSeedsResult.finance);
+
+        })
+    });
+
     describe('privates', () => {
+        describe('mapperFinanceSeedsResult', () => {
+            it('should map seeds result', () => {
+                const result = service['mapperFinanceSeedsResult'](financeGenerateSeeds);
+                expect(result).toEqual(financeSeedsResult);
+            });
+        });
+
+        describe('validateFinanceSeedsDto', () => {
+            it('should validate seeds dto', () => {
+                const result = service['validateFinanceSeedsDto'](createFinanceSeedsDto);
+                expect(result).toEqual(createFinanceSeedsDto);
+            });
+        });
         describe('validateFinance', () => {
             it('should return throw error when user dont has finance.', () => {
                 expect(() => service['validateFinance']({
@@ -447,40 +435,6 @@ describe('FinanceService', () => {
 
             it('should return finance when user has finance.', () => {
                 expect(service['validateFinance'](mockUser)).toEqual(mockUser.finance);
-            });
-        });
-
-        describe('fetchGroups', () => {
-            it('should return a list of groups successfully', async () => {
-                jest.spyOn(groupService, 'findAll').mockResolvedValueOnce([groupMockEntity]);
-                const result = await service['fetchGroups'](mockEntity.id);
-                expect(result).toEqual([groupMockEntity]);
-            });
-        });
-
-        describe('seed', () => {
-            it('Should return seed of finance successfully', async () => {
-                jest.spyOn(service.seeder, 'entities').mockImplementation(async ({ createdEntityFn }: any) => {
-                    createdEntityFn(mockEntity);
-                    return [mockEntity];
-                });
-                expect(await service['seed']([mockEntity], [mockUser])).toEqual([mockEntity]);
-            });
-
-            it('Should return empty when user in finance is different.', async () => {
-                jest.spyOn(service.seeder, 'entities').mockImplementation(async ({ createdEntityFn }: any) => {
-                    createdEntityFn(mockEntity);
-                    return [];
-                });
-                expect(await service['seed']([mockEntity], [{ ...mockUser, cpf: '12345678912' }])).toEqual([]);
-            });
-        });
-
-        describe('fetchBills', () => {
-            it('should return a list of bills by finance successfully', async () => {
-                jest.spyOn(billService, 'findAll').mockResolvedValueOnce([billMockEntity]);
-                const result = await service['fetchBills'](mockEntity.id);
-                expect(result).toEqual([billMockEntity]);
             });
         });
     });

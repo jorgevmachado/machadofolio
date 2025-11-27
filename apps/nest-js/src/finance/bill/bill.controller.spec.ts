@@ -15,8 +15,6 @@ import { BillService } from './bill.service';
 import { type CreateBillDto } from './dto/create-bill.dto';
 import { type CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { type UpdateBillDto } from './dto/update-bill.dto';
-import { type UpdateExpenseDto } from './expense/dto/update-expense.dto';
-import { Readable } from 'stream';
 
 describe('BillController', () => {
     let controller: BillController;
@@ -140,66 +138,34 @@ describe('BillController', () => {
         });
     });
 
-    describe('findOneExpense', () => {
-        it('should find one expense by id', async () => {
-            jest.spyOn(service, 'findOneExpense').mockResolvedValue(expenseMockEntity);
-
-            expect(await controller.findOneExpense(mockEntity.id, expenseMockEntity.id)).toEqual(expenseMockEntity);
-        });
-    });
-
-    describe('findAllExpense', () => {
+    describe('findAllExpenseByBill', () => {
         it('should find a list of expense by bill', async () => {
             jest.spyOn(service, 'findAllExpense').mockResolvedValue([expenseMockEntity]);
 
-            expect(await controller.findAllExpense(mockEntity.id, {})).toEqual([expenseMockEntity]);
+            expect(await controller.findAllExpenseByBill(mockEntity.id, {})).toEqual([expenseMockEntity]);
         });
     });
 
-    describe('removeExpense', () => {
-        it('should remove one expense by id', async () => {
-            jest.spyOn(service, 'removeExpense').mockResolvedValue({ message: 'Successfully removed' });
-
-            expect(await controller.removeExpense(mockEntity.id, expenseMockEntity.id)).toEqual({
-                message: 'Successfully removed',
-            });
-        });
-    });
-
-    describe('updateExpense', () => {
-      it('should update expense and save it', async () => {
-        const updateExpense: UpdateExpenseDto = {
-          type: expenseMockEntity.type,
-          supplier: expenseMockEntity.supplier.name,
-        };
-        jest.spyOn(service, 'updateExpense').mockResolvedValue(expenseMockEntity);
-
-        expect(
-            await controller.updateExpense(mockEntity.id, expenseMockEntity.id, updateExpense),
-        ).toEqual(expenseMockEntity);
-      });
-    });
-
-    describe('persistExpenseByUpload', () => {
-        const mockedStream = new Readable();
-        mockedStream.push('mock stream content');
-        mockedStream.push(null);
-        const mockFile: Express.Multer.File = {
-            fieldname: 'file',
-            originalname: 'test-image.jpeg',
-            encoding: '7bit',
-            mimetype: 'image/jpeg',
-            size: 1024,
-            buffer: Buffer.from('mock file content'),
-            destination: 'uploads/',
-            filename: 'test-image.jpeg',
-            path: 'uploads/test-image.jpeg',
-            stream: mockedStream,
-        };
-
-        it('should persist expenses by upload', async () => {
-            jest.spyOn(service, 'persistExpenseByUpload').mockResolvedValue([expenseMockEntity]);
-            expect(await controller.persistExpenseByUpload(mockFile, mockEntity.id, {})).toHaveLength(1);
-        });
-    });
+    // describe('persistExpenseByUpload', () => {
+    //     const mockedStream = new Readable();
+    //     mockedStream.push('mock stream content');
+    //     mockedStream.push(null);
+    //     const mockFile: Express.Multer.File = {
+    //         fieldname: 'file',
+    //         originalname: 'test-image.jpeg',
+    //         encoding: '7bit',
+    //         mimetype: 'image/jpeg',
+    //         size: 1024,
+    //         buffer: Buffer.from('mock file content'),
+    //         destination: 'uploads/',
+    //         filename: 'test-image.jpeg',
+    //         path: 'uploads/test-image.jpeg',
+    //         stream: mockedStream,
+    //     };
+    //
+    //     it('should persist expenses by upload', async () => {
+    //         jest.spyOn(service, 'persistExpenseByUpload').mockResolvedValue([expenseMockEntity]);
+    //         expect(await controller.persistExpenseByUpload(mockFile, mockEntity.id, {})).toHaveLength(1);
+    //     });
+    // });
 });

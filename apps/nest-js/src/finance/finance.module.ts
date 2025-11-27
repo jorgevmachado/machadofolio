@@ -28,5 +28,4 @@ import { MonthModule } from './month/month.module';
     ],
     exports: [FinanceService]
 })
-export class FinanceModule {
-}
+export class FinanceModule {}

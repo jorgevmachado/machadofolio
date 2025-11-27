@@ -4,7 +4,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 110,
+    "value": "110.00",
     "label": "november",
     "income": null,
     "expense": {
@@ -35,7 +35,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 110,
+    "value": "110.00",
     "label": "december",
     "income": null,
     "expense": {
@@ -66,7 +66,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 110,
+    "value": "110.00",
     "label": "january",
     "income": null,
     "expense": {
@@ -97,7 +97,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 110,
+    "value": "110.00",
     "label": "february",
     "income": null,
     "expense": {
@@ -128,7 +128,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 110,
+    "value": "110.00",
     "label": "march",
     "income": null,
     "expense": {
@@ -159,7 +159,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 110,
+    "value": "110.00",
     "label": "april",
     "income": null,
     "expense": {
@@ -190,7 +190,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 110,
+    "value": "110.00",
     "label": "may",
     "income": null,
     "expense": {
@@ -221,7 +221,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 110,
+    "value": "110.00",
     "label": "june",
     "income": null,
     "expense": {
@@ -252,7 +252,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 110,
+    "value": "110.00",
     "label": "july",
     "income": null,
     "expense": {
@@ -283,7 +283,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 110,
+    "value": "110.00",
     "label": "august",
     "income": null,
     "expense": {
@@ -314,7 +314,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 110,
+    "value": "110.00",
     "label": "september",
     "income": null,
     "expense": {
@@ -345,7 +345,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 110,
+    "value": "110.00",
     "label": "october",
     "income": null,
     "expense": {
@@ -376,7 +376,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 40,
+    "value": "40.00",
     "label": "november",
     "income": null,
     "expense": {
@@ -407,7 +407,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 40,
+    "value": "40.00",
     "label": "december",
     "income": null,
     "expense": {
@@ -438,7 +438,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 40,
+    "value": "40.00",
     "label": "january",
     "income": null,
     "expense": {
@@ -469,7 +469,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 40,
+    "value": "40.00",
     "label": "february",
     "income": null,
     "expense": {
@@ -500,7 +500,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 40,
+    "value": "40.00",
     "label": "march",
     "income": null,
     "expense": {
@@ -531,7 +531,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 40,
+    "value": "40.00",
     "label": "april",
     "income": null,
     "expense": {
@@ -562,7 +562,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 40,
+    "value": "40.00",
     "label": "may",
     "income": null,
     "expense": {
@@ -593,7 +593,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 40,
+    "value": "40.00",
     "label": "june",
     "income": null,
     "expense": {
@@ -624,7 +624,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 40,
+    "value": "40.00",
     "label": "july",
     "income": null,
     "expense": {
@@ -655,7 +655,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 40,
+    "value": "40.00",
     "label": "august",
     "income": null,
     "expense": {
@@ -686,7 +686,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 40,
+    "value": "40.00",
     "label": "september",
     "income": null,
     "expense": {
@@ -717,7 +717,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 40,
+    "value": "40.00",
     "label": "october",
     "income": null,
     "expense": {
@@ -748,7 +748,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 150.31,
+    "value": "150.31",
     "label": "january",
     "income": null,
     "expense": {
@@ -779,7 +779,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 150.31,
+    "value": "150.31",
     "label": "february",
     "income": null,
     "expense": {
@@ -810,7 +810,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 150.31,
+    "value": "150.31",
     "label": "march",
     "income": null,
     "expense": {
@@ -841,7 +841,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 150.31,
+    "value": "150.31",
     "label": "april",
     "income": null,
     "expense": {
@@ -872,7 +872,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 150.31,
+    "value": "150.31",
     "label": "may",
     "income": null,
     "expense": {
@@ -903,7 +903,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 150.31,
+    "value": "150.31",
     "label": "june",
     "income": null,
     "expense": {
@@ -934,7 +934,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 150.31,
+    "value": "150.31",
     "label": "july",
     "income": null,
     "expense": {
@@ -965,7 +965,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 150.31,
+    "value": "150.31",
     "label": "august",
     "income": null,
     "expense": {
@@ -996,7 +996,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 150.31,
+    "value": "150.31",
     "label": "september",
     "income": null,
     "expense": {
@@ -1027,7 +1027,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 180.31,
+    "value": "180.31",
     "label": "october",
     "income": null,
     "expense": {
@@ -1058,7 +1058,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 180.31,
+    "value": "180.31",
     "label": "november",
     "income": null,
     "expense": {
@@ -1089,7 +1089,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 180.31,
+    "value": "180.31",
     "label": "december",
     "income": null,
     "expense": {
@@ -1120,7 +1120,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 44.9,
+    "value": "44.90",
     "label": "november",
     "income": null,
     "expense": {
@@ -1151,7 +1151,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 44.9,
+    "value": "44.90",
     "label": "december",
     "income": null,
     "expense": {
@@ -1182,7 +1182,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 44.9,
+    "value": "44.90",
     "label": "january",
     "income": null,
     "expense": {
@@ -1213,7 +1213,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 44.9,
+    "value": "44.90",
     "label": "february",
     "income": null,
     "expense": {
@@ -1244,7 +1244,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 44.9,
+    "value": "44.90",
     "label": "march",
     "income": null,
     "expense": {
@@ -1275,7 +1275,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 44.9,
+    "value": "44.90",
     "label": "april",
     "income": null,
     "expense": {
@@ -1306,7 +1306,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 44.9,
+    "value": "44.90",
     "label": "may",
     "income": null,
     "expense": {
@@ -1337,7 +1337,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 44.9,
+    "value": "44.90",
     "label": "june",
     "income": null,
     "expense": {
@@ -1368,7 +1368,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 44.9,
+    "value": "44.90",
     "label": "july",
     "income": null,
     "expense": {
@@ -1399,7 +1399,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 44.9,
+    "value": "44.90",
     "label": "august",
     "income": null,
     "expense": {
@@ -1430,7 +1430,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 44.9,
+    "value": "44.90",
     "label": "september",
     "income": null,
     "expense": {
@@ -1461,7 +1461,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 44.9,
+    "value": "44.90",
     "label": "october",
     "income": null,
     "expense": {
@@ -1492,7 +1492,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 19.95,
+    "value": "19.95",
     "label": "november",
     "income": null,
     "expense": {
@@ -1523,7 +1523,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 19.95,
+    "value": "19.95",
     "label": "december",
     "income": null,
     "expense": {
@@ -1554,7 +1554,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 19.95,
+    "value": "19.95",
     "label": "january",
     "income": null,
     "expense": {
@@ -1585,7 +1585,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 19.95,
+    "value": "19.95",
     "label": "february",
     "income": null,
     "expense": {
@@ -1616,7 +1616,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 19.95,
+    "value": "19.95",
     "label": "march",
     "income": null,
     "expense": {
@@ -1647,7 +1647,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 19.95,
+    "value": "19.95",
     "label": "april",
     "income": null,
     "expense": {
@@ -1678,7 +1678,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 19.95,
+    "value": "19.95",
     "label": "may",
     "income": null,
     "expense": {
@@ -1709,7 +1709,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 19.95,
+    "value": "19.95",
     "label": "june",
     "income": null,
     "expense": {
@@ -1740,7 +1740,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 19.95,
+    "value": "19.95",
     "label": "july",
     "income": null,
     "expense": {
@@ -1771,7 +1771,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 19.95,
+    "value": "19.95",
     "label": "august",
     "income": null,
     "expense": {
@@ -1802,7 +1802,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 19.95,
+    "value": "19.95",
     "label": "september",
     "income": null,
     "expense": {
@@ -1833,7 +1833,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 19.95,
+    "value": "19.95",
     "label": "october",
     "income": null,
     "expense": {
@@ -1864,7 +1864,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 24.9,
+    "value": "24.90",
     "label": "february",
     "income": null,
     "expense": {
@@ -1895,7 +1895,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 24.9,
+    "value": "24.90",
     "label": "march",
     "income": null,
     "expense": {
@@ -1926,7 +1926,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 24.9,
+    "value": "24.90",
     "label": "april",
     "income": null,
     "expense": {
@@ -1957,7 +1957,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 24.9,
+    "value": "24.90",
     "label": "may",
     "income": null,
     "expense": {
@@ -1988,7 +1988,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 24.9,
+    "value": "24.90",
     "label": "november",
     "income": null,
     "expense": {
@@ -2019,7 +2019,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 24.9,
+    "value": "24.90",
     "label": "december",
     "income": null,
     "expense": {
@@ -2050,7 +2050,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 24.9,
+    "value": "24.90",
     "label": "january",
     "income": null,
     "expense": {
@@ -2081,7 +2081,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 24.9,
+    "value": "24.90",
     "label": "june",
     "income": null,
     "expense": {
@@ -2112,7 +2112,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 24.9,
+    "value": "24.90",
     "label": "july",
     "income": null,
     "expense": {
@@ -2143,7 +2143,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 24.9,
+    "value": "24.90",
     "label": "august",
     "income": null,
     "expense": {
@@ -2174,7 +2174,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 24.9,
+    "value": "24.90",
     "label": "september",
     "income": null,
     "expense": {
@@ -2205,7 +2205,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 24.9,
+    "value": "24.90",
     "label": "october",
     "income": null,
     "expense": {
@@ -2236,7 +2236,7 @@
     "paid": false,
     "year": 2025,
     "code": 10,
-    "value": 0,
+    "value": "0.00",
     "label": "october",
     "income": null,
     "expense": {
@@ -2267,7 +2267,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 0,
+    "value": "0.00",
     "label": "november",
     "income": null,
     "expense": {
@@ -2298,7 +2298,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 0,
+    "value": "0.00",
     "label": "december",
     "income": null,
     "expense": {
@@ -2329,7 +2329,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 284.69,
+    "value": "284.69",
     "label": "january",
     "income": null,
     "expense": {
@@ -2360,7 +2360,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 369,
+    "value": "369.00",
     "label": "february",
     "income": null,
     "expense": {
@@ -2391,7 +2391,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 402,
+    "value": "402.00",
     "label": "march",
     "income": null,
     "expense": {
@@ -2422,7 +2422,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 351,
+    "value": "351.00",
     "label": "april",
     "income": null,
     "expense": {
@@ -2453,7 +2453,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 241,
+    "value": "241.00",
     "label": "may",
     "income": null,
     "expense": {
@@ -2484,7 +2484,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 241,
+    "value": "241.00",
     "label": "june",
     "income": null,
     "expense": {
@@ -2515,7 +2515,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 216,
+    "value": "216.00",
     "label": "july",
     "income": null,
     "expense": {
@@ -2546,7 +2546,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 281,
+    "value": "281.00",
     "label": "august",
     "income": null,
     "expense": {
@@ -2577,7 +2577,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 333,
+    "value": "333.00",
     "label": "september",
     "income": null,
     "expense": {
@@ -2608,7 +2608,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 0,
+    "value": "0.00",
     "label": "january",
     "income": null,
     "expense": {
@@ -2639,7 +2639,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 0,
+    "value": "0.00",
     "label": "february",
     "income": null,
     "expense": {
@@ -2670,7 +2670,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 0,
+    "value": "0.00",
     "label": "march",
     "income": null,
     "expense": {
@@ -2701,7 +2701,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 0,
+    "value": "0.00",
     "label": "april",
     "income": null,
     "expense": {
@@ -2732,7 +2732,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 166.26,
+    "value": "166.26",
     "label": "may",
     "income": null,
     "expense": {
@@ -2763,7 +2763,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 156,
+    "value": "156.00",
     "label": "june",
     "income": null,
     "expense": {
@@ -2794,7 +2794,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 156,
+    "value": "156.00",
     "label": "july",
     "income": null,
     "expense": {
@@ -2825,7 +2825,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 156,
+    "value": "156.00",
     "label": "august",
     "income": null,
     "expense": {
@@ -2856,7 +2856,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 156,
+    "value": "156.00",
     "label": "september",
     "income": null,
     "expense": {
@@ -2887,7 +2887,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 156,
+    "value": "156.00",
     "label": "october",
     "income": null,
     "expense": {
@@ -2918,7 +2918,7 @@
     "paid": true,
     "year": 2025,
     "code": 11,
-    "value": 0,
+    "value": "0.00",
     "label": "november",
     "income": null,
     "expense": {
@@ -2949,7 +2949,7 @@
     "paid": true,
     "year": 2025,
     "code": 12,
-    "value": 0,
+    "value": "0.00",
     "label": "december",
     "income": null,
     "expense": {
@@ -2980,7 +2980,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 0,
+    "value": "0.00",
     "label": "november",
     "income": null,
     "expense": {
@@ -3011,7 +3011,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 0,
+    "value": "0.00",
     "label": "december",
     "income": null,
     "expense": {
@@ -3042,7 +3042,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 0,
+    "value": "0.00",
     "label": "november",
     "income": null,
     "expense": {
@@ -3073,7 +3073,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 0,
+    "value": "0.00",
     "label": "december",
     "income": null,
     "expense": {
@@ -3104,7 +3104,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 827.71,
+    "value": "827.71",
     "label": "january",
     "income": null,
     "expense": {
@@ -3135,7 +3135,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 827.71,
+    "value": "827.71",
     "label": "february",
     "income": null,
     "expense": {
@@ -3166,7 +3166,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 827.71,
+    "value": "827.71",
     "label": "march",
     "income": null,
     "expense": {
@@ -3197,7 +3197,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 827.71,
+    "value": "827.71",
     "label": "april",
     "income": null,
     "expense": {
@@ -3228,7 +3228,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 806.21,
+    "value": "806.21",
     "label": "may",
     "income": null,
     "expense": {
@@ -3259,7 +3259,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 806.21,
+    "value": "806.21",
     "label": "june",
     "income": null,
     "expense": {
@@ -3290,7 +3290,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 766,
+    "value": "766.00",
     "label": "july",
     "income": null,
     "expense": {
@@ -3321,7 +3321,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 788,
+    "value": "788.00",
     "label": "august",
     "income": null,
     "expense": {
@@ -3352,7 +3352,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 788,
+    "value": "788.00",
     "label": "september",
     "income": null,
     "expense": {
@@ -3383,7 +3383,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 788,
+    "value": "788.00",
     "label": "october",
     "income": null,
     "expense": {
@@ -3414,7 +3414,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 1500,
+    "value": "1500.00",
     "label": "november",
     "income": null,
     "expense": {
@@ -3445,7 +3445,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 1500,
+    "value": "1500.00",
     "label": "december",
     "income": null,
     "expense": {
@@ -3476,7 +3476,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 1500,
+    "value": "1500.00",
     "label": "january",
     "income": null,
     "expense": {
@@ -3507,7 +3507,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 1500,
+    "value": "1500.00",
     "label": "february",
     "income": null,
     "expense": {
@@ -3538,7 +3538,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 1500,
+    "value": "1500.00",
     "label": "march",
     "income": null,
     "expense": {
@@ -3569,7 +3569,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 1500,
+    "value": "1500.00",
     "label": "april",
     "income": null,
     "expense": {
@@ -3600,7 +3600,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 1500,
+    "value": "1500.00",
     "label": "may",
     "income": null,
     "expense": {
@@ -3631,7 +3631,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 1500,
+    "value": "1500.00",
     "label": "june",
     "income": null,
     "expense": {
@@ -3662,7 +3662,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 1500,
+    "value": "1500.00",
     "label": "july",
     "income": null,
     "expense": {
@@ -3693,7 +3693,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 1500,
+    "value": "1500.00",
     "label": "august",
     "income": null,
     "expense": {
@@ -3724,7 +3724,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 1500,
+    "value": "1500.00",
     "label": "september",
     "income": null,
     "expense": {
@@ -3755,7 +3755,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 1500,
+    "value": "1500.00",
     "label": "october",
     "income": null,
     "expense": {
@@ -3786,7 +3786,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 150,
+    "value": "150.00",
     "label": "november",
     "income": null,
     "expense": {
@@ -3817,7 +3817,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 150,
+    "value": "150.00",
     "label": "january",
     "income": null,
     "expense": {
@@ -3848,7 +3848,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 150,
+    "value": "150.00",
     "label": "february",
     "income": null,
     "expense": {
@@ -3879,7 +3879,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 150,
+    "value": "150.00",
     "label": "march",
     "income": null,
     "expense": {
@@ -3910,7 +3910,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 150,
+    "value": "150.00",
     "label": "april",
     "income": null,
     "expense": {
@@ -3941,7 +3941,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 150,
+    "value": "150.00",
     "label": "may",
     "income": null,
     "expense": {
@@ -3972,7 +3972,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 150,
+    "value": "150.00",
     "label": "june",
     "income": null,
     "expense": {
@@ -4003,7 +4003,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 150,
+    "value": "150.00",
     "label": "july",
     "income": null,
     "expense": {
@@ -4034,7 +4034,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 150,
+    "value": "150.00",
     "label": "august",
     "income": null,
     "expense": {
@@ -4065,7 +4065,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 150,
+    "value": "150.00",
     "label": "september",
     "income": null,
     "expense": {
@@ -4096,7 +4096,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 150,
+    "value": "150.00",
     "label": "october",
     "income": null,
     "expense": {
@@ -4127,7 +4127,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 781,
+    "value": "781.00",
     "label": "january",
     "income": null,
     "expense": {
@@ -4158,7 +4158,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 972,
+    "value": "972.00",
     "label": "february",
     "income": null,
     "expense": {
@@ -4189,7 +4189,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 1034,
+    "value": "1034.00",
     "label": "march",
     "income": null,
     "expense": {
@@ -4220,7 +4220,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 877,
+    "value": "877.00",
     "label": "april",
     "income": null,
     "expense": {
@@ -4251,7 +4251,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 970,
+    "value": "970.00",
     "label": "may",
     "income": null,
     "expense": {
@@ -4282,7 +4282,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 1023,
+    "value": "1023.00",
     "label": "june",
     "income": null,
     "expense": {
@@ -4313,7 +4313,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 779,
+    "value": "779.00",
     "label": "july",
     "income": null,
     "expense": {
@@ -4344,7 +4344,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 783,
+    "value": "783.00",
     "label": "august",
     "income": null,
     "expense": {
@@ -4375,7 +4375,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 780,
+    "value": "780.00",
     "label": "september",
     "income": null,
     "expense": {
@@ -4406,7 +4406,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 792,
+    "value": "792.00",
     "label": "october",
     "income": null,
     "expense": {
@@ -4437,7 +4437,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 150,
+    "value": "150.00",
     "label": "december",
     "income": null,
     "expense": {
@@ -4468,7 +4468,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 150,
+    "value": "150.00",
     "label": "november",
     "income": null,
     "expense": {
@@ -4499,7 +4499,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 150,
+    "value": "150.00",
     "label": "december",
     "income": null,
     "expense": {
@@ -4530,7 +4530,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 150,
+    "value": "150.00",
     "label": "november",
     "income": null,
     "expense": {
@@ -4561,7 +4561,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 150,
+    "value": "150.00",
     "label": "december",
     "income": null,
     "expense": {
@@ -4592,7 +4592,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 150,
+    "value": "150.00",
     "label": "january",
     "income": null,
     "expense": {
@@ -4623,7 +4623,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 150,
+    "value": "150.00",
     "label": "february",
     "income": null,
     "expense": {
@@ -4654,7 +4654,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 150,
+    "value": "150.00",
     "label": "march",
     "income": null,
     "expense": {
@@ -4685,7 +4685,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 150,
+    "value": "150.00",
     "label": "april",
     "income": null,
     "expense": {
@@ -4716,7 +4716,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 150,
+    "value": "150.00",
     "label": "may",
     "income": null,
     "expense": {
@@ -4747,7 +4747,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 150,
+    "value": "150.00",
     "label": "june",
     "income": null,
     "expense": {
@@ -4778,7 +4778,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 150,
+    "value": "150.00",
     "label": "july",
     "income": null,
     "expense": {
@@ -4809,7 +4809,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 150,
+    "value": "150.00",
     "label": "august",
     "income": null,
     "expense": {
@@ -4840,7 +4840,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 150,
+    "value": "150.00",
     "label": "september",
     "income": null,
     "expense": {
@@ -4871,7 +4871,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 150,
+    "value": "150.00",
     "label": "october",
     "income": null,
     "expense": {
@@ -4902,7 +4902,7 @@
     "paid": false,
     "year": 2025,
     "code": 10,
-    "value": 0,
+    "value": "0.00",
     "label": "october",
     "income": null,
     "expense": {
@@ -4933,7 +4933,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 0,
+    "value": "0.00",
     "label": "november",
     "income": null,
     "expense": {
@@ -4964,7 +4964,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 0,
+    "value": "0.00",
     "label": "december",
     "income": null,
     "expense": {
@@ -4995,7 +4995,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 93,
+    "value": "93.00",
     "label": "january",
     "income": null,
     "expense": {
@@ -5026,7 +5026,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 108,
+    "value": "108.00",
     "label": "february",
     "income": null,
     "expense": {
@@ -5057,7 +5057,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 135,
+    "value": "135.00",
     "label": "march",
     "income": null,
     "expense": {
@@ -5088,7 +5088,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 123,
+    "value": "123.00",
     "label": "april",
     "income": null,
     "expense": {
@@ -5119,7 +5119,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 121,
+    "value": "121.00",
     "label": "may",
     "income": null,
     "expense": {
@@ -5150,7 +5150,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 100,
+    "value": "100.00",
     "label": "june",
     "income": null,
     "expense": {
@@ -5181,7 +5181,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 103,
+    "value": "103.00",
     "label": "july",
     "income": null,
     "expense": {
@@ -5212,7 +5212,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 100,
+    "value": "100.00",
     "label": "august",
     "income": null,
     "expense": {
@@ -5243,7 +5243,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 131,
+    "value": "131.00",
     "label": "september",
     "income": null,
     "expense": {
@@ -5274,7 +5274,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 0,
+    "value": "0.00",
     "label": "january",
     "income": null,
     "expense": {
@@ -5305,7 +5305,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 0,
+    "value": "0.00",
     "label": "february",
     "income": null,
     "expense": {
@@ -5336,7 +5336,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 0,
+    "value": "0.00",
     "label": "march",
     "income": null,
     "expense": {
@@ -5367,7 +5367,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 0,
+    "value": "0.00",
     "label": "april",
     "income": null,
     "expense": {
@@ -5398,7 +5398,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 215.03,
+    "value": "215.03",
     "label": "may",
     "income": null,
     "expense": {
@@ -5429,7 +5429,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 204,
+    "value": "204.00",
     "label": "june",
     "income": null,
     "expense": {
@@ -5460,7 +5460,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 215,
+    "value": "215.00",
     "label": "july",
     "income": null,
     "expense": {
@@ -5491,7 +5491,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 204,
+    "value": "204.00",
     "label": "august",
     "income": null,
     "expense": {
@@ -5522,7 +5522,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 204,
+    "value": "204.00",
     "label": "september",
     "income": null,
     "expense": {
@@ -5553,7 +5553,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 204,
+    "value": "204.00",
     "label": "october",
     "income": null,
     "expense": {
@@ -5584,7 +5584,7 @@
     "paid": true,
     "year": 2025,
     "code": 11,
-    "value": 0,
+    "value": "0.00",
     "label": "november",
     "income": null,
     "expense": {
@@ -5615,7 +5615,7 @@
     "paid": true,
     "year": 2025,
     "code": 12,
-    "value": 0,
+    "value": "0.00",
     "label": "december",
     "income": null,
     "expense": {
@@ -5646,7 +5646,7 @@
     "paid": false,
     "year": 2025,
     "code": 10,
-    "value": 0,
+    "value": "0.00",
     "label": "october",
     "income": null,
     "expense": {
@@ -5677,7 +5677,7 @@
     "paid": false,
     "year": 2025,
     "code": 11,
-    "value": 0,
+    "value": "0.00",
     "label": "november",
     "income": null,
     "expense": {
@@ -5708,7 +5708,7 @@
     "paid": false,
     "year": 2025,
     "code": 12,
-    "value": 0,
+    "value": "0.00",
     "label": "december",
     "income": null,
     "expense": {
@@ -5739,7 +5739,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 502.61,
+    "value": "502.61",
     "label": "january",
     "income": null,
     "expense": {
@@ -5770,7 +5770,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 496,
+    "value": "496.00",
     "label": "february",
     "income": null,
     "expense": {
@@ -5801,7 +5801,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 511,
+    "value": "511.00",
     "label": "march",
     "income": null,
     "expense": {
@@ -5832,7 +5832,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 507,
+    "value": "507.00",
     "label": "april",
     "income": null,
     "expense": {
@@ -5863,7 +5863,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 526,
+    "value": "526.00",
     "label": "may",
     "income": null,
     "expense": {
@@ -5894,7 +5894,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 551,
+    "value": "551.00",
     "label": "june",
     "income": null,
     "expense": {
@@ -5925,7 +5925,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 551,
+    "value": "551.00",
     "label": "july",
     "income": null,
     "expense": {
@@ -5956,7 +5956,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 550,
+    "value": "550.00",
     "label": "august",
     "income": null,
     "expense": {
@@ -5987,7 +5987,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 550,
+    "value": "550.00",
     "label": "september",
     "income": null,
     "expense": {
@@ -6018,7 +6018,7 @@
     "paid": true,
     "year": 2025,
     "code": 1,
-    "value": 150,
+    "value": "150.00",
     "label": "january",
     "income": null,
     "expense": {
@@ -6049,7 +6049,7 @@
     "paid": true,
     "year": 2025,
     "code": 2,
-    "value": 150,
+    "value": "150.00",
     "label": "february",
     "income": null,
     "expense": {
@@ -6080,7 +6080,7 @@
     "paid": true,
     "year": 2025,
     "code": 3,
-    "value": 150,
+    "value": "150.00",
     "label": "march",
     "income": null,
     "expense": {
@@ -6111,7 +6111,7 @@
     "paid": true,
     "year": 2025,
     "code": 4,
-    "value": 150,
+    "value": "150.00",
     "label": "april",
     "income": null,
     "expense": {
@@ -6142,7 +6142,7 @@
     "paid": true,
     "year": 2025,
     "code": 5,
-    "value": 150,
+    "value": "150.00",
     "label": "may",
     "income": null,
     "expense": {
@@ -6173,7 +6173,7 @@
     "paid": true,
     "year": 2025,
     "code": 6,
-    "value": 150,
+    "value": "150.00",
     "label": "june",
     "income": null,
     "expense": {
@@ -6204,7 +6204,7 @@
     "paid": true,
     "year": 2025,
     "code": 7,
-    "value": 150,
+    "value": "150.00",
     "label": "july",
     "income": null,
     "expense": {
@@ -6235,7 +6235,7 @@
     "paid": true,
     "year": 2025,
     "code": 8,
-    "value": 150,
+    "value": "150.00",
     "label": "august",
     "income": null,
     "expense": {
@@ -6266,7 +6266,7 @@
     "paid": true,
     "year": 2025,
     "code": 9,
-    "value": 150,
+    "value": "150.00",
     "label": "september",
     "income": null,
     "expense": {
@@ -6297,7 +6297,7 @@
     "paid": true,
     "year": 2025,
     "code": 10,
-    "value": 150,
+    "value": "150.00",
     "label": "october",
     "income": null,
     "expense": {
@@ -6322,5 +6322,678 @@
     "updated_at": "2025-10-11T22:44:55.679Z",
     "deleted_at": null,
     "received_at": "2025-10-11T19:30:44.106Z"
+  },
+  {
+    "id": "ff73082f-d1ae-4df2-89ea-b99eac06f123",
+    "paid": false,
+    "year": 2025,
+    "code": 1,
+    "value": 0,
+    "label": "january",
+    "income": {
+      "id": "24e73f13-a87f-4e40-8021-4979e6df2ef0",
+      "year": 2025,
+      "name": "Salary 6",
+      "total": 0,
+      "name_code": "salary_6",
+      "description": null,
+      "created_at": "2025-10-15T15:30:59.055Z",
+      "updated_at": "2025-10-15T15:30:59.055Z",
+      "deleted_at": null
+    },
+    "expense": null,
+    "created_at": "2025-10-15T15:30:59.063Z",
+    "updated_at": "2025-10-15T15:30:59.063Z",
+    "deleted_at": null,
+    "received_at": "2025-10-15T15:30:59.055Z"
+  },
+  {
+    "id": "ba0009d8-4dbc-493f-b8af-8c6021ab36fa",
+    "paid": false,
+    "year": 2025,
+    "code": 2,
+    "value": 0,
+    "label": "february",
+    "income": {
+      "id": "24e73f13-a87f-4e40-8021-4979e6df2ef0",
+      "year": 2025,
+      "name": "Salary 6",
+      "total": 0,
+      "name_code": "salary_6",
+      "description": null,
+      "created_at": "2025-10-15T15:30:59.055Z",
+      "updated_at": "2025-10-15T15:30:59.055Z",
+      "deleted_at": null
+    },
+    "expense": null,
+    "created_at": "2025-10-15T15:30:59.066Z",
+    "updated_at": "2025-10-15T15:30:59.066Z",
+    "deleted_at": null,
+    "received_at": "2025-10-15T15:30:59.055Z"
+  },
+  {
+    "id": "ff15193c-5026-47f9-b2a6-8b703e26a1cc",
+    "paid": false,
+    "year": 2025,
+    "code": 3,
+    "value": 0,
+    "label": "march",
+    "income": {
+      "id": "24e73f13-a87f-4e40-8021-4979e6df2ef0",
+      "year": 2025,
+      "name": "Salary 6",
+      "total": 0,
+      "name_code": "salary_6",
+      "description": null,
+      "created_at": "2025-10-15T15:30:59.055Z",
+      "updated_at": "2025-10-15T15:30:59.055Z",
+      "deleted_at": null
+    },
+    "expense": null,
+    "created_at": "2025-10-15T15:30:59.068Z",
+    "updated_at": "2025-10-15T15:30:59.068Z",
+    "deleted_at": null,
+    "received_at": "2025-10-15T15:30:59.055Z"
+  },
+  {
+    "id": "3f96cedd-b99f-4b60-b5b9-d8a0699c278c",
+    "paid": false,
+    "year": 2025,
+    "code": 4,
+    "value": 0,
+    "label": "april",
+    "income": {
+      "id": "24e73f13-a87f-4e40-8021-4979e6df2ef0",
+      "year": 2025,
+      "name": "Salary 6",
+      "total": 0,
+      "name_code": "salary_6",
+      "description": null,
+      "created_at": "2025-10-15T15:30:59.055Z",
+      "updated_at": "2025-10-15T15:30:59.055Z",
+      "deleted_at": null
+    },
+    "expense": null,
+    "created_at": "2025-10-15T15:30:59.072Z",
+    "updated_at": "2025-10-15T15:30:59.072Z",
+    "deleted_at": null,
+    "received_at": "2025-10-15T15:30:59.055Z"
+  },
+  {
+    "id": "442d6356-c981-48a1-8605-c9842e9ac03a",
+    "paid": false,
+    "year": 2025,
+    "code": 5,
+    "value": 0,
+    "label": "may",
+    "income": {
+      "id": "24e73f13-a87f-4e40-8021-4979e6df2ef0",
+      "year": 2025,
+      "name": "Salary 6",
+      "total": 0,
+      "name_code": "salary_6",
+      "description": null,
+      "created_at": "2025-10-15T15:30:59.055Z",
+      "updated_at": "2025-10-15T15:30:59.055Z",
+      "deleted_at": null
+    },
+    "expense": null,
+    "created_at": "2025-10-15T15:30:59.076Z",
+    "updated_at": "2025-10-15T15:30:59.076Z",
+    "deleted_at": null,
+    "received_at": "2025-10-15T15:30:59.055Z"
+  },
+  {
+    "id": "197ee71d-6f1c-4bef-984c-69a89aaafebf",
+    "paid": false,
+    "year": 2025,
+    "code": 6,
+    "value": 0,
+    "label": "june",
+    "income": {
+      "id": "24e73f13-a87f-4e40-8021-4979e6df2ef0",
+      "year": 2025,
+      "name": "Salary 6",
+      "total": 0,
+      "name_code": "salary_6",
+      "description": null,
+      "created_at": "2025-10-15T15:30:59.055Z",
+      "updated_at": "2025-10-15T15:30:59.055Z",
+      "deleted_at": null
+    },
+    "expense": null,
+    "created_at": "2025-10-15T15:30:59.080Z",
+    "updated_at": "2025-10-15T15:30:59.080Z",
+    "deleted_at": null,
+    "received_at": "2025-10-15T15:30:59.055Z"
+  },
+  {
+    "id": "dd4ee504-c16f-4795-aaff-791a05348eab",
+    "paid": false,
+    "year": 2025,
+    "code": 7,
+    "value": 0,
+    "label": "july",
+    "income": {
+      "id": "24e73f13-a87f-4e40-8021-4979e6df2ef0",
+      "year": 2025,
+      "name": "Salary 6",
+      "total": 0,
+      "name_code": "salary_6",
+      "description": null,
+      "created_at": "2025-10-15T15:30:59.055Z",
+      "updated_at": "2025-10-15T15:30:59.055Z",
+      "deleted_at": null
+    },
+    "expense": null,
+    "created_at": "2025-10-15T15:30:59.084Z",
+    "updated_at": "2025-10-15T15:30:59.084Z",
+    "deleted_at": null,
+    "received_at": "2025-10-15T15:30:59.055Z"
+  },
+  {
+    "id": "3a6f50ba-0657-4a2a-9007-db93a63c72c7",
+    "paid": false,
+    "year": 2025,
+    "code": 8,
+    "value": 0,
+    "label": "august",
+    "income": {
+      "id": "24e73f13-a87f-4e40-8021-4979e6df2ef0",
+      "year": 2025,
+      "name": "Salary 6",
+      "total": 0,
+      "name_code": "salary_6",
+      "description": null,
+      "created_at": "2025-10-15T15:30:59.055Z",
+      "updated_at": "2025-10-15T15:30:59.055Z",
+      "deleted_at": null
+    },
+    "expense": null,
+    "created_at": "2025-10-15T15:30:59.088Z",
+    "updated_at": "2025-10-15T15:30:59.088Z",
+    "deleted_at": null,
+    "received_at": "2025-10-15T15:30:59.055Z"
+  },
+  {
+    "id": "b37e3c26-a336-4b71-8b38-4e63f75e94c0",
+    "paid": false,
+    "year": 2025,
+    "code": 9,
+    "value": 0,
+    "label": "september",
+    "income": {
+      "id": "24e73f13-a87f-4e40-8021-4979e6df2ef0",
+      "year": 2025,
+      "name": "Salary 6",
+      "total": 0,
+      "name_code": "salary_6",
+      "description": null,
+      "created_at": "2025-10-15T15:30:59.055Z",
+      "updated_at": "2025-10-15T15:30:59.055Z",
+      "deleted_at": null
+    },
+    "expense": null,
+    "created_at": "2025-10-15T15:30:59.092Z",
+    "updated_at": "2025-10-15T15:30:59.092Z",
+    "deleted_at": null,
+    "received_at": "2025-10-15T15:30:59.055Z"
+  },
+  {
+    "id": "0c0b4717-d5a5-4454-8260-74ec90741e49",
+    "paid": false,
+    "year": 2025,
+    "code": 10,
+    "value": 0,
+    "label": "october",
+    "income": {
+      "id": "24e73f13-a87f-4e40-8021-4979e6df2ef0",
+      "year": 2025,
+      "name": "Salary 6",
+      "total": 0,
+      "name_code": "salary_6",
+      "description": null,
+      "created_at": "2025-10-15T15:30:59.055Z",
+      "updated_at": "2025-10-15T15:30:59.055Z",
+      "deleted_at": null
+    },
+    "expense": null,
+    "created_at": "2025-10-15T15:30:59.095Z",
+    "updated_at": "2025-10-15T15:30:59.095Z",
+    "deleted_at": null,
+    "received_at": "2025-10-15T15:30:59.055Z"
+  },
+  {
+    "id": "7e33fafa-b05f-4121-a6a1-99b21fb00dc2",
+    "paid": false,
+    "year": 2025,
+    "code": 11,
+    "value": 0,
+    "label": "november",
+    "income": {
+      "id": "24e73f13-a87f-4e40-8021-4979e6df2ef0",
+      "year": 2025,
+      "name": "Salary 6",
+      "total": 0,
+      "name_code": "salary_6",
+      "description": null,
+      "created_at": "2025-10-15T15:30:59.055Z",
+      "updated_at": "2025-10-15T15:30:59.055Z",
+      "deleted_at": null
+    },
+    "expense": null,
+    "created_at": "2025-10-15T15:30:59.098Z",
+    "updated_at": "2025-10-15T15:30:59.098Z",
+    "deleted_at": null,
+    "received_at": "2025-10-15T15:30:59.055Z"
+  },
+  {
+    "id": "59f1cead-68c8-40c0-891f-3f612688f4a1",
+    "paid": false,
+    "year": 2025,
+    "code": 12,
+    "value": 0,
+    "label": "december",
+    "income": {
+      "id": "24e73f13-a87f-4e40-8021-4979e6df2ef0",
+      "year": 2025,
+      "name": "Salary 6",
+      "total": 0,
+      "name_code": "salary_6",
+      "description": null,
+      "created_at": "2025-10-15T15:30:59.055Z",
+      "updated_at": "2025-10-15T15:30:59.055Z",
+      "deleted_at": null
+    },
+    "expense": null,
+    "created_at": "2025-10-15T15:30:59.102Z",
+    "updated_at": "2025-10-15T15:30:59.102Z",
+    "deleted_at": null,
+    "received_at": "2025-10-15T15:30:59.055Z"
+  },
+
+  {
+    "id": "847f4821-e94d-4216-82ac-33a5965f2712",
+    "paid": true,
+    "year": 2025,
+    "code": 1,
+    "value": 12.90,
+    "label": "january",
+    "expense": {
+      "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
+      "name": "Pessoal Credit Card Nubank Nubank Ifood Club",
+      "year": 2025,
+      "type": "FIXED",
+      "paid": true,
+      "total": 154.8,
+      "name_code": "pessoal_credit_card_nubank_nubank_ifood_club",
+      "total_paid": 154.8,
+      "total_pending": 0,
+      "description": "Taxa de utilização do serviço de cupons do iFood, me dando direito a 5 cupons de R$ 10.",
+      "instalment_number": 12,
+      "parent": null,
+      "children": [],
+      "is_aggregate": false,
+      "aggregate_name": null,
+      "created_at": "2025-10-13T19:43:09.116Z",
+      "updated_at": "2025-10-13T19:43:09.214Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-13T19:43:09.130Z",
+    "updated_at": "2025-10-13T19:43:09.130Z",
+    "deleted_at": null,
+    "received_at": "2025-10-13T16:43:09.124Z"
+  },
+  {
+    "id": "419c882c-b3d8-4c6f-a8fb-78321777a298",
+    "paid": true,
+    "year": 2025,
+    "code": 2,
+    "value": 12.90,
+    "label": "february",
+    "expense": {
+      "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
+      "name": "Pessoal Credit Card Nubank Nubank Ifood Club",
+      "year": 2025,
+      "type": "FIXED",
+      "paid": true,
+      "total": 154.8,
+      "name_code": "pessoal_credit_card_nubank_nubank_ifood_club",
+      "total_paid": 154.8,
+      "total_pending": 0,
+      "description": "Taxa de utilização do serviço de cupons do iFood, me dando direito a 5 cupons de R$ 10.",
+      "instalment_number": 12,
+      "parent": null,
+      "children": [],
+      "is_aggregate": false,
+      "aggregate_name": null,
+      "created_at": "2025-10-13T19:43:09.116Z",
+      "updated_at": "2025-10-13T19:43:09.214Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-13T19:43:09.134Z",
+    "updated_at": "2025-10-13T19:43:09.134Z",
+    "deleted_at": null,
+    "received_at": "2025-10-13T16:43:09.124Z"
+  },
+  {
+    "id": "2c60180a-2dcd-44ed-bd0e-60236717768b",
+    "paid": true,
+    "year": 2025,
+    "code": 3,
+    "value": 12.90,
+    "label": "march",
+    "expense": {
+      "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
+      "name": "Pessoal Credit Card Nubank Nubank Ifood Club",
+      "year": 2025,
+      "type": "FIXED",
+      "paid": true,
+      "total": 154.8,
+      "name_code": "pessoal_credit_card_nubank_nubank_ifood_club",
+      "total_paid": 154.8,
+      "total_pending": 0,
+      "description": "Taxa de utilização do serviço de cupons do iFood, me dando direito a 5 cupons de R$ 10.",
+      "instalment_number": 12,
+      "parent": null,
+      "children": [],
+      "is_aggregate": false,
+      "aggregate_name": null,
+      "created_at": "2025-10-13T19:43:09.116Z",
+      "updated_at": "2025-10-13T19:43:09.214Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-13T19:43:09.139Z",
+    "updated_at": "2025-10-13T19:43:09.139Z",
+    "deleted_at": null,
+    "received_at": "2025-10-13T16:43:09.124Z"
+  },
+  {
+    "id": "01f31c87-292b-4b91-b46a-e0476fd3d794",
+    "paid": true,
+    "year": 2025,
+    "code": 4,
+    "value": 12.90,
+    "label": "april",
+    "expense": {
+      "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
+      "name": "Pessoal Credit Card Nubank Nubank Ifood Club",
+      "year": 2025,
+      "type": "FIXED",
+      "paid": true,
+      "total": 154.8,
+      "name_code": "pessoal_credit_card_nubank_nubank_ifood_club",
+      "total_paid": 154.8,
+      "total_pending": 0,
+      "description": "Taxa de utilização do serviço de cupons do iFood, me dando direito a 5 cupons de R$ 10.",
+      "instalment_number": 12,
+      "parent": null,
+      "children": [],
+      "is_aggregate": false,
+      "aggregate_name": null,
+      "created_at": "2025-10-13T19:43:09.116Z",
+      "updated_at": "2025-10-13T19:43:09.214Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-13T19:43:09.142Z",
+    "updated_at": "2025-10-13T19:43:09.142Z",
+    "deleted_at": null,
+    "received_at": "2025-10-13T16:43:09.124Z"
+  },
+  {
+    "id": "cbbefdec-4dc6-4ee3-8441-0f355cec7b56",
+    "paid": true,
+    "year": 2025,
+    "code": 5,
+    "value": 12.90,
+    "label": "may",
+    "expense": {
+      "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
+      "name": "Pessoal Credit Card Nubank Nubank Ifood Club",
+      "year": 2025,
+      "type": "FIXED",
+      "paid": true,
+      "total": 154.8,
+      "name_code": "pessoal_credit_card_nubank_nubank_ifood_club",
+      "total_paid": 154.8,
+      "total_pending": 0,
+      "description": "Taxa de utilização do serviço de cupons do iFood, me dando direito a 5 cupons de R$ 10.",
+      "instalment_number": 12,
+      "parent": null,
+      "children": [],
+      "is_aggregate": false,
+      "aggregate_name": null,
+      "created_at": "2025-10-13T19:43:09.116Z",
+      "updated_at": "2025-10-13T19:43:09.214Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-13T19:43:09.148Z",
+    "updated_at": "2025-10-13T19:43:09.148Z",
+    "deleted_at": null,
+    "received_at": "2025-10-13T16:43:09.124Z"
+  },
+  {
+    "id": "97ed1045-817b-44e1-b9f2-547a9f62d3c1",
+    "paid": true,
+    "year": 2025,
+    "code": 6,
+    "value": 12.90,
+    "label": "june",
+    "expense": {
+      "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
+      "name": "Pessoal Credit Card Nubank Nubank Ifood Club",
+      "year": 2025,
+      "type": "FIXED",
+      "paid": true,
+      "total": 154.8,
+      "name_code": "pessoal_credit_card_nubank_nubank_ifood_club",
+      "total_paid": 154.8,
+      "total_pending": 0,
+      "description": "Taxa de utilização do serviço de cupons do iFood, me dando direito a 5 cupons de R$ 10.",
+      "instalment_number": 12,
+      "parent": null,
+      "children": [],
+      "is_aggregate": false,
+      "aggregate_name": null,
+      "created_at": "2025-10-13T19:43:09.116Z",
+      "updated_at": "2025-10-13T19:43:09.214Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-13T19:43:09.152Z",
+    "updated_at": "2025-10-13T19:43:09.152Z",
+    "deleted_at": null,
+    "received_at": "2025-10-13T16:43:09.125Z"
+  },
+  {
+    "id": "77a8ab79-97c8-4935-a8a6-69703f3ea566",
+    "paid": true,
+    "year": 2025,
+    "code": 7,
+    "value": 12.90,
+    "label": "july",
+    "expense": {
+      "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
+      "name": "Pessoal Credit Card Nubank Nubank Ifood Club",
+      "year": 2025,
+      "type": "FIXED",
+      "paid": true,
+      "total": 154.8,
+      "name_code": "pessoal_credit_card_nubank_nubank_ifood_club",
+      "total_paid": 154.8,
+      "total_pending": 0,
+      "description": "Taxa de utilização do serviço de cupons do iFood, me dando direito a 5 cupons de R$ 10.",
+      "instalment_number": 12,
+      "parent": null,
+      "children": [],
+      "is_aggregate": false,
+      "aggregate_name": null,
+      "created_at": "2025-10-13T19:43:09.116Z",
+      "updated_at": "2025-10-13T19:43:09.214Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-13T19:43:09.156Z",
+    "updated_at": "2025-10-13T19:43:09.156Z",
+    "deleted_at": null,
+    "received_at": "2025-10-13T16:43:09.125Z"
+  },
+  {
+    "id": "ab7739bb-3869-48a8-9528-ffecf2011da0",
+    "paid": true,
+    "year": 2025,
+    "code": 8,
+    "value": 12.90,
+    "label": "august",
+    "expense": {
+      "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
+      "name": "Pessoal Credit Card Nubank Nubank Ifood Club",
+      "year": 2025,
+      "type": "FIXED",
+      "paid": true,
+      "total": 154.8,
+      "name_code": "pessoal_credit_card_nubank_nubank_ifood_club",
+      "total_paid": 154.8,
+      "total_pending": 0,
+      "description": "Taxa de utilização do serviço de cupons do iFood, me dando direito a 5 cupons de R$ 10.",
+      "instalment_number": 12,
+      "parent": null,
+      "children": [],
+      "is_aggregate": false,
+      "aggregate_name": null,
+      "created_at": "2025-10-13T19:43:09.116Z",
+      "updated_at": "2025-10-13T19:43:09.214Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-13T19:43:09.162Z",
+    "updated_at": "2025-10-13T19:43:09.162Z",
+    "deleted_at": null,
+    "received_at": "2025-10-13T16:43:09.125Z"
+  },
+  {
+    "id": "39d1532c-7c82-4b70-b38b-1c5b700c02b3",
+    "paid": true,
+    "year": 2025,
+    "code": 9,
+    "value": 12.90,
+    "label": "september",
+    "expense": {
+      "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
+      "name": "Pessoal Credit Card Nubank Nubank Ifood Club",
+      "year": 2025,
+      "type": "FIXED",
+      "paid": true,
+      "total": 154.8,
+      "name_code": "pessoal_credit_card_nubank_nubank_ifood_club",
+      "total_paid": 154.8,
+      "total_pending": 0,
+      "description": "Taxa de utilização do serviço de cupons do iFood, me dando direito a 5 cupons de R$ 10.",
+      "instalment_number": 12,
+      "parent": null,
+      "children": [],
+      "is_aggregate": false,
+      "aggregate_name": null,
+      "created_at": "2025-10-13T19:43:09.116Z",
+      "updated_at": "2025-10-13T19:43:09.214Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-13T19:43:09.168Z",
+    "updated_at": "2025-10-13T19:43:09.168Z",
+    "deleted_at": null,
+    "received_at": "2025-10-13T16:43:09.125Z"
+  },
+  {
+    "id": "fbd446e1-48d7-4981-8ae0-d2525d69a009",
+    "paid": true,
+    "year": 2025,
+    "code": 10,
+    "value": 12.90,
+    "label": "october",
+    "expense": {
+      "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
+      "name": "Pessoal Credit Card Nubank Nubank Ifood Club",
+      "year": 2025,
+      "type": "FIXED",
+      "paid": true,
+      "total": 154.8,
+      "name_code": "pessoal_credit_card_nubank_nubank_ifood_club",
+      "total_paid": 154.8,
+      "total_pending": 0,
+      "description": "Taxa de utilização do serviço de cupons do iFood, me dando direito a 5 cupons de R$ 10.",
+      "instalment_number": 12,
+      "parent": null,
+      "children": [],
+      "is_aggregate": false,
+      "aggregate_name": null,
+      "created_at": "2025-10-13T19:43:09.116Z",
+      "updated_at": "2025-10-13T19:43:09.214Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-13T19:43:09.172Z",
+    "updated_at": "2025-10-13T19:43:09.172Z",
+    "deleted_at": null,
+    "received_at": "2025-10-13T16:43:09.125Z"
+  },
+  {
+    "id": "306e77e3-4537-40f6-93f9-17048cd0b6a7",
+    "paid": false,
+    "year": 2025,
+    "code": 11,
+    "value": 12.90,
+    "label": "november",
+    "expense": {
+      "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
+      "name": "Pessoal Credit Card Nubank Nubank Ifood Club",
+      "year": 2025,
+      "type": "FIXED",
+      "paid": true,
+      "total": 154.8,
+      "name_code": "pessoal_credit_card_nubank_nubank_ifood_club",
+      "total_paid": 154.8,
+      "total_pending": 0,
+      "description": "Taxa de utilização do serviço de cupons do iFood, me dando direito a 5 cupons de R$ 10.",
+      "instalment_number": 12,
+      "parent": null,
+      "children": [],
+      "is_aggregate": false,
+      "aggregate_name": null,
+      "created_at": "2025-10-13T19:43:09.116Z",
+      "updated_at": "2025-10-13T19:43:09.214Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-13T19:43:09.184Z",
+    "updated_at": "2025-10-13T19:43:24.381Z",
+    "deleted_at": null,
+    "received_at": "2025-10-13T16:43:09.125Z"
+  },
+  {
+    "id": "d5440d81-50fb-45b4-8d24-da588cd8a0ab",
+    "paid": false,
+    "year": 2025,
+    "code": 12,
+    "value": 12.90,
+    "label": "december",
+    "expense": {
+      "id": "e9bdb24a-99c0-4256-bdfd-8e1b3ea8f9dd",
+      "name": "Pessoal Credit Card Nubank Nubank Ifood Club",
+      "year": 2025,
+      "type": "FIXED",
+      "paid": true,
+      "total": 154.8,
+      "name_code": "pessoal_credit_card_nubank_nubank_ifood_club",
+      "total_paid": 154.8,
+      "total_pending": 0,
+      "description": "Taxa de utilização do serviço de cupons do iFood, me dando direito a 5 cupons de R$ 10.",
+      "instalment_number": 12,
+      "parent": null,
+      "children": [],
+      "is_aggregate": false,
+      "aggregate_name": null,
+      "created_at": "2025-10-13T19:43:09.116Z",
+      "updated_at": "2025-10-13T19:43:09.214Z",
+      "deleted_at": null
+    },
+    "created_at": "2025-10-13T19:43:09.192Z",
+    "updated_at": "2025-10-13T19:43:24.387Z",
+    "deleted_at": null,
+    "received_at": "2025-10-13T16:43:09.125Z"
   }
 ]

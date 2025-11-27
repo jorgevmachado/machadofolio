@@ -38,10 +38,10 @@ describe('MoveService', () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 PokemonMoveService,
-              { provide: getRepositoryToken(PokemonMove), useClass: Repository },
-              {
-                provide: PokeApiService, useValue: { move: { getOne: jest.fn() }}
-              }
+                { provide: getRepositoryToken(PokemonMove), useClass: Repository },
+                {
+                    provide: PokeApiService, useValue: { move: { getOne: jest.fn() }}
+                }
             ],
         }).compile();
 

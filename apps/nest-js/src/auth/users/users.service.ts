@@ -13,7 +13,7 @@ import USER_LIST_DEVELOPMENT_JSON from '../../../seeds/development/users.json';
 import USER_LIST_STAGING_JSON from '../../../seeds/staging/users.json';
 import USER_LIST_PRODUCTION_JSON from '../../../seeds/production/users.json';
 
-import { GenerateSeeds, Service, type TBy } from '../../shared';
+import { SeedsGenerated, Service, type TBy } from '../../shared';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { CredentialsUserDto } from './dto/credentials-user.dto';
@@ -28,34 +28,34 @@ export class UsersService extends Service<User>{
     ) {
         super('users', ['finance'], repository);
     }
-  async create({
-                 cpf,
-                 name,
-                 email,
-                 gender,
-                 whatsapp,
-                 password,
-                 date_of_birth
-}: CreateUserDto) {
-      const salt = await bcrypt.genSalt();
-      const hashPassword = await bcrypt.hash(password, salt);
-      const confirmation_token = crypto.randomBytes(32).toString('hex');
-      const user = new UserConstructor({
-          cpf,
-          salt,
-          name,
-          email,
-          gender,
-          whatsapp,
-          password: hashPassword,
-          date_of_birth,
-          confirmation_token,
-      });
-      await this.hasInactiveUser('cpf', user.cpf);
-      await this.hasInactiveUser('email', user.email);
-      await this.hasInactiveUser('whatsapp', user.whatsapp);
-      return await this.save(user as User);
-  }
+    async create({
+                     cpf,
+                     name,
+                     email,
+                     gender,
+                     whatsapp,
+                     password,
+                     date_of_birth
+                 }: CreateUserDto) {
+        const salt = await bcrypt.genSalt();
+        const hashPassword = await bcrypt.hash(password, salt);
+        const confirmation_token = crypto.randomBytes(32).toString('hex');
+        const user = new UserConstructor({
+            cpf,
+            salt,
+            name,
+            email,
+            gender,
+            whatsapp,
+            password: hashPassword,
+            date_of_birth,
+            confirmation_token,
+        });
+        await this.hasInactiveUser('cpf', user.cpf);
+        await this.hasInactiveUser('email', user.email);
+        await this.hasInactiveUser('whatsapp', user.whatsapp);
+        return await this.save(user as User);
+    }
 
     private async hasInactiveUser(by: TBy, value: string) {
         const entity = await this.queries.findBy({
@@ -191,7 +191,7 @@ export class UsersService extends Service<User>{
         return await Promise.all(seeds.map( async (item) => await this.seed(item, password)));
     }
 
-    async generateSeed(withSeed: boolean): Promise<GenerateSeeds<User>> {
+    async generateSeed(withSeed: boolean): Promise<SeedsGenerated<User>> {
         const rootSeedsDir = this.file.getSeedsDirectory();
         return await this.generateEntitySeeds({
             staging: USER_LIST_STAGING_JSON,
@@ -200,12 +200,12 @@ export class UsersService extends Service<User>{
             production: USER_LIST_PRODUCTION_JSON,
             development: USER_LIST_DEVELOPMENT_JSON,
             withRelations: true,
-            filterGenerateEntitySeedsFn: (json, item) => json.cpf === item.cpf || json.email === item.email,
+            filterGenerateEntityFn: (json, item) => json.cpf === item.cpf || json.email === item.email,
         });
     }
 
     async persistSeed(withSeed: boolean) {
-        return await this.persistEntitySeeds({
+        return await this.seeder.persistEntity({
             withSeed,
             staging: USER_LIST_STAGING_JSON,
             production: USER_LIST_PRODUCTION_JSON,
