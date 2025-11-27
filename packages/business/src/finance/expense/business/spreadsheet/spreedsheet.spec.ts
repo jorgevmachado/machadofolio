@@ -1,4 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/globals';
+import * as services from '@repo/services';
+import { CycleOfMonths, MONTHS, Spreadsheet } from '@repo/services';
+
+import type { BillEntity } from '../../../bill';
+
+import { BILL_MOCK, EXPENSE_MOCK } from '../../../mock';
+
+import { CreateExpenseParams, ExpenseEntity, UploadExpenseParams } from '../../types';
+
+import SpreadsheetBusiness from './spreadsheet';
+import type * as ExcelJS from 'exceljs';
 
 jest.mock('@repo/services', () => {
     const originalModule = jest.requireActual('@repo/services');
@@ -11,31 +22,25 @@ jest.mock('@repo/services', () => {
 });
 
 jest.mock('../../expense', () => {
-    class ExpenseMock {}
+    class ExpenseMock {
+    }
+
     return { Expense: ExpenseMock };
 });
 
 jest.mock('../../../bill', () => {
-    class BillMock {}
-    return { Bill: BillMock, EBillType: {
+    class BillMock {
+    }
+
+    return {
+        Bill: BillMock, EBillType: {
             PIX: 'PIX',
             BANK_SLIP: 'BANK_SLIP',
             CREDIT_CARD: 'CREDIT_CARD',
             ACCOUNT_DEBIT: 'ACCOUNT_DEBIT',
-        }};
+        }
+    };
 });
-
-import * as services from '@repo/services';
-import { CycleOfMonths, MONTHS, Spreadsheet } from '@repo/services';
-
-import type { BillEntity } from '../../../bill';
-
-import { BILL_MOCK, EXPENSE_MOCK } from '../../../mock';
-
-import { CreateExpenseParams, ExpenseEntity, UploadExpenseParams } from '../../types';
-
-import  SpreadsheetBusiness from './spreadsheet';
-import type * as ExcelJS from 'exceljs';
 
 describe('Expense Spreadsheet Business', () => {
     let business: SpreadsheetBusiness;
@@ -316,48 +321,91 @@ describe('Expense Spreadsheet Business', () => {
                 $col$row: ''
             }
             spreadsheetMock.workSheet.cell.mockImplementation((row, col) => {
-                const cell = {...mockCell};
-                if(row ===  1 && col === 1) {
+                const cell = { ...mockCell };
+                if (row === 1 && col === 1) {
                     cell.value = 'date';
                     return cell;
                 }
-                if(row === 1 && col === 2) {
+                if (row === 1 && col === 2) {
                     cell.value = 'title';
                     return cell;
                 }
-                if(row === 1 && col === 3) {
+                if (row === 1 && col === 3) {
                     cell.value = 'amount';
                     return cell;
                 }
 
-                if(row ===  2 && col === 1) {
+                if (row === 2 && col === 1) {
                     cell.value = '2025-01-02';
                     return cell;
                 }
-                if(row === 2 && col === 2) {
+                if (row === 2 && col === 2) {
                     cell.value = 'Supplier';
                     return cell;
                 }
-                if(row === 2 && col === 3) {
+                if (row === 2 && col === 3) {
                     cell.value = '100';
                     return cell;
                 }
 
-                if(row ===  3 && col === 1) {
+                if (row === 3 && col === 1) {
                     cell.value = '2025-01-03';
                     return cell;
                 }
-                if(row === 3 && col === 2) {
-                    cell.value = 'Supplier 2';
+                if (row === 3 && col === 2) {
+                    cell.value = 'Other Supplier';
                     return cell;
                 }
-                if(row === 3 && col === 3) {
+                if (row === 3 && col === 3) {
                     cell.value = '300';
                     return cell;
                 }
 
                 return cell
             });
+
+            jest.spyOn(business, 'buildFromNubankWorkSheet' as any).mockImplementation((params) => {
+                const result = {
+                    type: 'VARIABLE',
+                    paid: true,
+                    value: 100,
+                    month: 'JANUARY',
+                    supplier: 'Supplier',
+                    description: 'Create by Document Import',
+                    received_at: '2025-01-02T00:00:00.000Z',
+                    instalment_number: 1
+                }
+
+                if(params['cellSupplier'] === 'Other Supplier') {
+                    result.value = 300;
+                    result.supplier = 'Other Supplier';
+                    result.received_at = '2025-01-03T00:00:00.000Z';
+                }
+
+                return result;
+            });
+
+            jest.spyOn(business, 'mapperBuildForCreation' as any).mockReturnValue([
+                {
+                    type: 'VARIABLE',
+                    paid: true,
+                    value: 100,
+                    month: 'JANUARY',
+                    supplier: 'Supplier',
+                    description: 'Create by Document Import',
+                    received_at: '2025-01-02T00:00:00.000Z',
+                    instalment_number: 1
+                },
+                {
+                    type: 'VARIABLE',
+                    paid: true,
+                    value: 300,
+                    month: 'JANUARY',
+                    supplier: 'Other Supplier',
+                    description: 'Create by Document Import',
+                    received_at: '2025-01-03T00:00:00.000Z',
+                    instalment_number: 1
+                }]);
         })
 
         it('should return empty list when dont received valid data', () => {
@@ -365,7 +413,8 @@ describe('Expense Spreadsheet Business', () => {
                 nextRow: 2,
                 totalRows: 0
             })
-            const result =  business.buildForCreation(
+            jest.spyOn(business, 'mapperBuildForCreation' as any).mockReturnValue([]);
+            const result = business.buildForCreation(
                 spreadsheetMock.workSheet,
                 undefined
             )
@@ -376,8 +425,9 @@ describe('Expense Spreadsheet Business', () => {
             jest.spyOn(business, 'validateWorkSheetToBuild' as any).mockReturnValue({
                 nextRow: 2,
                 totalRows: 2
-            })
-            const result =  business.buildForCreation(
+            });
+
+            const result = business.buildForCreation(
                 spreadsheetMock.workSheet,
                 {
                     paid: true,
@@ -397,7 +447,7 @@ describe('Expense Spreadsheet Business', () => {
             expect(result[1].paid).toBeTruthy();
             expect(result[1].value).toEqual(300);
             expect(result[1].month).toEqual('JANUARY');
-            expect(result[1].supplier).toEqual('Supplier 2');
+            expect(result[1].supplier).toEqual('Other Supplier');
             expect(result[1].description).toEqual('Create by Document Import');
             expect(result[1].instalment_number).toEqual(1);
         });
@@ -407,7 +457,7 @@ describe('Expense Spreadsheet Business', () => {
                 nextRow: 2,
                 totalRows: 3
             })
-            const result =  business.buildForCreation(
+            const result = business.buildForCreation(
                 spreadsheetMock.workSheet,
                 {
                     repeatedWords: ['Supplier 3']
@@ -415,18 +465,18 @@ describe('Expense Spreadsheet Business', () => {
             )
             expect(result).toHaveLength(2);
             expect(result[0].type).toEqual('VARIABLE');
-            expect(result[0].paid).toBeFalsy();
+            expect(result[0].paid).toBeTruthy();
             expect(result[0].value).toEqual(100);
-            expect(result[0].month).toBeUndefined();
+            expect(result[0].month).toEqual('JANUARY');
             expect(result[0].supplier).toEqual('Supplier');
             expect(result[0].description).toEqual('Create by Document Import');
             expect(result[0].instalment_number).toEqual(1);
 
             expect(result[1].type).toEqual('VARIABLE');
-            expect(result[1].paid).toBeFalsy();
+            expect(result[1].paid).toBeTruthy();
             expect(result[1].value).toEqual(300);
-            expect(result[1].month).toBeUndefined()
-            expect(result[1].supplier).toEqual('Supplier 2');
+            expect(result[0].month).toEqual('JANUARY');
+            expect(result[1].supplier).toEqual('Other Supplier');
             expect(result[1].description).toEqual('Create by Document Import');
             expect(result[1].instalment_number).toEqual(1);
         });
@@ -1344,7 +1394,7 @@ describe('Expense Spreadsheet Business', () => {
                     createExpenseParams,
                     createExpenseParams,
                     createExpenseParams,
-                    {...createExpenseParams, supplier: 'Supplier 2' },
+                    { ...createExpenseParams, supplier: 'Supplier 2' },
                 ];
 
                 const result = business['mapperBuildForCreation'](listCreateExpenseParams);
@@ -1366,7 +1416,7 @@ describe('Expense Spreadsheet Business', () => {
                     createExpenseParams,
                     createExpenseParams,
                     createExpenseParams,
-                    {...createExpenseParams, supplier: {...mockEntity.supplier, name: 'Supplier 2'} },
+                    { ...createExpenseParams, supplier: { ...mockEntity.supplier, name: 'Supplier 2' } },
                 ];
 
                 const result = business['mapperBuildForCreation'](listCreateExpenseParams);
@@ -1384,7 +1434,7 @@ describe('Expense Spreadsheet Business', () => {
                     instalment_number: 1,
                 };
 
-                const listCreateExpenseParams: Array<CreateExpenseParams> = [ createExpenseParams, createExpenseParams ];
+                const listCreateExpenseParams: Array<CreateExpenseParams> = [createExpenseParams, createExpenseParams];
 
                 const result = business['mapperBuildForCreation'](listCreateExpenseParams);
                 expect(result).toHaveLength(1);
@@ -1400,7 +1450,7 @@ describe('Expense Spreadsheet Business', () => {
                     instalment_number: 1,
                 };
 
-                const listCreateExpenseParams: Array<CreateExpenseParams> = [ createExpenseParams];
+                const listCreateExpenseParams: Array<CreateExpenseParams> = [createExpenseParams];
 
                 const result = business['mapperBuildForCreation'](listCreateExpenseParams);
                 expect(result).toHaveLength(0);
@@ -1424,7 +1474,10 @@ describe('Expense Spreadsheet Business', () => {
             });
 
             it('Should return custom replace words.', () => {
-                const result = business['mapperText']('Pao de Acucar-2372', [{ after: 'Sugar Loaf', before: 'Pao de Acucar'}]);
+                const result = business['mapperText']('Pao de Acucar-2372', [{
+                    after: 'Sugar Loaf',
+                    before: 'Pao de Acucar'
+                }]);
                 expect(result).toEqual('Sugar Loaf');
             });
         });
@@ -1459,13 +1512,13 @@ describe('Expense Spreadsheet Business', () => {
             });
         });
 
-        describe('buildFromCreditCardSheet', () => {
+        describe('buildFromNubankWorkSheet', () => {
             it('Should build object correctly from worksheet', () => {
                 jest.spyOn(business, 'treatSupplierInstallmentNumber' as any).mockReturnValue({
                     supplier: 'Sugar Loaf',
                     instalment_number: 1
                 });
-                const result = business['buildFromCreditCardSheet'](
+                const result = business['buildFromNubankWorkSheet'](
                     '2025-01-01T17:37:47.783Z',
                     '99.99',
                     'Sugar Loaf',
@@ -1483,7 +1536,7 @@ describe('Expense Spreadsheet Business', () => {
                     supplier: 'Sugar Loaf',
                     instalment_number: 1
                 });
-                const result = business['buildFromCreditCardSheet'](
+                const result = business['buildFromNubankWorkSheet'](
                     '2025-01-01T17:37:47.783Z',
                     'A',
                     'Sugar Loaf',
@@ -1523,7 +1576,7 @@ describe('Expense Spreadsheet Business', () => {
                         return result;
                     }
 
-                    if(col === 2) {
+                    if (col === 2) {
                         return { ...result, totalRows: 30 };
                     }
                     return result;
@@ -1546,7 +1599,7 @@ describe('Expense Spreadsheet Business', () => {
                         return result;
                     }
 
-                    if(col === 3) {
+                    if (col === 3) {
                         return { ...result, totalRows: 30 };
                     }
 

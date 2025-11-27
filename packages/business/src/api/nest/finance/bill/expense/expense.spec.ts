@@ -1,3 +1,12 @@
+const mockUrlToBlob = jest.fn()
+jest.mock('@repo/services', () => {
+    const originalModule = jest.requireActual('@repo/services') as Record<string, any>;
+    return {
+        ...originalModule,
+        urlToBlob: mockUrlToBlob,
+    }
+});
+
 jest.mock('../../../abstract', () => {
     class NestModuleAbstract {
         public pathUrl: string;
@@ -8,6 +17,7 @@ jest.mock('../../../abstract', () => {
         public getAll = jest.fn<(...args: any[]) => Promise<any>>();
         public getOne = jest.fn<(...args: any[]) => Promise<any>>();
         public delete = jest.fn<(...args: any[]) => Promise<any>>();
+        public update = jest.fn<(...args: any[]) => Promise<any>>();
         constructor(config: any) {
             this.pathUrl = config?.pathUrl;
             this.subPathUrl = config?.subPathUrl;
@@ -26,7 +36,7 @@ import {
     jest,
 } from '@jest/globals';
 
-import { EMonth } from '@repo/services';
+import { EMonth, ReplaceWordParam } from '@repo/services';
 
 import type { ICreateExpenseParams, IUpdateExpenseParams } from './types';
 import { EExpenseType } from './enum';
@@ -38,65 +48,65 @@ describe('Expense', () => {
     const mockConfig = { baseUrl: mockBaseUrl, headers: mockHeaders };
 
     const mockEntity = {
-            id: '41b0ef6f-0b6e-4633-94d9-14680010a0e2',
-            name: 'Ingrid Residential Bank Slip Neoenergia',
+        id: '41b0ef6f-0b6e-4633-94d9-14680010a0e2',
+        name: 'Ingrid Residential Bank Slip Neoenergia',
+        year: 2025,
+        bill: {
+            id: '4245135e-0e58-48fc-8fd2-9353d0f56c34',
             year: 2025,
-            bill: {
-                id: '4245135e-0e58-48fc-8fd2-9353d0f56c34',
-                year: 2025,
-                type: 'BANK_SLIP',
-                name: 'Ingrid Residential Bank Slip',
-                total: 4110,
-                name_code: 'ingrid_residential_bank_slip',
-                all_paid: false,
-                total_paid: 2610,
-                created_at: '2025-04-02T19:11:59.385Z',
-                updated_at: '2025-04-02T19:11:59.385Z',
-                deleted_at: null
-            },
-            type: EExpenseType.VARIABLE,
-            paid: false,
-            total: 654.26,
-            supplier: {
-                id: '5a724db5-532f-4622-97b0-5b7ddf5631dc',
-                name: 'Neoenergia',
-                name_code: 'neoenergia',
-                created_at: '2025-04-02T19:11:59.334Z',
-                updated_at: '2025-04-02T19:11:59.334Z',
-                deleted_at: null
-            },
-            name_code: 'ingrid_residential_bank_slip_neoenergia',
-            total_paid: 654.26,
-            january: 284.69,
-            january_paid: true,
-            february: 369.57,
-            february_paid: true,
-            march: 0,
-            march_paid: true,
-            april: 0,
-            april_paid: true,
-            may: 0,
-            may_paid: true,
-            june: 0,
-            june_paid: true,
-            july: 0,
-            july_paid: true,
-            august: 0,
-            august_paid: true,
-            september: 0,
-            september_paid: true,
-            october: 0,
-            october_paid: true,
-            november: 0,
-            november_paid: true,
-            december: 0,
-            december_paid: true,
-            description: null,
-            instalment_number: 1,
-            created_at: '2025-02-01T17:37:47.783Z',
-            updated_at: '2025-02-01T14:40:31.207Z',
+            type: 'BANK_SLIP',
+            name: 'Ingrid Residential Bank Slip',
+            total: 4110,
+            name_code: 'ingrid_residential_bank_slip',
+            all_paid: false,
+            total_paid: 2610,
+            created_at: '2025-04-02T19:11:59.385Z',
+            updated_at: '2025-04-02T19:11:59.385Z',
             deleted_at: null
-        };
+        },
+        type: EExpenseType.VARIABLE,
+        paid: false,
+        total: 654.26,
+        supplier: {
+            id: '5a724db5-532f-4622-97b0-5b7ddf5631dc',
+            name: 'Neoenergia',
+            name_code: 'neoenergia',
+            created_at: '2025-04-02T19:11:59.334Z',
+            updated_at: '2025-04-02T19:11:59.334Z',
+            deleted_at: null
+        },
+        name_code: 'ingrid_residential_bank_slip_neoenergia',
+        total_paid: 654.26,
+        january: 284.69,
+        january_paid: true,
+        february: 369.57,
+        february_paid: true,
+        march: 0,
+        march_paid: true,
+        april: 0,
+        april_paid: true,
+        may: 0,
+        may_paid: true,
+        june: 0,
+        june_paid: true,
+        july: 0,
+        july_paid: true,
+        august: 0,
+        august_paid: true,
+        september: 0,
+        september_paid: true,
+        october: 0,
+        october_paid: true,
+        november: 0,
+        november_paid: true,
+        december: 0,
+        december_paid: true,
+        description: null,
+        instalment_number: 1,
+        created_at: '2025-02-01T17:37:47.783Z',
+        updated_at: '2025-02-01T14:40:31.207Z',
+        deleted_at: null
+    };
     const mockPaginateParams = { page: 1, limit: 10 };
     const mockEntityList = [mockEntity, mockEntity];
     const mockEntityPaginate = {
@@ -121,7 +131,6 @@ describe('Expense', () => {
     afterEach(() => {
         jest.resetModules();
     });
-
 
     describe('getAll', () => {
         it('should call get with correct URL and parameters for getAll', async () => {
@@ -191,7 +200,7 @@ describe('Expense', () => {
 
     describe('update', () => {
         it('should call update with correct URL and parameters for update', async () => {
-            (expense.path as any).mockResolvedValue(mockEntity);
+            (expense.update as any).mockResolvedValue(mockEntity);
 
             const mockExpenseUpdateParams: IUpdateExpenseParams = {
                 ...mockEntity,
@@ -200,11 +209,9 @@ describe('Expense', () => {
                 supplier: mockEntity.supplier.id,
             };
 
-            const path = `finance/bill/${mockEntity.bill.id}/expense/${mockEntity.id}`;
-            const body = mockExpenseUpdateParams;
-            const result = await expense.update(mockEntity.id, mockExpenseUpdateParams, mockEntity.bill.id);
-            expect(expense.path).toHaveBeenCalledTimes(1);
-            expect(expense.path).toHaveBeenCalledWith(path, { body });
+            const result = await expense.update(mockEntity.id, mockExpenseUpdateParams);
+            expect(expense.update).toHaveBeenCalledTimes(1);
+            expect(expense.update).toHaveBeenCalledWith(mockEntity.id, mockExpenseUpdateParams);
             expect(result).toEqual(mockEntity);
         });
     });
@@ -221,6 +228,82 @@ describe('Expense', () => {
             expect(expense.get).toHaveBeenCalledTimes(1);
             expect(expense.get).toHaveBeenCalledWith(path, { params: mockPaginateParams });
             expect(result).toEqual(mockEntityPaginate);
+        });
+    });
+
+    describe('uploads', () => {
+        it('Should call upload with correct URL and parameters for uploads', async () => {
+            mockUrlToBlob.mockImplementation((file) => {
+                return new Blob([file as string], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            });
+            const mockFiles: Array<string> = [
+                'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQACAgIACGo1==',
+                'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQACAgIACGo2==',
+                'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQACAgIACGo3=='
+            ];
+
+            (expense.post as any).mockResolvedValue([mockEntity]);
+
+            const path = `finance/bill/${mockEntity.bill.id}/expense/uploads`;
+
+            const paid: Array<boolean> = [true, true, true];
+            const months: Array<EMonth> = [EMonth.JANUARY, EMonth.FEBRUARY, EMonth.MARCH];
+            const replaceWords: Array<ReplaceWordParam> = [{
+                before: 'test',
+                after: 'Test'
+            }];
+            const repeatedWords: Array<string> = ['test'];
+
+            const result = await expense.uploads(
+                mockEntity.bill.id,
+                {
+                    paid,
+                    files: mockFiles,
+                    months,
+                    replaceWords,
+                    repeatedWords,
+                }
+            );
+
+            expect(expense.post).toHaveBeenCalledTimes(1);
+            // @ts-ignore
+            const calledFormData = expense.post.mock.calls[0][1].body;
+
+            const actualFields = {};
+            for (const [key, value] of calledFormData.entries()) {
+                if (!actualFields[key]) actualFields[key] = [];
+                actualFields[key].push(value);
+            }
+
+            expect(actualFields['paid[]']).toHaveLength(paid.length);
+            paid.forEach((item, idx) => {
+                expect(actualFields['paid[]'][idx]).toBe(String(item));
+            });
+
+            expect(actualFields['months[]']).toHaveLength(months.length);
+            months.forEach((item, idx) => {
+                expect(actualFields['months[]'][idx]).toBe(String(item));
+            });
+
+            expect(actualFields['files']).toHaveLength(mockFiles.length);
+            actualFields['files'].forEach((blob) => {
+                expect(blob).toBeInstanceOf(Blob);
+                expect(blob.type).toBe('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                expect(blob.size).toBeGreaterThan(0);
+            });
+
+            expect(actualFields['replaceWords[]']).toHaveLength(replaceWords.length);
+            expect(actualFields['replaceWords[]']).toEqual(["{\"before\":\"test\",\"after\":\"Test\"}"]);
+
+
+            expect(actualFields['repeatedWords[]']).toHaveLength(repeatedWords.length);
+            repeatedWords.forEach((item, idx) => {
+                expect(actualFields['repeatedWords[]'][idx]).toBe(String(item));
+            });
+
+            // @ts-ignore
+            expect(expense.post.mock.calls[0][0]).toBe(path);
+            expect(result).toEqual([mockEntity]);
         });
     });
 });

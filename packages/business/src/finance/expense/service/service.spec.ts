@@ -52,7 +52,7 @@ jest.mock('../expense', () => ({
 
 
 
-import type { CreateExpenseParams, ExpenseEntity, UpdateExpenseParams } from '../types';
+import type { CreateExpenseParams, ExpenseEntity, UpdateExpenseParams, UploadsExpenseParams } from '../types';
 
 import { ExpenseService } from './service';
 
@@ -88,6 +88,7 @@ describe('Expense Service', () => {
                         create: jest.fn(),
                         update: jest.fn(),
                         delete: jest.fn(),
+                        uploads: jest.fn(),
                         getAllByBill: jest.fn(),
                     },
                 },
@@ -109,7 +110,7 @@ describe('Expense Service', () => {
     });
 
     describe('create', () => {
-        it('should successfully create an supplier', async () => {
+        it('should successfully create an expense', async () => {
             mockNest.finance.bill.expense.create.mockResolvedValue(mockEntity);
 
             const mockExpenseCreateParams: CreateExpenseParams = {
@@ -246,6 +247,37 @@ describe('Expense Service', () => {
                 mockPaginateParams,
             );
             expect(result).toEqual(mockEntityPaginate);
+        });
+    });
+
+    describe('upload', () => {
+        it('should successfully upload an files', async () => {
+            mockNest.finance.bill.expense.uploads.mockResolvedValue([mockEntity]);
+
+            const mockFiles: Array<string> = [
+                'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQACAgIACGo1==',
+                'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQACAgIACGo2==',
+                'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQACAgIACGo3=='
+            ];
+
+            const mockUploadExpenseParams: UploadsExpenseParams = {
+                paid: [true, true, true],
+                files: mockFiles,
+                months: [EMonth.JANUARY, EMonth.FEBRUARY, EMonth.MARCH],
+                replaceWords: undefined,
+                repeatedWords: undefined,
+            };
+
+            const result = await service.upload(
+                mockEntity.bill.id,
+                mockUploadExpenseParams,
+            );
+
+            expect(mockNest.finance.bill.expense.uploads).toHaveBeenCalledWith(
+                mockEntity.bill.id,
+                mockUploadExpenseParams
+            );
+            expect(result).toEqual([mockEntity]);
         });
     });
 });
