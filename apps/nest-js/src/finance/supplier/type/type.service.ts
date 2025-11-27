@@ -20,12 +20,12 @@ import { UpdateTypeDto } from './dto/update-type.dto';
 
 @Injectable()
 export class SupplierTypeService extends Service<SupplierType> {
-  constructor(
-      @InjectRepository(SupplierType)
-      protected repository: Repository<SupplierType>,
-  ) {
-    super('supplier_types', [], repository);
-  }
+    constructor(
+        @InjectRepository(SupplierType)
+        protected repository: Repository<SupplierType>,
+    ) {
+        super('supplier_types', [], repository);
+    }
 
     async create({ name }: CreateTypeDto) {
         const supplierType = new SupplierTypeConstructor({ name });
@@ -90,22 +90,22 @@ export class SupplierTypeService extends Service<SupplierType> {
     }
 
     async generateSeeds(withoutSupplierType: boolean, financeSeedsDir: string) {
-      return await this.generateEntitySeeds({
-          withSeed: !withoutSupplierType,
-          seedsDir: financeSeedsDir,
-          staging: SUPPLIER_TYPE_LIST_STAGING_JSON,
-          production: SUPPLIER_TYPE_LIST_PRODUCTION_JSON,
-          development: SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON,
-          filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code
-      });
+        return await this.generateEntitySeeds({
+            withSeed: !withoutSupplierType,
+            seedsDir: financeSeedsDir,
+            staging: SUPPLIER_TYPE_LIST_STAGING_JSON,
+            production: SUPPLIER_TYPE_LIST_PRODUCTION_JSON,
+            development: SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON,
+            filterGenerateEntityFn: (json, item) => json.name === item.name || json.name_code === item.name_code
+        });
     }
 
     async persistSeeds(withoutSupplierType: boolean) {
-      return await this.persistEntitySeeds({
-          withSeed: !withoutSupplierType,
-          staging: SUPPLIER_TYPE_LIST_STAGING_JSON,
-          production: SUPPLIER_TYPE_LIST_PRODUCTION_JSON,
-          development: SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON,
-      });
+        return await this.seeder.persistEntity({
+            withSeed: !withoutSupplierType,
+            staging: SUPPLIER_TYPE_LIST_STAGING_JSON,
+            production: SUPPLIER_TYPE_LIST_PRODUCTION_JSON,
+            development: SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON,
+        });
     }
 }

@@ -48,6 +48,7 @@ const mockRepository = {
     update: jest.fn(),
     create: jest.fn(),
     count: jest.fn(),
+    insert: jest.fn(),
     manager: {
         transaction: jest.fn(),
     },
@@ -77,6 +78,12 @@ describe('service', () => {
             name: 'test2',
         },
     ];
+    const getListJsonParams = {
+        staging: [{env: 'staging'}],
+        production: [{env: 'production'}],
+        development: [{env: 'development'}],
+    };
+
     let service: TestService;
 
     beforeEach(() => {
@@ -98,6 +105,12 @@ describe('service', () => {
         });
     });
 
+    describe('env', () => {
+        it('should return env value', () => {
+            expect(service.env).toEqual('development');
+        });
+    });
+
     describe('fileModule', () => {
         it('should initialize fileModule module.', () => {
             expect(File).toBeCalledTimes(1);
@@ -108,6 +121,7 @@ describe('service', () => {
         it('should initialize seederModule module.', () => {
             expect(Seeder).toBeCalledTimes(1);
             expect(Seeder).toBeCalledWith(
+                'development',
                 'mockAlias',
                 ['relation1', 'relation2'],
                 mockRepository,
@@ -141,6 +155,16 @@ describe('service', () => {
 
             expect(mockRepository.save).toBeCalledTimes(1);
             expect(mockRepository.save).toBeCalledWith(entity);
+            expect(result).toEqual(entity);
+        });
+
+        it('should save entity successfully with id equal ""', async () => {
+            jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(entity);
+
+            const result = await service.save({...entity, id: ''});
+
+            expect(mockRepository.save).toBeCalledTimes(1);
+            expect(mockRepository.save).toBeCalledWith({...entity, id: undefined });
             expect(result).toEqual(entity);
         });
 
@@ -233,7 +257,7 @@ describe('service', () => {
             const result = await service.treatEntitiesParams([]);
             expect(result).toEqual([]);
         });
-        
+
         it('should return an list of entities by request', async () => {
             jest.spyOn(Queries.prototype, 'list').mockResolvedValueOnce(entities);
             entities.forEach((entity) => {
@@ -255,6 +279,46 @@ describe('service', () => {
             (Services.isUUID as jest.Mock).mockReturnValueOnce(true);
             const result = service.findOneByList(entity.id, entities);
             expect(result).toEqual(entity);
+        });
+    });
+
+    describe('generateEntitySeeds', () => {
+        it('should return empty when received boolean flag withSeed equal false', async () => {
+            const expected = {list: [], added: []};
+            jest.spyOn(service.seeder, 'generateEntity').mockResolvedValueOnce(expected);
+            const result = await service.generateEntitySeeds({
+                ...getListJsonParams,
+                seedsDir: 'dir',
+                withSeed: false,
+                filterGenerateEntityFn: () => true,
+            });
+            expect(result).toEqual(expected);
+        });
+
+        it('should added empty when dont generate seeds', async () => {
+            const expected = { list: [entity], added: [] };
+            jest.spyOn(service.seeder, 'generateEntity').mockResolvedValueOnce(expected);
+
+            const result = await service.generateEntitySeeds({
+                ...getListJsonParams,
+                seedsDir: 'dir',
+                withSeed: true,
+                filterGenerateEntityFn: () => false,
+            });
+            expect(result).toEqual(expected);
+        });
+
+        it('should generate seeds', async () => {
+            const expected = { list: [entity, entity], added: [entity]};
+            jest.spyOn(service.seeder, 'generateEntity').mockResolvedValueOnce(expected);
+
+            const result = await service.generateEntitySeeds({
+                ...getListJsonParams,
+                seedsDir: 'dir',
+                withSeed: true,
+                filterGenerateEntityFn: () => false,
+            });
+            expect(result).toEqual(expected);
         });
     });
 });

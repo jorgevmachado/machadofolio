@@ -9,40 +9,8 @@ import type { BasicEntity } from '../types';
 import { type FindOneByParams, type ListParams, Queries } from '../queries';
 import { Base } from '../base';
 import { File } from '../file';
-import { Seeder } from '../seeder';
+import { GenerateEntitySeedsParams, Seeder, SeedsGenerated } from '../seeder';
 import { Validate } from '../validate';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-
-type GetListJsonParams = {
-    env?: string;
-    staging: unknown;
-    production: unknown;
-    development: unknown;
-}
-
-export interface GenerateSeeds<T> {
-    list: Array<T>;
-    added: Array<T>;
-}
-
-export interface PersistEntitySeedsParams<T> {
-    staging: unknown;
-    withSeed?: boolean;
-    production: unknown;
-    development: unknown;
-    withRelations?: boolean;
-    persistEntitySeedsFn?: (item: T) => T;
-}
-
-export interface GenerateEntitySeedsParams<T> {
-    staging: unknown;
-    seedsDir: string;
-    withSeed?: boolean;
-    production: unknown;
-    development: unknown;
-    withRelations?: boolean;
-    filterGenerateEntitySeedsFn: (json: T, item: T) => boolean;
-}
 
 export abstract class Service<T extends BasicEntity> extends Base {
     private readonly fileModule!: File;
@@ -58,7 +26,7 @@ export abstract class Service<T extends BasicEntity> extends Base {
     ) {
         super();
         this.fileModule = new File(this.currentEnv);
-        this.seederModule = new Seeder<T>(alias, relations, repository);
+        this.seederModule = new Seeder<T>(this.currentEnv, alias, relations, repository);
         this.queriesModule = new Queries<T>(alias, relations, repository);
         this.validateModule = new Validate();
     }
@@ -154,85 +122,11 @@ export abstract class Service<T extends BasicEntity> extends Base {
         return list.find((item) => item[key] === value);
     }
 
-    getListJson<T>({ env = this.env, staging, production, development }: GetListJsonParams) {
-        switch (env) {
-            case 'production':
-                return production as unknown as Array<T>;
-            case 'staging':
-                return staging as unknown as Array<T>;
-            case 'development':
-            default:
-                return development as unknown as Array<T>;
-        }
-    }
-    
-    async persistEntitySeeds({
-            withSeed,
-            staging,
-            production,
-            development,
-            withRelations,
-            persistEntitySeedsFn,
-    }: PersistEntitySeedsParams<T>): Promise<GenerateSeeds<T>> {
-        if(!withSeed) {
-            return {
-                list: [],
-                added: []
-            }
-        }
-        const list = await this.findAll({ withDeleted: true, withRelations }) as unknown as Array<T>;
-        const listJson = this.getListJson<T>({
-            staging,
-            production,
-            development,
-        });
-        
-        const added: Array<T> = [];
-        
-        for(const json of listJson) {
-            const entity = await this.findOne({ value: json['id'], withThrow: false });
-            if(!entity) {
-                const toInsert = persistEntitySeedsFn ? persistEntitySeedsFn(json) : json;
-                await this.repository.insert(toInsert as QueryDeepPartialEntity<T>);
-                added.push(json);
-            }
-        }
-        
-        return {
-            list: [...list, ...added],
-            added
-        }
-    }
-
-    async generateEntitySeeds({
-            seedsDir,
-            withSeed,
-            staging,
-            production,
-            development,
-            withRelations,
-            filterGenerateEntitySeedsFn,
-    }: GenerateEntitySeedsParams<T>): Promise<GenerateSeeds<T>> {
-        if(!withSeed) {
-            return {
-                list: [],
-                added: []
-            }
-        }
-
-        const entities = await this.findAll({ withDeleted: true, withRelations }) as unknown as Array<T>;
-
-        const listJson = this.getListJson<T>({
-            staging,
-            production,
-            development,
-        });
-
-        const added = entities.filter((entity) => !listJson.find((json) => filterGenerateEntitySeedsFn(json, entity)));
-        const list = [...listJson, ...added];
+    async generateEntitySeeds(params: GenerateEntitySeedsParams<T>): Promise<SeedsGenerated<T>> {
+        const { list, added } = await this.seeder.generateEntity(params);
 
         if(added.length > 0) {
-            this.file.writeFile(`${this.alias}.json`, seedsDir, list)
+            this.file.writeFile(`${this.alias}.json`, params.seedsDir, list)
         }
 
         return { list, added }

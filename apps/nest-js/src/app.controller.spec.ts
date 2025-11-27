@@ -1,77 +1,88 @@
 import { Test, type TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+
 import type { CreateSeedDto } from './dto/create-seed.dto';
 
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+
 describe('AppController', () => {
-  let service: AppService;
-  let appController: AppController;
+    let service: AppService;
+    let appController: AppController;
 
-  const createSeedDto:CreateSeedDto = {
-    auth: true,
-    finance: {
-      bank: true,
-      bill: true,
-      group: true,
-      expense: true,
-      supplier: true,
-      finance: true,
-    },
-    pokemon: {
-      move: true,
-      type: true,
-      ability: true,
-      pokemon: true,
-    },
-  }
-
-  beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [AppController],
-      providers: [{
-        provide: AppService,
-        useValue: {
-          seeds: jest.fn()
-        }
-      }],
-    }).compile();
-
-    service = app.get<AppService>(AppService);
-    appController = app.get<AppController>(AppController);
-  });
-
-  describe('root', () => {
-    it('root', () => {
-      expect(service).toBeDefined();
-      expect(appController).toBeDefined();
-    });
-  });
-
-  describe('seeds', () => {
-    it('should return seeds', async () => {
-      const expected = {
-        users: 1,
-        finances: {
-          bills: 1,
-          groups: 1,
-          banks: 1,
-          expenses: 1,
-          finances: 1,
-          suppliers: 1,
-          incomes: 1,
-          incomeSources: 1,
-          supplierTypes: 1,
+    const createSeedDto:CreateSeedDto = {
+        auth: true,
+        finance: {
+            bank: true,
+            bill: true,
+            group: true,
+            expense: true,
+            supplier: true,
+            finance: true,
         },
-        pokemons: {
-          moves: 1,
-          types: 1,
-          pokemons: 1,
-          abilities: 1,
+        pokemon: {
+            move: true,
+            type: true,
+            ability: true,
+            pokemon: true,
         },
-        message: 'Seeds successfully',
-      }
-      jest.spyOn(service, 'seeds').mockResolvedValueOnce(expected);
-      expect(await appController.seeds(createSeedDto)).toEqual(expected);
+    }
+
+    const mockSeedsResult = {
+        auth: { list: 1, added: 1 },
+        finance: {
+            bank: { list: 1, added: 1 },
+            bill: { list: 1, added: 1 },
+            group: { list: 1, added: 1 },
+            months: { list: 1, added: 1 },
+            income: { list: 1, added: 1 },
+            expense: { list: 1, added: 1 },
+            finance: { list: 1, added: 1 },
+            supplier: { list: 1, added: 1 },
+            incomeSource: { list: 1, added: 1 },
+            supplierType: { list: 1, added: 1 },
+        },
+        pokemon: {
+            move: { list: 1, added: 1 },
+            type: { list: 1, added: 1 },
+            ability: { list: 1, added: 1 },
+            pokemon: { list: 1, added: 1 },
+        },
+    }
+
+    beforeEach(async () => {
+        const app: TestingModule = await Test.createTestingModule({
+            controllers: [AppController],
+            providers: [{
+                provide: AppService,
+                useValue: {
+                    persistSeeds: jest.fn(),
+                    generateSeeds: jest.fn()
+                }
+            }],
+        }).compile();
+
+        service = app.get<AppService>(AppService);
+        appController = app.get<AppController>(AppController);
     });
-  });
+
+    describe('root', () => {
+        it('root', () => {
+            expect(service).toBeDefined();
+            expect(appController).toBeDefined();
+        });
+    });
+
+    describe('generateSeeds', () => {
+        it('should generate seeds', async () => {
+            jest.spyOn(service, 'generateSeeds').mockResolvedValue({ ...mockSeedsResult, message: 'Seed Generate Successfully' });
+            expect(await appController.generateSeeds(createSeedDto)).toEqual({ ...mockSeedsResult, message: 'Seed Generate Successfully' });
+        });
+    });
+
+    describe('persistSeeds', () => {
+        it('should persist seeds', async () => {
+            jest.spyOn(service, 'persistSeeds').mockResolvedValue({ ...mockSeedsResult, message: 'Seed Persist Successfully' });
+            expect(await appController.persistSeeds(createSeedDto)).toEqual({ ...mockSeedsResult, message: 'Seed Persist Successfully' });
+        });
+    });
 });

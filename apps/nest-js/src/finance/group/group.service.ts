@@ -8,7 +8,7 @@ import GROUP_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/grou
 import GROUP_LIST_STAGING_JSON from '../../../seeds/staging/finance/groups.json';
 import GROUP_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/groups.json';
 
-import { GenerateSeeds, ListParams, Service } from '../../shared';
+import { SeedsGenerated, ListParams, Service } from '../../shared';
 
 import { Finance } from '../entities/finance.entity';
 import type { FinanceSeederParams } from '../types';
@@ -90,7 +90,7 @@ export class GroupService extends Service<Group> {
         return this.create(finance, { name: value });
     }
 
-    async generateSeeds(withSeed: boolean, financeSeedsDir: string): Promise<GenerateSeeds<Group>> {
+    async generateSeeds(withSeed: boolean, financeSeedsDir: string): Promise<SeedsGenerated<Group>> {
         return await this.generateEntitySeeds({
             seedsDir: financeSeedsDir,
             staging: GROUP_LIST_STAGING_JSON,
@@ -98,13 +98,13 @@ export class GroupService extends Service<Group> {
             production: GROUP_LIST_PRODUCTION_JSON,
             development: GROUP_LIST_DEVELOPMENT_JSON,
             withRelations: true,
-            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code
+            filterGenerateEntityFn: (json, item) => json.name === item.name || json.name_code === item.name_code
 
         })
     }
 
     async persistSeeds(withSeed?: boolean) {
-        return await this.persistEntitySeeds({
+        return await this.seeder.persistEntity({
             withSeed,
             staging: GROUP_LIST_STAGING_JSON,
             production: GROUP_LIST_PRODUCTION_JSON,

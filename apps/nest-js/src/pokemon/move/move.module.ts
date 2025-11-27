@@ -10,12 +10,12 @@ import { PokemonMoveService } from './move.service';
 
 
 @Module({
-  imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-    TypeOrmModule.forFeature([PokemonMove]),
-  ],
-  controllers: [MoveController],
-  providers: [PokemonMoveService, PokeApiService],
-  exports: [PokemonMoveService]
+    imports: [
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        TypeOrmModule.forFeature([PokemonMove]),
+    ],
+    controllers: [MoveController],
+    providers: [PokemonMoveService, PokeApiService],
+    exports: [PokemonMoveService]
 })
 export class MoveModule {}

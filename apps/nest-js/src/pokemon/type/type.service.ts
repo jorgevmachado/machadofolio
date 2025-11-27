@@ -2,9 +2,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { Service } from '../../shared';
+import POKEMON_TYPE_LIST_STAGING_JSON from '../../../seeds/staging/pokemon/types.json';
+import POKEMON_TYPE_LIST_PRODUCTION_JSON from '../../../seeds/production/pokemon/types.json';
+import POKEMON_TYPE_LIST_DEVELOPMENT_JSON from '../../../seeds/development/pokemon/types.json';
+
+import { SeedsGenerated, Service } from '../../shared';
 
 import { PokemonType } from '../entities/type.entity';
+
 
 @Injectable()
 export class PokemonTypeService extends Service<PokemonType> {
@@ -58,5 +63,24 @@ export class PokemonTypeService extends Service<PokemonType> {
             createdEntityFn: async (item) => item
         })
     }
-}
 
+    async generateSeeds(withSeed: boolean, pokemonSeedsDir: string): Promise<SeedsGenerated<PokemonType>> {
+        return await this.generateEntitySeeds({
+            withSeed,
+            seedsDir: pokemonSeedsDir,
+            staging: POKEMON_TYPE_LIST_STAGING_JSON,
+            production: POKEMON_TYPE_LIST_PRODUCTION_JSON,
+            development: POKEMON_TYPE_LIST_DEVELOPMENT_JSON,
+            filterGenerateEntityFn: (json, item) => json.order === item.order
+        });
+    }
+
+    async persistSeeds(withSeed?: boolean): Promise<SeedsGenerated<PokemonType>> {
+        return await this.seeder.persistEntity({
+            withSeed,
+            staging: POKEMON_TYPE_LIST_STAGING_JSON,
+            production: POKEMON_TYPE_LIST_PRODUCTION_JSON,
+            development: POKEMON_TYPE_LIST_DEVELOPMENT_JSON,
+        });
+    }
+}

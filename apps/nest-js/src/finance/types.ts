@@ -1,4 +1,7 @@
+import { type SeedsResultItem } from '../shared';
+
 import { type User } from '../auth/entities/user.entity';
+
 
 export type FinanceSeederParams = {
     billListJson?: Array<unknown>;
@@ -16,4 +19,16 @@ export type FinanceSeederParams = {
 export type FinanceSeedsParams = FinanceSeederParams & {
     user?: User;
     users: Array<User>;
+}
+export type FinanceSeedsResult = {
+    bank: SeedsResultItem;
+    bill: SeedsResultItem;
+    group: SeedsResultItem;
+    months: SeedsResultItem;
+    income: SeedsResultItem;
+    expense: SeedsResultItem;
+    finance: SeedsResultItem;
+    supplier: SeedsResultItem;
+    incomeSource: SeedsResultItem;
+    supplierType: SeedsResultItem;
 }

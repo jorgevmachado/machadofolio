@@ -29,23 +29,23 @@ import { type CreateSourceDto } from './dto/create-source.dto';
 import { type UpdateSourceDto } from './dto/update-source.dto';
 
 describe('SourceService', () => {
-  let service: IncomeSourceService;
-  let repository: Repository<IncomeSource>;
+    let service: IncomeSourceService;
+    let repository: Repository<IncomeSource>;
 
-  const mockEntity: IncomeSource = INCOME_SOURCE_MOCK as unknown as IncomeSource;
-  const mockIncomeEntity: Income = INCOME_MOCK as unknown as Income;
+    const mockEntity: IncomeSource = INCOME_SOURCE_MOCK as unknown as IncomeSource;
+    const mockIncomeEntity: Income = INCOME_MOCK as unknown as Income;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-          IncomeSourceService,
-          { provide: getRepositoryToken(IncomeSource), useClass: Repository }
-      ],
-    }).compile();
+    beforeEach(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            providers: [
+                IncomeSourceService,
+                { provide: getRepositoryToken(IncomeSource), useClass: Repository }
+            ],
+        }).compile();
 
-    service = module.get<IncomeSourceService>(IncomeSourceService);
-    repository = module.get<Repository<IncomeSource>>(getRepositoryToken(IncomeSource));
-  });
+        service = module.get<IncomeSourceService>(IncomeSourceService);
+        repository = module.get<Repository<IncomeSource>>(getRepositoryToken(IncomeSource));
+    });
 
     afterEach(() => {
         jest.restoreAllMocks();

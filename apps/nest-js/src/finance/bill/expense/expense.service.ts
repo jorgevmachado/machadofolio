@@ -2,24 +2,15 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import {
-    EMonth,
-    filterByCommonKeys,
-    getCurrentMonthNumber,
-    MONTHS,
-    Spreadsheet,
-    type TMonth,
-} from '@repo/services';
+import { convertTypeToEnum, getMonthByIndex, Spreadsheet } from '@repo/services';
 
-import { EExpenseType, Expense as ExpenseConstructor, ExpenseBusiness, type ExpenseEntity } from '@repo/business';
+import { EExpenseType, Expense as ExpenseConstructor, ExpenseBusiness } from '@repo/business';
 
 import EXPENSE_LIST_DEVELOPMENT_JSON from '../../../../seeds/development/finance/expenses.json';
 import EXPENSE_LIST_STAGING_JSON from '../../../../seeds/staging/finance/expenses.json';
 import EXPENSE_LIST_PRODUCTION_JSON from '../../../../seeds/production/finance/expenses.json';
 
-import { FilterParams, GenerateSeeds, Service } from '../../../shared';
-
-import type { FinanceSeederParams } from '../../types';
+import { FilterParams, type ListParams, Service } from '../../../shared';
 
 import { Bill } from '../../entities/bill.entity';
 import { Expense } from '../../entities/expense.entity';
@@ -28,42 +19,14 @@ import { Supplier } from '../../entities/supplier.entity';
 import { SupplierService } from '../../supplier/supplier.service';
 
 import { MonthService } from '../../month/month.service';
-import { PersistMonthDto } from '../../month/dto/persist-month.dto';
 
 import { CreateExpenseDto } from './dto/create-expense.dto';
+
 import { UpdateExpenseDto } from './dto/update-expense.dto';
-import { Month } from '../../entities/month.entity';
+import { UploadsExpenseDto } from './dto/uploads-expense.dto';
 import { UploadExpenseDto } from './dto/upload-expense.dto';
 
-export type InitializeParams = {
-    paid?: ExpenseEntity['paid'];
-    type?: ExpenseEntity['type'];
-    value?: number;
-    month?: ExpenseEntity['month'];
-    expense: Expense;
-    fromWorkSheet?: boolean;
-    instalment_number?: number;
-}
-
-export type ExpenseSeederParams = Pick<FinanceSeederParams, 'expenseListJson' | 'billListJson'> & {
-    bills: Array<Bill>;
-    suppliers: Array<Supplier>;
-}
-
-export type createToSheetParams = Record<string, string | number | boolean | object | Bill>;
-
-type ExpenseGenerateSeeds = {
-    months: Array<Month>;
-    expenses: GenerateSeeds<Expense>;
-}
-
-export type PersistExpenseParams = Omit<CreateExpenseDto, 'month'> & {
-    months: Array<PersistMonthDto>;
-}
-
-export type BuildExpensePersistenceResult = Omit<CreateExpenseDto, 'month'> & {
-    month: PersistMonthDto;
-}
+import type { GeneratedExpenseSeeds } from './types';
 
 @Injectable()
 export class ExpenseService extends Service<Expense> {
@@ -81,6 +44,241 @@ export class ExpenseService extends Service<Expense> {
         return this.expenseBusiness;
     }
 
+    async create(bill: Bill, createExpenseDto: CreateExpenseDto) {
+        const supplier = await this.supplierService.treatEntityParam<Supplier>(
+            createExpenseDto.supplier,
+            'Supplier',
+        ) as Supplier;
+
+        const parent = await this.treatEntityParentParam(createExpenseDto?.parent);
+
+        const builtExpense = new ExpenseConstructor({
+            supplier,
+            bill,
+            year: bill.year,
+            type: createExpenseDto.type,
+            paid: Boolean(createExpenseDto.paid),
+            parent,
+            description: createExpenseDto.description,
+            is_aggregate: Boolean(parent),
+            aggregate_name: !parent ? undefined : createExpenseDto.aggregate_name,
+            instalment_number: createExpenseDto.instalment_number,
+        });
+
+        await this.validateExistExpense(bill, builtExpense);
+
+        const prepareForCreation = this.business.prepareForCreation({
+            value: createExpenseDto.value,
+            month: createExpenseDto.month,
+            months: createExpenseDto.months,
+            expense: builtExpense,
+        });
+
+        const expense = await this.save(prepareForCreation.expenseForCurrentYear) as Expense;
+
+        if (prepareForCreation.monthsForCurrentYear.length > 0) {
+            expense.months = await this.monthService.persistList(prepareForCreation.monthsForCurrentYear, { expense });
+            const expenseCalculated = this.business.calculate(expense);
+            prepareForCreation.expenseForCurrentYear = await this.save(expenseCalculated) as Expense;
+        }
+
+        return prepareForCreation;
+    }
+
+    async update(param: string, body: UpdateExpenseDto) {
+        const result = await this.findOne({ value: param, withRelations: true }) as Expense;
+
+        const supplier = !body?.supplier
+            ? result.supplier
+            : await this.supplierService.treatEntityParam<Supplier>(
+                body.supplier,
+                'Supplier',
+            ) as Supplier;
+
+        const updatedExpense = new ExpenseConstructor({
+            ...result,
+            type: body?.type ?? result.type,
+            paid: body?.paid ?? result.paid,
+            supplier,
+            description: body?.description ?? result?.description
+        });
+
+        if (result.name_code !== updatedExpense.name_code) {
+            const filters: Array<FilterParams> = [
+                {
+                    value: updatedExpense.year,
+                    param: `${this.alias}.year`,
+                    relation: true,
+                    condition: '=',
+                },
+                {
+                    value: updatedExpense.name_code,
+                    param: `${this.alias}.name_code`,
+                    relation: true,
+                    condition: 'LIKE',
+                }
+            ];
+            const existingExpense = await this.findAll({ filters, withRelations: true }) as Array<Expense>;
+            if (existingExpense.length > 0) {
+                throw this.error(new ConflictException(`You cannot update this expense with this (supplier) ${updatedExpense.supplier.name} because there is already an expense linked to this supplier.`));
+            }
+        }
+
+        const monthsToPersist = this.monthService
+            .business
+            .generateMonthListUpdateParameters(updatedExpense?.months, body.months, body?.paid);
+        if (monthsToPersist && monthsToPersist?.length > 0) {
+            const months = await this.monthService.persistList(monthsToPersist, { expense: updatedExpense });
+            updatedExpense.months = months;
+            const expenseCalculated = this.business.calculate(updatedExpense);
+            const savedExpense = await this.save(expenseCalculated);
+            return { ...savedExpense, months };
+        }
+        return await this.save(updatedExpense);
+    }
+
+    async remove(value: string, filters: ListParams['filters'] = [], withDeleted: boolean = false) {
+        const expense = await this.findOne({ value, filters, withDeleted, withRelations: true }) as Expense;
+
+        if (expense) {
+            await this.monthService.removeList({ expense });
+            await this.softRemove(expense);
+        }
+
+        return { message: 'Successfully removed' };
+    }
+
+    async uploads(bill: Bill, files: Express.Multer.File[], uploadsExpenseDto: UploadsExpenseDto) {
+        const createExpenseDtoList: Array<CreateExpenseDto> = [];
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+
+            if (!file || !file?.buffer) {
+                throw this.error(new ConflictException('one of the files was not uploaded or is invalid.'));
+            }
+
+            const spreadsheet = new Spreadsheet();
+
+            const worksheets = await spreadsheet.loadFile(file.buffer);
+
+            const worksheet = worksheets[0];
+
+            if (!worksheet) {
+                throw this.error(new ConflictException('The Excel file does not contain any worksheets.'));
+            }
+
+            spreadsheet.updateWorkSheet(worksheet);
+            const workSheet = spreadsheet.workSheet;
+
+            const month = uploadsExpenseDto?.months?.[i];
+
+            const uploadExpenseDto: UploadExpenseDto = {
+                file: '',
+                paid: uploadsExpenseDto?.paid?.[i],
+                month: !month ? convertTypeToEnum(getMonthByIndex(i)) : month,
+                replaceWords: uploadsExpenseDto?.replaceWords,
+                repeatedWords: uploadsExpenseDto?.repeatedWords
+            }
+
+            const createExpenseDtoListToCreate = this.business.spreadsheet.buildForCreation(workSheet, uploadExpenseDto);
+            const createExpenseDtoListToSave: Array<CreateExpenseDto> = [];
+
+            for (const createExpenseDto of createExpenseDtoListToCreate) {
+                const supplier = await this.supplierService.createToSheet(createExpenseDto.supplier as string) as Supplier;
+                const month = this.monthService.business.generatePersistMonthParams({
+                    year: bill.year,
+                    paid: createExpenseDto?.paid,
+                    value: createExpenseDto?.value,
+                    month: createExpenseDto?.month,
+                    received_at: createExpenseDto?.received_at
+                });
+                createExpenseDtoListToSave.push({
+                    ...createExpenseDto,
+                    months: [month],
+                    supplier,
+                });
+            }
+
+            createExpenseDtoList.push(...createExpenseDtoListToSave);
+        }
+
+        if (createExpenseDtoList.length === 0) {
+            return [];
+        }
+
+        const initialPersistExpenseParams: Array<CreateExpenseDto> = [{
+            type: EExpenseType.VARIABLE,
+            value: 0,
+            months: [],
+            supplier: '',
+            instalment_number: 1,
+        }];
+
+        const cleanPersistExpenseParamsBuilt = createExpenseDtoList.reduce((acc, item) => {
+            const hasParam = acc.find((accItem) => accItem.supplier['name_code'] === item.supplier['name_code']);
+            if (!hasParam) {
+                const expenseToSave = createExpenseDtoList.filter((bep) => bep.supplier['name_code'] === item.supplier['name_code']);
+                const expenseMonths = expenseToSave.flatMap((expense) => expense.months).filter((item) => !!item);
+                acc.push({
+                    type: item.type,
+                    paid: item.paid,
+                    value: 0,
+                    months: expenseMonths,
+                    supplier: item.supplier,
+                    received_at: item.received_at,
+                });
+            }
+            return acc;
+        }, initialPersistExpenseParams).filter((item) => item?.months && item?.months?.length > 0 && item.supplier !== '');
+
+        const expenses: Array<Expense> = [];
+        for (const persistExpenseDto of cleanPersistExpenseParamsBuilt) {
+            const builtExpense = new ExpenseConstructor({
+                supplier: persistExpenseDto.supplier as Supplier,
+                bill,
+                year: bill.year,
+                type: persistExpenseDto.type,
+                paid: Boolean(persistExpenseDto.paid),
+                description: persistExpenseDto.description,
+                instalment_number: 1,
+            });
+
+            const existExpense = await this.validateExistExpense(bill, builtExpense, false);
+
+            if (existExpense) {
+                existExpense.months = existExpense.months ?? [];
+                for (const monthToAdd of persistExpenseDto.months ?? []) {
+                    const monthExists = existExpense.months.some(
+                        (m) => m.code === monthToAdd.code
+                    );
+                    if (!monthExists) {
+                        // Aqui, se necessário, converta monthToAdd para Month
+                        existExpense.months.push(monthToAdd as any); // Ajuste o tipo conforme necessário
+                        // Não some em existExpense.value, some em existExpense.total se existir, ou apenas atualize os meses
+                    }
+                }
+                const expenseCalculated = this.business.calculate(existExpense);
+                const updatedExpense = await this.save(expenseCalculated);
+                if (updatedExpense) {
+                    expenses.push(updatedExpense);
+                }
+            } else {
+                const savedExpense = await this.save(builtExpense) as Expense;
+                if ((persistExpenseDto.months?.length ?? 0) > 0) {
+                    savedExpense.months = await this.monthService.persistList(persistExpenseDto.months ?? [], { expense: savedExpense });
+                    const savedExpenseCalculated = this.business.calculate(savedExpense);
+                    const finalExpense = await this.save(savedExpenseCalculated);
+                    if (finalExpense) {
+                        expenses.push(finalExpense);
+                    }
+                }
+                expenses.push(savedExpense);
+            }
+        }
+
+        return expenses;
+    }
+
     private async treatEntityParentParam(value?: string | Expense): Promise<Expense | undefined> {
         try {
             return await this.treatEntityParam<Expense>(
@@ -92,287 +290,19 @@ export class ExpenseService extends Service<Expense> {
         }
     }
 
-    async buildForCreation(bill: Bill, createExpenseDto: CreateExpenseDto) {
-        const supplier = await this.supplierService.treatEntityParam<Supplier>(
-            createExpenseDto.supplier,
-            'Supplier',
-        ) as Supplier;
+    private async validateExistExpense(bill: Bill, expense: Expense, withThrow: boolean = true) {
+        const fallbackMessage = 'You cannot add this expense because it is already in use.';
 
-        const parent = await this.treatEntityParentParam(createExpenseDto.parent);
+        const hasExpense = bill.expenses?.find((item) => expense.name_code === item.name_code);
 
-        return new ExpenseConstructor({
-            supplier,
-            bill,
-            year: bill.year,
-            type: createExpenseDto.type,
-            paid: Boolean(createExpenseDto.paid),
-            value: createExpenseDto.value,
-            month: createExpenseDto.month,
-            parent,
-            description: createExpenseDto.description,
-            is_aggregate: Boolean(parent),
-            aggregate_name: !parent ? undefined : createExpenseDto.aggregate_name,
-            instalment_number: createExpenseDto.instalment_number,
-        });
-    }
-
-    async initialize({ paid, type, expense, value = 0, month, fromWorkSheet, instalment_number }: InitializeParams) {
-
-        const expenseToInitialize = new ExpenseConstructor({
-            ...expense,
-            paid,
-            type: type ?? expense.type,
-            instalment_number: instalment_number ?? expense.instalment_number,
-        })
-
-        const existExpense =  await this.validateExistExpense(expenseToInitialize, fromWorkSheet);
-
-        const result = this.expenseBusiness.initialize(expenseToInitialize, month);
-
-        const initializedExpense = !existExpense
-            ? await this.create(result.expenseForCurrentYear, result.monthsForCurrentYear, value)
-            : await this.persist({...existExpense, ...result.expenseForCurrentYear}, result.monthsForCurrentYear, value, fromWorkSheet);
-
-        if (initializedExpense) {
-            result.expenseForCurrentYear = initializedExpense;
-        }
-        await this.validateParent(initializedExpense as Expense);
-        return result;
-    }
-
-    async addExpenseForNextYear(bill: Bill, months: Array<TMonth> = [], expense: Expense, existingExpense?: Expense, value: number = 0) {
-        const currentExpenseForNextYear = this.expenseBusiness.reinitialize(
-            months,
-            expense,
-            existingExpense
-        );
-        const expenseCreated = await this.create({ ...currentExpenseForNextYear, bill }, months, value);
-        await this.validateParent(expenseCreated as Expense);
-        return expenseCreated;
-    }
-
-    async create(expense: Expense, months: Array<TMonth> = [], value: number = 0) {
-        const currentExpenseCalculated = this.expenseBusiness.calculate(expense);
-        const savedExpense = await this.save(currentExpenseCalculated) as Expense;
-        const monthList: Array<PersistMonthDto> = months.map((m) => this.monthService.business.generatePersistMonthParams({
-            year: savedExpense?.year,
-            paid: savedExpense?.paid,
-            value: value,
-            month: m.toUpperCase() as EMonth,
-            received_at: expense.created_at
-        }))
-        const expenseMonths = this.monthService.business.generateMonthListCreationParameters({
-            year: savedExpense?.year,
-            paid: savedExpense?.paid,
-            value: value,
-            months: monthList,
-            received_at: savedExpense.created_at
-        })
-        if(expenseMonths?.length > 0) {
-            savedExpense.months = await this.monthService.persistList(expenseMonths, { expense: savedExpense });
-            const savedExpenseCalculated = this.expenseBusiness.calculate(savedExpense);
-            return await this.save(savedExpenseCalculated);
-        }
-        return savedExpense;
-    }
-
-    async persist(expense: Expense, months: Array<TMonth> = [], value: number = 0, fromWorkSheet?: boolean) {
-        const expenseToPersist = {...expense};
-        if(expense?.months && expense?.months?.length > 0) {
-            const monthList = !fromWorkSheet ? expense.months :  expense.months.map((month) => {
-                const monthReceivedFind = months.find((item) => item === month.label);
-                if(monthReceivedFind) {
-                    month.value = month.value + value;
-                }
-                return month;
-            });
-            expenseToPersist.months = await this.monthService.persistList(monthList, { expense: expenseToPersist });
-            const savedExpenseCalculated = this.expenseBusiness.calculate(expenseToPersist);
-            return await this.save(savedExpenseCalculated);
-        }
-        return expense;
-    }
-
-    async update(bill: Bill, param: string, body: UpdateExpenseDto) {
-        const result = await this.findOne({ value: param, withRelations: true, filters: [{
-            value: bill.id,
-            param: `${this.alias}.bill`,
-            relation: true,
-            condition: '='
-            }] }) as Expense;
-
-        const supplier = !body?.supplier
-            ? result.supplier
-            : await this.supplierService.treatEntityParam<Supplier>(
-                body.supplier,
-                'Supplier',
-            ) as Supplier;
-
-        const updatedExpense = new ExpenseConstructor({
-            ...result,
-            bill,
-            type: body?.type ?? result.type,
-            paid: body?.paid ?? result.paid,
-            supplier,
-            description: body?.description ?? result?.description
-        });
-
-        if(result.name_code !== updatedExpense.name_code) {
-            const filters: Array<FilterParams> = [
-                {
-                  value: updatedExpense.year,
-                  param: `${this.alias}.year`,
-                  relation: true,
-                  condition: '=',
-                },
-                {
-                    value: updatedExpense.name_code,
-                    param: `${this.alias}.name_code`,
-                    relation: true,
-                    condition: 'LIKE',
-                }
-            ];
-            const existingExpense = await this.findAll({ filters, withRelations: true }) as Array<Expense>;
-            if(existingExpense.length > 0) {
-                throw this.error(new ConflictException(`You cannot update this expense with this (supplier) ${updatedExpense.supplier.name} because there is already an expense linked to this supplier.`));
-            }
+        if (hasExpense && withThrow) {
+            throw this.error(new ConflictException(fallbackMessage));
         }
 
-        const monthsToPersist = this.monthService.business.generateMonthListUpdateParameters(result?.months, body.months);
-        if(monthsToPersist &&  monthsToPersist?.length > 0) {
-            const months = await this.monthService.persistList(monthsToPersist, { expense: result });
-            const expenseCalculated = this.expenseBusiness.calculate(updatedExpense);
-            expenseCalculated.months = months;
-            const savedExpense = await this.save(expenseCalculated);
-            return {...savedExpense, months };
-        }
-        const expenseCalculated = this.expenseBusiness.calculate(updatedExpense);
-        return await this.save(expenseCalculated);
-    }
-
-    async seeds({
-                    bills,
-                    suppliers,
-                    billListJson,
-                    expenseListJson,
-                }: ExpenseSeederParams) {
-        const seeds = this.seeder.currentSeeds<Expense>({ seedsJson: expenseListJson });
-        const billListSeed = this.seeder.currentSeeds<Bill>({ seedsJson: billListJson });
-
-        const financeBillExpenseListSeed = billListSeed.flatMap((bill) => bill?.expenses ?? []);
-        const financeExpenseListSeed = filterByCommonKeys<Expense>('id', seeds, financeBillExpenseListSeed);
-
-        const currentSeeds = this.flattenParentsAndChildren(financeExpenseListSeed);
-
-        const parents = currentSeeds.filter(item => !item.parent);
-        const children = currentSeeds.filter(item => item.parent);
-
-        const parentsSeeded = await this.seeder.entities({
-            by: 'id',
-            key: 'id',
-            label: 'Expense',
-            seeds: parents,
-            createdEntityFn: async (item) => this.createdEntity(item, suppliers, bills)
-        }) as Array<Expense>;
-
-        const parentMap = new Map<string, Expense>(parentsSeeded.map(parent => [parent.id, parent]));
-
-        const childrenPrepared = children.map(child => ({
-            ...child,
-            parent: parentMap.get(child?.parent?.id ?? '')
-        }))
-
-        const expenses = await this.seeder.entities({
-            by: 'id',
-            key: 'id',
-            label: 'Expense',
-            seeds: childrenPrepared,
-            withReturnSeed: true,
-            createdEntityFn: async (item) => this.createdEntity(item, suppliers, bills)
-        }) as Array<Expense>;
-
-        const expenseList: Array<Expense> = [];
-
-        for(const expense of expenses) {
-            const currentExpense = seeds.find(seed => seed.id === expense.id);
-            if(currentExpense) {
-                const currentMonths: Array<PersistMonthDto> = MONTHS.map((month) => ({
-                    year: currentExpense.year,
-                    code: getCurrentMonthNumber(month),
-                    paid: currentExpense[`${month}_paid`],
-                    value: currentExpense[month],
-                    month: month.toUpperCase() as EMonth,
-                    received_at: currentExpense.created_at,
-                }));
-                expense.months = await this.monthService.persistList(currentMonths, { expense });
-                const expenseCalculated = this.expenseBusiness.calculate(expense);
-                const savedExpense = await this.save(expenseCalculated) as Expense;
-                expenseList.push(savedExpense);
-                continue;
-            }
-            expenseList.push(expense);
+        if (hasExpense && !withThrow) {
+            return hasExpense;
         }
 
-        return expenseList;
-    }
-
-    private createdEntity(expense: Expense, suppliers: Array<Supplier>, bills: Array<Bill>) {
-        const supplier = this.seeder.getRelation<Supplier>({
-            key: 'name',
-            list: suppliers,
-            relation: 'Supplier',
-            param: expense?.supplier?.name,
-        });
-
-        const bill = bills.find((bill) => bill.id === expense.bill?.id) as Bill;
-
-        return new ExpenseConstructor({
-            ...expense,
-            bill,
-            supplier,
-        })
-    }
-
-    private flattenParentsAndChildren(seeds: Array<Expense> = []) {
-        return seeds.flatMap((item) => {
-            if (!item.is_aggregate && Array.isArray(item?.children) && item.children.length > 0) {
-                const childrenPrepared = item.children.map((child) => ({
-                    ...child,
-                    parent: item,
-                }))
-                return [
-                    { ...item, children: undefined },
-                    ...childrenPrepared
-                ]
-            }
-            return item;
-        })
-    }
-
-    private async validateParent(expense: Expense) {
-        if (!expense?.parent) {
-            return;
-        }
-
-        const parent = await this.findOne({ value: expense.parent.id, withRelations: true }) as Expense;
-
-        if (!parent?.children?.length) {
-            await this.create({
-                ...parent,
-                children: [expense],
-            });
-            return;
-        }
-
-        const existExpenseInChildren = parent.children.find((item) => item.id === expense.id);
-
-        if (!existExpenseInChildren) {
-            parent.children.push(expense);
-            await this.create(parent)
-        }
-    }
-
-    private async validateExistExpense(expense: Expense, withoutThrow?: boolean) {
         const filters: Array<FilterParams> = [
             {
                 value: expense.name_code,
@@ -389,7 +319,7 @@ export class ExpenseService extends Service<Expense> {
         ];
         const result = await this.findAll({ withRelations: true, filters }) as Array<Expense>;
 
-        if (result.length && !withoutThrow) {
+        if (result.length && withThrow) {
             throw this.error(new ConflictException('Expense already exists'));
         }
 
@@ -397,160 +327,15 @@ export class ExpenseService extends Service<Expense> {
 
     }
 
-    private buildExpenseToSheet(params: createToSheetParams) {
-        const year = Number(params['year']);
-        const bill = params['bill'] as Bill;
-        const supplierName = params['supplier']?.toString() || '';
-        const is_aggregate = Boolean(params['is_aggregate']) || false;
-        const aggregate_name = params['aggregate_name']?.toString();
-
-        const name = !is_aggregate
-            ? `${bill.name} ${supplierName}`
-            : `${bill.name} ${aggregate_name} ${supplierName}`;
-
-        const childrenParams = params?.['children'];
-        const children = Array.isArray(childrenParams) && childrenParams.length
-            ? childrenParams
-            : undefined
-
-        const type = params['type'] as EExpenseType ?? EExpenseType.VARIABLE;
-
-        return {
-            year,
-            bill,
-            name,
-            type,
-            children,
-            description: 'Generated by a spreadsheet.',
-            supplierName,
-            is_aggregate,
-            aggregate_name
-        }
-    }
-
-    private async createToSheet(params: createToSheetParams) {
-
-        const builtExpense = this.buildExpenseToSheet(params);
-
-        const item = await this.findOne({
-            value: builtExpense.name,
-            filters: [{
-                value: builtExpense.year,
-                param: 'year',
-                condition: '='
-            }],
-            withThrow: false,
-            withDeleted: true,
-            withRelations: true,
-        });
-
-        if (item) {
-            return item;
-        }
-
-        const supplier = await this.supplierService.createToSheet(builtExpense.supplierName) as Supplier;
-
-        const parentExpenseConstructor = new ExpenseConstructor({
-            ...builtExpense,
-            supplier,
-        });
-
-        const parentExpense = await this.create({ ...parentExpenseConstructor, children: undefined }) as Expense;
-
-        if (!parentExpenseConstructor.is_aggregate) {
-            if (parentExpenseConstructor.children) {
-                if (!parentExpense.children) {
-                    parentExpense.children = [];
-                }
-                for (const child of parentExpenseConstructor.children) {
-                    const builtChildExpense = this.buildExpenseToSheet(child);
-                    const item = await this.findOne({
-                        value: builtChildExpense.name,
-                        filters: [{
-                            value: builtChildExpense.year,
-                            param: 'year',
-                            condition: '='
-                        }],
-                        withThrow: false,
-                        withDeleted: true,
-                        withRelations: true,
-                    });
-                    if (item) {
-                        parentExpense.children.push(item);
-                    }
-
-                    const supplier = await this.supplierService.createToSheet(builtChildExpense.supplierName) as Supplier;
-
-                    const childExpenseConstructor = new ExpenseConstructor({
-                        ...builtChildExpense,
-                        supplier,
-                    });
-
-                    const expense = await this.create(childExpenseConstructor);
-                    if (expense) {
-                        parentExpense.children.push(expense);
-                    }
-                }
-                if (parentExpense.children.length) {
-                    await this.create(parentExpense);
-                }
-            }
-        }
-        return parentExpense;
-    }
-
-    async getExpensesFromSheet(
-        year: number,
-        spreadsheet: Spreadsheet,
-        bills: Bill[],
-        groupName: string,
-        nextRow: number
-    ): Promise<Expense[]> {
-        const expenses: Array<Expense> = [];
-        const expensesData = this.expenseBusiness.spreadsheet.parseToDetailsTable({
-            bills,
-            startRow: nextRow,
-            groupName,
-            workSheet: spreadsheet.workSheet
-        });
-
-        for (const itemData of expensesData) {
-            const expense = await this.createToSheet({
-                ...itemData,
-                year,
-            })
-            if (expense) {
-                expenses.push(expense);
-            }
-        }
-
-        return expenses;
-    }
-
-    async buildForCreationBySpreadsheet(createdExpenses: Array<CreateExpenseDto>) {
-        const listCreateExpenseDto: Array<CreateExpenseDto> = [];
-
-        for(const createExpenseDto of createdExpenses) {
-            if(createExpenseDto?.supplier) {
-                const supplier = await this.supplierService.createToSheet(createExpenseDto.supplier as string) as Supplier;
-                listCreateExpenseDto.push({
-                    ...createExpenseDto,
-                    supplier,
-                });
-            }
-        }
-        return listCreateExpenseDto;
-    }
-
-    async generateSeeds(withExpense: boolean, financeSeedsDir: string): Promise<ExpenseGenerateSeeds> {
+    async generateSeeds(withExpense: boolean, financeSeedsDir: string): Promise<GeneratedExpenseSeeds> {
         const expenses = await this.generateEntitySeeds({
             seedsDir: financeSeedsDir,
             staging: EXPENSE_LIST_STAGING_JSON,
             withSeed: withExpense,
-            production:  EXPENSE_LIST_PRODUCTION_JSON,
+            production: EXPENSE_LIST_PRODUCTION_JSON,
             development: EXPENSE_LIST_DEVELOPMENT_JSON,
             withRelations: true,
-            filterGenerateEntitySeedsFn: (json, item) => json.name === item.name || json.name_code === item.name_code,
+            filterGenerateEntityFn: (json, item) => json.name === item.name || json.name_code === item.name_code,
         });
 
         return {
@@ -560,10 +345,10 @@ export class ExpenseService extends Service<Expense> {
     }
 
     async persistSeeds(withSeed: boolean) {
-        const expenses = await this.persistEntitySeeds({
+        const expenses = await this.seeder.persistEntity({
             withSeed,
             staging: EXPENSE_LIST_STAGING_JSON,
-            production:  EXPENSE_LIST_PRODUCTION_JSON,
+            production: EXPENSE_LIST_PRODUCTION_JSON,
             development: EXPENSE_LIST_DEVELOPMENT_JSON,
         })
 
@@ -571,105 +356,5 @@ export class ExpenseService extends Service<Expense> {
             months: this.business.monthsMapper(expenses.added),
             expenses
         }
-    }
-
-    public async buildExpensesToUpload(buffer: Buffer, uploadExpenseDto: UploadExpenseDto) {
-        const spreadsheet = new Spreadsheet();
-
-        const worksheets = await spreadsheet.loadFile(buffer);
-
-        const worksheet = worksheets[0];
-
-        if (!worksheet) {
-            throw new ConflictException('The Excel file does not contain any worksheets.');
-        }
-
-        spreadsheet.updateWorkSheet(worksheet);
-        const workSheet = spreadsheet.workSheet;
-
-        const createdExpenses = this.business.spreadsheet.buildForCreation(workSheet, uploadExpenseDto);
-
-        return await this.buildForCreationBySpreadsheet(createdExpenses);
-    }
-
-    public buildExpensePersistence(year: number, createExpenseDtoList: Array<CreateExpenseDto>): Array<BuildExpensePersistenceResult> {
-        return createExpenseDtoList.map((createExpenseDto) => {
-            const month = this.monthService.business.generatePersistMonthParams({
-                year,
-                paid: createExpenseDto?.paid,
-                value: createExpenseDto?.value,
-                month: createExpenseDto?.month,
-                received_at: createExpenseDto?.received_at
-            });
-            return {
-                ...createExpenseDto,
-                month
-            };
-        });
-    }
-
-    cleanRepeatedPersistExpenseParams(buildExpensePersistenceResult: Array<BuildExpensePersistenceResult>): Array<PersistExpenseParams> {
-        const initialPersistExpenseParams: Array<PersistExpenseParams> = [{
-            type: EExpenseType.VARIABLE,
-            value: 0,
-            months: [],
-            supplier: '',
-            instalment_number: 1,
-        }];
-
-        return buildExpensePersistenceResult.reduce((acc, item) => {
-            const hasParam = acc.find((accItem) => accItem.supplier['name_code'] === item.supplier['name_code']);
-            if(!hasParam) {
-                const expenseToSave = buildExpensePersistenceResult.filter((bep) => bep.supplier['name_code'] === item.supplier['name_code']);
-                const expenseMonths =  expenseToSave.flatMap((expense) => expense.month);
-                acc.push({
-                    type: item.type,
-                    paid: item.paid,
-                    value: 0,
-                    months: expenseMonths,
-                    supplier: item.supplier,
-                    received_at: item.received_at,
-                });
-            }
-            return acc;
-        }, initialPersistExpenseParams).filter((item) => item.months.length > 0 && item.supplier !== '');
-    }
-
-    async persistByUpload(expense: Expense,persistExpenseParams: PersistExpenseParams) {
-        const isCreate = !expense?.id;
-
-        const savedExpense = isCreate ? await this.save(expense) as Expense : { ...expense};
-
-        const expenseMonths: Array<PersistMonthDto> = isCreate
-            ? this.monthService.business.generateMonthListCreationParameters({
-                year: savedExpense?.year,
-                paid: savedExpense?.paid,
-                months: persistExpenseParams.months,
-                received_at: persistExpenseParams.received_at
-            })
-            : this.updateMonths(savedExpense.months, persistExpenseParams.months);
-
-        if(expenseMonths?.length > 0) {
-            savedExpense.months = await this.monthService.persistList(expenseMonths, { expense: savedExpense });
-            const savedExpenseCalculated = this.expenseBusiness.calculate(savedExpense);
-            return await this.save(savedExpenseCalculated);
-        }
-
-        return savedExpense;
-    }
-
-    private updateMonths(currentMonths: Array<Month> = [], monthsToUpdate: Array<PersistMonthDto>) {
-        return currentMonths.map((month) => {
-            const monthToUpdate = monthsToUpdate.find((monthToUpdate) => monthToUpdate.code === month.code);
-
-            if(!monthToUpdate) {
-                return month;
-            }
-
-            month.paid = Boolean(monthToUpdate.paid);
-            month.value = monthToUpdate.value !== month.value ? monthToUpdate.value : month.value;
-            month.received_at = monthToUpdate.received_at !== month.received_at ? monthToUpdate.received_at : month.received_at;
-            return month;
-        })
     }
 }

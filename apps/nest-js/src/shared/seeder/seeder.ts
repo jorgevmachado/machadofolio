@@ -7,14 +7,25 @@ import type { BasicEntity } from '../types';
 import { Queries } from '../queries';
 import { Validate } from '../validate';
 
-import type { CurrentSeedsParams, ExecuteSeedParams, GetRelationParams, SeedEntitiesParams, SeedEntityParams } from './types';
+import type {
+    CurrentSeedsParams, ExecuteSeedParams, GenerateEntitySeedsParams, GetRelationParams,
+    PersistEntitySeedsParams, SeedEntitiesParams, SeedEntityParams, SeedsGenerated
+} from './types';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
+type GetListJsonParams = {
+    env?: string;
+    staging: unknown;
+    production: unknown;
+    development: unknown;
+}
 
 export class Seeder<T extends BasicEntity> {
-    private validate: Validate;
+    private readonly validate: Validate;
     private readonly queries: Queries<T>;
 
     constructor(
+        protected readonly env: string,
         protected readonly alias: string,
         protected readonly relations: Array<string>,
         protected readonly repository: Repository<T>,
@@ -128,5 +139,84 @@ export class Seeder<T extends BasicEntity> {
             : seedsJson;
 
         return currentSeedsJson ?? currentSeeds;
+    }
+
+    getListJson<T>({ env = this.env, staging, production, development }: GetListJsonParams): Array<T> {
+        switch (env) {
+            case 'production':
+                return production as unknown as Array<T>;
+            case 'staging':
+                return staging as unknown as Array<T>;
+            case 'development':
+            default:
+                return development as unknown as Array<T>;
+        }
+    }
+
+    async persistEntity({
+                            withSeed,
+                            staging,
+                            production,
+                            development,
+                            withRelations,
+                            persistEntityFn,
+                        }: PersistEntitySeedsParams<T>): Promise<SeedsGenerated<T>> {
+        if(!withSeed) {
+            return {
+                list: [],
+                added: []
+            }
+        }
+        const list = await this.queries.list({ withDeleted: true, withRelations }) as unknown as Array<T>;
+        const listJson = this.getListJson<T>({
+            staging,
+            production,
+            development,
+        });
+
+        const added: Array<T> = [];
+
+        for(const json of listJson) {
+            const entity = await this.queries.findOne({ value: json['id'], withThrow: false });
+            if(!entity) {
+                const toInsert = persistEntityFn ? persistEntityFn(json) : json;
+                await this.repository.insert(toInsert as QueryDeepPartialEntity<T>);
+                added.push(json);
+            }
+        }
+
+        return {
+            list: [...list, ...added],
+            added
+        }
+    }
+
+    async generateEntity({
+                             withSeed,
+                             staging,
+                             production,
+                             development,
+                             withRelations,
+                             filterGenerateEntityFn,
+                         }: GenerateEntitySeedsParams<T>): Promise<SeedsGenerated<T>> {
+        if(!withSeed) {
+            return {
+                list: [],
+                added: []
+            }
+        }
+
+        const entities = await this.queries.list({ withDeleted: true, withRelations }) as unknown as Array<T>;
+
+        const listJson = this.getListJson<T>({
+            staging,
+            production,
+            development,
+        });
+
+        const added = entities.filter((entity) => !listJson.find((json) => filterGenerateEntityFn(json, entity)));
+        const list = [...listJson, ...added];
+
+        return { list, added }
     }
 }

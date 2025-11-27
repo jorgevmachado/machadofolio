@@ -1,6 +1,6 @@
 import type {
     SpreadsheetProcessingParams as SpreadsheetProcessingBusinessParams
-} from '@repo/business/finance/bill/business/types';
+} from '@repo/business';
 
 import type { Bank } from '../entities/bank.entity';
 import type { Finance } from '../entities/finance.entity';

@@ -7,12 +7,12 @@ import { SupplierTypeService } from './type.service';
 import { TypeController } from './type.controller';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([SupplierType]),
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-  ],
-  controllers: [TypeController],
-  providers: [SupplierTypeService],
-  exports: [SupplierTypeService],
+    imports: [
+        TypeOrmModule.forFeature([SupplierType]),
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+    ],
+    controllers: [TypeController],
+    providers: [SupplierTypeService],
+    exports: [SupplierTypeService],
 })
 export class TypeModule {}

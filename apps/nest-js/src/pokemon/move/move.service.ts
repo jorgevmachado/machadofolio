@@ -4,7 +4,11 @@ import { Repository } from 'typeorm';
 
 import { PokeApiService } from '@repo/business';
 
-import { Service } from '../../shared';
+import POKEMON_MOVE_LIST_DEVELOPMENT_JSON from '../../../seeds/development/pokemon/moves.json';
+import POKEMON_MOVE_LIST_STAGING_JSON from '../../../seeds/staging/pokemon/moves.json';
+import POKEMON_MOVE_LIST_PRODUCTION_JSON from '../../../seeds/production/pokemon/moves.json';
+
+import { SeedsGenerated, Service } from '../../shared';
 
 import { PokemonMove } from '../entities/move.entity';
 
@@ -57,5 +61,25 @@ export class PokemonMoveService extends Service<PokemonMove> {
             withReturnSeed: true,
             createdEntityFn: async (item) => item
         })
+    }
+
+    async generateSeeds(withSeed: boolean, pokemonSeedsDir: string): Promise<SeedsGenerated<PokemonMove>> {
+        return await this.generateEntitySeeds({
+            withSeed,
+            seedsDir: pokemonSeedsDir,
+            staging: POKEMON_MOVE_LIST_STAGING_JSON,
+            production: POKEMON_MOVE_LIST_PRODUCTION_JSON,
+            development: POKEMON_MOVE_LIST_DEVELOPMENT_JSON,
+            filterGenerateEntityFn: (json, item) => json.order === item.order
+        });
+    }
+
+    async persistSeeds(withSeed?: boolean): Promise<SeedsGenerated<PokemonMove>> {
+        return await this.seeder.persistEntity({
+            withSeed,
+            staging: POKEMON_MOVE_LIST_STAGING_JSON,
+            production: POKEMON_MOVE_LIST_PRODUCTION_JSON,
+            development: POKEMON_MOVE_LIST_DEVELOPMENT_JSON,
+        });
     }
 }
