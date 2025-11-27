@@ -3,15 +3,17 @@ import { afterEach, beforeEach, describe, expect, it, jest, } from '@jest/global
 import { INVALID_TYPE, REQUIRED_FIELD } from '../../shared';
 
 import {
-    parseMonth,
-    totalByMonth,
-    isMonthValid,
-    getMonthIndex,
-    monthValidator,
-    getMonthNumber,
-    getMonthByIndex,
+    convertTypeToEnum,
     getCurrentMonth,
-    getCurrentMonthNumber, convertTypeToEnum,
+    getCurrentMonthNumber,
+    getMonthByIndex,
+    getMonthIndex,
+    getMonthNumber,
+    isMonthValid,
+    monthValidator,
+    parseMonth,
+    splitMonthsByInstalment,
+    totalByMonth
 } from './month';
 
 import { EMonth } from './enum';
@@ -327,6 +329,37 @@ describe('Date Month function', () => {
             it('should return JANUARY when received a invalid string month.', () => {
                 expect(convertTypeToEnum(undefined)).toEqual(EMonth.JANUARY);
             });
-        })
+        });
+
+        describe('splitMonthsByInstalment', () => {
+            it('Should return only months for current year and empty months for next year', () => {
+                const result = splitMonthsByInstalment(
+                    2025,
+                    2,
+                    EMonth.JANUARY
+                );
+                expect(result.monthsForCurrentYear).toEqual([EMonth.JANUARY, EMonth.FEBRUARY]);
+                expect(result.monthsForNextYear).toHaveLength(0);
+            });
+
+            it('should return months for current year and next year', () => {
+                const result = splitMonthsByInstalment(
+                    2025,
+                    12,
+                    EMonth.FEBRUARY
+                );
+                expect(result.monthsForCurrentYear).toHaveLength(11);
+                expect(result.monthsForNextYear).toEqual([EMonth.JANUARY]);
+            });
+
+            it('should return months for current year without month', () => {
+                const result = splitMonthsByInstalment(
+                    2025,
+                    1
+                );
+                expect(result.monthsForCurrentYear).toHaveLength(1);
+                expect(result.monthsForNextYear).toHaveLength(0);
+            });
+        });
     });
 });

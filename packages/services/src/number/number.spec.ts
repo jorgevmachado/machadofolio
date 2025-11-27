@@ -129,6 +129,11 @@ describe('Number function', () => {
             expect(result).toBe(0);
         });
 
+        it('should return fallback when received undefined', () => {
+            const result = convertToNumber(undefined, 1);
+            expect(result).toBe(1);
+        });
+
         it('should return 0 when cant convert', () => {
             const result = convertToNumber('abc');
             expect(result).toBe(0);
@@ -138,5 +143,10 @@ describe('Number function', () => {
             const result = convertToNumber('10.53');
             expect(result).toBe(10.53);
         });
+
+        it('should return fallback when cant convert', () => {
+            const result = convertToNumber({}, 1);
+            expect(result).toBe(1);
+        })
     })
 });
