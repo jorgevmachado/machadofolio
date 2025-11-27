@@ -5,13 +5,18 @@ import {
     capitalize,
     cleanFormatter,
     cleanTextByListText,
-    convertSubPathUrl,
+    convertSubPathUrl, convertToPercent,
     extractLastItemFromUrl,
     findRepeated,
     formatPath,
-    formatUrl,
+    formatUrl, getPercentValue,
     initials,
+    matchesRepeatWords,
     normalize,
+    removePunctuationAndSpaces,
+    replaceWords,
+    type ReplaceWordsParam,
+    restorePunctuationAtEnd,
     sanitize,
     separateCamelCase,
     snakeCaseToNormal,
@@ -19,10 +24,7 @@ import {
     toSnakeCase,
     truncateString,
     validatePath,
-    replaceWords,
-    type ReplaceWordsParam,
-    validateText,
-    matchesRepeatWords
+    validateText
 } from './string';
 
 jest.mock('uuid');
@@ -518,6 +520,55 @@ describe('String function', () => {
             expect(matchesRepeatWords('house', customListRepeatWords)).toBeFalsy();
             expect(matchesRepeatWords('House', customListRepeatWords)).toBeTruthy();
             expect(matchesRepeatWords('Home', customListRepeatWords)).toBeFalsy();
+        });
+    });
+
+    describe('removePunctuationAndSpaces', () => {
+        it('Should remove all punctuation and spaces from a string', () => {
+            const text = 'Welcome, ';
+            const result = removePunctuationAndSpaces(text);
+            expect(result.cleaned).toEqual('Welcome');
+            expect(result.punctuations).toEqual([', ']);
+        });
+
+        it('Should retorn string when dont have punctuation.', () => {
+            const text = 'Welcome,';
+            const result = removePunctuationAndSpaces(text);
+            expect(result.cleaned).toEqual('Welcome');
+            expect(result.punctuations).toEqual([',']);
+        })
+    });
+
+    describe('restorePunctuationAtEnd', () => {
+        it('should restore punctuation at the end of the string', () => {
+            const text = 'Welcome';
+            const result = restorePunctuationAtEnd(text, [', ']);
+            expect(result).toEqual('Welcome, ');
+        });
+    });
+
+    describe('convertToPercent', () => {
+
+        it('should convert a decimal number to a percentage string', () => {
+            expect(convertToPercent(0.75)).toBe('75%');
+        });
+
+        it('should return the default fallback string when the value is undefined', () => {
+            expect(convertToPercent(undefined)).toBe('0%');
+        });
+
+        it('should return the fallback string when the value is undefined', () => {
+            expect(convertToPercent(undefined, '25%')).toBe('25%');
+        });
+    });
+
+    describe('getPercentValue', () => {
+        it('should return the percentage string for given value and total', () => {
+            expect(getPercentValue(50, 100)).toBe('50%');
+        });
+
+        it('should return 0% when total is zero to avoid division by zero', () => {
+            expect(getPercentValue(100, 0)).toBe('0%');
         });
     });
 });
