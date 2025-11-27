@@ -1,2 +1,3 @@
 export { default as BillBusiness } from './business';
-export type { SpreadsheetProcessingParams, BillList } from './types';
+export type { BillList } from './types';
+export type { SpreadsheetProcessingParams } from './spreadsheet';

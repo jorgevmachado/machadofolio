@@ -1,4 +1,4 @@
-import { type EMonth, ReplaceWordsParam } from '@repo/services';
+import { type EMonth, ReplaceWordParam } from '@repo/services';
 
 import type { IFinanceBase } from '../../types';
 
@@ -35,9 +35,9 @@ export type IExpense = IFinanceBase & IExpenseBase & {
 export type ICreateExpenseParams = {
     type: EExpenseType;
     paid?: boolean;
-    name?: string;
     value?: number;
     month?: EMonth;
+    months?: Array<IPersistMonthParams>;
     parent?: string | IExpense['parent'];
     supplier: string | IExpense['supplier'];
     description?: string;
@@ -55,15 +55,16 @@ export type IUpdateExpenseParams = {
     description?: string;
 }
 
-export type IReplaceWord = {
-    after: string;
-    before: string;
+export type IUploadsExpenseParams = {
+    paid?: Array<boolean>;
+    files: Array<string>;
+    months: Array<EMonth>;
+    replaceWords?: Array<ReplaceWordParam>;
+    repeatedWords?: Array<string>;
 }
 
-export type IUploadExpenseParams = {
+export type IUploadExpenseParams = Pick<IUploadsExpenseParams, 'replaceWords' | 'repeatedWords'> & {
     file: string;
     paid?: boolean;
     month?: EMonth;
-    replaceWords?: ReplaceWordsParam;
-    repeatedWords?: Array<string>;
 }

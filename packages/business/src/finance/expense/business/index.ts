@@ -1,2 +1,2 @@
 export { default as ExpenseBusiness } from './business';
-export type { AllExpensesCalculated } from './types'
+export type { PrepareForCreationParams, PrepareForCreationResult } from './types'
