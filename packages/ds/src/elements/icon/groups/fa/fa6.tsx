@@ -99,7 +99,7 @@ import {
     FaUserTie,
     FaVolumeOff,
     FaWallet,
-    FaWarehouse
+    FaWarehouse,
 } from 'react-icons/fa6';
 
 import type { TIconGroupIcons } from '../types';
@@ -153,6 +153,7 @@ export const fa6Group: TIconGroupIcons = {
     train: <FaTrain/>,
     route: <FaRoute/>,
     share: <FaShareFromSquare/>,
+    search: undefined,
     github: <FaSquareGithub/>,
     config: undefined,
     church: <FaChurch/>,

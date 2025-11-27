@@ -8,6 +8,7 @@ export type ValidatedProps = {
 export type OptionsProps = {
     label: string;
     value: string;
+    disabled?: boolean;
 }
 
 export type TAppearance = 'standard' | 'range';

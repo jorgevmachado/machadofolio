@@ -21,19 +21,19 @@ interface AccordionProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onT
 }
 
 export default function Accordion ({
-    id,
-    title,
-    isOpen,
-    context = 'primary',
-    onToggle,
-    children,
-    subtitle,
-    disabled,
-    className,
-    isBorderless,
-    childrenTitle,
-    ...props
-}: AccordionProps) {
+                                       id,
+                                       title,
+                                       isOpen,
+                                       context = 'primary',
+                                       onToggle,
+                                       children,
+                                       subtitle,
+                                       disabled,
+                                       className,
+                                       isBorderless,
+                                       childrenTitle,
+                                       ...props
+                                   }: Readonly<AccordionProps>) {
     const { isOpenModel, toggleOpen } = useAccordion(isOpen, onToggle);
     const componentId = id ?? generateComponentId('ds-accordion');
     const classNameList = joinClass([
@@ -45,7 +45,6 @@ export default function Accordion ({
     ]);
 
     const handleToggle = useCallback(() => {
-        console.log('handleToggle');
         if (!disabled) {
             toggleOpen();
         }

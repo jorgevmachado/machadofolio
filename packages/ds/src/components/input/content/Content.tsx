@@ -8,7 +8,7 @@ import type { TGenericIconProps } from '../../../elements';
 
 import { useInput } from '../InputContext';
 
-import { DateInput, FileInput, RadioGroupInput, SelectInput } from './fields';
+import { DateInput, FileInput, RadioGroupInput, SelectInput, type OnFileChangeParams } from './fields';
 import Addon from './addon';
 import Inside from './inside';
 
@@ -17,6 +17,8 @@ import './Content.scss';
 type DateInputProps = React.ComponentProps<typeof DateInput>;
 
 type SelectInputProps = React.ComponentProps<typeof SelectInput>;
+
+export type OnFileInputChangeParams = OnFileChangeParams;
 
 export type OnInputParams = {
     name: string;
@@ -37,14 +39,18 @@ interface ContentProps extends Omit<React.InputHTMLAttributes<HTMLInputElement |
     invalid?: boolean;
     options?: Array<OptionsProps>;
     calendar?: DateInputProps;
+    onRemove?: () => void;
+    clearFile?: boolean;
     formatter?: (value?: string) => string;
     appearance: TAppearance;
     withPreview?: boolean;
+    onChangeFile?:(params: OnFileInputChangeParams) => void;
     autoComplete?: boolean;
     fallbackLabel?: string;
     filterFunction?: (input: string, option: OptionsProps) => boolean;
     fallbackAction?: SelectInputProps['fallbackAction'];
     defaultFormatter?: boolean;
+    showRemoveButton?: boolean;
 }
 
 const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>((
@@ -66,14 +72,18 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         calendar,
         onChange,
         disabled = false,
+        onRemove,
+        clearFile,
         formatter,
         appearance,
         withPreview = true,
+        onChangeFile,
         autoComplete = false,
         fallbackLabel,
         filterFunction,
         fallbackAction,
         defaultFormatter = true,
+        showRemoveButton = false,
         ...props
     },
     ref
@@ -129,6 +139,18 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         }
     }
 
+    const handleOnChangeFile = (params: OnFileInputChangeParams) => {
+        if(value) {
+            setCurrentInputValue(value);
+        }
+        if(onChange) {
+            onChange(params.event)
+        }
+        if(onChangeFile) {
+            onChangeFile(params);
+        }
+    }
+
     const handleOnClick = (e: React.MouseEvent<HTMLInputElement | HTMLSpanElement>, value?: string | Array<string>) => {
         e.preventDefault();
         e.stopPropagation();
@@ -150,7 +172,6 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
         if(isRadioGroup) {
 
             if(onInput) {
-                console.log('# => value => ', value);
                 onInput({
                     name: name || '',
                     value: value || '',
@@ -287,12 +308,16 @@ const Content = forwardRef<HTMLInputElement | HTMLTextAreaElement, ContentProps>
                         name={name}
                         value={currentInputValue}
                         accept={accept}
+                        multiple={props.multiple}
                         onInput={handleInput}
-                        onChange={handleOnChange}
-                        disabled={disabled}
                         context={context}
+                        onChange={handleOnChangeFile}
+                        disabled={disabled}
+                        onRemove={onRemove}
+                        clearFile={clearFile}
                         className={joinClass(defaultClassNameInputList)}
                         withPreview={withPreview}
+                        showRemoveButton={showRemoveButton}
                     />
                 )}
                 {isDate && (

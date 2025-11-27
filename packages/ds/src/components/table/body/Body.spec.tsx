@@ -68,8 +68,8 @@ describe('<Body/>', () => {
                 value: 'tag'
             },
             {
-              text: 'Date',
-              value: 'date',
+                text: 'Date',
+                value: 'date',
             },
             {
                 text: 'Created At',

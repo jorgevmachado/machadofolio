@@ -22,20 +22,20 @@ type SelectProps = {
 }
 
 export default function Select({
-    id,
-    name = 'select',
-    value,
-    onInput,
-    options = [],
-    disabled,
-    className,
-    placeholder = 'Select...',
-    onChange,
-    autoComplete = false,
-    fallbackAction,
-    fallbackLabel,
-    filterFunction
-}: SelectProps) {
+                                   id,
+                                   name = 'select',
+                                   value,
+                                   onInput,
+                                   options = [],
+                                   disabled,
+                                   className,
+                                   placeholder = 'Select...',
+                                   onChange,
+                                   autoComplete = false,
+                                   fallbackAction,
+                                   fallbackLabel,
+                                   filterFunction
+                               }: SelectProps) {
     const [open, setOpen] = useState(false);
     const [focused, setFocused] = useState(-1);
     const [selectedValue, setSelectedValue] = useState(value ?? '');
@@ -47,12 +47,15 @@ export default function Select({
         if(!autoComplete) {
             return optionsList;
         }
+
         if(!selectedValue) {
             return optionsList;
         }
+
         if(filterFunction) {
             return optionsList.filter(opt => filterFunction(selectedValue, opt));
         }
+
         return optionsList.filter(opt => opt.label.toLowerCase().includes(selectedValue?.toLowerCase()));
     }, [optionsList, autoComplete, selectedValue, filterFunction]);
 
@@ -160,12 +163,9 @@ export default function Select({
         }
     }
 
-    const treatValue = (value: string) => {
-        if(autoComplete) {
-            const option = optionsList.find(opt => opt.value === value || opt.label === value);
-            return option ? option.label : value;
-        }
-        return value;
+    const treatValueAutoComplete = (value: string) => {
+        const option = optionsList.find(opt => opt.value === value || opt.label === value);
+        return option ? option.label : value;
     }
 
     const onClickFallback = (e: React.MouseEvent<HTMLLIElement>) => {
@@ -199,7 +199,7 @@ export default function Select({
                         <input
                             ref={inputRef}
                             type="text"
-                            value={treatValue(selectedValue)}
+                            value={treatValueAutoComplete(selectedValue)}
                             onFocus={() => setOpen(true)}
                             onChange={handleOnChange}
                             disabled={disabled}
@@ -214,10 +214,10 @@ export default function Select({
                         />
                     )
                     : (
-                    <span className={selectedValue ? "" : "ds-select__placeholder"} data-testid="ds-select-placeholder">
+                        <span className={selectedValue ? "" : "ds-select__placeholder"} data-testid="ds-select-placeholder">
                     {selectedLabel || placeholder}
                 </span>
-                )}
+                    )}
                 <Icon icon="chevron-down" color="primary-80" size="20" className={joinClass(["ds-select__arrow", open && "ds-select__arrow--open"])} />
                 {open || closing ? (
                     <ul
@@ -234,7 +234,8 @@ export default function Select({
                                 role="option"
                                 onClick={onClickFallback}
                                 tabIndex={-1}
-                                className="ds-select__option ds-select__option--empty" >
+                                className="ds-select__option ds-select__option--empty"
+                                data-testid="ds-select-fallback">
                                 {fallbackAction ? fallbackLabel ?? 'Add' : 'No options'}
                             </li>
                         ) : filteredOptions.map((option, idx) => (
@@ -243,7 +244,7 @@ export default function Select({
                                 id={`${id}-option-${idx}`}
                                 className={joinClass([
                                     'ds-select__option',
-                                    selectedValue.toLowerCase() === option.label.toLowerCase() && 'ds-select__option--selected',
+                                    selectedValue === option.value && 'ds-select__option--selected',
                                     focused === idx && 'ds-select__option--focused',
                                 ])}
                                 role="option"

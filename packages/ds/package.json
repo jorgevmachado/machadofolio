@@ -98,6 +98,7 @@
   "dependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "sass": "^1.89.2"
+    "sass": "^1.89.2",
+    "recharts": "^3.3.0"
   }
 }

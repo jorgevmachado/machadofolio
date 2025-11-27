@@ -19,6 +19,24 @@
     text-overflow: ellipsis;
     overflow: hidden;
     max-width: 220px;
+    &--error {
+      color: var(--color-error-80);
+    }
+  }
+
+  &__filenames-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    max-width: 400px;
+  }
+
+  &__filename-item {
+    color: var(--color-text-secondary, #6b7280);
+    font-size: 0.97rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   &__preview {
@@ -44,5 +62,9 @@
         border-color: #3498db;
       }
     }
+  }
+
+  &__icon-remove {
+    cursor: pointer;
   }
 }
