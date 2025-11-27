@@ -12,4 +12,5 @@ export interface QueryParameters {
     status?: EStatus;
     withDeleted?: boolean;
     withRelations?: boolean;
+    [key: string]: string | number | boolean | undefined | null | [ string];
 }

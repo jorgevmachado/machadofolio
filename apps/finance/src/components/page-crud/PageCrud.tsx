@@ -13,10 +13,12 @@ import ModalDelete from '../modal-delete';
 import ModalPersist from './modal-persist';
 
 import './PageCrud.scss';
+import PageFilter from '../page-filter';
 
 type TableProps = React.ComponentProps<typeof Table>;
 
 type ModalPersistProps = React.ComponentProps<typeof ModalPersist>;
+type FilterProps = React.ComponentProps<typeof PageFilter>;
 
 type Actions = {
     text: string;
@@ -27,6 +29,8 @@ type Actions = {
 }
 
 type PageCrudProps = Pick<TableProps, 'items' | 'headers' | 'loading' |  'onRowClick'> & {
+    range?: number;
+    filter?: FilterProps;
     inputs?: ModalPersistProps['inputs'];
     actions?: Actions;
     totalPages?: number;
@@ -36,6 +40,8 @@ type PageCrudProps = Pick<TableProps, 'items' | 'headers' | 'loading' |  'onRowC
 };
 
 export default function PageCrud({
+    range = 10,
+    filter,
     items,
     inputs,
     actions,
@@ -103,6 +109,9 @@ export default function PageCrud({
                     onClick: () => handlePersistModal()
                 } : undefined}
             />
+            {filter && (
+                <PageFilter {...filter} />
+            )}
             <Table
                 items={items}
                 actions={actions && {
@@ -123,7 +132,7 @@ export default function PageCrud({
                     fluid
                     type="numbers"
                     total={totalPages}
-                    range={totalPages}
+                    range={range}
                     current={currentPage}
                     disabled
                     handleNew={handlePageChange}

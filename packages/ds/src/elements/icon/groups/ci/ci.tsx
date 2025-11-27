@@ -62,6 +62,7 @@ export const ciGroup: TIconGroupIcons = {
   train: undefined,
   route: undefined,
   share: undefined,
+  search: undefined,
   github: undefined,
   config: undefined,
   church: undefined,

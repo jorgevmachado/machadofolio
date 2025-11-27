@@ -9,6 +9,7 @@
   "save": "save",
   "type": "Type",
   "error": "Error",
+  "filter": "Filter",
   "create": "Create",
   "delete": "Delete",
   "saved": "saved",

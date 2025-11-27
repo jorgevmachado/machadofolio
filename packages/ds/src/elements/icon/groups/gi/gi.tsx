@@ -124,6 +124,7 @@ export const giGroup: TIconGroupIcons = {
   train: undefined,
   route: undefined,
   share: <GiShare />,
+  search: undefined,
   github: undefined,
   config: undefined,
   church: <GiChurch />,

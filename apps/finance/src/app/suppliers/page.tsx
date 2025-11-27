@@ -55,11 +55,17 @@ export default function SuppliersPage() {
             isEdit
                 ? await supplierService.update(supplier.id, body)
                 : await supplierService.create(body);
-            addAlert({ type: 'success', message: `${t('supplier')} ${isEdit ? t('updated') : t('saved')} ${t('successfully')}!` });
+            addAlert({
+                type: 'success',
+                message: `${t('supplier')} ${isEdit ? t('updated') : t('saved')} ${t('successfully')}!`
+            });
             await fetchSuppliers({ page: currentPage });
             refresh();
         } catch (error) {
-            addAlert({ type: 'error', message: (error as Error)?.message ?? `${t('error_when')} ${isEdit ? t('updating') : t('saving')} ${t('supplier')}` });
+            addAlert({
+                type: 'error',
+                message: (error as Error)?.message ?? `${t('error_when')} ${isEdit ? t('updating') : t('saving')} ${t('supplier')}`
+            });
             console.error(error)
         } finally {
             hide();
@@ -94,6 +100,25 @@ export default function SuppliersPage() {
             fetch().then();
         }
     }, []);
+
+    const handleFilter = async (item: Partial<Supplier>) => {
+        if(!item) {
+            return;
+        }
+
+        const result: { filter?: QueryParameters} = { filter: undefined }
+
+        if(item?.name) {
+            result.filter = { ...result.filter, name: item.name }
+        }
+
+        if(item?.type) {
+            const type = item.type.name_code;
+            result.filter = { ...result.filter, type } as QueryParameters;
+        }
+
+        fetchSuppliers({ page: currentPage, ...result.filter }).then();
+    }
 
     return (
         <div>
@@ -161,6 +186,32 @@ export default function SuppliersPage() {
                     totalPages={totalPages}
                     currentPage={currentPage}
                     resourceName={t('supplier')}
+                    filter={{
+                        inputs: [
+                            {
+                                fluid: true,
+                                type: 'text',
+                                name: 'name',
+                                label: t('supplier'),
+                                required: true,
+                                placeholder: `${t('enter_a')} ${t('supplier')}`,
+                            },
+                            {
+                                fluid: true,
+                                type: 'select',
+                                name: 'type',
+                                label: t('type'),
+                                list: supplierTypes,
+                                options: supplierTypes.map((type) => ({ value: type.id, label: type.name })),
+                                required: true,
+                                placeholder: `${t('enter_a')} ${t('supplier_type')}`,
+                                autoComplete: true,
+                                fallbackLabel: `${t('add')} ${t('supplier_type')}`,
+                                fallbackAction: () => router.push('/suppliers/types'),
+                            }
+                        ],
+                        onFilter: (item) => handleFilter(item as Supplier),
+                    }}
                     handlePageChange={setCurrentPage}
 
                 />

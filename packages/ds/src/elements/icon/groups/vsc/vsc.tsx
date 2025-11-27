@@ -1,4 +1,4 @@
-import { VscEdit, VscError, VscGithub, VscTrash } from 'react-icons/vsc';
+import { VscEdit, VscError, VscGithub, VscSearch, VscTrash } from 'react-icons/vsc';
 
 import type { TIconGroupIcons } from '../types';
 
@@ -51,6 +51,7 @@ export const vscGroup: TIconGroupIcons = {
   train: undefined,
   route: undefined,
   share: undefined,
+  search: <VscSearch />,
   github: <VscGithub/>,
   config: undefined,
   church: undefined,

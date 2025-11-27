@@ -50,6 +50,7 @@ export type TIcon =
     | 'train'
     | 'route'
     | 'share'
+    | 'search'
     | 'github'
     | 'config'
     | 'church'
