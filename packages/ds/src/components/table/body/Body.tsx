@@ -19,13 +19,13 @@ type BodyProps = Pick<
 }
 
 export default function Body({
-    headers,
-    actions,
-    onRowClick,
-    sortedItems,
-    formattedDate,
-    getClassNameRow,
-}: BodyProps) {
+                                 headers,
+                                 actions,
+                                 onRowClick,
+                                 sortedItems,
+                                 formattedDate,
+                                 getClassNameRow,
+                             }: BodyProps) {
 
     const handleRowClick = (
         event: React.MouseEvent<HTMLTableRowElement>,

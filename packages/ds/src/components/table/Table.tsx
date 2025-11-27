@@ -24,7 +24,7 @@ export default function Table({
                                   onSortedColumn,
                                   getClassNameRow,
                                   notFoundMessage,
-    ...props
+                                  ...props
                               }: TableProps) {
     const [sortedItems, setSortedItems] = useState<TableProps['items']>([...items]);
     const [currentHeaders, setCurrentHeaders] = useState<TableProps['headers']>(headers);
@@ -90,32 +90,36 @@ export default function Table({
         }
     }, [isMobile]);
 
+    useEffect(() => {
+        setCurrentHeaders(headers);
+    }, [headers]);
+
     return loading
         ? (<Spinner />)
         : (
-        <div {...props} className={classNameList} data-testid="ds-table">
-            {sortedItems.length === 0 ? (
-                <div className="ds-table__no-data-container" data-testid="ds-table-no-data">
-                    <Text id="ds-table-not-found">{notFoundMessage ? notFoundMessage : 'No data found!!'}</Text>
-                </div>
-            ) : (
-                <table cellSpacing="0" cellPadding="0" style={style} data-testid="ds-table-data">
-                    <Header
-                        headers={currentHeaders}
-                        actions={actions}
-                        handleSort={handleSort}
-                        sortedColumn={currentSortedColumn}
-                    />
-                    <Body
-                        headers={currentHeaders}
-                        actions={actions}
-                        onRowClick={onRowClick}
-                        sortedItems={sortedItems}
-                        formattedDate={formattedDate}
-                        getClassNameRow={getClassNameRow}
-                    />
-                </table>
-            )}
-        </div>
-    );
+            <div {...props} className={classNameList} data-testid="ds-table">
+                {sortedItems.length === 0 ? (
+                    <div className="ds-table__no-data-container" data-testid="ds-table-no-data">
+                        <Text id="ds-table-not-found">{notFoundMessage ? notFoundMessage : 'No data found!!'}</Text>
+                    </div>
+                ) : (
+                    <table cellSpacing="0" cellPadding="0" style={style} data-testid="ds-table-data">
+                        <Header
+                            headers={currentHeaders}
+                            actions={actions}
+                            handleSort={handleSort}
+                            sortedColumn={currentSortedColumn}
+                        />
+                        <Body
+                            headers={currentHeaders}
+                            actions={actions}
+                            onRowClick={onRowClick}
+                            sortedItems={sortedItems}
+                            formattedDate={formattedDate}
+                            getClassNameRow={getClassNameRow}
+                        />
+                    </table>
+                )}
+            </div>
+        );
 };

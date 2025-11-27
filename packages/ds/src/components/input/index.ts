@@ -1,2 +1,2 @@
 export { default } from './Input';
-export type { OnInputParams } from './content';
+export type { OnInputParams, OnFileInputChangeParams } from './content';

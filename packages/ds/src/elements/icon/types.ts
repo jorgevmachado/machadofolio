@@ -50,6 +50,7 @@ export type TIcon =
     | 'train'
     | 'route'
     | 'share'
+    | 'search'
     | 'github'
     | 'config'
     | 'church'
@@ -141,11 +142,10 @@ export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
     size?: string | number;
     color?: TColors;
     group?: TIconGroup;
+    noBorder?: boolean;
+    position?: TIconPosition;
     withDefault?: boolean;
     'data-testid'?: string;
 }
 
-export type TGenericIconProps = IconProps & {
-    noBorder?: boolean;
-    position?: TIconPosition;
-};
+export type TGenericIconProps = IconProps;

@@ -311,3 +311,33 @@
   )
 }
 
+@media (max-width: 768px) {
+  .ds-button {
+    font-size: var(--font-size-small, 13px);
+    border-radius: var(--border-radius-regular);
+    padding: 0 var(--dimensions-fixed-8);
+    min-width: var(--dimensions-fixed-36);
+    &__size {
+      &--tiny {
+        height: var(--dimensions-fixed-28);
+        padding: 0 var(--dimensions-fixed-8);
+      }
+      &--small {
+        height: var(--dimensions-fixed-32);
+        padding: 0 var(--dimensions-fixed-10);
+      }
+      &--medium {
+        height: var(--dimensions-fixed-36);
+        padding: 0 var(--dimensions-fixed-12);
+      }
+      &--large {
+        height: var(--dimensions-fixed-40);
+        padding: 0 var(--dimensions-fixed-14);
+      }
+      &--big {
+        height: var(--dimensions-fixed-44);
+        padding: 0 var(--dimensions-fixed-16);
+      }
+    }
+  }
+}

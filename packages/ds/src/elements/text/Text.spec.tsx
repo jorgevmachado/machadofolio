@@ -1,22 +1,27 @@
 import React from 'react';
 
 import '@testing-library/jest-dom'
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 
+const mockIsReactNode = jest.fn();
+const mockFormattedText = jest.fn();
+const mockTranslateValue = jest.fn();
 jest.mock('../../utils', () => {
     const originalModule = jest.requireActual('../../utils') as Record<string, any>;
     return {
         ...originalModule,
         joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
-        isReactNode: jest.fn(),
-        formattedText: jest.fn(),
+        isReactNode: mockIsReactNode,
+        formattedText: mockFormattedText,
+        translateValue: mockTranslateValue,
         generateComponentId: jest.fn(() => 'mock-id'),
     }
 });
 
-import { formattedText, isReactNode } from '../../utils';
+import { formattedText, isReactNode, translateValue } from '../../utils';
 
 import Text from './Text';
+import { TranslatorFunction } from '@repo/i18n';
 
 describe('<Text/>', () => {
     const defaultProps = {
@@ -102,5 +107,28 @@ describe('<Text/>', () => {
         expect(screen.getByText('Format ++Me++')).toBeInTheDocument();
     });
 
+    it('should use translator and render translated value', async () => {
+        const mockTranslator = jest.fn(() => 'translated') as unknown as  TranslatorFunction;
+        mockIsReactNode.mockReturnValue(false);
+        mockFormattedText.mockImplementation((text: string) => text);
+        mockTranslateValue.mockImplementation(() => 'translated-value');
+        renderComponent({
+            name: 'name',
+            children: 'translate',
+            translator: mockTranslator,
+            textsToTranslate: ['translate']
+        });
+        expect(translateValue).toHaveBeenCalledWith(
+            'translate',
+            'name',
+            mockTranslator,
+            ['translate']
+        );
+        await waitFor(() => {
+            const el = screen.getByTestId('ds-text');
+            expect(el).toBeInTheDocument();
+            expect(el.textContent).toBe('translated-value');
+        });
+    });
 
 });

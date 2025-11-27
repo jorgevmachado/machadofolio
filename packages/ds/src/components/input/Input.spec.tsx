@@ -109,9 +109,9 @@ describe('<Input/>', () => {
 
     it('should render label, HelperText and Feedback with validator invalid and message', () => {
         renderComponent({
-                label: 'Test Label',
-                validated: { invalid: true, message: 'Invalid' },
-                helperText: { children: 'Test Helper Text' }
+            label: 'Test Label',
+            validated: { invalid: true, message: 'Invalid' },
+            helperText: { children: 'Test Helper Text' }
         });
         expect(screen.getByTestId('mock-label')).toHaveTextContent('Test Label');
         expect(screen.getByTestId('mock-text')).toHaveTextContent('Test Helper Text');

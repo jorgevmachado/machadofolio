@@ -1,0 +1,15 @@
+.ds-chart {
+  gap: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  min-height: 400px;
+  flex-direction: column;
+  &__fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  &__subtitle {
+    margin-bottom: 0.5rem;
+  }
+}

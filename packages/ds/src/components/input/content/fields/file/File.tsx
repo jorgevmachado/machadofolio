@@ -10,33 +10,65 @@ import {
 
 import { type TContext, joinClass } from '../../../../../utils';
 
-import { Image } from '../../../../../elements'
+import { Icon, Image } from '../../../../../elements'
 
 import Button from '../../../../button'
 
 import './File.scss';
 
+type FilesNameProps = {
+    value: string;
+    error: boolean;
+}
+
+type FileProps = {
+    value: string;
+    error: boolean;
+    preview: string;
+    fileName: string;
+}
+
+export type OnFileChangeParams = {
+    name: string;
+    error: boolean;
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
+    files?: Array<FileProps>;
+    value?: string;
+    preview?: string;
+    filesName?: Array<{value: string; error: boolean;}>;
+}
+
 interface FileInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onInput' | 'onChange'> {
     onInput?: (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, value?: string) => void;
     context: TContext;
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>, value?: string) => void;
+    onChange?: (params: OnFileChangeParams) => void;
+    onRemove?: () => void;
+    clearFile?: boolean;
     withPreview?: boolean;
+    showRemoveButton?: boolean;
 }
 
 export default function FileInput({
-    value,
-    accept,
-    onInput,
-    context,
-    disabled,
-    onChange,
-    className,
-    withPreview,
-    ...props
-}: FileInputProps) {
+                                      name = 'file',
+                                      value,
+                                      accept,
+                                      onInput,
+                                      context,
+                                      disabled,
+                                      onChange,
+                                      onRemove,
+                                      multiple,
+                                      clearFile,
+                                      className,
+                                      withPreview,
+                                      showRemoveButton,
+                                      ...props
+                                  }: FileInputProps) {
     const inputRef = useRef<HTMLInputElement>(null);
-    const [fileName, setFileName] = useState<string>('');
+    const [filesName, setFilesName] = useState<Array<FilesNameProps>>([]);
     const [preview, setPreview] = useState<string | null>(null);
+
+    const fallBackMessage = !multiple ? 'No file selected' : 'No files selected';
 
     const classNameList = joinClass([
         'ds-file-input',
@@ -48,49 +80,109 @@ export default function FileInput({
     ]);
 
     const buildFilePreview = async (file: File) => {
-        const result = { previewImage: '', previewFile: '' };
-        const extension = file.name.split('.').pop()?.toLowerCase();
-        const isImage = imageTypeValidator({ accept: `.${extension}`}).valid;
-        result.previewFile = await fileToBase64(file);
-        if(isImage) {
-            result.previewImage = result.previewFile;
+        const result = { previewImage: '', previewFile: '', error: false };
+        try {
+            const extension = file.name.split('.').pop()?.toLowerCase();
+            const isImage = imageTypeValidator({ accept: `.${extension}`}).valid;
+            result.previewFile = await fileToBase64(file);
+            if(isImage) {
+                result.previewImage = result.previewFile;
+                return result;
+            }
+
+            switch (extension) {
+                case 'pdf':
+                    result.previewImage = PDF_IMAGE_BASE64;
+                    break;
+                case 'xlsx':
+                    result.previewImage = XLSX_IMAGE_BASE64;
+                    break;
+                default:
+                    result.previewImage = DOC_IMAGE_BASE64;
+                    break;
+            }
+
+            return result;
+        } catch (error) {
+            console.error('Error building file preview:', error);
+            result.error = true;
             return result;
         }
-
-        switch (extension) {
-            case 'pdf':
-                result.previewImage = PDF_IMAGE_BASE64;
-                break;
-            case 'xlsx':
-                result.previewImage = XLSX_IMAGE_BASE64;
-                break;
-            default:
-                result.previewImage = DOC_IMAGE_BASE64;
-                break;
-        }
-
-        return result;
     }
 
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setPreview(null);
 
-        const file = e.target.files?.[0];
-        setFileName(file ? file.name : '');
-        const result = { currentFile: undefined as string | undefined };
+        const targetFiles = e.target.files;
+        const files: Array<FileProps> = [];
+        const currentFilesNames: Array<FilesNameProps> = [];
+        if(targetFiles && targetFiles.length > 0) {
+            for(let i = 0; i < targetFiles?.length; i++) {
+                const targetFile = targetFiles[i];
 
-        if (file) {
-            const { previewFile, previewImage } = await buildFilePreview(file);
-            setPreview(previewImage);
-            result.currentFile = previewFile;
+                if(!targetFile) {
+                    return;
+                }
+                const { previewFile: value, previewImage: preview, error } = await buildFilePreview(targetFile);
+                setPreview(preview);
+
+                const fileName = targetFile.name;
+
+                const file: FileProps = {
+                    value,
+                    error,
+                    preview,
+                    fileName
+                }
+                currentFilesNames.push({value: fileName, error });
+                files.push(file);
+            }
+
+            if(files.length > 0) {
+                const file = {
+                    value: files.flatMap((file) => file.value).join(', ') as string,
+                    preview: files.flatMap((file) => file.preview).join(', ') as string,
+                }
+                setFilesName(currentFilesNames);
+
+                if(onChange) {
+                    onChange({
+                        ...file,
+                        name,
+                        event: e,
+                        error: !files.every((file) => !file.error),
+                        files,
+                        filesName: currentFilesNames
+                    })
+                }
+
+                if(onInput) {
+                    onInput(e as React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, file.value);
+                }
+
+            }
+        }
+    };
+
+    const handleRemove = () => {
+        setPreview(null);
+        setFilesName([]);
+
+        if (inputRef.current) {
+            inputRef.current.value = '';
+        }
+
+        if (onRemove) {
+            onRemove();
         }
 
         if (onChange) {
-            onChange(e, result.currentFile);
+            const event = { target: inputRef.current } as React.ChangeEvent<HTMLInputElement>;
+            onChange({ name, event, error: false });
         }
 
-        if(onInput) {
-            onInput(e as React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, result.currentFile);
+        if (onInput) {
+            onInput({ target: inputRef.current } as unknown as React.FormEvent<HTMLInputElement>, undefined);
         }
     };
 
@@ -101,13 +193,18 @@ export default function FileInput({
                 const extension = extractExtensionFromBase64(base64);
                 if(extension) {
                     setPreview(base64);
-                    setFileName(`file.${extension}`);
+                    setFilesName([{ value: `file.${extension}`, error: false }]);
                 }
 
             })();
         }
     }, [value, withPreview]);
 
+    useEffect(() => {
+        if (clearFile) {
+            handleRemove();
+        }
+    }, [clearFile]);
 
     return (
         <div className={classNameList} data-testid="ds-file-input">
@@ -127,15 +224,40 @@ export default function FileInput({
                     Select file
                 </Button>
                 <input
+                    {...props}
                     ref={inputRef}
                     type="file"
+                    name={name}
                     accept={accept}
+                    multiple={multiple}
                     style={{ display: 'none' }}
                     onChange={handleChange}
                     disabled={disabled}
-                    {...props}
                 />
-                <span className="ds-file-input__filename">{fileName || 'No files selected'}</span>
+                {filesName.length > 0 ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        {filesName.map(({ value, error }, index) => (
+                            <div key={index}>
+                                <span className={joinClass([
+                                    'ds-file-input__filename',
+                                    error && 'ds-file-input__filename--error',
+                                ])}>{value}</span>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <span className="ds-file-input__filename">{fallBackMessage}</span>
+                )}
+
+                {(filesName.length > 0 && showRemoveButton) && (
+                    <Icon
+                        data-testid="ds-file-input-remove"
+                        icon="trash"
+                        color="error-100"
+                        onClick={handleRemove}
+                        className="ds-file-input__icon-remove"
+                    />
+                )}
             </div>
         </div>
     )

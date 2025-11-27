@@ -242,7 +242,4 @@ describe('InputContext', () => {
         expect(contextValue.hasIcon('right')).toBe(false);
         expect(contextValue.hasIconElement('right')).toBe(false);
     });
-
-
-
 });

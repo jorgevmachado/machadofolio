@@ -22,7 +22,7 @@ import { type TGenericIconProps, Text } from '../../elements';
 import Feedback from '../feedback';
 import Label from '../label';
 
-import Content from './content';
+import Content, { OnFileInputChangeParams } from './content';
 import { InputProvider } from './InputContext';
 
 import './Input.scss';
@@ -59,70 +59,79 @@ interface InputProps extends Omit<InputPropsItem, 'onInput'>, Omit<HostProps, 'a
     counter?: TextProps;
     context?: TContext;
     calendar?: ContentProps['calendar'];
+    onRemove?: () => void;
+    clearFile?: boolean;
     formatter?: (value?: string) => string;
     validated?: ValidatedProps;
     validator?: (validatorParams: ValidatorParams) => ValidatorMessage;
     helperText?: TextProps;
     appearance?: TAppearance;
+    onInputFile?: () => void;
     withPreview?: boolean;
+    onChangeFile?:(params: OnFileInputChangeParams) => void;
     autoComplete?: boolean;
     fallbackLabel?: string;
     filterFunction?: (input: string, option: OptionsProps) => boolean;
     fallbackAction?: ContentProps['fallbackAction'];
     defaultValidator?: boolean;
     defaultFormatter?: boolean;
+    showRemoveButton?: boolean;
 }
 
 export default function Input({
-    id,
-    tip,
-    min,
-    max,
-    type = 'text',
-    icon,
-    rows = 10,
-    name,
-    value = '',
-    fluid,
-    addon,
-    label,
-    inline,
-    onOpen,
-    accept,
-    onBlur,
-    onClose,
-    onInput,
-    onFocus,
-    counter,
-    options,
-    context = 'primary',
-    multiple,
-    calendar,
-    formatter,
-    required,
-    children,
-    onChange,
-    disabled = false,
-    validated,
-    validator,
-    onKeyDown,
-    className,
-    autoFocus = false,
-    maxLength,
-    minLength,
-    helperText,
-    appearance = 'standard',
-    onMouseDown,
-    placeholder = '',
-    withPreview = false,
-    autoComplete,
-    fallbackLabel,
-    filterFunction,
-    fallbackAction,
-    defaultValidator = true,
-    defaultFormatter = true,
-    ...props
-}: InputProps) {
+                                  id,
+                                  tip,
+                                  min,
+                                  max,
+                                  type = 'text',
+                                  icon,
+                                  rows = 10,
+                                  name,
+                                  value = '',
+                                  fluid,
+                                  addon,
+                                  label,
+                                  inline,
+                                  onOpen,
+                                  accept,
+                                  onBlur,
+                                  onClose,
+                                  onInput,
+                                  onFocus,
+                                  counter,
+                                  options,
+                                  context = 'primary',
+                                  multiple,
+                                  calendar,
+                                  onRemove,
+                                  clearFile,
+                                  formatter,
+                                  required,
+                                  children,
+                                  onChange,
+                                  disabled = false,
+                                  validated,
+                                  validator,
+                                  onKeyDown,
+                                  className,
+                                  autoFocus = false,
+                                  maxLength,
+                                  minLength,
+                                  helperText,
+                                  appearance = 'standard',
+                                  onMouseDown,
+                                  placeholder = '',
+                                  withPreview = false,
+                                  onChangeFile,
+                                  autoComplete,
+                                  fallbackLabel,
+                                  filterFunction,
+                                  fallbackAction,
+                                  defaultValidator = true,
+                                  defaultFormatter = true,
+                                  showRemoveButton = false,
+                                  ...props
+                              }: InputProps) {
     const [inputValidated, setInputValidated] = useState<ValidatedProps>({ invalid: false, message: undefined });
 
     const componentId = id ?? generateComponentId('ds-input');
@@ -219,6 +228,8 @@ export default function Input({
                             disabled={disabled}
                             onChange={onChange}
                             calendar={calendar}
+                            onRemove={onRemove}
+                            clearFile={clearFile}
                             formatter={formatter}
                             onKeyDown={onKeyDown}
                             autoFocus={autoFocus}
@@ -228,11 +239,13 @@ export default function Input({
                             onMouseDown={onMouseDown}
                             placeholder={placeholder}
                             withPreview={withPreview}
+                            onChangeFile={onChangeFile}
                             autoComplete={autoComplete}
                             filterFunction={filterFunction}
                             fallbackLabel={fallbackLabel}
                             fallbackAction={fallbackAction}
                             defaultFormatter={defaultFormatter}
+                            showRemoveButton={showRemoveButton}
                         />
                     </InputProvider>
                     {(inputValidated.invalid && inputValidated.message) && (

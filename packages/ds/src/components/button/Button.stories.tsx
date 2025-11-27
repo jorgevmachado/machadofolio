@@ -43,3 +43,34 @@ export const WithIconRight: Story = {
         children: 'With Icon',
     },
 }
+
+export const iconAppearance: Story = {
+    args: {
+        icon: {
+            icon: 'react',
+        },
+        appearance: 'icon',
+    },
+}
+
+export const outlineAppearance: Story = {
+    args: {
+        appearance: 'outline',
+    },
+}
+
+export const outlineBorderlessAppearance: Story = {
+    args: {
+        appearance: 'borderless',
+    },
+}
+
+export const iconNoBorderAppearance: Story = {
+    args: {
+        icon: {
+            icon: 'react',
+            noBorder: true
+        },
+        appearance: 'icon',
+    },
+}
