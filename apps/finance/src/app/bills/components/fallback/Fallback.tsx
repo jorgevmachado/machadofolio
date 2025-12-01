@@ -1,9 +1,11 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 
-import { DependencyFallback } from '../../../../components';
-import { useFinance } from '../../../../hooks';
 import { useRouter } from 'next/navigation';
+
+import { DependencyFallback } from '@repo/ui';
+
+import { useFinance } from '../../../../hooks';
 
 type FallbackProps = {
     hasBills: boolean;
@@ -27,13 +29,13 @@ export default function Fallback({
                 label: `Create ${singular}`,
                 onClick: () => router.push(`/${plural}`),
             },
-            message: `No ${plural} were found. Please create a ${singular} before creating a bill.`
+            message: { text:`No ${plural} were found. Please create a ${singular} before creating a bill.`}
         };
     }
 
     const generateContent = (hasBills: boolean, hasAllDependencies: boolean) => {
         if(!hasBills && hasAllDependencies) {
-            return { message: 'No bills were found.' };
+            return { message: { text: 'No bills were found.' }};
         }
 
         if(groups.length === 0) {
@@ -52,11 +54,13 @@ export default function Fallback({
     };
 
     useEffect(() => {
-        const content = generateContent(hasBills, hasAllDependencies);
-        setFallback(content);
+        if(!fallback) {
+            const content = generateContent(hasBills, hasAllDependencies);
+            setFallback(content);
+        }
     }, [hasBills, hasAllDependencies]);
 
     return !fallback ? null : (
-        <DependencyFallback {...fallback}/>
+        <DependencyFallback {...fallback} />
     )
 }
