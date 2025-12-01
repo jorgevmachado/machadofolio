@@ -15,7 +15,7 @@ const meta = {
     parameters: {},
     decorators: [
         (Story) => (
-            <div className="ui-navbar-storybook-preview" style={{ height: '25vh', width: '100%', maxWidth: 800 }}>
+            <div className="ui-navbar-storybook-preview" style={{ height: '100vh', width: '100%', maxWidth: 800 }}>
                 <Story />
             </div>
         ),
@@ -35,3 +35,18 @@ export const WithAction: Story = {
         }
     }
 };
+
+export const WithUserName: Story = {
+    args: {
+        userName: 'John'
+    }
+};
+
+export const WithInternationalization: Story = {
+    args: {
+        userName: 'John',
+        internationalization: {
+            lang: 'pt-BR'
+        }
+    }
+}

@@ -40,6 +40,15 @@ export const Authenticated: Story = {
     }
 };
 
+export const AuthenticatedWithInternationalization: Story = {
+    args: {
+        isAuthenticated: true,
+        internationalization: {
+            lang: 'pt-BR'
+        }
+    }
+};
+
 export const WithNavbarAction: Story = {
     args: {
         navbarAction: {

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import {  Icon, joinClass } from '@repo/ds';
+import { TranslatorFunction } from '@repo/i18n';
+
+import { Icon, joinClass, Text } from '@repo/ds';
 
 import { type TRoute } from '../../utils';
 
@@ -12,11 +14,12 @@ type SidebarProps = {
     menu: Array<TRoute>;
     logout?: TRoute;
     onToggle?: (value: boolean) => void;
+    translator?: TranslatorFunction;
     onLinkClick?: (path: string) => void;
     isSidebarOpen?: boolean;
 }
 
-export default function Sidebar({ menu, logout, onToggle, onLinkClick, isSidebarOpen }: SidebarProps) {
+export default function Sidebar({ menu, logout, onToggle, translator, onLinkClick, isSidebarOpen }: SidebarProps) {
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
     useEffect(() => {
@@ -59,14 +62,21 @@ export default function Sidebar({ menu, logout, onToggle, onLinkClick, isSidebar
                                 <div className="ui-sidebar__menu--item-link" onClick={() => handleOnClick(item.path)}>
                                     <Icon icon={item.icon}/>
                                     {isOpen && (
-                                        <span className="ui-sidebar__menu--item-link__title">
-                                            {item.title}
-                                        </span>
+                                        <>
+                                            <Text
+                                                tag="span"
+                                                name={item.name}
+                                                variant="medium"
+                                                translator={translator}
+                                                className="ui-sidebar__menu--item-link__title">
+                                                {item.title}
+                                            </Text>
+                                        </>
                                     )}
                                 </div>
                             )
                             : (
-                                <Dropdown menu={item} isOpen={isOpen} onLinkClick={handleOnClick}/>
+                                <Dropdown menu={item} isOpen={isOpen} onLinkClick={handleOnClick} translator={translator}/>
                             )
                         }
                     </div>
@@ -77,9 +87,15 @@ export default function Sidebar({ menu, logout, onToggle, onLinkClick, isSidebar
                         <div className="ui-sidebar__menu--item-link" onClick={() => handleOnClick(logout.path)}>
                             <Icon icon={logout.icon}/>
                             {isOpen && (
-                                <span className="ui-sidebar__menu--item-link__title" data-testid="ui-sidebar-logout-title">
+                                <Text
+                                    tag="span"
+                                    name={logout.name}
+                                    variant="medium"
+                                    className="ui-sidebar__menu--item-link__title"
+                                    translator={translator}
+                                    data-testid="ui-sidebar-logout-title">
                                     {logout.title}
-                                </span>
+                                </Text>
                             )}
                         </div>
                     </div>

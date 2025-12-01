@@ -6,6 +6,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 jest.mock('@repo/ds', () => ({
     __esModule: true,
     Icon: ({ icon }: any) => <span data-testid="mock-icon">{icon}</span>,
+    Text: ({ children }: { children: React.ReactNode }) => <span data-testid='mock-text'>{children}</span>,
 }));
 
 import Dropdown from './Dropdown';

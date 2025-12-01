@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
+import { TranslatorFunction } from '@repo/i18n';
+
 import { useBreakpoint } from '@repo/ds';
 
-import { Content, Navbar, Sidebar } from '../../components';
+import { Content, type InternationalizationProps, Navbar, Sidebar } from '../../components';
 import type { TRoute } from '../../utils';
 
 import './Page.scss';
+
 
 interface PageProps extends React.HTMLAttributes<HTMLDivElement> {
     menu?: Array<TRoute>;
@@ -19,26 +22,30 @@ interface PageProps extends React.HTMLAttributes<HTMLDivElement> {
         label: string;
         onClick: () => void;
     };
+    translator?: TranslatorFunction;
     sidebarOpen?: boolean;
     onLinkClick?: (path: string) => void;
     withAnimation?: boolean;
     isAuthenticated?: boolean;
+    internationalization?: InternationalizationProps;
 }
 
 export default function Page({
-    menu,
-    title,
-    logout,
-    userName,
-    children,
-    ariaLabel,
-    navbarTitle,
-    navbarAction,
-    sidebarOpen = true,
-    onLinkClick,
-    withAnimation = true,
-    isAuthenticated = false,
-}: PageProps) {
+                                 menu,
+                                 title,
+                                 logout,
+                                 userName,
+                                 children,
+                                 ariaLabel,
+                                 translator,
+                                 navbarTitle,
+                                 navbarAction,
+                                 sidebarOpen = true,
+                                 onLinkClick,
+                                 withAnimation = true,
+                                 isAuthenticated = false,
+                                 internationalization
+                             }: PageProps) {
     const { isMobile } = useBreakpoint();
 
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
@@ -52,6 +59,7 @@ export default function Page({
         return {
             key: 'logout',
             type: 'private',
+            name: 'logout',
             title: logout?.title ?? 'Logout',
             icon: logout?.icon ?? 'sign-out',
             path: logout?.path ?? '/logout'
@@ -70,14 +78,21 @@ export default function Page({
         <div className="ui-page" data-testid="ui-page">
             { isAuthenticated && (
                 <>
-                    <Navbar title={navbarTitle || 'My App'} action={navbarAction} userName={userName}/>
+                    <Navbar
+                        title={navbarTitle || 'My App'}
+                        action={navbarAction}
+                        userName={userName}
+                        translator={translator}
+                        internationalization={internationalization}
+                    />
                     { menu && (
                         <Sidebar
                             menu={menu}
                             logout={treatLogout()}
                             onToggle={handleSidebarToggle}
-                            isSidebarOpen={isSidebarOpen}
+                            translator={translator}
                             onLinkClick={onLinkClick}
+                            isSidebarOpen={isSidebarOpen}
                         />
                     )}
                 </>

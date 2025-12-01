@@ -3,6 +3,10 @@ import React from 'react';
 import '@testing-library/jest-dom'
 import { cleanup, render, screen } from '@testing-library/react';
 
+jest.mock('./internationalization', () => ({
+    Internationalization: () => <div data-testid="internationalization-mock"/>,
+}));
+
 import Navbar from './Navbar';
 
 describe('<Navbar/>', () => {
@@ -51,5 +55,10 @@ describe('<Navbar/>', () => {
         expect(actionButton).toHaveTextContent('Action');
         actionButton.click();
         expect(mockActionClick).toHaveBeenCalled();
+    });
+
+    it(`should render component with internationalization props.`, () => {
+        renderComponent({ userName: `userName`, internationalization: {}});
+        expect(screen.getByTestId(`internationalization-mock`)).toBeInTheDocument();
     });
 });

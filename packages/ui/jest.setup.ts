@@ -99,4 +99,8 @@ jest.mock('@repo/ds', () => {
     }
 });
 
+jest.mock('d3-shape', () => ({
+    curveCardinal: { tension: jest.fn(() => 'mocked-curve') }
+}));
+
 (global as any).useBreakpointMock = useBreakpointMock;

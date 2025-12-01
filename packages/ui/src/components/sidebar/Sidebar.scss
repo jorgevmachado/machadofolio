@@ -40,6 +40,7 @@ $transition-speed: 0.3s;
         }
 
         &__title {
+          color: var(--color-menu);
           margin-left: var(--dimensions-fixed-10);
         }
       }
