@@ -1,6 +1,8 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
 
+import { useI18n } from '@repo/i18n';
+
 import { Group, Paginate, QueryParameters } from '@repo/business';
 
 import { ETypeTableHeader } from '@repo/ds';
@@ -13,6 +15,7 @@ import { PageCrud } from '../../components';
 import { useFinance } from '../../hooks';
 
 export default function GroupsPage() {
+    const { t } = useI18n();
     const isMounted = useRef(false);
 
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -31,7 +34,7 @@ export default function GroupsPage() {
             setTotalPages(response.pages);
             return response;
         } catch (error) {
-            addAlert({ type: 'error', message: 'Error fetching Banks' });
+            addAlert({ type: 'error', message: t('error_fetching_group') });
             console.error(error)
             throw error;
         } finally {
@@ -50,11 +53,11 @@ export default function GroupsPage() {
             isEdit
                 ? await groupService.update(group.id, body)
                 : await groupService.create(body);
-            addAlert({ type: 'success', message: `Bank ${isEdit ? 'updated' : 'saved'} successfully!` });
+            addAlert({ type: 'success', message: `Bank ${isEdit ? t('updated') : t('saved')} ${t('successfully')}!` });
             await fetchGroups({ page: currentPage });
             refresh();
         } catch (error) {
-            addAlert({ type: 'error', message: (error as Error)?.message ?? `Error ${isEdit ? 'updating' : 'saving'} Bank` });
+            addAlert({ type: 'error', message: (error as Error)?.message ?? `${t('error_when')} ${isEdit ? t('updating') : t('saving')} ${t('bank')}`});
             console.error(error)
         } finally {
             hide();
@@ -68,11 +71,11 @@ export default function GroupsPage() {
         show();
         try {
             await groupService.remove(group.id);
-            addAlert({ type: 'success', message: 'Bank deleted successfully!' });
+            addAlert({ type: 'success', message: `${t('group')} ${t('deleted')} ${t('successfully')}!` });
             await fetchGroups({ page: currentPage });
             refresh();
         } catch (error) {
-            addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error deleting Bank' });
+            addAlert({ type: 'error', message: (error as Error)?.message ?? t('error_deleting_group') });
             console.error(error)
         } finally {
             hide();
@@ -100,26 +103,26 @@ export default function GroupsPage() {
                     fluid: true,
                     type: 'text',
                     name: 'name',
-                    label: 'Group',
+                    label: t('group'),
                     required: true,
-                    placeholder: 'Enter a group'
+                    placeholder: `${t('enter_a')} ${t('group')}`
                 }
             ]}
             headers={[
                 {
-                    text: 'Name',
+                    text: t('name'),
                     value: 'name',
                     sortable: true
                 },
                 {
-                    text: 'Created At',
+                    text: t('created_at'),
                     value: 'created_at',
                     type: ETypeTableHeader.DATE,
                     sortable: true,
                 },
             ]}
             actions={{
-                text: 'Actions',
+                text: t('actions'),
                 align: 'center',
                 edit: async (item) => handleSave(item as Group),
                 create: async (item) => handleSave(item as Group),
@@ -129,7 +132,7 @@ export default function GroupsPage() {
             onRowClick={(item) => handleSave(item as Group)}
             totalPages={totalPages}
             currentPage={currentPage}
-            resourceName="Group"
+            resourceName={t('group')}
             handlePageChange={setCurrentPage}
         />
     )

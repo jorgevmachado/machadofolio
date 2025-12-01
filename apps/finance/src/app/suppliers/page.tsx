@@ -2,6 +2,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { useI18n } from '@repo/i18n';
+
 import { Paginate, QueryParameters, Supplier } from '@repo/business';
 
 import { ETypeTableHeader } from '@repo/ds';
@@ -13,8 +15,8 @@ import { DependencyFallback, PageCrud } from '../../components';
 import { supplierService } from '../../shared';
 import { useFinance } from '../../hooks';
 
-
 export default function SuppliersPage() {
+    const { t } = useI18n();
     const router = useRouter();
     const isMounted = useRef(false);
 
@@ -34,7 +36,7 @@ export default function SuppliersPage() {
             setTotalPages(response.pages);
             return response;
         } catch (error) {
-            addAlert({ type: 'error', message: 'Error fetching Supplier' });
+            addAlert({ type: 'error', message: t('error_fetching_suppliers') });
             console.error(error)
             throw error;
         } finally {
@@ -53,13 +55,16 @@ export default function SuppliersPage() {
             isEdit
                 ? await supplierService.update(supplier.id, body)
                 : await supplierService.create(body);
-            addAlert({ type: 'success', message: `Supplier ${isEdit ? 'updated' : 'saved'} successfully!` });
+            addAlert({
+                type: 'success',
+                message: `${t('supplier')} ${isEdit ? t('updated') : t('saved')} ${t('successfully')}!`
+            });
             await fetchSuppliers({ page: currentPage });
             refresh();
         } catch (error) {
             addAlert({
                 type: 'error',
-                message: (error as Error)?.message ?? `Error ${isEdit ? 'updating' : 'saving'} Supplier`
+                message: (error as Error)?.message ?? `${t('error_when')} ${isEdit ? t('updating') : t('saving')} ${t('supplier')}`
             });
             console.error(error)
         } finally {
@@ -71,11 +76,11 @@ export default function SuppliersPage() {
         show();
         try {
             await supplierService.remove(supplier.id);
-            addAlert({ type: 'success', message: 'Supplier deleted successfully!' });
+            addAlert({ type: 'success', message: `${t('supplier')} ${t('deleted')} ${t('successfully')}!` });
             await fetchSuppliers({ page: currentPage });
             refresh();
         } catch (error) {
-            addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error deleting Supplier' });
+            addAlert({ type: 'error', message: (error as Error)?.message ?? t('error_deleting_supplier') });
             console.error(error)
         } finally {
             hide();
@@ -96,13 +101,32 @@ export default function SuppliersPage() {
         }
     }, []);
 
+    const handleFilter = async (item: Partial<Supplier>) => {
+        if(!item) {
+            return;
+        }
+
+        const result: { filter?: QueryParameters} = { filter: undefined }
+
+        if(item?.name) {
+            result.filter = { ...result.filter, name: item.name }
+        }
+
+        if(item?.type) {
+            const type = item.type.name_code;
+            result.filter = { ...result.filter, type } as QueryParameters;
+        }
+
+        fetchSuppliers({ page: currentPage, ...result.filter }).then();
+    }
+
     return (
         <div>
             {supplierTypes.length === 0 ? (
                 <DependencyFallback
-                    message="No supplier types were found. Please create a supplier type before creating a supplier."
+                    message={t('no_supplier_type_in_supplier')}
                     button={{
-                        label: 'Create Supplier Type',
+                        label: `${t('create')} ${t('supplier_type')}`,
                         onClick: () => router.push('/suppliers/types'),
                     }}
                 />
@@ -114,44 +138,44 @@ export default function SuppliersPage() {
                             fluid: true,
                             type: 'select',
                             name: 'type',
-                            label: 'Type',
+                            label: t('type'),
                             list: supplierTypes,
                             options: supplierTypes.map((type) => ({ value: type.id, label: type.name })),
                             required: true,
-                            placeholder: 'Enter a supplier type',
+                            placeholder: `${t('enter_a')} ${t('supplier_type')}`,
                             autoComplete: true,
-                            fallbackLabel: 'Add Supplier type',
+                            fallbackLabel: `${t('add')} ${t('supplier_type')}`,
                             fallbackAction: () => router.push('/suppliers/types'),
                         },
                         {
                             fluid: true,
                             type: 'text',
                             name: 'name',
-                            label: 'Supplier',
+                            label: t('supplier'),
                             required: true,
-                            placeholder: 'Enter a supplier'
+                            placeholder: `${t('enter_a')} ${t('supplier')}`,
                         },
                     ]}
                     headers={[
                         {
-                            text: 'Name',
+                            text: t('name'),
                             value: 'name',
                             sortable: true
                         },
                         {
-                            text: 'Type',
+                            text: t('type'),
                             value: 'type.name',
                             sortable: true,
                         },
                         {
-                            text: 'Created At',
+                            text: t('created_at'),
                             value: 'created_at',
                             type: ETypeTableHeader.DATE,
                             sortable: true,
                         },
                     ]}
                     actions={{
-                        text: 'Actions',
+                        text: t('actions'),
                         align: 'center',
                         edit: async (item) => handleSave(item as Supplier),
                         create: async (item) => handleSave(item as Supplier),
@@ -161,7 +185,33 @@ export default function SuppliersPage() {
                     onRowClick={(item) => handleSave(item as Supplier)}
                     totalPages={totalPages}
                     currentPage={currentPage}
-                    resourceName="Supplier"
+                    resourceName={t('supplier')}
+                    filter={{
+                        inputs: [
+                            {
+                                fluid: true,
+                                type: 'text',
+                                name: 'name',
+                                label: t('supplier'),
+                                required: true,
+                                placeholder: `${t('enter_a')} ${t('supplier')}`,
+                            },
+                            {
+                                fluid: true,
+                                type: 'select',
+                                name: 'type',
+                                label: t('type'),
+                                list: supplierTypes,
+                                options: supplierTypes.map((type) => ({ value: type.id, label: type.name })),
+                                required: true,
+                                placeholder: `${t('enter_a')} ${t('supplier_type')}`,
+                                autoComplete: true,
+                                fallbackLabel: `${t('add')} ${t('supplier_type')}`,
+                                fallbackAction: () => router.push('/suppliers/types'),
+                            }
+                        ],
+                        onFilter: (item) => handleFilter(item as Supplier),
+                    }}
                     handlePageChange={setCurrentPage}
 
                 />

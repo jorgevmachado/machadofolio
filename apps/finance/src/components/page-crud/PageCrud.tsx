@@ -1,5 +1,8 @@
 'use client'
 import React, { useState } from 'react';
+
+import { useI18n } from '@repo/i18n';
+
 import { Pagination, Table } from '@repo/ds';
 
 import { useModal } from '@repo/ui';
@@ -7,6 +10,8 @@ import { useModal } from '@repo/ui';
 import PageHeader from '../page-header';
 
 import ModalDelete from '../modal-delete';
+import PageFilter from '../page-filter';
+
 import ModalPersist from './modal-persist';
 
 import './PageCrud.scss';
@@ -14,6 +19,7 @@ import './PageCrud.scss';
 type TableProps = React.ComponentProps<typeof Table>;
 
 type ModalPersistProps = React.ComponentProps<typeof ModalPersist>;
+type FilterProps = React.ComponentProps<typeof PageFilter>;
 
 type Actions = {
     text: string;
@@ -24,6 +30,8 @@ type Actions = {
 }
 
 type PageCrudProps = Pick<TableProps, 'items' | 'headers' | 'loading' |  'onRowClick'> & {
+    range?: number;
+    filter?: FilterProps;
     inputs?: ModalPersistProps['inputs'];
     actions?: Actions;
     totalPages?: number;
@@ -33,17 +41,20 @@ type PageCrudProps = Pick<TableProps, 'items' | 'headers' | 'loading' |  'onRowC
 };
 
 export default function PageCrud({
-    items,
-    inputs,
-    actions,
-    headers,
-    loading,
-    totalPages = 0,
-    onRowClick,
-    currentPage,
-    resourceName,
-    handlePageChange
-}: PageCrudProps) {
+                                     range = 10,
+                                     filter,
+                                     items,
+                                     inputs,
+                                     actions,
+                                     headers,
+                                     loading,
+                                     totalPages = 0,
+                                     onRowClick,
+                                     currentPage,
+                                     resourceName,
+                                     handlePageChange
+                                 }: PageCrudProps) {
+    const { t } = useI18n();
     const { openModal, modal, closeModal } = useModal();
     const [sortedColumn, setSortedColumn] = useState<TableProps['sortedColumn']>({
         sort: '',
@@ -64,7 +75,7 @@ export default function PageCrud({
             return;
         }
         openModal({
-            title: `${hasId(item) ? 'Edit' : 'Create'} ${resourceName}`,
+            title: `${hasId(item) ? t('edit') : t('create')} ${resourceName}`,
             body: (
                 <ModalPersist
                     item={item}
@@ -82,7 +93,7 @@ export default function PageCrud({
             return;
         }
         openModal({
-            title: `Are you sure you want to delete the ${resourceName}`,
+            title: `${t('want_to_delete')} ${resourceName}`,
             width: '700px',
             body: (
                 <ModalDelete item={item} onClose={closeModal} onDelete={actions?.delete}/>
@@ -95,17 +106,20 @@ export default function PageCrud({
             <PageHeader
                 resourceName={resourceName}
                 action={actions?.create && inputs?.length ? {
-                    label: `Create new ${resourceName}`,
+                    label: `${t('create_new')} ${resourceName}`,
                     onClick: () => handlePersistModal()
                 } : undefined}
             />
+            {filter && (
+                <PageFilter {...filter} />
+            )}
             <Table
                 items={items}
                 actions={actions && {
                     text: actions.text,
                     align: actions.align,
-                    edit: actions?.edit  && inputs?.length? { onClick: (item: unknown) => handlePersistModal(item)}  : undefined,
-                    delete: actions?.delete ? { onClick: (item: unknown) => handleDeleteModal(item)}  : undefined
+                    edit: actions?.edit  && inputs?.length? { children: t('edit'), onClick: (item: unknown) => handlePersistModal(item)}  : undefined,
+                    delete: actions?.delete ? { children: t('delete'), onClick: (item: unknown) => handleDeleteModal(item)}  : undefined
                 }}
                 headers={headers}
                 loading={loading}
@@ -119,7 +133,7 @@ export default function PageCrud({
                     fluid
                     type="numbers"
                     total={totalPages}
-                    range={totalPages}
+                    range={range}
                     current={currentPage}
                     disabled
                     handleNew={handlePageChange}

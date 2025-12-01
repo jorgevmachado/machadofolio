@@ -1,6 +1,8 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
 
+import { useI18n } from '@repo/i18n';
+
 import { Paginate, QueryParameters, Supplier, SupplierType } from '@repo/business';
 
 import { ETypeTableHeader } from '@repo/ds';
@@ -13,6 +15,7 @@ import { supplierTypeService } from '../../../shared';
 import { useFinance } from '../../../hooks';
 
 export default function SuppliersTypePage() {
+    const { t } = useI18n();
     const isMounted = useRef(false);
 
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -31,7 +34,7 @@ export default function SuppliersTypePage() {
             setTotalPages(response.pages);
             return response;
         } catch (error) {
-            addAlert({ type: 'error', message: 'Error fetching Supplier' });
+            addAlert({ type: 'error', message: t('error_fetching_supplier_types') });
             console.error(error)
             throw error;
         } finally {
@@ -50,11 +53,11 @@ export default function SuppliersTypePage() {
             isEdit
                 ? await supplierTypeService.update(supplierType.id, body)
                 : await supplierTypeService.create(body);
-            addAlert({ type: 'success', message: `Supplier Type ${isEdit ? 'updated' : 'saved'} successfully!` });
+            addAlert({ type: 'success', message: `${t('supplier_type')} ${isEdit ? t('updated') : t('saved')} ${t('successfully')}!` });
             await fetchSuppliersType({ page: currentPage });
             refresh();
         } catch (error) {
-            addAlert({ type: 'error', message: (error as Error)?.message ?? `Error ${isEdit ? 'updating' : 'saving'} Supplier Type` });
+            addAlert({ type: 'error', message: (error as Error)?.message ?? `${t('error_when')} ${isEdit ? t('updating') : t('saving')} ${t('supplier_type')}` });
             console.error(error)
         } finally {
             hide();
@@ -65,11 +68,11 @@ export default function SuppliersTypePage() {
         show();
         try {
             await supplierTypeService.remove(supplierType.id);
-            addAlert({ type: 'success', message: 'Supplier Type deleted successfully!' });
+            addAlert({ type: 'success', message: `${t('supplier_type')} ${t('deleted')} ${t('successfully')}!` });
             await fetchSuppliersType({ page: currentPage });
             refresh();
         } catch (error) {
-            addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error deleting Supplier Type' });
+            addAlert({ type: 'error', message: (error as Error)?.message ?? t('error_deleting_supplier_type') });
             console.error(error)
         } finally {
             hide();
@@ -89,46 +92,46 @@ export default function SuppliersTypePage() {
         }
     }, []);
 
- return (
-     <PageCrud
-         items={results}
-         inputs={[
-             {
-                 fluid: true,
-                 type: 'text',
-                 name: 'name',
-                 label: 'Supplier Type',
-                 required: true,
-                 placeholder: 'Enter a supplier type'
-             },
-         ]}
-         headers={[
-             {
-                 text: 'Name',
-                 value: 'name',
-                 sortable: true
-             },
-             {
-                 text: 'Created At',
-                 value: 'created_at',
-                 type: ETypeTableHeader.DATE,
-                 sortable: true,
-             },
-         ]}
-         actions={{
-             text: 'Actions',
-             align: 'center',
-             edit: async (item) => handleSave(item as SupplierType),
-             create: async (item) => handleSave(item as SupplierType),
-             delete: async (item) => handleDelete(item as SupplierType),
-         }}
-         loading={isLoading}
-         onRowClick={(item) => handleSave(item as SupplierType)}
-         totalPages={totalPages}
-         currentPage={currentPage}
-         resourceName="Supplier Type"
-         handlePageChange={setCurrentPage}
+    return (
+        <PageCrud
+            items={results}
+            inputs={[
+                {
+                    fluid: true,
+                    type: 'text',
+                    name: 'name',
+                    label: t('supplier_type'),
+                    required: true,
+                    placeholder: 'Enter a supplier type'
+                },
+            ]}
+            headers={[
+                {
+                    text: t('name'),
+                    value: 'name',
+                    sortable: true
+                },
+                {
+                    text: t('created_at'),
+                    value: 'created_at',
+                    type: ETypeTableHeader.DATE,
+                    sortable: true,
+                },
+            ]}
+            actions={{
+                text: t('actions'),
+                align: 'center',
+                edit: async (item) => handleSave(item as SupplierType),
+                create: async (item) => handleSave(item as SupplierType),
+                delete: async (item) => handleDelete(item as SupplierType),
+            }}
+            loading={isLoading}
+            onRowClick={(item) => handleSave(item as SupplierType)}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            resourceName={t('supplier_type')}
+            handlePageChange={setCurrentPage}
 
-     />
- )
+        />
+    )
 }
