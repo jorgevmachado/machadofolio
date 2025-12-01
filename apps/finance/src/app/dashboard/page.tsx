@@ -1,6 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 
+import { useI18n } from '@repo/i18n';
+
 import { Button, Text } from '@repo/ds';
 
 import { useLoading, useUser } from '@repo/ui';
@@ -15,6 +17,7 @@ export default function DashboardPage() {
     const { user } = useUser()
     const { isLoading } = useLoading();
     const { financeInfo, initialize, fetch } = useFinance();
+    const { t } = useI18n();
 
     const [isCreatingFinance, setIsCreatingFinance] = useState(false);
 
@@ -36,10 +39,9 @@ export default function DashboardPage() {
             {!financeInfo
                 ? (
                     <div className="dashboard__empty">
-                        <Text tag="h1" variant="large">O Usuário <strong>{user.name}</strong> não possui finanças
-                            cadastradas.</Text>
+                        <Text tag="h1" variant="large">{t('the_user')} <strong>{user.name}</strong> {t('not_found_finance')}.</Text>
                         <Button context="success" onClick={handleCreateFinance} disabled={isCreatingFinance}>
-                            {isCreatingFinance ? 'Criando...' : 'Criar Finanças'}
+                            {isCreatingFinance ? t('creating') : t('create_finances')}
                         </Button>
                     </div>
                 ) : (

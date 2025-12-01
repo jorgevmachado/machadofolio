@@ -1,22 +1,24 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 
+import { useI18n } from '@repo/i18n';
+
 import { MONTHS, truncateString } from '@repo/services';
 
 import { Bill, EBillType, Expense } from '@repo/business';
 
-import { ETypeTableHeader, Table, type TColors } from '@repo/ds';
+import { ETypeTableHeader, Pagination, Spinner, Table, type TColors } from '@repo/ds';
 
-import { useAlert, useLoading, useModal } from '@repo/ui';
+import { useAlert, useModal } from '@repo/ui';
 
 import { billService, expenseBusiness, expenseService } from '../../../../shared';
+import { useExpenses } from '../../../../hooks';
 
 import Summary from './summary';
 import { type OnSubmitParams, Persist } from './persist';
 import CreditCard from './credit-card';
 
 import './Expenses.scss';
-
 
 type ExpensesProps = {
     bill: Bill;
@@ -29,21 +31,27 @@ type OpenFormModalParams = {
 }
 
 export default function Expenses({ bill: billData }: ExpensesProps) {
+    const { t } = useI18n();
     const [calculatedExpenses, setCalculatedExpenses] = useState<Array<Expense>>([]);
+    const [calculatedExternalExpenses, setCalculatedExternalExpenses] = useState<Array<Expense>>([]);
     const [bill, setBill] = useState<Bill | undefined>(billData);
 
-    const { show, hide, isLoading } = useLoading();
+    const { results, isLoading, totalPages, currentPage, setCurrentPage, setIsLoading } = useExpenses();
+
     const { addAlert } = useAlert();
     const { openModal, modal, closeModal } = useModal();
 
 
     const handleSubmit = async ({ create, update, expense }: OnSubmitParams) => {
-        show();
+        setIsLoading(true);
         try {
             expense
-                ? await expenseService.update(expense.id, update, bill?.id)
+                ? await expenseService.update(expense.id, update)
                 : await expenseService.create(create, bill?.id)
-            addAlert({ type: 'success', message: `Expense ${expense ? 'updated' : 'saved'} successfully!` });
+            addAlert({
+                type: 'success',
+                message: `${t('expense')} ${expense ? t('updated') : t('saved')} ${t('successfully')}!`
+            });
             await fetchBill(bill?.id ?? '');
         } catch (error) {
             addAlert({
@@ -52,14 +60,14 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
             });
             console.error('Expense => handleSubmit => ', error)
         } finally {
-            hide();
+            setIsLoading(false);
         }
     }
 
     const handleOpenFormModal = ({ expense, parent, parents }: OpenFormModalParams) => {
         openModal({
             width: '799px',
-            title: `${expense ? 'Edit' : 'Create'} Expense`,
+            title: `${expense ? t('edit') : t('create')} ${t('expense')}`,
             body: (
                 <Persist
                     onClose={closeModal}
@@ -77,7 +85,7 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
 
     const generateHeaders = () => {
         const monthHeaders = MONTHS.map((month) => ({
-            text: truncateString(month, 3),
+            text: truncateString(t(month), 3),
             type: ETypeTableHeader.MONEY,
             value: month,
             conditionColor: {
@@ -87,7 +95,7 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
             },
         }));
         return [
-            { text: 'Supplier', value: 'supplier.name' },
+            { text: t('supplier'), value: 'supplier.name' },
             ...monthHeaders,
             { text: 'Total', value: 'total', type: ETypeTableHeader.MONEY },
         ];
@@ -98,16 +106,16 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
     }
 
     const fetchBill = async (id: string) => {
-        show();
+        setIsLoading(true);
         try {
             const response = await billService.get(id);
             setBill(response);
         } catch (error) {
-            addAlert({ type: 'error', message: 'Error fetching Bill' });
+            addAlert({ type: 'error', message: t('error_fetching_bills') });
             console.error(error)
             throw error;
         } finally {
-            hide();
+            setIsLoading(false);
         }
     }
 
@@ -120,11 +128,16 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
     }, [billData]);
 
     useEffect(() => {
-        const calculatedExpenses = calculateExpenses(bill?.expenses ?? []);
+        const calculatedExpenses = calculateExpenses(results);
         setCalculatedExpenses((calculatedExpenses as Expense[]) || []);
+    }, [results]);
+
+    useEffect(() => {
+        const externalCalculatedExpenses = calculateExpenses(bill?.expenses ?? []);
+        setCalculatedExternalExpenses((externalCalculatedExpenses as Expense[]) || []);
     }, [bill?.expenses]);
 
-    return (
+    return isLoading ? <Spinner/> : (
         <div className="expenses" data-testid="expenses">
             {bill?.type === EBillType.CREDIT_CARD
                 ? (
@@ -132,11 +145,15 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
                         items={calculatedExpenses}
                         action={(expense, parent, parents) => handleOpenFormModal({ expense, parent, parents })}
                         loading={isLoading}
+                        totalPages={totalPages}
+                        currentPage={currentPage}
+                        handlePageChange={setCurrentPage}
+                        calculatedExternalExpenses={calculatedExternalExpenses}
                     />
                 )
                 : (
                     <>
-                        <Summary expenses={calculatedExpenses} action={() => handleOpenFormModal({})}/>
+                        <Summary expenses={calculatedExternalExpenses} action={() => handleOpenFormModal({})}/>
                         <div className="expenses__table">
                             <Table
                                 headers={generateHeaders()}
@@ -144,6 +161,17 @@ export default function Expenses({ bill: billData }: ExpensesProps) {
                                 onRowClick={(item) => handleOpenFormModal({ expense: item as Expense })}
                                 loading={isLoading}
                             />
+                            {currentPage && totalPages > 1 && (
+                                <Pagination
+                                    fluid
+                                    type="numbers"
+                                    total={totalPages}
+                                    range={10}
+                                    current={currentPage}
+                                    limitDots={true}
+                                    handleNew={setCurrentPage}
+                                />
+                            )}
                         </div>
                     </>
                 )

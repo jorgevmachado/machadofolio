@@ -1,4 +1,4 @@
-import { AllExpensesCalculated } from '@repo/business';
+import { MonthsCalculated } from '@repo/business';
 
 import type { TColors } from '@repo/ds';
 
@@ -11,4 +11,4 @@ export type ItemCalculationSummary = {
     }
 }
 
-export type AllCalculatedSummary = AllExpensesCalculated;
+export type AllCalculatedSummary = MonthsCalculated;

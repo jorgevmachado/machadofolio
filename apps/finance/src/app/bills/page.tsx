@@ -1,7 +1,9 @@
 'use client'
 import { useEffect, useRef, useState } from 'react';
 
-import { Bill, type BillList, CreateBillParams, UploadExpenseParams } from '@repo/business';
+import { useI18n } from '@repo/i18n';
+
+import { Bill, type BillList, CreateBillParams, UploadsExpenseParams } from '@repo/business';
 
 import { Tabs } from '@repo/ds';
 
@@ -17,6 +19,7 @@ import { Fallback, Persist, SubTab } from './components';
 import ModalUpload from './components/modal-upload';
 
 export default function BillsPage() {
+    const { t } = useI18n();
     const isMounted = useRef(false);
 
     const [hasAllDependencies, setHasAllDependencies] = useState<boolean>(false);
@@ -37,7 +40,7 @@ export default function BillsPage() {
             console.error('# => BillsPage => fetchItems => error => ', error)
             addAlert({
                 type: 'error',
-                message: `Error fetching Bills.`,
+                message: t(`error_fetching_bills`),
             });
         } finally {
             hide();
@@ -50,14 +53,11 @@ export default function BillsPage() {
             bill
                 ? await billService.update(bill.id, params)
                 : await billService.create(params)
-            addAlert({ type: 'success', message: `Bill ${bill ? 'updated' : 'saved'} successfully!` });
+            addAlert({ type: 'success', message: `${t('bill')} ${bill ? t('updated') : t('saved')} ${t('successfully')}!` });
             await fetchItems();
             refresh();
         } catch (error) {
-            addAlert({
-                type: 'error',
-                message: (error as Error)?.message ?? `Error ${bill ? 'updating' : 'saving'} Bill`
-            });
+            addAlert({ type: 'error', message: (error as Error)?.message ?? `${t('error_when')} ${bill ? t('updating') : t('saving')} ${t('bill')}` });
             console.error('Bill => handleSubmit => ', error)
         } finally {
             hide();
@@ -71,25 +71,25 @@ export default function BillsPage() {
         show();
         try {
             await billService.remove(item.id);
-            addAlert({ type: 'success', message: 'Bill deleted successfully!' });
+            addAlert({ type: 'success', message: `${t('bill')} ${t('deleted')} ${t('successfully')}!` });
             await fetchItems();
             refresh();
         } catch (error) {
-            addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error deleting Bill' });
+            addAlert({ type: 'error', message: (error as Error)?.message ?? t('error_deleting_bill')});
         } finally {
             hide();
         }
     }
 
-    const handleUploadExpense = async (bill: Bill, params: UploadExpenseParams) => {
+    const handleUploadExpense = async (bill: Bill, params: UploadsExpenseParams) => {
         show();
         try {
             await expenseService.upload(bill.id, params);
-            addAlert({ type: 'success', message: 'Expenses uploaded successfully!' });
+            addAlert({ type: 'success', message: `${t('expenses')} ${t('uploaded')} ${t('successfully')}!` });
             await fetchItems();
             refresh();
         } catch (error) {
-            addAlert({ type: 'error', message: (error as Error)?.message ?? 'Error upload Bill expense' });
+            addAlert({ type: 'error', message: (error as Error)?.message ?? t('error_upload_bill_expense') });
         } finally {
             hide();
         }
@@ -98,7 +98,7 @@ export default function BillsPage() {
     const handleOpenPersistModal = (bill?: Bill) => {
         openModal({
             width: '799px',
-            title: `${bill ? 'Edit' : 'Create'} Bill`,
+            title: `${bill ? t('edit') : t('create')} ${t('bill')}`,
             body: (
                 <Persist banks={banks} groups={groups} bill={bill} onClose={closeModal} onSubmit={handleSubmit}/>
             ),
@@ -111,7 +111,7 @@ export default function BillsPage() {
     const handleOpenDeleteModal = (bill?: Bill) => {
         openModal({
             width: '700px',
-            title: `Are you sure you want to delete Bill`,
+            title: `${t('want_to_delete')} ${t('bill')}`,
             body: (
                 <ModalDelete item={bill} onClose={closeModal} onDelete={(item) => handleOnDelete(item as Bill)}/>
             ),
@@ -124,9 +124,9 @@ export default function BillsPage() {
     const handleUploadFileModal = (bill: Bill) => {
         openModal({
             width: '799px',
-            title: `Cadastrar Despesa por Arquivo`,
+            title: t('register_expense_by_file'),
             body: (
-                <ModalUpload bill={bill} onClose={closeModal} onSubmit={handleUploadExpense} />
+                <ModalUpload bill={bill} onClose={closeModal} onSubmit={handleUploadExpense}/>
             ),
             closeOnEsc: true,
             closeOnOutsideClick: true,
@@ -148,8 +148,8 @@ export default function BillsPage() {
 
     return !isLoading ? (
         <>
-            <PageHeader resourceName="Bill" action={{
-                label: 'Create New Bill',
+            <PageHeader resourceName={t('bill')} action={{
+                label: `${t('create_new')} ${t('bill')}`,
                 onClick: () => handleOpenPersistModal(),
                 disabled: !hasAllDependencies,
             }}/>

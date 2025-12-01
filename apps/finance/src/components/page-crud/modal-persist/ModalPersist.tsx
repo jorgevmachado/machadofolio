@@ -1,43 +1,28 @@
 'use client'
 import React, { useState } from 'react';
 
-import { Button, Input, OnInputParams } from '@repo/ds';
+import { Button, Input } from '@repo/ds';
+
+import { currentValue } from '../../utils';
+import { handleOnInputParams, PersistInputProps } from '../../types';
 
 import './ModalPersist.scss';
 
-
-type InputProps = React.ComponentProps<typeof Input>;
-
-type handleOnInputParams = OnInputParams & {
-    type: InputProps['type'];
-    list?: Array<unknown>;
-}
-
-type CurrentValueParams = {
-    type: InputProps['type'];
-    name?: string;
-    item?: unknown;
-}
-
-type ModalPersistInputProps = Omit<InputProps, 'list'> & {
-    list?: Array<unknown>;
-}
-
 type ModalPersistProps = {
     item?: unknown;
-    inputs: Array<ModalPersistInputProps>;
+    inputs: Array<PersistInputProps>;
     onClose: () => void;
     onSubmit?: (item?: unknown) => void;
 }
 
 export default function ModalPersist({
-    item,
-    inputs,
-    onClose,
-    onSubmit
-}: ModalPersistProps) {
+                                         item,
+                                         inputs,
+                                         onClose,
+                                         onSubmit
+                                     }: Readonly<ModalPersistProps>) {
 
-    const [currentItem, setCurrentItem] = useState<unknown | undefined>(item);
+    const [currentItem, setCurrentItem] = useState<unknown>(item);
 
     const handleOnInput = ({ value, name, type, list = [] }: handleOnInputParams) => {
         if(type === 'select') {
@@ -60,17 +45,6 @@ export default function ModalPersist({
         onSubmit?.(currentItem);
         onClose();
     };
-
-    const currentValue = ({ name, type, item }: CurrentValueParams ): string => {
-        if(item && name) {
-            const currentValue = (item as Record<string, unknown>)[name]
-            if(type === 'select') {
-                return (currentValue as { id?: string })?.id ?? ''
-            }
-            return typeof currentValue === 'string' ? currentValue : String(currentValue ?? '');
-        }
-        return '';
-    }
 
     return (
         <form className="modal-persist" onSubmit={handleSubmit}>

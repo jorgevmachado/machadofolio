@@ -1,11 +1,13 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 
+import { useI18n } from '@repo/i18n';
+
 import { currencyFormatter } from '@repo/services';
 
 import { Button, Text } from '@repo/ds';
 
-import { ItemCalculationSummary } from './types';
+import type { ItemCalculationSummary } from './types';
 
 import './CalculationSummary.scss';
 
@@ -34,13 +36,15 @@ export default function CalculationSummary({
                                            }: CalculationSummaryProps) {
     const [itemSummary, setItemSummary] = useState<Array<ItemCalculationSummary>>([]);
 
+    const { t } = useI18n();
+
     const buildItemSummary = () => {
         const item: Array<ItemCalculationSummary> = [
             {
                 key: 'paid',
-                label: allPaidLabel,
+                label: allPaidLabel === 'All Paid' ? t('all_paid'): allPaidLabel,
                 value: {
-                    label: allPaid ? 'Yes' : 'No',
+                    label: allPaid ? t('yes') : t('no'),
                     color: allPaid ? 'success-80' : 'error-80'
                 }
             },
@@ -53,14 +57,14 @@ export default function CalculationSummary({
             },
             {
                 key: 'total_paid',
-                label: 'Total Paid:',
+                label: `Total ${t('paid')}:`,
                 value: {
                     label: currencyFormatter(totalPaid),
                 }
             },
             {
                 key: 'total_pending',
-                label: 'Total Pending:',
+                label: `Total ${t('pending')}:`,
                 value: {
                     label: currencyFormatter(totalPending),
                 }
@@ -71,7 +75,7 @@ export default function CalculationSummary({
 
     useEffect(() => {
         buildItemSummary();
-    }, [total, totalPaid, allPaid, totalPending]);
+    }, [t, total, totalPaid, allPaid, totalPending]);
 
     return (
         <div className="calculation-summary" data-testid="calculation-summary">
