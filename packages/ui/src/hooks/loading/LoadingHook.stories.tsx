@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import { Button } from '@repo/ds';
-import { Spinner } from '@repo/ds';
+import { type Spinner } from '@repo/ds';
 
 import { LoadingProvider, useLoading } from './LoadingContext';
 

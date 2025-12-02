@@ -1,7 +1,7 @@
 import React from 'react';
-import { render, screen, fireEvent, act, waitFor, renderHook } from '@testing-library/react';
+import { act, fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react';
 import { AlertProvider, useAlert } from './AlertContext';
-import Alert, { AlertDataProps } from './Alert';
+import Alert, { type AlertDataProps } from './Alert';
 import AlertComponent from './AlertComponent';
 import useAlertState from './useAlertState';
 

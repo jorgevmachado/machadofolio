@@ -2,7 +2,7 @@ import React from 'react';
 
 import { type TUser } from '@repo/business';
 
-import { Link, type TContext, Text, joinClass } from '@repo/ds';
+import { joinClass,Link, type TContext, Text } from '@repo/ds';
 
 import { Form, Logo } from '../../components';
 

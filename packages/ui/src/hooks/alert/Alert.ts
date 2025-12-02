@@ -1,8 +1,8 @@
-import React from 'react';
+import type React from 'react';
 
 import { generateUUID } from '@repo/services';
 
-import { Alert as AlertComponent } from '@repo/ds';
+import { type Alert as AlertComponent } from '@repo/ds';
 
 type AlertProps = React.ComponentProps<typeof AlertComponent>;
 

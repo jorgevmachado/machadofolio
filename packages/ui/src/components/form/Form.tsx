@@ -1,8 +1,8 @@
 import React from 'react';
 
-import type { TUser } from '@repo/business';
-
 import { Button, Input, type TContext } from '@repo/ds';
+
+import type { TUser } from '@repo/business';
 
 import type { AuthForm, TForm } from './types';
 import { useForm } from './useForm';

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import { TranslatorFunction } from '@repo/i18n';
+import { Icon, joinClass,Text } from '@repo/ds';
 
-import { Icon, joinClass, Text } from '@repo/ds';
+import { type TranslatorFunction } from '@repo/i18n';
 
 import { type TRoute } from '../../utils';
 

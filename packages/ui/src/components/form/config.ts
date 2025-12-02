@@ -1,10 +1,10 @@
 import {
-    EGender,
     calculateMaxDate,
     confirmPasswordValidator,
     cpfFormatter,
     cpfValidator,
     dateOfBirthValidator,
+    EGender,
     emailValidator,
     fileBase64Validator,
     genderValidator,

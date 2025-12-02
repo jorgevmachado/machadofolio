@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import Alert, { AlertDataProps } from './Alert';
+
+import Alert, { type AlertDataProps } from './Alert';
 
 export default function useAlertState() {
     const [alerts, setAlerts] = useState<Array<Alert>>([]);

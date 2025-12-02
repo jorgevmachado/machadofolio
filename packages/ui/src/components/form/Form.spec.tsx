@@ -5,7 +5,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 
 import { EGender } from '@repo/services';
 
-import { type TUser, ERole, EStatus } from '@repo/business';
+import { ERole, EStatus, type TUser } from '@repo/business';
 
 import Form from './Form';
 

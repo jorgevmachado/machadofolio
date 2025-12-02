@@ -4,7 +4,8 @@ import { useBreakpoint } from '@repo/ds';
 
 import { Slide } from '../../animations';
 
-import Alert, { AlertDataProps } from './Alert';
+import type Alert from './Alert';
+import {type AlertDataProps} from './Alert';
 import AlertComponent from './AlertComponent';
 import { STYLE_ALERT, STYLE_DESKTOP, STYLE_MOBILE } from './styles';
 import useAlertState from './useAlertState';

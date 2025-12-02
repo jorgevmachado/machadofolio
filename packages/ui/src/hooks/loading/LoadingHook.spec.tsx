@@ -1,7 +1,7 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
-import { Spinner } from '@repo/ds';
+import { type Spinner } from '@repo/ds';
 
 type SpinnerProps = React.ComponentProps<typeof Spinner>;
 

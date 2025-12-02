@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import { TranslatorFunction } from '@repo/i18n';
-
 import { useBreakpoint } from '@repo/ds';
+
+import { type TranslatorFunction } from '@repo/i18n';
 
 import { Content, type InternationalizationProps, Navbar, Sidebar } from '../../components';
 import type { TRoute } from '../../utils';

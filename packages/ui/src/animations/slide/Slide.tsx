@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState } from 'react';
+import React, { type CSSProperties, useEffect, useState } from 'react';
 
 import type { TDirection } from '../types';
 

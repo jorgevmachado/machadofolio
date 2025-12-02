@@ -1,3 +1,2 @@
-export { default } from './Navbar';
-
 export type { InternationalizationProps, LanguageOption} from './internationalization';
+export { default } from './Navbar';

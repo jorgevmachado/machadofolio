@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 
-import type { ValidatorMessage, ValidatorParams } from '@repo/services';
-
-import type { TUser } from '@repo/business';
-
 import { type OnInputParams } from '@repo/ds';
 
-import type { AuthForm, InputForm, InputFormProps, TForm } from './types';
+import type { TUser } from '@repo/business';
+import type { ValidatorMessage, ValidatorParams } from '@repo/services';
+
 import { FORMS, INPUTS } from './config';
+import type { AuthForm, InputForm, InputFormProps, TForm } from './types';
 
 type UseFormProps = Pick<React.HTMLProps<Element>, 'onInput'> & {
     user?: TUser;

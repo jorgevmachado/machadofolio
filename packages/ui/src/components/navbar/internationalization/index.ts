@@ -1,1 +1,1 @@
-export { default as Internationalization, type LanguageOption, type InternationalizationProps } from './Internationalization';
+export { default as Internationalization, type InternationalizationProps,type LanguageOption } from './Internationalization';

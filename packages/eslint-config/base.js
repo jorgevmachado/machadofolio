@@ -3,6 +3,7 @@ import eslintConfigPrettier from "eslint-config-prettier";
 import turboPlugin from "eslint-plugin-turbo";
 import tseslint from "typescript-eslint";
 import onlyWarn from "eslint-plugin-only-warn";
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 /**
  * A shared ESLint configuration for the repository.
@@ -16,23 +17,41 @@ export const config = [
   {
     plugins: {
       turbo: turboPlugin,
+      'simple-import-sort': simpleImportSort,
     },
     rules: {
       semi: ['error', 'always'],
       quotes: ['error', 'single'],
+      indent: ['error', 2, { 'SwitchCase': 1 }],
       'object-curly-spacing': ['error', 'always'],
       'space-before-function-paren': ['error', {
         'named': 'never',
         'anonymous': 'always',
         'asyncArrow': 'always'
       }],
-      'sort-imports': ['error', {
-        'ignoreCase': false,
-        'ignoreMemberSort': false,
-        'allowSeparatedGroups': true,
-        'memberSyntaxSortOrder': ['none', 'all', 'multiple', 'single'],
-        'ignoreDeclarationSort': false,
+      'simple-import-sort/imports': ['error', {
+        groups: [
+          // 1. React imports (inclui import type)
+          ['^react$', '^react(\\/.*)?$', '^@?react(-dom)?'],
+          // 2. Pacotes internos específicos (ordem exata)
+          ['^@repo/services$'],
+          ['^@repo/business$'],
+          ['^@repo/ds$'],
+          ['^@repo/ui$'],
+          // 3. Outros pacotes internos do monorepo
+          ['^@repo/'],
+          // 4. Imports relativos: ../../
+          ['^\\.\\./\\.\\./'],
+          // 5. Imports relativos: ../
+          ['^\\.\\./'],
+          // 6. Imports relativos: ./
+          ['^\\./'],
+          // 7. Side effects
+          ['^\\u0000'],
+        ],
       }],
+      'simple-import-sort/exports': 'error',
+      'sort-imports': 'off',
       'keyword-spacing': ['error', { 'before': true, 'after': true }],
       "turbo/no-undeclared-env-vars": "warn",
       '@typescript-eslint/no-explicit-any': 'off',
@@ -41,6 +60,7 @@ export const config = [
         prefer: 'type-imports',
         fixStyle: 'inline-type-imports',
       }],
+        'function-paren-newline': ['error', 'consistent'],
     },
   },
   {
@@ -49,6 +69,11 @@ export const config = [
     },
   },
   {
-    ignores: ["dist/**"],
+    ignores: [
+        "dist/**",
+      '**/*.spec.{js,jsx,ts,tsx}',
+      '**/*.setup.{js,jsx,ts,tsx}',
+      '**/*.stories.{js,jsx,ts,tsx}'
+    ],
   },
 ];

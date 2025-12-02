@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Text, joinClass } from '@repo/ds';
+import { joinClass,Text } from '@repo/ds';
 
 import { Fade } from '../../animations';
 

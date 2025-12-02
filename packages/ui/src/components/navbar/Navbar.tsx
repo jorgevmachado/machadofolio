@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { TranslatorFunction } from '@repo/i18n';
-
 import { Button, Text } from '@repo/ds';
+
+import { type TranslatorFunction } from '@repo/i18n';
 
 import { Internationalization, type InternationalizationProps } from './internationalization';
 

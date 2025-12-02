@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
-import { TranslatorFunction } from '@repo/i18n';
-
 import { formatPath } from '@repo/services';
 
 import { Icon, Text } from '@repo/ds';
+
+import { type TranslatorFunction } from '@repo/i18n';
 
 import { type TRoute } from '../../../utils';
 

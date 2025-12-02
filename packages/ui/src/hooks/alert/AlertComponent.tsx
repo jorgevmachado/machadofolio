@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { Alert as AlertDS } from '@repo/ds';
 
-import Alert from './Alert';
+import type Alert from './Alert';
 
 type AlertComponentProps = {
     alert: Alert;
