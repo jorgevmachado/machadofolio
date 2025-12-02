@@ -1,21 +1,21 @@
-import React from 'react';
+import type React from 'react';
 
-import { Text } from '../../elements';
+import { type Text } from '../../elements';
 
-import { XAxis, YAxis, ZAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
-
-import type { FilterContent } from './content';
 import {
-    AreaChartProps,
-    BarChartProps,
-    ComposedChartProps,
-    LineChartProps,
-    PieChartProps,
-    RadarChartProps,
-    RadialChartProps,
-    ScatterChartProps
+    type AreaChartProps,
+    type BarChartProps,
+    type ComposedChartProps,
+    type LineChartProps,
+    type PieChartProps,
+    type RadarChartProps,
+    type RadialChartProps,
+    type ScatterChartProps
 } from './chart';
 import type { ChartFallbackProps } from './container';
+import type { FilterContent } from './content';
+
+import { type CartesianGrid,type Legend, type Tooltip, type XAxis, type YAxis, type ZAxis } from 'recharts';
 
 export type TChart = 'bar' | 'pie' | 'area' | 'radar' |  'radial' | 'line' | 'scatter' | 'composed';
 

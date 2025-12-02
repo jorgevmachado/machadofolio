@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
-import { joinClass, type TColors, type TContext } from '../../utils';
-
 import { Icon, Text } from '../../elements';
+import { joinClass, type TColors, type TContext } from '../../utils';
 
 import './Modal.scss';
 

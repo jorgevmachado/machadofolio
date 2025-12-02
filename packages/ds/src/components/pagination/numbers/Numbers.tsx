@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { isNumberEven } from '@repo/services';
 
 import { type TContext } from '../../../utils';
-
 import Button from '../../button';
 
 type NumberProps = {

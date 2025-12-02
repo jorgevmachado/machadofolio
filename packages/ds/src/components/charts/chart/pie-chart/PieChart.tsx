@@ -1,24 +1,21 @@
 import React, { useMemo } from 'react';
 
-import {
-    PieChart as PieChartComponent,
-    Pie,
-    Legend,
-    Tooltip,
-    Cell,
-} from 'recharts';
-
-
-import { PieChartDataItem, PieChartProps, PieProps } from './types';
-
-import ActiveShape from './active-shape';
-
 import { mapListColors } from '../../colors';
 
+import ActiveShape from './active-shape';
 import CustomizeLabel from './customize-label';
 import PieNeedle from './pie-needle';
+import { type PieChartDataItem, type PieChartProps, type PieProps } from './types';
 
 import './PieChart.scss';
+
+import {
+    Cell,
+    Legend,
+    Pie,
+    PieChart as PieChartComponent,
+    Tooltip,
+} from 'recharts';
 
 const defaultStyle = {
     width: '100%',

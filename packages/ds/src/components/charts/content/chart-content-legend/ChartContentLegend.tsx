@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 
-import { DefaultLegendContent } from 'recharts';
-
 import { compareFilter } from '../filters';
 
-import { ChartContentLegendProps } from './types';
+import { type ChartContentLegendProps } from './types';
+
+import { DefaultLegendContent } from 'recharts';
 
 export default function ChartContentLegend({
                                                params,

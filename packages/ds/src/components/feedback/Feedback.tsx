@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { generateComponentId, joinClass } from '../../utils';
-
 import { Text } from '../../elements';
+import { generateComponentId, joinClass } from '../../utils';
 
 import './Feedback.scss';
 

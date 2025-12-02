@@ -2,8 +2,8 @@ import React from 'react';
 
 import { currencyFormatter } from '@repo/services';
 
-import type { TableProps } from '../types';
 import { ETypeTableHeader } from '../enum';
+import type { TableProps } from '../types';
 
 import Actions from './actions';
 

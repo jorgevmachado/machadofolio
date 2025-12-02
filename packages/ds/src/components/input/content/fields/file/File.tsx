@@ -3,15 +3,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { extractExtensionFromBase64, fileToBase64, imageTypeValidator, urlToBase64 } from '@repo/services';
 
 import {
-    XLSX_IMAGE_BASE64,
     DOC_IMAGE_BASE64,
-    PDF_IMAGE_BASE64
-} from '../../../../../assets/base64';
-
-import { type TContext, joinClass } from '../../../../../utils';
-
+    PDF_IMAGE_BASE64,
+    XLSX_IMAGE_BASE64} from '../../../../../assets/base64';
 import { Icon, Image } from '../../../../../elements'
-
+import { joinClass,type TContext } from '../../../../../utils';
 import Button from '../../../../button'
 
 import './File.scss';

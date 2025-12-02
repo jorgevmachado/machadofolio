@@ -1,2 +1,2 @@
-export { OSize, OSimplySize } from './options';
+export { OSimplySize,OSize } from './options';
 export type { TSimplySIze, TSize } from './types';

@@ -1,7 +1,7 @@
 import { convertToPercent, currencyFormatter } from '@repo/services';
 
-import { AxisProps, LegendProps, TChart, TLayout, TooltipProps, XAxisProps, YAxisProps, ZAxisProps } from '../types';
 import { ChartContentLegend, ChartContentTooltip, type LegendContentProps, type TooltipContentProps } from '../content';
+import { type AxisProps, type LegendProps, type TChart, type TLayout, type TooltipProps, type XAxisProps, type YAxisProps, type ZAxisProps } from '../types';
 
 
 export function buildTooltip(tooltip?: TooltipProps) {

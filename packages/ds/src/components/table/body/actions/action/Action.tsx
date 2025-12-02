@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 
 import useBreakpoint from '../../../../../hooks/use-breakpoint';
-
 import Button from '../../../../button';
-
 import type { TableActionsItem, TableProps } from '../../../types';
 
 type ActionProps = {

@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
 
+import { Text,type TGenericIconProps } from '../../elements';
 import { EInputContentChildren, useChildrenElements } from '../../utils';
-
-import { type TGenericIconProps, Text } from '../../elements';
 
 type TextProps = React.ComponentProps<typeof Text>;
 

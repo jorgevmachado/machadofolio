@@ -1,7 +1,6 @@
 import React from 'react';
 
 import useBreakpoint from '../../../../hooks/use-breakpoint';
-
 import type { TableProps } from '../../types';
 
 import Action from './action';

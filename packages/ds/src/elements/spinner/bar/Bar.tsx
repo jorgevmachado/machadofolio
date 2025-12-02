@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { type TContext, joinClass } from '../../../utils';
+import { joinClass,type TContext } from '../../../utils';
 
 import './Bar.scss';
 

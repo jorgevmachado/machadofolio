@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CustomizeLabelParams } from '../types';
+import { type CustomizeLabelParams } from '../types';
 
 type CustomizedLabelProps = CustomizeLabelParams;
 

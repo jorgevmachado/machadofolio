@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
-import { type TContext } from '../../../utils';
 import { ProgressIndicator } from '../../../elements';
+import { type TContext } from '../../../utils';
 
 type DotsProps = {
     hide?: boolean;

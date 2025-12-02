@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo,useRef, useState } from 'react';
 
-import { joinClass, type OptionsProps } from '../../../../../utils';
 import { Icon } from '../../../../../elements';
+import { joinClass, type OptionsProps } from '../../../../../utils';
 
 import './Select.scss';
 

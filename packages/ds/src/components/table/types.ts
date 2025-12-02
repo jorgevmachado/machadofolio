@@ -1,10 +1,10 @@
-import React from 'react';
+import type React from 'react';
 
 import { type TColors } from '../../utils';
 
-import { ETypeTableHeader } from './enum';
+import type Button from '../button'
 
-import Button from '../button'
+import { type ETypeTableHeader } from './enum';
 
 type ButtonProps = React.ComponentProps<typeof Button>;
 

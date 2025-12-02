@@ -2,18 +2,17 @@ import React, { useEffect, useState } from 'react';
 
 import { isObject } from '@repo/services';
 
-import { TranslatorFunction } from '@repo/i18n';
+import { type TranslatorFunction } from '@repo/i18n';
 
 import {
-    type TColors,
-    type TVariant,
-    type TWeight,
     formattedText,
     generateComponentId,
     isReactNode,
     joinClass,
-    translateValue
-} from '../../utils';
+    type TColors,
+    translateValue,
+    type TVariant,
+    type TWeight} from '../../utils';
 
 import './Text.scss';
 

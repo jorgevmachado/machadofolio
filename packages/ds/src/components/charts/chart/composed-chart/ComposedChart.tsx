@@ -1,17 +1,16 @@
 import React from 'react';
 
-import {
-    ComposedChart as ComposedChartComponent,
-    CartesianGrid,
-    XAxis,
-    YAxis,
-    Tooltip,
-    Legend,
-    Area,
-    Bar, Line, Scatter
-} from 'recharts';
-
 import type { ComposedChartProps } from './types';
+
+import {
+    Area,
+    Bar,     CartesianGrid,
+    ComposedChart as ComposedChartComponent,
+    Legend,
+Line, Scatter,
+    Tooltip,
+    XAxis,
+    YAxis} from 'recharts';
 
 const defaultStyle = { width: '100%', maxWidth: '700px', maxHeight: '70vh', aspectRatio: 1.618 };
 

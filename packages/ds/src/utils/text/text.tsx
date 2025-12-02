@@ -2,7 +2,7 @@ import React from 'react';
 
 import { removePunctuationAndSpaces, restorePunctuationAtEnd } from '@repo/services';
 
-import { TranslatorFunction } from '@repo/i18n';
+import { type TranslatorFunction } from '@repo/i18n';
 
 import generateComponentId from '../generate-component-id';
 

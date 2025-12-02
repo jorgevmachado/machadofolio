@@ -1,3 +1,4 @@
+import React from 'react';
 import {
     IoArrowBack,
     IoArrowBackOutline,
@@ -79,8 +80,6 @@ import {
 } from 'react-icons/io5';
 
 import type { TIconGroupIcons } from '../types';
-
-import React from 'react';
 
 export const io5Group: TIconGroupIcons = {
     tv: <IoTv/>,

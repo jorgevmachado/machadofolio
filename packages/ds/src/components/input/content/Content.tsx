@@ -2,14 +2,13 @@ import React, { forwardRef, useEffect, useState } from 'react';
 
 import { cleanFormatter, cpfFormatter, currencyFormatter, digitsToDecimalString, phoneFormatter } from '@repo/services';
 
-import { type OptionsProps, type TAppearance, type TContext, generateComponentId, joinClass } from '../../../utils';
-
 import type { TGenericIconProps } from '../../../elements';
+import { generateComponentId, joinClass,type OptionsProps, type TAppearance, type TContext } from '../../../utils';
 
 import { useInput } from '../InputContext';
 
-import { DateInput, FileInput, RadioGroupInput, SelectInput, type OnFileChangeParams } from './fields';
 import Addon from './addon';
+import { DateInput, FileInput, type OnFileChangeParams,RadioGroupInput, SelectInput } from './fields';
 import Inside from './inside';
 
 import './Content.scss';

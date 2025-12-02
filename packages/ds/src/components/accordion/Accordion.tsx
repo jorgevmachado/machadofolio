@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react';
 
-import { generateComponentId, joinClass, type TContext } from '../../utils';
-
 import { Icon, Text } from '../../elements';
+import { generateComponentId, joinClass, type TContext } from '../../utils';
 
 import useAccordion from './useAccordion';
 

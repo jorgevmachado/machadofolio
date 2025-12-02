@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import { Text, Spinner } from '../../elements';
-import { joinClass } from '../../utils';
+import { Spinner,Text } from '../../elements';
 import { useBreakpoint } from '../../hooks';
+import { joinClass } from '../../utils';
 
-import Header from './header';
 import Body from './body';
+import Header from './header';
 import { getNewSort, resetSortedColumn, sortItems } from './sort';
 import type { SortedColumn, TableProps, TSort } from './types';
 

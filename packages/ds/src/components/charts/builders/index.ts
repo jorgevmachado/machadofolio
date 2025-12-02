@@ -1,1 +1,1 @@
-export { buildAxis, buildTooltip, buildLegend} from './builders';
+export { buildAxis, buildLegend,buildTooltip} from './builders';

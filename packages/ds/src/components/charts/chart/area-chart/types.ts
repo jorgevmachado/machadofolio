@@ -1,6 +1,6 @@
-import React from 'react';
+import type React from 'react';
 
-import { MarginProps, DataChartItem, TooltipProps, LegendProps, AxisProps } from '../../types';
+import { type AxisProps,type DataChartItem, type LegendProps, type MarginProps, type TooltipProps } from '../../types';
 
 export type AreaChartDataItem = DataChartItem & {
     name: string;

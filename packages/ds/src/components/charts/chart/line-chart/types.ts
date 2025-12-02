@@ -1,19 +1,18 @@
-import React from 'react';
+import type React from 'react';
 
-import { Line, MouseHandlerDataParam } from 'recharts';
-
-import Button from '../../../button';
-
+import type Button from '../../../button';
 import {
-    AxisProps,
-    DataChartItem,
-    LegendProps,
-    MarginProps,
-    TLayout,
-    TooltipProps,
-    XAxisProps,
-    YAxisProps
+    type AxisProps,
+    type DataChartItem,
+    type LegendProps,
+    type MarginProps,
+    type TLayout,
+    type TooltipProps,
+    type XAxisProps,
+    type YAxisProps
 } from '../../types';
+
+import { type Line, type MouseHandlerDataParam } from 'recharts';
 
 type ButtonProps = React.ComponentProps<typeof Button>;
 

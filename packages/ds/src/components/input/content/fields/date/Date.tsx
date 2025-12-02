@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
-
 import DatePicker from 'react-datepicker';
-
-import 'react-datepicker/dist/react-datepicker.css';
 
 import { Icon, type TGenericIconProps } from '../../../../../elements';
 import { joinClass } from '../../../../../utils';
-
 import { useInput } from '../../../InputContext';
 
+import 'react-datepicker/dist/react-datepicker.css';
 import './Date.scss';
 
 interface DateProps extends Omit<React.ComponentProps<typeof DatePicker>,

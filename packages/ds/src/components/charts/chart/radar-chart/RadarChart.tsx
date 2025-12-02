@@ -1,16 +1,16 @@
 import React, { useMemo } from 'react';
 
-import {
-    RadarChart as RadarChartComponent,
-    PolarGrid,
-    PolarAngleAxis,
-    PolarRadiusAxis,
-    Radar, Legend, Tooltip
-} from 'recharts';
-
 import { mapListColors } from '../../colors';
 
 import type { PolarAngleAxisProps, PolarRadiusAxisProps, RadarChartProps } from './types';
+
+import {
+Legend,     PolarAngleAxis,
+    PolarGrid,
+    PolarRadiusAxis,
+    Radar,     RadarChart as RadarChartComponent,
+Tooltip
+} from 'recharts';
 
 const defaultStyle = {
     width: '100%',

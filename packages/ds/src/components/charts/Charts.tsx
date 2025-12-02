@@ -1,9 +1,6 @@
 import React from 'react';
 
-import { ChartsProps, } from './types';
-
-import ChartContainer from './container';
-
+import { buildAxis, buildLegend, buildTooltip } from './builders';
 import {
     AreaChart,
     BarChart,
@@ -14,8 +11,8 @@ import {
     RadialChart,
     ScatterChart
 } from './chart';
-
-import { buildAxis, buildLegend, buildTooltip } from './builders';
+import ChartContainer from './container';
+import { type ChartsProps, } from './types';
 
 import './Charts.scss';
 

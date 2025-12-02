@@ -1,8 +1,8 @@
-import React from 'react';
+import type React from 'react';
 
-import { Pie } from 'recharts';
+import { type DataChartItem, type LegendProps, type MarginProps, type TooltipProps } from '../../types';
 
-import { DataChartItem, LegendProps, MarginProps, TooltipProps } from '../../types';
+import { type Pie } from 'recharts';
 
 export type PieChartDataItem = DataChartItem & {
     fill?: string;

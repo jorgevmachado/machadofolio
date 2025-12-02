@@ -1,33 +1,29 @@
 import React, { useCallback, useMemo, useState } from 'react';
 
+import { joinClass } from '../../../../utils';
+import Button from '../../../button';
+import { mapListColors } from '../../colors';
+
+import CustomizedAxisTick from './customized-axis-tick';
+import CustomizedDot from './customized-dot';
+import CustomizedLabel from './customized-label';
+import { buildDomain, type CustomDomainItem, INITIAL_STATE, updateDomainItem } from './domain';
+import { type LineChartLabelsItem, type LineChartProps, type ReferenceLineProps } from './types';
+
+import './LineChart.scss';
+
 import {
     CartesianGrid,
     Legend,
     Line,
     LineChart as LineChartComponent,
-    MouseHandlerDataParam,
+    type MouseHandlerDataParam,
     ReferenceArea,
     ReferenceLine,
     Tooltip,
     XAxis,
     YAxis
 } from 'recharts';
-
-import { joinClass } from '../../../../utils';
-
-import Button from '../../../button';
-
-import { mapListColors } from '../../colors';
-
-import { LineChartLabelsItem, LineChartProps, ReferenceLineProps } from './types';
-
-import { buildDomain, type CustomDomainItem, INITIAL_STATE, updateDomainItem } from './domain';
-
-import CustomizedDot from './customized-dot';
-import CustomizedLabel from './customized-label';
-import CustomizedAxisTick from './customized-axis-tick';
-
-import './LineChart.scss';
 
 const defaultStyle = {
     width: '100%',

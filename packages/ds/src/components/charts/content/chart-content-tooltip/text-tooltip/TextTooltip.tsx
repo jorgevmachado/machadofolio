@@ -3,7 +3,6 @@ import React, { useMemo } from 'react';
 import { currencyFormatter } from '@repo/services';
 
 import { Text } from '../../../../../elements';
-
 import type { TextTooltipProps } from '../../../types';
 
 export default function TextTooltip({

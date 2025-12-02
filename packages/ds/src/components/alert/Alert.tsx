@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
+import { Icon, type TIcon } from '../../elements';
 import { joinClass } from '../../utils';
-import { Icon, TIcon } from '../../elements';
 
 import './Alert.scss';
 

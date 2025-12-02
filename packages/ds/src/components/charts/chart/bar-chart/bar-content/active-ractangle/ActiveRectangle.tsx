@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { Rectangle } from 'recharts';
-
 import type { ActiveBar } from '../../types';
+
+import { Rectangle } from 'recharts';
 
 type RectangleProps = React.ComponentProps<typeof Rectangle>;
 

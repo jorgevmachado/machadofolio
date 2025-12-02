@@ -2,9 +2,7 @@ import React from 'react';
 
 import type { TColors } from '../../utils';
 
-import type { TIcon, TIconGroup } from './types';
 import {
-  type TIconGroups,
   ciGroup,
   fa6Group,
   faGroup,
@@ -12,8 +10,10 @@ import {
   io5Group,
   ioGroup,
   mdGroup,
+  type TIconGroups,
   vscGroup,
 } from './groups';
+import type { TIcon, TIconGroup } from './types';
 
 const DEFAULT_ICON = faGroup.react;
 

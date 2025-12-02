@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
     GiAnchor,
     GiBattery100,
@@ -11,8 +10,8 @@ import {
     GiCancel,
     GiCharging,
     GiChatBubble,
-    GiCheckMark,
     GiChecklist,
+    GiCheckMark,
     GiChurch,
     GiCloudDownload,
     GiCloudUpload,
@@ -21,8 +20,8 @@ import {
     GiCookie,
     GiExitDoor,
     GiExpand,
-    GiEyeOfHorus,
     GiEyelashes,
+    GiEyeOfHorus,
     GiFastForwardButton,
     GiFingerPrint,
     GiFireExtinguisher,

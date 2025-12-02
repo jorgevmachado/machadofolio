@@ -1,1 +1,1 @@
-export { default, type OnInputParams, type OnFileInputChangeParams } from './Content';
+export { default, type OnFileInputChangeParams,type OnInputParams } from './Content';

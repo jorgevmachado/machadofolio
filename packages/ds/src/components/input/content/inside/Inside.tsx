@@ -1,9 +1,7 @@
 import React from 'react';
 
-import { joinClass } from '../../../../utils';
-
 import { Icon, type TGenericIconProps } from '../../../../elements';
-
+import { joinClass } from '../../../../utils';
 import { useInput } from '../../InputContext';
 
 import './Inside.scss';

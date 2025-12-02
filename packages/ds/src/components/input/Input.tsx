@@ -1,28 +1,25 @@
 import React, { useEffect, useState } from 'react';
 
 import {
-    type ValidatorMessage,
-    type ValidatorParams,
     cpfValidator,
     emailValidator,
     passwordValidator,
-    phoneValidator
-} from '@repo/services';
+    phoneValidator,
+    type ValidatorMessage,
+    type ValidatorParams} from '@repo/services';
 
+import { Text,type TGenericIconProps } from '../../elements';
 import {
+    generateComponentId, joinClass, type OptionsProps,
     type TAppearance,
     type TContext,
     type TInputType,
-    type ValidatedProps,
-    generateComponentId, joinClass, type OptionsProps
-} from '../../utils';
-
-import { type TGenericIconProps, Text } from '../../elements';
+    type ValidatedProps} from '../../utils';
 
 import Feedback from '../feedback';
 import Label from '../label';
 
-import Content, { OnFileInputChangeParams } from './content';
+import Content, { type OnFileInputChangeParams } from './content';
 import { InputProvider } from './InputContext';
 
 import './Input.scss';

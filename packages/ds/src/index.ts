@@ -1,4 +1,4 @@
 export * from './components';
 export * from './elements';
-export * from './utils';
 export * from './hooks';
+export * from './utils';

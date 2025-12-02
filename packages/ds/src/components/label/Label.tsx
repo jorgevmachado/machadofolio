@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { type TColors, generateComponentId, joinClass } from '../../utils';
-
 import { Text } from '../../elements';
+import { generateComponentId, joinClass,type TColors } from '../../utils';
 
 import './Label.scss';
 

@@ -1,4 +1,5 @@
 import type React from 'react';
+
 import type { TColors } from '../../utils';
 
 export type TIcon =

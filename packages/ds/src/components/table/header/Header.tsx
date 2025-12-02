@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import { joinClass } from '../../../utils';
 import { Icon } from '../../../elements';
+import { joinClass } from '../../../utils';
 
 import type { SortedColumn, TableProps } from '../types';
 

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import { type TContext, type TSimplySIze, type TWeight, joinClass } from '../../utils';
-
 import { Icon, type TGenericIconProps } from '../../elements';
+import { joinClass,type TContext, type TSimplySIze, type TWeight } from '../../utils';
 
 import { Content, type LoadingProps, type NotificationProps } from './Content';
 

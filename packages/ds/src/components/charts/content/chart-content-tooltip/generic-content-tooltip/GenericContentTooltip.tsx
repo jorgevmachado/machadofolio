@@ -3,8 +3,7 @@ import React from 'react';
 import { currencyFormatter } from '@repo/services';
 
 import { Text } from '../../../../../elements';
-
-import { GenericTextProps } from '../../../types';
+import { type GenericTextProps } from '../../../types';
 
 import GenericCustomText from './generic-custom-text';
 

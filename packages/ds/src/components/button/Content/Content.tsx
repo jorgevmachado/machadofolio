@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Icon, Spinner, type TGenericIconProps } from '../../../elements';
-import { type TColors, type TContext, joinClass } from '../../../utils';
+import { joinClass,type TColors, type TContext } from '../../../utils';
 
 export type NotificationProps = {
     color?: TColors;

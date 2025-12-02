@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { type TContext, joinClass } from '../../utils';
+import { joinClass,type TContext } from '../../utils';
 
+import SpinnerBar from './bar';
 import SpinnerCircle from './circle';
 import SpinnerDots from './dots';
-import SpinnerBar from './bar';
 
 import './Spinner.scss';
 

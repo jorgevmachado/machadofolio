@@ -1,12 +1,11 @@
 import React from 'react';
 
-import { joinClass } from '../../../utils';
-
 import { Text } from '../../../elements';
-
+import { joinClass } from '../../../utils';
 import Card from '../../card';
 
 import type { TWrapper } from '../types';
+
 import ChartFallback, { type ChartFallbackProps } from './fallback';
 
 import './ChartContainer.scss';

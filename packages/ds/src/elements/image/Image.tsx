@@ -1,14 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import {
-    LAW_LOGO_BASE64,
-    GEEK_LOGO_BASE64,
     FINANCE_LOGO_BASE64,
+    GEEK_LOGO_BASE64,
+    LAW_LOGO_BASE64,
     NOTFOUND_IMAGE_BASE64
 } from '../../assets/base64';
-
-import { joinClass } from '../../utils';
 import { useActiveBrand } from '../../hooks';
+import { joinClass } from '../../utils';
 
 import { Icon } from '../icon';
 

@@ -1,19 +1,18 @@
 import React, { useMemo } from 'react';
 
-import { DefaultTooltipContent } from 'recharts';
-
 import { convertToNumber } from '@repo/services';
 
-import { GenericTextProps, type TextProps, TooltipProps } from '../../types';
+import { type GenericTextProps, type TextProps, type TooltipProps } from '../../types';
 
 import { compareFilter } from '../filters';
 
+import GenericContentTooltip from './generic-content-tooltip';
+import TextTooltip from './text-tooltip';
 import type { TooltipContentProps } from './types';
 
-import TextTooltip from './text-tooltip';
-import GenericContentTooltip from './generic-content-tooltip';
-
 import './ChartContentTooltip.scss';
+
+import { DefaultTooltipContent } from 'recharts';
 
 type ChartContentTooltipProps = {
     params: TooltipContentProps;

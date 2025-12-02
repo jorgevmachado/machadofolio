@@ -1,6 +1,6 @@
-import React from 'react';
+import type React from 'react';
 
-import { DataChartItem, LegendProps, MarginProps, TooltipProps } from '../../types';
+import { type DataChartItem, type LegendProps, type MarginProps, type TooltipProps } from '../../types';
 
 export type RadarChartDataItem = DataChartItem;
 

@@ -1,14 +1,14 @@
-import React from 'react';
-
-import { Area, Bar, Line, Scatter,  } from 'recharts';
+import type React from 'react';
 
 import {
-    AxisProps,
-    CartesianGridProps,
-    LegendProps,
-    MarginProps,
-    TooltipProps,
+    type AxisProps,
+    type CartesianGridProps,
+    type LegendProps,
+    type MarginProps,
+    type TooltipProps,
 } from '../../types';
+
+import { type Area, type Bar, type Line, type Scatter,  } from 'recharts';
 
 type AreaProps = React.ComponentProps<typeof Area> & {
     key: string;

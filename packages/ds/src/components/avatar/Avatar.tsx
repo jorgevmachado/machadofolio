@@ -3,7 +3,6 @@ import React, { useMemo, useState } from 'react';
 import { initials } from '@repo/services';
 
 import { Image, Text } from '../../elements';
-
 import { joinClass, type TContext, type TSimplySIze } from '../../utils';
 
 import './Avatar.scss';

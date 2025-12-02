@@ -3,7 +3,6 @@ import React, { useMemo } from 'react';
 import { convertToNumber, getPercentValue } from '@repo/services';
 
 import { Text } from '../../../../../../elements';
-
 import type { GenericTextProps } from '../../../../types';
 
 type GenericCustomTextProps = {

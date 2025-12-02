@@ -1,9 +1,7 @@
 import React from 'react';
 
-import { joinClass } from '../../../../utils';
-
 import { Text } from '../../../../elements';
-
+import { joinClass } from '../../../../utils';
 import Button from '../../../button';
 
 import type { ChartFallbackProps } from './types';

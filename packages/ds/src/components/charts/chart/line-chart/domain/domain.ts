@@ -1,6 +1,7 @@
 import { convertToNumber } from '@repo/services';
 
 import type { AxisDomain, TCustomDomain } from '../types';
+
 import type { CustomDomainItem, GetAxisYDomainParams, UpdateDomainItemParams } from './types';
 
 export const INITIAL_STATE: CustomDomainItem = {

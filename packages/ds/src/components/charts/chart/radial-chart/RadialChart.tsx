@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react';
 
-import { Legend, RadialBar, RadialBarChart, Tooltip } from 'recharts';
-
+import { mapListColors } from '../../colors';
 import type { LegendProps } from '../../types';
 
-import { mapListColors } from '../../colors';
+import { type RadialChartLabelsItem, type RadialChartProps } from './types';
 
-import { RadialChartLabelsItem, RadialChartProps } from './types';
+import { Legend, RadialBar, RadialBarChart, Tooltip } from 'recharts';
 
 
 const defaultStyle = {

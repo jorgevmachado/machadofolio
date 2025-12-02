@@ -4,10 +4,10 @@ import { joinClass, type TContext } from '../../utils';
 
 import Button from '../button';
 
+import Dots from './dots';
 import Numbers from './numbers';
 
 import './Pagination.scss';
-import Dots from './dots';
 
 type PaginationProps = {
     hide?: boolean;

@@ -1,8 +1,7 @@
 import React, { useRef } from 'react';
 
-import { type TContext, joinClass } from '../../utils';
-
 import { useOutsideClick } from '../../hooks';
+import { joinClass,type TContext } from '../../utils';
 
 import Activator from './Activator';
 import useDropdown from './useDropdown';

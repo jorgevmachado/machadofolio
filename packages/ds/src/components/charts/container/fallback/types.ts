@@ -1,6 +1,6 @@
-import React from 'react';
+import type React from 'react';
 
-import Button from '../../../button';
+import type Button from '../../../button';
 
 type ButtonProps = React.ComponentProps<typeof Button>;
 

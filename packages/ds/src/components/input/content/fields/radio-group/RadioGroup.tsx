@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { type OptionsProps, type TAppearance, type TContext, joinClass } from '../../../../../utils';
-
+import { joinClass,type OptionsProps, type TAppearance, type TContext } from '../../../../../utils';
 import Button from '../../../../button';
 
 import './RadioGroup.scss';

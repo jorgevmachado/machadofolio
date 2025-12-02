@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import { Text } from '../../elements';
-
 import { generateComponentId, joinClass, type TContext } from '../../utils';
 
 import './Switch.scss';

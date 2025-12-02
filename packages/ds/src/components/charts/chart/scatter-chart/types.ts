@@ -1,14 +1,14 @@
-import React from 'react';
-
-import { LabelListProps, Scatter } from 'recharts';
+import type React from 'react';
 
 import {
-    AxisProps,
-    LegendProps,
-    MarginProps,
-    TLayout,
-    TooltipProps,
+    type AxisProps,
+    type LegendProps,
+    type MarginProps,
+    type TLayout,
+    type TooltipProps,
 } from '../../types';
+
+import { type LabelListProps, type Scatter } from 'recharts';
 
 export type ScatterChartDataItem = Omit<React.ComponentProps<typeof Scatter>, 'key'> & {
     key: string;
