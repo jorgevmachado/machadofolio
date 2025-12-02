@@ -1,8 +1,8 @@
 export { default as Group } from './group';
 export { GroupService } from './service';
 export type {
-    GroupEntity,
-    GroupConstructorParams,
     CreateGroupParams,
+    GroupConstructorParams,
+    GroupEntity,
     UpdateGroupParams
 } from './types';

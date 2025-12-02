@@ -1,14 +1,12 @@
 import { extractLastNumberFromUrl } from '@repo/services';
 
 import { PokeApi } from '../../../api';
-
 import Pokemon from '../../pokemon';
 
 import { PokeApiBusiness } from '../business';
+import { PokeApiMoveService } from '../move';
 
 import type { getAllParams } from './types';
-
-import { PokeApiMoveService } from '../move';
 
 export class PokeApiService {
     public limit: number = 1302;

@@ -1,11 +1,11 @@
-import { type INestBaseEntity } from '../types';
 import { type IUser } from '../auth';
+import { type INestBaseEntity } from '../types';
 
 import type { IBank } from './bank';
 import type { IBill, IExpense } from './bill';
 import type { IGroup } from './group';
-import type { ISupplier, ISupplierType } from './supplier';
 import type { IIncome } from './income';
+import type { ISupplier, ISupplierType } from './supplier';
 
 export type IFinanceBase = INestBaseEntity & {
     name: string;

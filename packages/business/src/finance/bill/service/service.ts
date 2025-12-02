@@ -1,9 +1,8 @@
+import type { Nest } from '../../../api';
 import { BaseService } from '../../../shared';
 
-import type { Nest } from '../../../api';
-
-import type { CreateBillParams, UpdateBillParams } from '../types';
 import Bill from '../bill';
+import type { CreateBillParams, UpdateBillParams } from '../types';
 
 export class BillService extends BaseService<Bill, CreateBillParams, UpdateBillParams>{
     constructor(private nest: Nest) {

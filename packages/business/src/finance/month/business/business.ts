@@ -1,7 +1,7 @@
-import { EMonth, getCurrentMonthNumber, MONTHS, TMonth } from '@repo/services';
+import { EMonth, getCurrentMonthNumber, MONTHS, type TMonth } from '@repo/services';
 
-import { MonthsCalculated, MonthsObject, PersistMonthParams } from '../types';
-import Month from '../month';
+import type Month from '../month';
+import { type MonthsCalculated, type MonthsObject, type PersistMonthParams } from '../types';
 
 
 type GeneratePersistMonthParams = {
@@ -51,10 +51,10 @@ export default class MonthBusiness {
             value: params?.value || 0,
             month,
             received_at: params?.received_at || new Date(),
-        }
+        };
     }
 
-    public generatePersistListMonthParams({ months, ...params}: GeneratePersistListMonthParams): Array<PersistMonthParams> {
+    public generatePersistListMonthParams({ months, ...params }: GeneratePersistListMonthParams): Array<PersistMonthParams> {
         if(months && months?.length > 0) {
             return months.map((m) => {
                 if(!m.code && m.month) {
@@ -85,10 +85,10 @@ export default class MonthBusiness {
                     value: 0,
                     month: month.toUpperCase() as EMonth,
                     received_at: params?.received_at || new Date(),
-                }
+                };
             }
             return monthParams;
-        })
+        });
     }
 
     public calculateAll(months?: Array<Month>): MonthsCalculated {
@@ -97,7 +97,7 @@ export default class MonthBusiness {
             allPaid: false,
             totalPaid: 0,
             totalPending: 0
-        }
+        };
 
         if(!months || months?.length <= 0) {
             return monthsCalculated;

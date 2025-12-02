@@ -1,5 +1,4 @@
 import { EStatus } from '../../../enum';
-
 import { type PokemonEntity } from '../../types';
 
 import type { PokemonResponse } from '../types';

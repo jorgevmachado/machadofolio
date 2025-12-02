@@ -1,2 +1,2 @@
 export { PokeApiService } from './service';
-export type { PokemonPaginateResponse, PokemonResponse, PokemonByNameResponse, PokemonSpecieResponse } from './types';
+export type { PokemonByNameResponse, PokemonPaginateResponse, PokemonResponse, PokemonSpecieResponse } from './types';

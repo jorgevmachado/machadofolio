@@ -1,16 +1,16 @@
 import { splitMonthsByInstalment } from '@repo/services';
 
-import { Month, MonthBusiness, MonthsCalculated } from '../../month';
+import { type Month, MonthBusiness, type MonthsCalculated } from '../../month';
 
-import type { ExpenseWithMonthsAndPaid } from '../types';
 import type Expense from '../expense';
+import type { ExpenseWithMonthsAndPaid } from '../types';
 
 import { SpreadsheetBusiness } from './spreadsheet';
 import type { PrepareForCreationParams, PrepareForCreationResult } from './types';
 
 
 export default class ExpenseBusiness {
-    private readonly spreadsheetBusiness: SpreadsheetBusiness
+    private readonly spreadsheetBusiness: SpreadsheetBusiness;
     private readonly monthsBusiness: MonthBusiness;
 
     constructor() {
@@ -88,14 +88,14 @@ export default class ExpenseBusiness {
             monthsForCurrentYear: [],
             expenseForCurrentYear: expense,
             instalmentForNextYear: 0
-        }
+        };
 
         const paramsForCurrentYear = {
             year: expense.year,
             paid: expense.paid,
             value,
             received_at: expense.created_at
-        }
+        };
 
         if (months && months?.length > 0) {
             result.monthsForCurrentYear = months.length === 12
@@ -112,7 +112,7 @@ export default class ExpenseBusiness {
             result.monthsForCurrentYear = this.monthsBusiness.generateMonthListCreationParameters({
                 ...paramsForCurrentYear,
                 month,
-            })
+            });
             return result;
         }
 
@@ -128,14 +128,14 @@ export default class ExpenseBusiness {
                 id: '',
                 year: result.nextYear,
                 instalment_number: monthsForNextYear.length
-            }
+            };
             result.instalmentForNextYear = monthsForNextYear.length;
             const paramsForNextYear = {
                 year: result.nextYear,
                 paid: expense.paid,
                 value,
                 received_at: expense.created_at
-            }
+            };
             const monthsForNextYearParams = monthsForNextYear.map((month) =>
                 this.monthsBusiness.generatePersistMonthParams({
                     ...paramsForNextYear,
@@ -179,14 +179,14 @@ export default class ExpenseBusiness {
     }
 
     public convertMonthsToObject(expense: Expense): ExpenseWithMonthsAndPaid {
-        const objectMonths = this.monthsBusiness.convertMonthsToObject(expense.months)
+        const objectMonths = this.monthsBusiness.convertMonthsToObject(expense.months);
 
         const result: ExpenseWithMonthsAndPaid = {
             ...objectMonths,
             ...expense,
             parent: undefined,
             children: undefined,
-        }
+        };
 
         if (expense.parent) {
             result.parent = this.convertMonthsToObject(expense.parent);

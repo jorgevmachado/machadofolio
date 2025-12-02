@@ -1,8 +1,9 @@
-import type { IFinance, IFinanceBase } from '../types';
-import { type EBillType } from './enum';
 import { type IBank } from '../bank';
-import { type IExpense } from './expense';
 import { type IGroup } from '../group';
+import type { IFinance, IFinanceBase } from '../types';
+
+import { type EBillType } from './enum';
+import { type IExpense } from './expense';
 
 export type IBill = IFinanceBase & {
     year: number;

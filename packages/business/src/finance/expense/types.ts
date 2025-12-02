@@ -1,3 +1,5 @@
+import { type TMonth } from '@repo/services';
+
 import type {
     ICreateExpenseParams,
     IExpense,
@@ -6,8 +8,7 @@ import type {
     IUpdateExpenseParams,
     IUploadExpenseParams
 } from '../../api';
-import { TMonth } from '@repo/services';
-import { IUploadsExpenseParams } from '../../api/nest/finance/bill/expense';
+import { type IUploadsExpenseParams } from '../../api/nest/finance/bill/expense';
 
 export type ExpenseEntity = IExpense;
 

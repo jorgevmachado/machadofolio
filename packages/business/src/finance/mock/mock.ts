@@ -43,7 +43,7 @@ const INCOME_SOURCE_MOCK = {
     name_code: 'job',
     created_at: new Date('2025-02-01T19:00:18.670Z'),
     updated_at: new Date('2025-02-01T19:00:18.670Z')
-}
+};
 
 const INCOME_MOCK = {
     id: '7360e3be-20a7-4814-866e-fff660ce9d8e',
@@ -57,7 +57,7 @@ const INCOME_MOCK = {
     created_at: new Date('2025-04-02T19:11:59.405Z'),
     updated_at: new Date('2025-04-02T19:11:59.405Z'),
     deleted_at: undefined,
-}
+};
 
 const INCOME_MONTH_MOCK = {
     id: 'a54df7b0-e28b-4d35-a658-edbb35fcb2d0',
@@ -72,7 +72,7 @@ const INCOME_MONTH_MOCK = {
     updated_at: new Date('2025-04-02T19:11:59.405Z'),
     deleted_at: undefined,
     received_at: new Date('2025-02-01T19:00:18.670Z'),
-}
+};
 
 INCOME_MOCK.months = [INCOME_MONTH_MOCK];
 
@@ -222,7 +222,7 @@ const EXPENSE_MONTH_MOCK = {
     updated_at: new Date('2025-04-02T19:11:59.405Z'),
     deleted_at: undefined,
     received_at: undefined,
-}
+};
 
 EXPENSE_MOCK.months = [EXPENSE_MONTH_MOCK];
 
@@ -231,19 +231,18 @@ FINANCE_MOCK.groups.push(GROUP_MOCK);
 FINANCE_MOCK.incomes.push(INCOME_MOCK);
 
 export {
-    FINANCE_MOCK,
-    GROUP_MOCK,
     BANK_MOCK,
     BILL_MOCK,
-    INCOME_MOCK,
-    INCOME_SOURCE_MOCK,
-    SUPPLIER_TYPE_MOCK,
-    SUPPLIER_TYPE_CHILDREN_MOCK,
-    SUPPLIER_MOCK,
-    SUPPLIER_CHILDREN_MOCK,
-    EXPENSE_MOCK,
-    EXPENSE_PARENT_MOCK,
     EXPENSE_CHILDREN_MOCK,
+    EXPENSE_MOCK,
     EXPENSE_MONTH_MOCK,
-    INCOME_MONTH_MOCK
-};
+    EXPENSE_PARENT_MOCK,
+    FINANCE_MOCK,
+    GROUP_MOCK,
+    INCOME_MOCK,
+    INCOME_MONTH_MOCK,
+    INCOME_SOURCE_MOCK,
+    SUPPLIER_CHILDREN_MOCK,
+    SUPPLIER_MOCK,
+    SUPPLIER_TYPE_CHILDREN_MOCK,
+    SUPPLIER_TYPE_MOCK };

@@ -1,4 +1,5 @@
 import type { IFinanceBase } from '../types';
+
 import type { ISupplierType } from './type';
 
 export type ISupplier = IFinanceBase & {

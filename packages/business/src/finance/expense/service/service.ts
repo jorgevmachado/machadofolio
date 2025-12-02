@@ -1,11 +1,10 @@
-import { BaseService } from '../../../shared';
-
 import type { Nest } from '../../../api';
+import { type Paginate } from '../../../paginate';
+import { BaseService } from '../../../shared';
+import { type QueryParameters } from '../../../types';
 
-import type { CreateExpenseParams, UpdateExpenseParams, UploadsExpenseParams } from '../types';
 import Expense from '../expense';
-import { QueryParameters } from '../../../types';
-import { Paginate } from '../../../paginate';
+import type { CreateExpenseParams, UpdateExpenseParams, UploadsExpenseParams } from '../types';
 
 export class ExpenseService extends BaseService<Expense, CreateExpenseParams, UpdateExpenseParams> {
     constructor(private nest: Nest) {
@@ -34,7 +33,7 @@ export class ExpenseService extends BaseService<Expense, CreateExpenseParams, Up
     async upload(billId: string, params: UploadsExpenseParams): Promise<Array<Expense>> {
         return await this.nest.finance.bill.expense.uploads(billId, params).then((response) => {
             const expenses = response as unknown as Array<Expense>;
-            return expenses.map((result) => new Expense(result))
+            return expenses.map((result) => new Expense(result));
         });
     }
 

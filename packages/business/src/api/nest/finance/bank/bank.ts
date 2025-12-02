@@ -1,5 +1,5 @@
-import type { INestModuleConfig } from '../../types';
 import { NestModuleAbstract } from '../../abstract';
+import type { INestModuleConfig } from '../../types';
 
 import type { IBank, ICreateBankParams, IUpdateBankParams } from './types';
 

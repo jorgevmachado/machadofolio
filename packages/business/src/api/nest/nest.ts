@@ -1,8 +1,7 @@
-import type { INestConfig } from './types';
-
 import { Auth } from './auth';
 import { Finance } from './finance';
 import { Pokemon } from './pokemon';
+import type { INestConfig } from './types';
 
 export class Nest {
     private readonly authModule: Auth;

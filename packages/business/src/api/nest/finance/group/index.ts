@@ -1,6 +1,6 @@
 export { Group } from './group';
 export type {
-    IGroup,
     ICreateGroupParams,
+    IGroup,
     IUpdateGroupParams
 } from './types';

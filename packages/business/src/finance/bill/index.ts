@@ -1,5 +1,5 @@
 export { default as Bill } from './bill';
-export { BillService } from './service';
-export { BillBusiness, type SpreadsheetProcessingParams, type BillList } from './business';
-export * from './types';
+export { BillBusiness, type BillList,type SpreadsheetProcessingParams } from './business';
 export * from './enum';
+export { BillService } from './service';
+export * from './types';

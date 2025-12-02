@@ -1,8 +1,8 @@
-import type { INestModuleConfig } from '../../types';
 import { NestModuleAbstract } from '../../abstract';
+import type { INestModuleConfig } from '../../types';
 
-import type { IBill, ICreateBillParams, IUpdateBillParams } from './types';
 import { Expense } from './expense';
+import type { IBill, ICreateBillParams, IUpdateBillParams } from './types';
 
 export class Bill extends NestModuleAbstract<IBill, ICreateBillParams, IUpdateBillParams> {
     private readonly expenseModule: Expense;

@@ -1,9 +1,8 @@
-import type { INestModuleConfig } from '../../types';
 import { NestModuleAbstract } from '../../abstract';
-
-import type { ICreateSupplierParams, ISupplier, IUpdateSupplierParams } from './types';
+import type { INestModuleConfig } from '../../types';
 
 import { SupplierType } from './type';
+import type { ICreateSupplierParams, ISupplier, IUpdateSupplierParams } from './types';
 
 export class Supplier extends NestModuleAbstract<ISupplier, ICreateSupplierParams, IUpdateSupplierParams> {
     private readonly supplierTypeModule: SupplierType;

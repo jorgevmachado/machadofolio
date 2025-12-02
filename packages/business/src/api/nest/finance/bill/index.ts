@@ -1,15 +1,14 @@
 export { Bill } from './bill';
+export * from './enum';
+export {
+    EExpenseType,
+    type ICreateExpenseParams,
+    type IExpense,
+    type IExpenseBase,
+    type IUpdateExpenseParams,
+    type IUploadExpenseParams } from './expense';
 export type {
     IBill,
     ICreateBillParams,
     IUpdateBillParams
 } from './types';
-export * from './enum';
-export {
-    type IExpense,
-    type IExpenseBase,
-    type ICreateExpenseParams,
-    type IUpdateExpenseParams,
-    type IUploadExpenseParams,
-    EExpenseType
-} from './expense';

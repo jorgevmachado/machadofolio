@@ -1,4 +1,4 @@
-import { ERROR_STATUS_CODE, Error } from '@repo/services';
+import { Error,ERROR_STATUS_CODE } from '@repo/services';
 
 import { ERole } from '../../enum';
 

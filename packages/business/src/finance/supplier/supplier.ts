@@ -1,4 +1,4 @@
-import { ERROR_STATUS_CODE, Error, normalize, toSnakeCase } from '@repo/services';
+import { Error, ERROR_STATUS_CODE, normalize, toSnakeCase } from '@repo/services';
 
 import type { SupplierConstructorParams, SupplierEntity } from './types';
 

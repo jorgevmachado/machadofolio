@@ -1,10 +1,8 @@
+import { type Nest } from '../../../api';
 import { BaseService } from '../../../shared';
 
-import { type Nest } from '../../../api';
-
-import { type CreateSupplierParams, type UpdateSupplierParams } from '../types';
-
 import Supplier from '../supplier';
+import { type CreateSupplierParams, type UpdateSupplierParams } from '../types';
 
 export class SupplierService extends BaseService<Supplier, CreateSupplierParams, UpdateSupplierParams> {
     constructor(private nest: Nest) {

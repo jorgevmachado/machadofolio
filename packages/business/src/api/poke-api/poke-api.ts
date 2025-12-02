@@ -1,10 +1,9 @@
 import { Http } from '@repo/services';
 
-import type { IPokeApiConfig, IPokemonByNameResponse, IPokemonPaginateResponse, IPokemonResponse } from './types';
-
 import { Evolution } from './evolution';
 import { Move } from './move';
 import { Specie } from './specie';
+import type { IPokeApiConfig, IPokemonByNameResponse, IPokemonPaginateResponse, IPokemonResponse } from './types';
 
 export class PokeApi extends Http {
     private readonly specieModule: Specie;

@@ -1,8 +1,8 @@
 import type {
+    ICreateIncomeSourceParams,
     IIncomeSource,
     IPartialNestBaseEntity,
     IUpdateIncomeSourceParams,
-    ICreateIncomeSourceParams,
 } from '../../api';
 
 export type IncomeSourceEntity = IIncomeSource;

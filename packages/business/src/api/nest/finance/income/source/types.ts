@@ -1,4 +1,4 @@
-import { IFinanceBase } from '../../types';
+import { type IFinanceBase } from '../../types';
 
 export type IIncomeSource = IFinanceBase;
 

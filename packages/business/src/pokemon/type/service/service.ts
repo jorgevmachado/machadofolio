@@ -1,6 +1,5 @@
-import { BaseService } from '../../../shared';
-
 import type { Nest } from '../../../api';
+import { BaseService } from '../../../shared';
 
 import PokemonType from '../type';
 

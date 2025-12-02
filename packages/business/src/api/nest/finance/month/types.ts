@@ -1,6 +1,7 @@
-import { EMonth, TMonth } from '@repo/services';
+import { type EMonth, type TMonth } from '@repo/services';
 
 import type { INestBaseEntity } from '../../types';
+
 import type { IExpense } from '../bill';
 import type { IIncome } from '../income';
 

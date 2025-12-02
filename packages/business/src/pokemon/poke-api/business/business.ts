@@ -1,6 +1,6 @@
-import Pokemon from '../../pokemon';
 import { PokemonAbility } from '../../ability';
 import { PokemonMove } from '../../move';
+import Pokemon from '../../pokemon';
 import { PokemonTypeBusiness } from '../../type';
 
 import type { EvolutionResponse, PokemonByNameResponse, PokemonSpecieResponse } from '../types';

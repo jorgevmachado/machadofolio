@@ -1,9 +1,8 @@
-import { type EMonth, ReplaceWordParam } from '@repo/services';
-
-import type { IFinanceBase } from '../../types';
+import { type EMonth, type ReplaceWordParam } from '@repo/services';
 
 import type { IMonth, IPersistMonthParams } from '../../month';
 import type { ISupplier } from '../../supplier';
+import type { IFinanceBase } from '../../types';
 
 import type { IBill } from '../types';
 

@@ -2,11 +2,11 @@ import type { Expense } from '../../expense';
 
 import type Bill from '../bill';
 
-import { BillList, } from './types';
 import { BillSpreadsheetBusiness } from './spreadsheet';
+import { type BillList, } from './types';
 
 export default class BillBusiness {
-    private readonly spreadsheetBusiness: BillSpreadsheetBusiness
+    private readonly spreadsheetBusiness: BillSpreadsheetBusiness;
 
     constructor() {
         this.spreadsheetBusiness = new BillSpreadsheetBusiness();

@@ -1,9 +1,8 @@
+import { type Nest } from '../../../api';
 import { BaseService } from '../../../shared';
 
-import { type Nest } from '../../../api';
-
-import type { CreateBankParams, UpdateBankParams } from '../types';
 import Bank from '../bank';
+import type { CreateBankParams, UpdateBankParams } from '../types';
 
 export class BankService extends BaseService<Bank, CreateBankParams, UpdateBankParams> {
     constructor(private nest: Nest) {

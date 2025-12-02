@@ -1,11 +1,10 @@
-import type { INestModuleConfig } from '../types';
 import { NestModuleAbstract } from '../abstract';
-
-import type { IPokemon } from './types';
+import type { INestModuleConfig } from '../types';
 
 import { Ability } from './ability';
 import { Move } from './move';
 import { Type } from './type';
+import type { IPokemon } from './types';
 
 export class Pokemon extends NestModuleAbstract<IPokemon, unknown, unknown> {
     private readonly abilityModule: Ability;

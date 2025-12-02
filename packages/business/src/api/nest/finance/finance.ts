@@ -1,13 +1,12 @@
-import type { INestModuleConfig } from '../types';
 import { NestModuleAbstract } from '../abstract';
-
-import type { IFinance, IFinanceInfo } from './types';
+import type { INestModuleConfig } from '../types';
 
 import { Bank } from './bank';
 import { Bill } from './bill';
 import { Group } from './group';
-import { Supplier } from './supplier';
 import { Income } from './income';
+import { Supplier } from './supplier';
+import type { IFinance, IFinanceInfo } from './types';
 
 export class Finance extends NestModuleAbstract<IFinance, unknown, unknown> {
     private readonly billModule: Bill;

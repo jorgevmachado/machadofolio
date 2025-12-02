@@ -1,7 +1,7 @@
-import { EMonth } from '@repo/services';
+import { type EMonth } from '@repo/services';
 
-import type { IFinance, IFinanceBase } from '../types';
 import type { IMonth, IPersistMonthParams } from '../month';
+import type { IFinance, IFinanceBase } from '../types';
 
 import type { IIncomeSource } from './source';
 

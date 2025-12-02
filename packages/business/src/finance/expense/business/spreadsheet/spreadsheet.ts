@@ -1,44 +1,42 @@
 import {
     cleanTextByListText,
-    CycleOfMonths,
+    type CycleOfMonths,
     DEFAULT_TABLES_PARAMS,
-    EMonth,
+    type EMonth,
     Error,
     ERROR_STATUS_CODE,
     getMonthByIndex,
     matchesRepeatWords,
     MONTHS,
     replaceWords,
-    ReplaceWordsParam,
+    type ReplaceWordsParam,
     snakeCaseToNormal,
-    TablesParams,
-    WorkSheet
+    type TablesParams,
+    type WorkSheet
 } from '@repo/services';
 
-import { Bill, EBillType } from '../../../bill';
-
-import Expense from '../../expense';
-
+import { type Bill, EBillType } from '../../../bill';
+import type Expense from '../../expense';
 import type { CreateExpenseParams, UploadExpenseParams } from '../../types';
 
 import {
-    AccumulateGroupTables,
-    AccumulateGroupTablesParams,
-    BuildCreditCardBodyData,
-    BuildCreditCardBodyDataParams,
-    BuildDetailData,
-    BuildDetailDataParams,
-    BuildFromCreditCardSheet,
-    BuildGroupTable,
-    BuildGroupTableParams,
-    DataAccumulator,
-    GenerateCreditCardTable,
-    GenerateCreditCardTableParams,
-    GenerateDetailsTable,
-    GenerateDetailsTableParams,
-    ParseToDetailsTable,
-    ParseToDetailsTableParams,
-    ValidateWorkSheetToBuild
+    type AccumulateGroupTables,
+    type AccumulateGroupTablesParams,
+    type BuildCreditCardBodyData,
+    type BuildCreditCardBodyDataParams,
+    type BuildDetailData,
+    type BuildDetailDataParams,
+    type BuildFromCreditCardSheet,
+    type BuildGroupTable,
+    type BuildGroupTableParams,
+    type DataAccumulator,
+    type GenerateCreditCardTable,
+    type GenerateCreditCardTableParams,
+    type GenerateDetailsTable,
+    type GenerateDetailsTableParams,
+    type ParseToDetailsTable,
+    type ParseToDetailsTableParams,
+    type ValidateWorkSheetToBuild
 } from './types';
 
 const DEFAULT_REPLACE_WORDS: ReplaceWordsParam = [
@@ -477,7 +475,7 @@ export default class SpreadsheetBusiness {
                     description: 'Create by Document Import',
                     received_at: result.date,
                     instalment_number: result.instalment_number,
-                }
+                };
 
                 listCreateExpenseParams.push(createExpenseDto);
             }
@@ -537,7 +535,7 @@ export default class SpreadsheetBusiness {
             month: month?.toUpperCase() as EMonth,
             supplier,
             instalment_number,
-        }
+        };
     }
 
     private treatSupplierInstallmentNumber(supplier: string, replaceWordsParams?: ReplaceWordsParam) {

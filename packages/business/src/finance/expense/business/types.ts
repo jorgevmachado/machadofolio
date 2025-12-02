@@ -1,8 +1,8 @@
-import { EMonth } from '@repo/services';
+import { type EMonth } from '@repo/services';
 
 import { type PersistMonthParams } from '../../month';
 
-import { ExpenseEntity } from '../types';
+import { type ExpenseEntity } from '../types';
 
 export type PrepareForCreationParams = {
     value?: number;

@@ -1,5 +1,4 @@
 import { type PokeApi } from '../../../../api';
-
 import { PokemonMove } from '../../../move';
 
 export class PokeApiMoveService {

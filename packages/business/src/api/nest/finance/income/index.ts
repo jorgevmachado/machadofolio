@@ -1,3 +1,3 @@
 export { Income } from './income';
-export type { IIncomeSource, ICreateIncomeSourceParams, IUpdateIncomeSourceParams } from './source'
-export * from './types'
+export type { ICreateIncomeSourceParams, IIncomeSource, IUpdateIncomeSourceParams } from './source';
+export * from './types';

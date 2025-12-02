@@ -1,16 +1,16 @@
 import { type ReplaceWordParam, urlToBlob } from '@repo/services';
 
-import type { INestModuleConfig } from '../../../types';
+import type { IQueryParameters } from '../../../../types';
 import { NestModuleAbstract } from '../../../abstract';
+import type { INestModuleConfig } from '../../../types';
 
 import {
-    ICreateExpenseParams,
-    IExpense,
-    IUpdateExpenseParams,
-    IUploadExpenseParams,
-    IUploadsExpenseParams
+    type ICreateExpenseParams,
+    type IExpense,
+    type IUpdateExpenseParams,
+    type IUploadExpenseParams,
+    type IUploadsExpenseParams
 } from './types';
-import type { IQueryParameters } from '../../../../types';
 
 export class Expense extends NestModuleAbstract<IExpense, ICreateExpenseParams, IUpdateExpenseParams> {
     constructor(nestModuleConfig: INestModuleConfig) {
@@ -50,7 +50,7 @@ export class Expense extends NestModuleAbstract<IExpense, ICreateExpenseParams, 
                             const file = list[i];
                             if(file.startsWith('data:')) {
                                 const blob = await urlToBlob(file);
-                                formData.append(`files`, blob, `upload.xlsx`);
+                                formData.append('files', blob, 'upload.xlsx');
                             }
                         }
                     }
