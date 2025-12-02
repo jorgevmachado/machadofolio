@@ -1,17 +1,17 @@
-import { ConflictException } from '@nestjs/common';
-import { type Repository } from 'typeorm';
-
 import { transformObjectDateAndNulls } from '@repo/services';
 
-import type { BasicEntity } from '../types';
 import { Queries } from '../queries';
+import type { BasicEntity } from '../types';
 import { Validate } from '../validate';
 
 import type {
     CurrentSeedsParams, ExecuteSeedParams, GenerateEntitySeedsParams, GetRelationParams,
     PersistEntitySeedsParams, SeedEntitiesParams, SeedEntityParams, SeedsGenerated
 } from './types';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+
+import { ConflictException } from '@nestjs/common';
+import { type Repository } from 'typeorm';
+import { type QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 type GetListJsonParams = {
     env?: string;

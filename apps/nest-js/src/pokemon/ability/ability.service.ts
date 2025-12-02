@@ -1,14 +1,13 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-
 import POKEMON_ABILITY_LIST_DEVELOPMENT_JSON from '../../../seeds/development/pokemon/abilities.json';
-import POKEMON_ABILITY_LIST_STAGING_JSON from '../../../seeds/staging/pokemon/abilities.json';
 import POKEMON_ABILITY_LIST_PRODUCTION_JSON from '../../../seeds/production/pokemon/abilities.json';
-
+import POKEMON_ABILITY_LIST_STAGING_JSON from '../../../seeds/staging/pokemon/abilities.json';
 import { SeedsGenerated, Service } from '../../shared';
 
 import { PokemonAbility } from '../entities/ability.entity';
+
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PokemonAbilityService extends Service<PokemonAbility> {

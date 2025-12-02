@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-
 import { AuthService } from './auth/auth.service';
 import { CreateSeedDto } from './dto/create-seed.dto';
 import { FinanceService } from './finance/finance.service';
-import type { PokemonSeedsResult } from './pokemon/types';
-import { PokemonService } from './pokemon/pokemon.service';
 import { FinanceSeedsResult } from './finance/types';
+import { PokemonService } from './pokemon/pokemon.service';
+import type { PokemonSeedsResult } from './pokemon/types';
 import { SeedsResultItem } from './shared';
+
+import { Injectable } from '@nestjs/common';
 
 
 type SeedsResult = {

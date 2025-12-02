@@ -1,8 +1,8 @@
-import { type Finance } from '../finance/entities/finance.entity';
-
 import { EGender } from '@repo/services';
 
 import { ERole, EStatus } from '@repo/business';
+
+import { type Finance } from '../finance/entities/finance.entity';
 
 export const FINANCE_MOCK: Finance = {
     id: '493de6c1-ec4b-48a7-9169-c8ba750798ce',

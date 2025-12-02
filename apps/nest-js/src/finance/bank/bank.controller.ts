@@ -1,16 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-
 import { ERole, type QueryParameters } from '@repo/business';
 
 import { AuthRoles } from '../../decorators/auth-role/auth-roles.decorator';
-
 import { AuthRoleGuard } from '../../guards/auth-role/auth-role.guard';
 import { AuthStatusGuard } from '../../guards/auth-status/auth-status.guard';
 
 import { BankService } from './bank.service';
 import { CreateBankDto } from './dto/create-bank.dto';
 import { UpdateBankDto } from './dto/update-bank.dto';
+
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('finance')
 @UseGuards(AuthGuard(), AuthRoleGuard, AuthStatusGuard)

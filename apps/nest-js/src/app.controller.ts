@@ -1,9 +1,8 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-
-import { CreateSeedDto } from './dto/create-seed.dto';
-
 import { AppService } from './app.service';
+import { CreateSeedDto } from './dto/create-seed.dto';
 import { OptionalAuthGuard } from './guards/optional-auth/optional-auth.guard';
+
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 
 @Controller()
 @UseGuards(OptionalAuthGuard)

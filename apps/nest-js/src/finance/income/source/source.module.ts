@@ -1,11 +1,11 @@
+import { IncomeSource } from '../../entities/income-source.entity';
+
+import { SourceController } from './source.controller';
+import { IncomeSourceService } from './source.service';
+
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { IncomeSource } from '../../entities/income-source.entity';
-
-import { IncomeSourceService } from './source.service';
-import { SourceController } from './source.controller';
 
 @Module({
   imports: [

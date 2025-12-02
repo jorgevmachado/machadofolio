@@ -1,21 +1,20 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
 import { Group as GroupConstructor } from '@repo/business';
 
 import GROUP_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/groups.json';
-import GROUP_LIST_STAGING_JSON from '../../../seeds/staging/finance/groups.json';
 import GROUP_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/groups.json';
-
-import { SeedsGenerated, ListParams, Service } from '../../shared';
+import GROUP_LIST_STAGING_JSON from '../../../seeds/staging/finance/groups.json';
+import { ListParams, SeedsGenerated, Service } from '../../shared';
 
 import { Finance } from '../entities/finance.entity';
-import type { FinanceSeederParams } from '../types';
 import { Group } from '../entities/group.entity';
+import type { FinanceSeederParams } from '../types';
 
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+
+import { ConflictException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 type GroupSeederParams = FinanceSeederParams & {
     finances: Array<Finance>;

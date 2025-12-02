@@ -1,12 +1,12 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-
 import { type QueryParameters } from '@repo/business';
 
 import { AuthRoleGuard } from '../../guards/auth-role/auth-role.guard';
 import { AuthStatusGuard } from '../../guards/auth-status/auth-status.guard';
 
 import {  PokemonMoveService } from './move.service';
+
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('pokemon')
 @UseGuards(AuthGuard(), AuthRoleGuard, AuthStatusGuard)

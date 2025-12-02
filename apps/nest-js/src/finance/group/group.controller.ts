@@ -1,23 +1,21 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-
 import { ERole, type QueryParameters } from '@repo/business';
 
-import { ListParams } from '../../shared';
-
-import { AuthRoleGuard } from '../../guards/auth-role/auth-role.guard';
+import { User } from '../../auth/entities/user.entity';
 import { AuthRoles } from '../../decorators/auth-role/auth-roles.decorator';
+import { GetUserAuth } from '../../decorators/auth-user/auth-user.decorator';
+import { AuthRoleGuard } from '../../guards/auth-role/auth-role.guard';
 import { AuthStatusGuard } from '../../guards/auth-status/auth-status.guard';
 import { FinanceInitializeGuard } from '../../guards/finance-initialize/finance-initialize.guard';
-import { GetUserAuth } from '../../decorators/auth-user/auth-user.decorator';
-
-import { User } from '../../auth/entities/user.entity';
+import { ListParams } from '../../shared';
 
 import { Finance } from '../entities/finance.entity';
 
 import { CreateGroupDto } from './dto/create-group.dto';
-import { GroupService } from './group.service';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { GroupService } from './group.service';
+
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('finance')
 @UseGuards(AuthGuard(), AuthRoleGuard, AuthStatusGuard, FinanceInitializeGuard)

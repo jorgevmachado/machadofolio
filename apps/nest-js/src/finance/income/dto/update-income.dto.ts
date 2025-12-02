@@ -1,10 +1,10 @@
-import { IsArray, IsNumber, IsOptional, MaxLength, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
-
 import { type UpdateIncomeParams } from '@repo/business';
 
 import { IncomeSource } from '../../entities/income-source.entity';
 import { PersistMonthDto } from '../../month/dto/persist-month.dto';
+
+import { Type } from 'class-transformer';
+import { IsArray, IsNumber, IsOptional, MaxLength, ValidateNested } from 'class-validator';
 
 export class UpdateIncomeDto implements UpdateIncomeParams {
     @IsOptional()

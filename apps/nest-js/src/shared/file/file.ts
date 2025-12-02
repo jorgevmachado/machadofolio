@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import fs, { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { join } from 'path';
 import { writeFile } from 'fs/promises';
+import { join } from 'path';
 
 export class File {
     constructor(protected env: string) {}

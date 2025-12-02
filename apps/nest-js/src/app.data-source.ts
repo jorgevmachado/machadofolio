@@ -1,6 +1,5 @@
 import * as dotenv from 'dotenv';
-
-import { DataSourceOptions } from 'typeorm';
+import { type DataSourceOptions } from 'typeorm';
 
 dotenv.config({
     path: [

@@ -1,12 +1,12 @@
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsUUID, MaxLength } from 'class-validator';
-import { Transform } from 'class-transformer';
-
 import { EMonth, TMonth } from '@repo/services';
 
 import { PersistMonthParams } from '@repo/business';
 
 import { Expense } from '../../entities/expense.entity';
 import { Income } from '../../entities/incomes.entity';
+
+import { Transform } from 'class-transformer';
+import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsUUID, MaxLength } from 'class-validator';
 
 export class PersistMonthDto implements PersistMonthParams {
     @IsOptional()

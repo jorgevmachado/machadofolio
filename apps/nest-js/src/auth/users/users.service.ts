@@ -1,24 +1,23 @@
-import * as bcrypt from 'bcryptjs';
-import * as crypto from 'crypto';
-
-import { BadRequestException, Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
 import { transformObjectDateAndNulls } from '@repo/services';
 
 import { ERole, EStatus, User as UserConstructor } from '@repo/business';
 
 import USER_LIST_DEVELOPMENT_JSON from '../../../seeds/development/users.json';
-import USER_LIST_STAGING_JSON from '../../../seeds/staging/users.json';
 import USER_LIST_PRODUCTION_JSON from '../../../seeds/production/users.json';
-
+import USER_LIST_STAGING_JSON from '../../../seeds/staging/users.json';
 import { SeedsGenerated, Service, type TBy } from '../../shared';
+
+import { User } from '../entities/user.entity';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { CredentialsUserDto } from './dto/credentials-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from '../entities/user.entity';
+
+import { BadRequestException, Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcryptjs';
+import * as crypto from 'crypto';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService extends Service<User>{

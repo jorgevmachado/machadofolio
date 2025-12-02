@@ -1,13 +1,12 @@
 import {
+    applyDecorators,
     BadRequestException,
     UseInterceptors,
-    applyDecorators,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { join } from 'path';
-
 import * as fs from 'fs';
 import * as multer from 'multer';
+import { join } from 'path';
 
 export const UseFileUpload = (allowedTypes: Array<string>) => {
     return applyDecorators(

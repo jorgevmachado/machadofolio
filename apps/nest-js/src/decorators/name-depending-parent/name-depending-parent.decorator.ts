@@ -1,4 +1,4 @@
-import { type ValidationArguments, type ValidationOptions, registerDecorator } from 'class-validator';
+import { registerDecorator,type ValidationArguments, type ValidationOptions } from 'class-validator';
 
 export function IsNameDependingOnParent(validationOptions?: ValidationOptions) {
     return function(object: object, propertyName: string) {

@@ -1,3 +1,11 @@
+import { FinanceEntity } from '@repo/business';
+
+import { User } from '../../auth/entities/user.entity';
+
+import { Bill } from './bill.entity';
+import { Group } from './group.entity';
+import { Income } from './incomes.entity';
+
 import {
     CreateDateColumn,
     DeleteDateColumn,
@@ -8,14 +16,6 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
-
-import { FinanceEntity } from '@repo/business';
-
-import { User } from '../../auth/entities/user.entity';
-
-import { Bill } from './bill.entity';
-import { Group } from './group.entity';
-import { Income } from './incomes.entity';
 
 @Entity({ name: 'finances' })
 export class Finance implements FinanceEntity {

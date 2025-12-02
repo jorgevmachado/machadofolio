@@ -1,10 +1,10 @@
-import { ConflictException } from '@nestjs/common';
-
 import { findRepeated } from '@repo/services';
 
 import { type BasicEntity } from '../types';
 
 import { type ValidateListMockParams } from './types';
+
+import { ConflictException } from '@nestjs/common';
 
 export class Validate {
 

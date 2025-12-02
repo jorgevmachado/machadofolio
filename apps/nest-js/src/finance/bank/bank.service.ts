@@ -1,21 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
 import { Bank as BankConstructor } from '@repo/business';
 
 import BANK_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/banks.json';
-import BANK_LIST_STAGING_JSON from '../../../seeds/staging/finance/banks.json';
 import BANK_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/banks.json';
-
+import BANK_LIST_STAGING_JSON from '../../../seeds/staging/finance/banks.json';
 import { Service } from '../../shared';
 
-import type { FinanceSeederParams } from '../types';
-
 import { Bank } from '../entities/bank.entity';
+import type { FinanceSeederParams } from '../types';
 
 import { CreateBankDto } from './dto/create-bank.dto';
 import { UpdateBankDto } from './dto/update-bank.dto';
+
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BankService extends Service<Bank> {

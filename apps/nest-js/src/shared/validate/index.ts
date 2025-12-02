@@ -1,2 +1,2 @@
-export { Validate } from './validate';
 export * from './types';
+export { Validate } from './validate';

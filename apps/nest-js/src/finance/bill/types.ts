@@ -5,7 +5,6 @@ import type {
 import type { Bank } from '../entities/bank.entity';
 import type { Finance } from '../entities/finance.entity';
 import type { Group } from '../entities/group.entity';
-
 import type { FinanceSeederParams } from '../types';
 
 export type ExistExpenseInBill = {

@@ -1,3 +1,7 @@
+import type { SupplierTypeEntity } from '@repo/business';
+
+import { Supplier } from './supplier.entity';
+
 import {
     Column,
     CreateDateColumn,
@@ -8,10 +12,6 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
-
-import type { SupplierTypeEntity } from '@repo/business';
-
-import { Supplier } from './supplier.entity';
 
 @Entity({ name: 'supplier_types' })
 export class SupplierType implements SupplierTypeEntity {

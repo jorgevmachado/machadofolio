@@ -1,11 +1,10 @@
 import { type User } from '../auth/entities/user.entity';
+import { type SeedsGenerated, type SeedsResultItem } from '../shared';
 
-import { SeedsGenerated, SeedsResultItem } from '../shared';
-
-import { Pokemon } from './entities/pokemon.entity';
-import { PokemonMove } from './entities/move.entity';
-import { PokemonType } from './entities/type.entity';
-import { PokemonAbility } from './entities/ability.entity';
+import { type PokemonAbility } from './entities/ability.entity';
+import { type PokemonMove } from './entities/move.entity';
+import { type Pokemon } from './entities/pokemon.entity';
+import { type PokemonType } from './entities/type.entity';
 
 export type PokemonSeederParams = {
     users?: Array<User>;

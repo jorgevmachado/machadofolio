@@ -1,21 +1,18 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
 import { SupplierType as SupplierTypeConstructor } from '@repo/business';
 
 import SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON from '../../../../seeds/development/finance/supplier_types.json';
-import SUPPLIER_TYPE_LIST_STAGING_JSON from '../../../../seeds/staging/finance/supplier_types.json';
 import SUPPLIER_TYPE_LIST_PRODUCTION_JSON from '../../../../seeds/production/finance/supplier_types.json';
-
+import SUPPLIER_TYPE_LIST_STAGING_JSON from '../../../../seeds/staging/finance/supplier_types.json';
 import { Service } from '../../../shared';
-
-import type { FinanceSeederParams } from '../../types';
-
 import { SupplierType } from '../../entities/type.entity';
+import type { FinanceSeederParams } from '../../types';
 
 import { CreateTypeDto } from './dto/create-type.dto';
 import { UpdateTypeDto } from './dto/update-type.dto';
+
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 
 @Injectable()

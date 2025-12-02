@@ -1,19 +1,15 @@
-import { Body, Controller, Get, Param, Post, Put, UploadedFile, UseGuards } from '@nestjs/common';
-
-import { AuthGuard } from '@nestjs/passport';
-
 import { GetUserAuth } from '../decorators/auth-user/auth-user.decorator';
 import { UseFileUpload } from '../decorators/use-file-upload/use-file-upload.decorator';
-
 import { AuthRoleGuard } from '../guards/auth-role/auth-role.guard';
 
-import { User } from './entities/user.entity';
-
+import { AuthService } from './auth.service';
 import { SignInAuthDto } from './dto/sign-in-auth.dto';
 import { SignUpAuthDto } from './dto/sign-up-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { User } from './entities/user.entity';
 
-import { AuthService } from './auth.service';
+import { Body, Controller, Get, Param, Post, Put, UploadedFile, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {

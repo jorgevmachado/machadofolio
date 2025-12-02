@@ -1,3 +1,11 @@
+import { IncomeEntity } from '@repo/business';
+
+import { DecimalTransformer } from '../../transforms/decimal';
+
+import { Finance } from './finance.entity';
+import { IncomeSource } from './income-source.entity';
+import { Month } from './month.entity';
+
 import {
     Column,
     CreateDateColumn,
@@ -7,13 +15,6 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
-import { IncomeEntity } from '@repo/business';
-
-import { DecimalTransformer } from '../../transforms/decimal';
-
-import { Finance } from './finance.entity';
-import { IncomeSource } from './income-source.entity';
-import { Month } from './month.entity';
 
 @Entity({ name: 'incomes' })
 export class Income implements IncomeEntity {

@@ -1,6 +1,3 @@
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-
 import { removeUndefinedFields, transformObjectDateAndNulls } from '@repo/services';
 
 import { AuthBusiness, ERole } from '@repo/business';
@@ -8,9 +5,11 @@ import { AuthBusiness, ERole } from '@repo/business';
 import { SignInAuthDto } from './dto/sign-in-auth.dto';
 import { SignUpAuthDto } from './dto/sign-up-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-
 import { User } from './entities/user.entity';
 import { UsersService } from './users/users.service';
+
+import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {

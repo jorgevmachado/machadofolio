@@ -1,36 +1,34 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
 import { Finance as FinanceConstructor } from '@repo/business';
 
 import FINANCE_LIST_DEVELOPMENT_JSON from '../../seeds/development/finance/finances.json';
-import FINANCE_LIST_STAGING_JSON from '../../seeds/staging/finance/finances.json';
 import FINANCE_LIST_PRODUCTION_JSON from '../../seeds/production/finance/finances.json';
-
-import { SeedsGenerated, Service } from '../shared';
+import FINANCE_LIST_STAGING_JSON from '../../seeds/staging/finance/finances.json';
 
 import { User } from '../auth/entities/user.entity';
+import { SeedsGenerated, Service } from '../shared';
 
-import { Bank } from './entities/bank.entity';
 import { BankService } from './bank/bank.service';
-import { IncomeService } from './income/income.service';
-
-import { Bill } from './entities/bill.entity';
 import { BillService } from './bill/bill.service';
+import { CreateFinanceSeedsDto } from './dto/create-finance-seeds.dto';
+import { Bank } from './entities/bank.entity';
+import { Bill } from './entities/bill.entity';
 import { Expense } from './entities/expense.entity';
 import { Finance } from './entities/finance.entity';
-import { FinanceSeedsResult } from './types';
 import { Group } from './entities/group.entity';
-import { GroupService } from './group/group.service';
-import { Income } from './entities/incomes.entity';
 import { IncomeSource } from './entities/income-source.entity';
-import { Supplier } from './entities/supplier.entity';
-import { SupplierService } from './supplier/supplier.service';
-import { SupplierType } from './entities/type.entity';
-import { CreateFinanceSeedsDto } from './dto/create-finance-seeds.dto';
+import { Income } from './entities/incomes.entity';
 import { Month } from './entities/month.entity';
+import { Supplier } from './entities/supplier.entity';
+import { SupplierType } from './entities/type.entity';
+import { GroupService } from './group/group.service';
+import { IncomeService } from './income/income.service';
 import { MonthService } from './month/month.service';
+import { SupplierService } from './supplier/supplier.service';
+import { FinanceSeedsResult } from './types';
+
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 export type FinanceGenerateSeeds = {
     bills: SeedsGenerated<Bill>;

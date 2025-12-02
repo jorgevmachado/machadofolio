@@ -1,22 +1,21 @@
-import { JwtModule } from '@nestjs/jwt';
-import { Module } from '@nestjs/common';
-import { MulterModule } from '@nestjs/platform-express';
-import { PassportModule } from '@nestjs/passport';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-
 import { generateUUID } from '@repo/services';
 
 import { AuthBusiness } from '@repo/business';
 
 import { AuthJwtStrategy } from '../strategies/auth-jwt/auth-jwt.strategy';
 
-import { User } from './entities/user.entity';
-
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { User } from './entities/user.entity';
 import { UsersModule } from './users/users.module';
+
+import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { MulterModule } from '@nestjs/platform-express';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Module({
   controllers: [AuthController],

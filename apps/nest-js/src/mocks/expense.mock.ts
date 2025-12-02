@@ -1,7 +1,6 @@
-import { type Expense } from '../finance/entities/expense.entity';
-
 import { EExpenseType } from '@repo/business';
 
+import { type Expense } from '../finance/entities/expense.entity';
 import { type Month } from '../finance/entities/month.entity';
 
 import { BILL_MOCK } from './bill.mock';

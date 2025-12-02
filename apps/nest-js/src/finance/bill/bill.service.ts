@@ -1,31 +1,30 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
 import { snakeCaseToNormal } from '@repo/services';
 
 import { Bill as BillConstructor, BillBusiness, EBillType } from '@repo/business';
 
 import BILL_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/bills.json';
-import BILL_LIST_STAGING_JSON from '../../../seeds/staging/finance/bills.json';
 import BILL_LIST_PRODUCTION_JSON from '../../../seeds/production/finance/bills.json';
-
+import BILL_LIST_STAGING_JSON from '../../../seeds/staging/finance/bills.json';
 import { ListParams, SeedsGenerated, Service } from '../../shared';
 
+import { BankService } from '../bank/bank.service';
 import { Bank } from '../entities/bank.entity';
 import { Bill } from '../entities/bill.entity';
 import { Expense } from '../entities/expense.entity';
 import { Finance } from '../entities/finance.entity';
 import { Group } from '../entities/group.entity';
 import { Month } from '../entities/month.entity';
-
-import { BankService } from '../bank/bank.service';
-import { CreateBillDto } from './dto/create-bill.dto';
-import { CreateExpenseDto } from './expense/dto/create-expense.dto';
-import { ExpenseService } from './expense/expense.service';
 import { GroupService } from '../group/group.service';
+
+import { CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
+import { CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { UploadsExpenseDto } from './expense/dto/uploads-expense.dto';
+import { ExpenseService } from './expense/expense.service';
+
+import { ConflictException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 type GeneratedBillSeeds = {
     bills: SeedsGenerated<Bill>;

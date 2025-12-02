@@ -1,15 +1,14 @@
-import { NotFoundException } from '@nestjs/common';
-import { type Repository } from 'typeorm';
-
 import { isUUID } from '@repo/services';
 
 import { Paginate, type PaginateParameters } from '@repo/business';
 
 import { Query } from '../query';
-
 import type { BasicEntity } from '../types';
 
 import type { FindByParams, FindOneByOrder, FindOneByParams, ListParams } from './types';
+
+import { NotFoundException } from '@nestjs/common';
+import { type Repository } from 'typeorm';
 
 
 export class Queries<T extends BasicEntity> {

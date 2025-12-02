@@ -1,8 +1,8 @@
-import { type ObjectLiteral, type Repository } from 'typeorm';
-
 import type { QueryParameters } from '@repo/business/types';
 
 import type { TBy } from '../types';
+
+import { type ObjectLiteral, type Repository } from 'typeorm';
 
 export type TQueryCondition =
     | '='

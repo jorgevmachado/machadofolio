@@ -1,22 +1,21 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-
 import { EStatus } from '@repo/business';
-
 import { type PaginateParameters, PokeApiService } from '@repo/business';
 
-import { type FindOneByParams, SeedsGenerated, ListParams, Service } from '../shared';
+import { type FindOneByParams, ListParams, SeedsGenerated, Service } from '../shared';
 
-import { Pokemon } from './entities/pokemon.entity';
-import { PokemonAbility } from './entities/ability.entity';
 import { PokemonAbilityService } from './ability/ability.service';
-import { PokemonMove } from './entities/move.entity';
-import { PokemonMoveService } from './move/move.service';
-import type { PokemonSeederParams, PokemonSeedsResult } from './types';
-import { PokemonType } from './entities/type.entity';
-import { PokemonTypeService } from './type/type.service';
 import { CreatePokemonSeedsDto } from './dto/create-pokemon-seeds.dto';
+import { PokemonAbility } from './entities/ability.entity';
+import { PokemonMove } from './entities/move.entity';
+import { Pokemon } from './entities/pokemon.entity';
+import { PokemonType } from './entities/type.entity';
+import { PokemonMoveService } from './move/move.service';
+import { PokemonTypeService } from './type/type.service';
+import type { PokemonSeederParams, PokemonSeedsResult } from './types';
+
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 export type PokemonGenerateSeeds = {
     type: SeedsGenerated<PokemonType>;

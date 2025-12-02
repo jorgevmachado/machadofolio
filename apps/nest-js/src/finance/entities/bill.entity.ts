@@ -1,3 +1,12 @@
+import { type BillEntity, EBillType } from '@repo/business';
+
+import { DecimalTransformer } from '../../transforms/decimal';
+
+import { Bank } from './bank.entity';
+import { Expense } from './expense.entity';
+import { Finance } from './finance.entity';
+import { Group } from './group.entity';
+
 import {
     Column,
     CreateDateColumn,
@@ -9,15 +18,6 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
-
-import { type BillEntity, EBillType } from '@repo/business';
-
-import { DecimalTransformer } from '../../transforms/decimal';
-
-import { Bank } from './bank.entity';
-import { Expense } from './expense.entity';
-import { Finance } from './finance.entity';
-import { Group } from './group.entity';
 
 @Entity({ name: 'bills' })
 export class Bill implements BillEntity {

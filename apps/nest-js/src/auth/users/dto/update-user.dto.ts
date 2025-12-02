@@ -1,9 +1,9 @@
-import { IsDate, IsEnum, IsOptional, MaxDate, MaxLength } from 'class-validator';
-import { Transform } from 'class-transformer';
-
 import { EGender } from '@repo/services';
 
 import { ERole, EStatus, UpdateParams } from '@repo/business';
+
+import { Transform } from 'class-transformer';
+import { IsDate, IsEnum, IsOptional, MaxDate, MaxLength } from 'class-validator';
 
 export class UpdateUserDto implements UpdateParams {
     @IsOptional()

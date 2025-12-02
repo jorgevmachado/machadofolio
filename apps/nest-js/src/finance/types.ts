@@ -1,6 +1,5 @@
-import { type SeedsResultItem } from '../shared';
-
 import { type User } from '../auth/entities/user.entity';
+import { type SeedsResultItem } from '../shared';
 
 
 export type FinanceSeederParams = {

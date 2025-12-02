@@ -1,3 +1,12 @@
+import { TMonth } from '@repo/services';
+
+import { MonthEntity } from '@repo/business';
+
+import { DecimalTransformer } from '../../transforms/decimal';
+
+import { Expense } from './expense.entity';
+import { Income } from './incomes.entity';
+
 import {
     Column,
     CreateDateColumn,
@@ -7,15 +16,6 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
-
-import { TMonth } from '@repo/services';
-
-import { MonthEntity } from '@repo/business';
-
-import { DecimalTransformer } from '../../transforms/decimal';
-
-import { Expense } from './expense.entity';
-import { Income } from './incomes.entity';
 
 
 @Entity({ name: 'months' })

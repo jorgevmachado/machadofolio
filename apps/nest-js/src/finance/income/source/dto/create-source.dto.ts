@@ -1,6 +1,6 @@
-import { IsNotEmpty, MaxLength } from 'class-validator';
-
 import { CreateIncomeSourceParams } from '@repo/business';
+
+import { IsNotEmpty, MaxLength } from 'class-validator';
 
 export class CreateSourceDto implements CreateIncomeSourceParams {
     @IsNotEmpty()

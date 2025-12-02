@@ -1,7 +1,6 @@
 import { type SeedsGenerated } from '../../../shared';
-
-import { Expense } from '../../entities/expense.entity';
-import { Month } from '../../entities/month.entity';
+import { type Expense } from '../../entities/expense.entity';
+import { type Month } from '../../entities/month.entity';
 
 
 export type GeneratedExpenseSeeds = {
