@@ -1,5 +1,6 @@
 import type { TRoute } from '@repo/ui';
-import { ReadonlyURLSearchParams } from 'next/navigation';
+
+import { type ReadonlyURLSearchParams } from 'next/navigation';
 
 export const publicRoutes: Array<TRoute> = [
     {

@@ -1,15 +1,17 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 
-import { EGender } from '@repo/services';
+import { type EGender } from '@repo/services';
 
-import { UserEntity } from '@repo/business';
+import { type UserEntity } from '@repo/business';
+
+import { Button } from '@repo/ds';
 
 import { Auth, type AuthForm, useAlert, useLoading, useUser } from '@repo/ui';
 
 import { authService } from '../../shared';
-import { Button } from '@repo/ds';
+
+import { useSearchParams } from 'next/navigation';
 
 type ButtonGoBackProps = {
     label: string;

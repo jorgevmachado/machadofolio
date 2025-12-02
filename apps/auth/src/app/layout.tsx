@@ -1,11 +1,10 @@
 import React from 'react';
 
+import { PageProviders } from '../components';
+
 import '@repo/tokens/dist/auth/css/_variables.css';
 import '@repo/ds/dist/index.css';
 import '@repo/ui/dist/index.css';
-
-import { PageProviders } from '../components';
-
 import './page.scss';
 
 export default function RootLayout({

@@ -1,14 +1,14 @@
 "use client"
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { useRouter } from 'next/navigation';
-
 import { type  UserEntity } from '@repo/business';
 
 import { Page, useAlert, UserProvider } from '@repo/ui';
 
 import { privateRoutes } from '../../../routes';
 import { authService, getAccessToken, removeAccessToken } from '../../../shared';
+
+import { useRouter } from 'next/navigation';
 
 type LayoutProps = {
     children: React.ReactNode;
