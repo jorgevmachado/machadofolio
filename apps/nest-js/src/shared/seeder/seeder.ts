@@ -1,3 +1,6 @@
+import { type Repository } from 'typeorm';
+import { type QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+
 import { transformObjectDateAndNulls } from '@repo/services';
 
 import { Queries } from '../queries';
@@ -10,8 +13,6 @@ import type {
 } from './types';
 
 import { ConflictException } from '@nestjs/common';
-import { type Repository } from 'typeorm';
-import { type QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 type GetListJsonParams = {
     env?: string;

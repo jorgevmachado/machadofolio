@@ -1,8 +1,8 @@
-import { MONTHS, capitalize } from '@repo/services';
+import { capitalize,MONTHS } from '@repo/services';
 
 import { EExpenseType } from '@repo/business';
 
-import { InputGroup, InputGroupItem, PersistForm } from './types';
+import { type InputGroup, type InputGroupItem, type PersistForm } from './types';
 
 
 export const GROUPS: Array<InputGroup> = [

@@ -1,7 +1,3 @@
-import type { BankEntity } from '@repo/business';
-
-import { Bill } from './bill.entity';
-
 import {
     Column,
     CreateDateColumn,
@@ -12,6 +8,10 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
+
+import type { BankEntity } from '@repo/business';
+
+import { Bill } from './bill.entity';
 
 @Entity({ name: 'banks' })
 export class Bank implements BankEntity {

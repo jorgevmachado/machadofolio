@@ -1,11 +1,11 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 
-import { useI18n } from '@repo/i18n';
-
 import { Button, Text } from '@repo/ds';
 
 import { useLoading, useUser } from '@repo/ui';
+
+import { useI18n } from '@repo/i18n';
 
 import { useFinance } from '../../hooks';
 

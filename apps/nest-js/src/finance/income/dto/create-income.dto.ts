@@ -1,10 +1,3 @@
-import { EMonth } from '@repo/services';
-
-import { type CreateIncomeParams } from '@repo/business';
-
-import { IncomeSource } from '../../entities/income-source.entity';
-import { PersistMonthDto } from '../../month/dto/persist-month.dto';
-
 import { Transform, Type } from 'class-transformer';
 import {
     IsArray,
@@ -17,6 +10,13 @@ import {
     MaxLength,
     ValidateNested
 } from 'class-validator';
+
+import { EMonth } from '@repo/services';
+
+import { type CreateIncomeParams } from '@repo/business';
+
+import { IncomeSource } from '../../entities/income-source.entity';
+import { PersistMonthDto } from '../../month/dto/persist-month.dto';
 
 export class CreateIncomeDto implements CreateIncomeParams {
 

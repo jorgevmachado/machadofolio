@@ -1,3 +1,5 @@
+import { Repository } from 'typeorm';
+
 import { snakeCaseToNormal } from '@repo/services';
 
 import { Bill as BillConstructor, BillBusiness, EBillType } from '@repo/business';
@@ -24,7 +26,6 @@ import { ExpenseService } from './expense/expense.service';
 
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 type GeneratedBillSeeds = {
     bills: SeedsGenerated<Bill>;

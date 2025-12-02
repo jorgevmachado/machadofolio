@@ -1,3 +1,5 @@
+import { Repository } from 'typeorm';
+
 import POKEMON_TYPE_LIST_DEVELOPMENT_JSON from '../../../seeds/development/pokemon/types.json';
 import POKEMON_TYPE_LIST_PRODUCTION_JSON from '../../../seeds/production/pokemon/types.json';
 import POKEMON_TYPE_LIST_STAGING_JSON from '../../../seeds/staging/pokemon/types.json';
@@ -7,7 +9,6 @@ import { PokemonType } from '../entities/type.entity';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 
 @Injectable()

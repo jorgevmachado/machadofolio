@@ -1,7 +1,5 @@
 import React from 'react';
 
-import type { ComposedChartProps } from './types';
-
 import {
     Area,
     Bar,     CartesianGrid,
@@ -11,6 +9,8 @@ Line, Scatter,
     Tooltip,
     XAxis,
     YAxis} from 'recharts';
+
+import type { ComposedChartProps } from './types';
 
 const defaultStyle = { width: '100%', maxWidth: '700px', maxHeight: '70vh', aspectRatio: 1.618 };
 

@@ -1,7 +1,7 @@
+import type * as ExcelJS from 'exceljs';
+
 import { ECellType } from './enum';
 import { type Cell, type CellBorderStyle, type CellParams, type CellStyles, type GetCell, type MergeCell, type MergeParams, type Positions } from './types';
-
-import type * as ExcelJS from 'exceljs';
 
 export class WorkSheet {
     private readonly workSheetInstance: ExcelJS.Worksheet;

@@ -1,3 +1,5 @@
+import { Repository } from 'typeorm';
+
 import { EMonth, getCurrentMonthNumber } from '@repo/services';
 
 import { Month as MonthConstructor,MonthBusiness } from '@repo/business';
@@ -15,7 +17,6 @@ import { PersistMonthDto } from './dto/persist-month.dto';
 
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class MonthService extends Service<Month> {

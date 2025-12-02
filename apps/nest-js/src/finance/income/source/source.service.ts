@@ -1,3 +1,5 @@
+import { Repository } from 'typeorm';
+
 import { IncomeSource as IncomeSourceConstructor } from '@repo/business';
 
 import INCOME_SOURCE_LIST_DEVELOPMENT_JSON from '../../../../seeds/development/finance/income_sources.json';
@@ -12,7 +14,6 @@ import { UpdateSourceDto } from './dto/update-source.dto';
 
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class IncomeSourceService extends Service<IncomeSource>{

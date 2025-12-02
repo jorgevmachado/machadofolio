@@ -1,3 +1,5 @@
+import { type ObjectLiteral, type Repository, type SelectQueryBuilder } from 'typeorm';
+
 import { isObjectEmpty } from '@repo/services';
 
 import { type QueryParameters } from '@repo/business';
@@ -5,7 +7,6 @@ import { type QueryParameters } from '@repo/business';
 import type { FilterParams, QueryParams, SearchParams, WhereParams } from './types';
 
 import { ConflictException } from '@nestjs/common';
-import { type ObjectLiteral, type Repository, type SelectQueryBuilder } from 'typeorm';
 
 export class Query<T extends ObjectLiteral> {
     private query!: SelectQueryBuilder<T>;

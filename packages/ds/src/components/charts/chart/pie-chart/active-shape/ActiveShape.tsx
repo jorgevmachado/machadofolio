@@ -1,8 +1,8 @@
 import React from 'react';
 
-import type { PieSectorData } from '../types';
-
 import { Sector, type SectorProps } from 'recharts';
+
+import type { PieSectorData } from '../types';
 
 type PieActiveShapeProps = React.SVGProps<SVGPathElement> & Partial<SectorProps> & PieSectorData;
 

@@ -1,9 +1,5 @@
 import React, { useMemo } from 'react';
 
-import { mapListColors } from '../../colors';
-
-import type { PolarAngleAxisProps, PolarRadiusAxisProps, RadarChartProps } from './types';
-
 import {
 Legend,     PolarAngleAxis,
     PolarGrid,
@@ -11,6 +7,10 @@ Legend,     PolarAngleAxis,
     Radar,     RadarChart as RadarChartComponent,
 Tooltip
 } from 'recharts';
+
+import { mapListColors } from '../../colors';
+
+import type { PolarAngleAxisProps, PolarRadiusAxisProps, RadarChartProps } from './types';
 
 const defaultStyle = {
     width: '100%',

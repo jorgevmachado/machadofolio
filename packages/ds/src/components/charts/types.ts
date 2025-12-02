@@ -1,5 +1,7 @@
 import type React from 'react';
 
+import { type CartesianGrid,type Legend, type Tooltip, type XAxis, type YAxis, type ZAxis } from 'recharts';
+
 import { type Text } from '../../elements';
 
 import {
@@ -14,8 +16,6 @@ import {
 } from './chart';
 import type { ChartFallbackProps } from './container';
 import type { FilterContent } from './content';
-
-import { type CartesianGrid,type Legend, type Tooltip, type XAxis, type YAxis, type ZAxis } from 'recharts';
 
 export type TChart = 'bar' | 'pie' | 'area' | 'radar' |  'radial' | 'line' | 'scatter' | 'composed';
 

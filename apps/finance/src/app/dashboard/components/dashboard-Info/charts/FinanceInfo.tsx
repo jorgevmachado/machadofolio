@@ -1,9 +1,9 @@
 'use client'
 import React, { useMemo } from 'react';
 
-import { useI18n } from '@repo/i18n';
-
 import { type BarChartProps, Charts, Text } from '@repo/ds';
+
+import { useI18n } from '@repo/i18n';
 
 type FinanceBarChartProps = {
     total: number;

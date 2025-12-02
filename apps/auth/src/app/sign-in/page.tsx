@@ -1,12 +1,12 @@
 'use client'
 import React from 'react';
 
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import { Auth, useAlert, useLoading } from '@repo/ui';
 
 import { generateUrlString } from '../../routes';
 import { authService, setAccessToken } from '../../shared';
-
-import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function SignInPage() {
     const router = useRouter();

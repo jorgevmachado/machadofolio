@@ -1,3 +1,7 @@
+import * as bcrypt from 'bcryptjs';
+import * as crypto from 'crypto';
+import { Repository } from 'typeorm';
+
 import { transformObjectDateAndNulls } from '@repo/services';
 
 import { ERole, EStatus, User as UserConstructor } from '@repo/business';
@@ -15,9 +19,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 import { BadRequestException, Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcryptjs';
-import * as crypto from 'crypto';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService extends Service<User>{

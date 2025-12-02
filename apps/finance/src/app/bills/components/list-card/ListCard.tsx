@@ -1,14 +1,13 @@
 'use client'
-import { useI18n } from '@repo/i18n';
-
 import { snakeCaseToNormal } from '@repo/services';
 
-import { Bill, EBillType } from '@repo/business';
+import { type Bill, EBillType } from '@repo/business';
 
 import { Accordion, Icon, Text } from '@repo/ds';
 
-import ExpensesProvider from '../../../../hooks/expenses/ExpensesProvider';
+import { useI18n } from '@repo/i18n';
 
+import ExpensesProvider from '../../../../hooks/expenses/ExpensesProvider';
 import { billBusiness } from '../../../../shared';
 
 import Expenses from '../expenses';

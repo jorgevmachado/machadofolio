@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 import { MONTHS, truncateString } from '@repo/services';
 
-import { Expense } from '@repo/business';
+import { type Expense } from '@repo/business';
 
 import { Accordion, ETypeTableHeader, Pagination, Table, type TColors } from '@repo/ds';
 

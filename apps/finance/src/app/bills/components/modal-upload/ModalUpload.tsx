@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
-import { EMonth, type ReplaceWordParam } from '@repo/services';
+import { type EMonth, type ReplaceWordParam } from '@repo/services';
 
-import { Bill, UploadsExpenseParams } from '@repo/business';
+import { type Bill, type UploadsExpenseParams } from '@repo/business';
 
 import { Button } from '@repo/ds';
 
 import IgnoredWords from './ignore-words';
 import ReplaceWords from './replace-words';
+import { type UploadListItem } from './types';
 import UploadFiles from './upload-files';
 
-import { UploadListItem } from './types';
 import './ModalUpload.scss';
 
 type ModalUploadProps = {

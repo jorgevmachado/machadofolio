@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-import { EMonth, getMonthByIndex, MONTHS } from '@repo/services';
+import { type EMonth, getMonthByIndex, MONTHS } from '@repo/services';
 
 import { Input, type OnFileInputChangeParams, type OptionsProps, Switch, Table } from '@repo/ds';
 
-import { UploadListItem } from '../types';
+import { type UploadListItem } from '../types';
 
 import './UploadFiles.scss';
 

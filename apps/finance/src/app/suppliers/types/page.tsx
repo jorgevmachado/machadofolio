@@ -1,18 +1,17 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
 
-import { useI18n } from '@repo/i18n';
-
-import { Paginate, QueryParameters, Supplier, SupplierType } from '@repo/business';
+import { type Paginate, type QueryParameters, type Supplier, type SupplierType } from '@repo/business';
 
 import { ETypeTableHeader } from '@repo/ds';
 
 import { useAlert, useLoading } from '@repo/ui';
 
-import { PageCrud } from '../../../components';
+import { useI18n } from '@repo/i18n';
 
-import { supplierTypeService } from '../../../shared';
+import { PageCrud } from '../../../components';
 import { useFinance } from '../../../hooks';
+import { supplierTypeService } from '../../../shared';
 
 export default function SuppliersTypePage() {
     const { t } = useI18n();

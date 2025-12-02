@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Expense, FinanceInfo } from '@repo/business';
+import { type Expense, type FinanceInfo } from '@repo/business';
 
 export type ExpensesCache = {
     [key: string]: {

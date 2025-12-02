@@ -1,9 +1,9 @@
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, MaxLength } from 'class-validator';
+
 import { CreateBillParams, EBillType } from '@repo/business';
 
 import { Bank } from '../../entities/bank.entity';
 import { Group } from '../../entities/group.entity';
-
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, MaxLength } from 'class-validator';
 
 
 export class CreateBillDto implements CreateBillParams {

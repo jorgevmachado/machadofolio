@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 
-import { convertToNumber } from '@repo/services';
-
 import { type PieLabelRenderProps } from 'recharts';
+
+import { convertToNumber } from '@repo/services';
 
 type CustomizeLabelProps = PieLabelRenderProps;
 

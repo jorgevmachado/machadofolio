@@ -1,3 +1,5 @@
+import { Repository } from 'typeorm';
+
 import { convertTypeToEnum, getMonthByIndex, Spreadsheet } from '@repo/services';
 
 import { EExpenseType, Expense as ExpenseConstructor, ExpenseBusiness } from '@repo/business';
@@ -20,7 +22,6 @@ import type { GeneratedExpenseSeeds } from './types';
 
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class ExpenseService extends Service<Expense> {

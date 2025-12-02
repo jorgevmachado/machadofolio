@@ -1,3 +1,5 @@
+import { Repository } from 'typeorm';
+
 import { Supplier as SupplierConstructor } from '@repo/business';
 
 import SUPPLIER_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/suppliers.json';
@@ -15,7 +17,6 @@ import { SupplierTypeService } from './type/type.service';
 
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class SupplierService extends Service<Supplier> {

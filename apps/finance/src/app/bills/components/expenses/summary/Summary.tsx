@@ -1,10 +1,10 @@
 'use client'
 import { useEffect, useState } from 'react';
 
-import { Expense } from '@repo/business';
+import { type Expense } from '@repo/business';
 
 import { expenseBusiness } from '../../../../../shared';
-import CalculationSummary, { AllCalculatedSummary } from '../../calculation-summary';
+import CalculationSummary, { type AllCalculatedSummary } from '../../calculation-summary';
 
 import './Summary.scss';
 

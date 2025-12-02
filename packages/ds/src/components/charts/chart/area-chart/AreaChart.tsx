@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 
+import { curveCardinal } from 'd3-shape';
+import { Area, AreaChart as AreaChartComponent, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts';
+
 import { mapListColors } from '../../colors';
 
 import LinearGradient from './linear-gradient';
 import type { AreaChartLabelsItem, AreaChartProps } from './types';
-
-import { curveCardinal } from 'd3-shape';
-import { Area, AreaChart as AreaChartComponent, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts';
 
 const defaultStyle = {
     width: '100%',

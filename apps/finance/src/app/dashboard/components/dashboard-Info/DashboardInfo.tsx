@@ -1,13 +1,13 @@
 'use client'
 import React, { useEffect } from 'react';
 
-import { useI18n } from '@repo/i18n';
-
 import { EGender } from '@repo/services';
 
-import { FinanceInfo as FinanceInfoProps, User } from '@repo/business';
+import { type FinanceInfo as FinanceInfoProps, type User } from '@repo/business';
 
 import { Text } from '@repo/ds';
+
+import { useI18n } from '@repo/i18n';
 
 import { BankInfo, DistributionOfExpenses, FinanceInfo, GroupInfo, PaymentMethodsInfo, SupplierInfo } from './charts';
 

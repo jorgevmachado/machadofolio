@@ -1,3 +1,5 @@
+import { Repository } from 'typeorm';
+
 import { Finance as FinanceConstructor } from '@repo/business';
 
 import FINANCE_LIST_DEVELOPMENT_JSON from '../../seeds/development/finance/finances.json';
@@ -28,7 +30,6 @@ import { FinanceSeedsResult } from './types';
 
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 export type FinanceGenerateSeeds = {
     bills: SeedsGenerated<Bill>;

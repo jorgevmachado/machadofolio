@@ -1,3 +1,6 @@
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+
 import { generateUUID } from '@repo/services';
 
 import { AuthBusiness } from '@repo/business';
@@ -14,8 +17,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 
 @Module({
   controllers: [AuthController],

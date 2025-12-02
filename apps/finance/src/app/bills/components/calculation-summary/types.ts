@@ -1,4 +1,4 @@
-import { MonthsCalculated } from '@repo/business';
+import { type MonthsCalculated } from '@repo/business';
 
 import type { TColors } from '@repo/ds';
 

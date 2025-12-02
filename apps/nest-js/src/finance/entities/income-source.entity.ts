@@ -1,7 +1,3 @@
-import type { IncomeSourceEntity } from '@repo/business';
-
-import { Income } from './incomes.entity';
-
 import {
     Column,
     CreateDateColumn,
@@ -11,6 +7,10 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
+
+import type { IncomeSourceEntity } from '@repo/business';
+
+import { Income } from './incomes.entity';
 
 @Entity({ name: 'income_sources' })
 export class IncomeSource implements IncomeSourceEntity {

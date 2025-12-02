@@ -1,13 +1,14 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
+
 import { useRouter } from 'next/navigation';
 
 import { snakeCaseToNormal } from '@repo/services';
 
-import { Bank, Bill, CreateBillParams, EBillType, Group } from '@repo/business';
+import { type Bank, type Bill, type CreateBillParams, EBillType, type Group } from '@repo/business';
 
-import { Button, Input, OnInputParams } from '@repo/ds';
+import { Button, Input, type OnInputParams } from '@repo/ds';
 
 import './Persist.scss';
 

@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 
+import { DefaultTooltipContent } from 'recharts';
+
 import { convertToNumber } from '@repo/services';
 
 import { type GenericTextProps, type TextProps, type TooltipProps } from '../../types';
@@ -11,8 +13,6 @@ import TextTooltip from './text-tooltip';
 import type { TooltipContentProps } from './types';
 
 import './ChartContentTooltip.scss';
-
-import { DefaultTooltipContent } from 'recharts';
 
 type ChartContentTooltipProps = {
     params: TooltipContentProps;

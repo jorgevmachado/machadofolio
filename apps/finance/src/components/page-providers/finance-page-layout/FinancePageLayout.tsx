@@ -1,15 +1,15 @@
 "use client"
 import React, { useEffect, useRef } from 'react';
+
+import { removeAccessToken } from 'auth/src/shared';
 import { usePathname, useRouter } from 'next/navigation';
+
+import { type LanguageOption, Page, useLoading,useUser } from '@repo/ui';
 
 import { useI18n } from '@repo/i18n';
 
-import { Page, useUser, LanguageOption, useLoading } from '@repo/ui';
-
-import { privateRoutes } from '../../../routes';
-
 import { useFinance } from '../../../hooks';
-import { removeAccessToken } from 'auth/src/shared';
+import { privateRoutes } from '../../../routes';
 
 type FinancePageLayoutProps = {
     children: React.ReactNode;

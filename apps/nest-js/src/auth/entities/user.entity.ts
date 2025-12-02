@@ -1,9 +1,3 @@
-import { EGender } from "@repo/services";
-
-import { ERole, EStatus, UserEntity } from '@repo/business';
-
-import { Finance } from '../../finance/entities/finance.entity';
-
 import {
     Column,
     CreateDateColumn,
@@ -14,6 +8,12 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
+
+import { EGender } from "@repo/services";
+
+import { ERole, EStatus, UserEntity } from '@repo/business';
+
+import { Finance } from '../../finance/entities/finance.entity';
 
 @Entity({ name: 'users' })
 export class User implements UserEntity {

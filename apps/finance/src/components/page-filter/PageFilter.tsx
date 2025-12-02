@@ -2,12 +2,12 @@
 
 import React, { useMemo, useState } from 'react';
 
-import { useI18n } from '@repo/i18n';
-
 import { Button, Card, Input } from '@repo/ds';
 
-import { currentValue } from '../utils';
+import { useI18n } from '@repo/i18n';
+
 import type { handleOnInputParams, PersistInputProps } from '../types';
+import { currentValue } from '../utils';
 
 import './PageFilter.scss';
 

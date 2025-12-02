@@ -1,9 +1,11 @@
-import React from 'react';
+import type React from 'react';
 
-import { Input } from '@repo/ds';
-import { ValidatorMessage } from '@repo/services';
-import { CreateExpenseParams, UpdateExpenseParams } from '@repo/business/finance/expense/types';
-import { Expense } from '@repo/business/finance/expense/index';
+import { type ValidatorMessage } from '@repo/services';
+
+import { type Input } from '@repo/ds';
+
+import { type Expense } from '@repo/business/finance/expense/index';
+import { type CreateExpenseParams, type UpdateExpenseParams } from '@repo/business/finance/expense/types';
 
 
 type InputProps = React.ComponentProps<typeof Input>;

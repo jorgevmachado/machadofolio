@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 
 import { Button, Input } from '@repo/ds';
 
+import { type handleOnInputParams, type PersistInputProps } from '../../types';
 import { currentValue } from '../../utils';
-import { handleOnInputParams, PersistInputProps } from '../../types';
 
 import './ModalPersist.scss';
 

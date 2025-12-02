@@ -1,3 +1,5 @@
+import { Repository } from 'typeorm';
+
 import { EStatus } from '@repo/business';
 import { type PaginateParameters, PokeApiService } from '@repo/business';
 
@@ -15,7 +17,6 @@ import type { PokemonSeederParams, PokemonSeedsResult } from './types';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 export type PokemonGenerateSeeds = {
     type: SeedsGenerated<PokemonType>;

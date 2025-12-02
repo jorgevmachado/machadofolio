@@ -2,9 +2,9 @@
 
 import React from 'react';
 
-import { useI18n } from '@repo/i18n';
-
 import { Button, Text } from '@repo/ds';
+
+import { useI18n } from '@repo/i18n';
 
 import './PageHeader.scss';
 

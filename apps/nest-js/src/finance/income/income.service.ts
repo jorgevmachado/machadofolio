@@ -1,3 +1,5 @@
+import { Repository } from 'typeorm';
+
 import { Income as IncomeConstructor } from '@repo/business';
 
 import INCOME_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/incomes.json';
@@ -18,7 +20,6 @@ import { IncomeSourceService } from './source/source.service';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 type IncomeSeederParams = FinanceSeederParams & {
     finance: Finance;

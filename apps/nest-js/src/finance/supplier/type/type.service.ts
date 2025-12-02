@@ -1,3 +1,5 @@
+import { Repository } from 'typeorm';
+
 import { SupplierType as SupplierTypeConstructor } from '@repo/business';
 
 import SUPPLIER_TYPE_LIST_DEVELOPMENT_JSON from '../../../../seeds/development/finance/supplier_types.json';
@@ -12,7 +14,6 @@ import { UpdateTypeDto } from './dto/update-type.dto';
 
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 
 @Injectable()

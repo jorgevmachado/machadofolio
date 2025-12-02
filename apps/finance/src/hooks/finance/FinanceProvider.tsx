@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Bank, Bill, Expense, Finance, FinanceInfo, Group, Supplier, SupplierType } from '@repo/business';
+import { type Bank, type Bill, type Expense, type Finance, type FinanceInfo, type Group, type Supplier, type SupplierType } from '@repo/business';
 
 import { useLoading } from '@repo/ui';
 
 import { financeService } from '../../shared';
 
-import { ExpensesCache, FinanceContext, FinanceContextProps } from './FinanceContext';
+import { type ExpensesCache, FinanceContext, type FinanceContextProps } from './FinanceContext';
 
 export default function FinanceProvider({ children }: React.PropsWithChildren) {
     const isMounted = useRef(false);

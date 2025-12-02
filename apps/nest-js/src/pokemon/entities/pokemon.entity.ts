@@ -1,9 +1,3 @@
-import { EStatus, type PokemonEntity } from '@repo/business';
-
-import { PokemonAbility } from './ability.entity';
-import { PokemonMove } from './move.entity';
-import { PokemonType } from './type.entity';
-
 import {
     Column,
     CreateDateColumn,
@@ -13,6 +7,12 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
+
+import { EStatus, type PokemonEntity } from '@repo/business';
+
+import { PokemonAbility } from './ability.entity';
+import { PokemonMove } from './move.entity';
+import { PokemonType } from './type.entity';
 
 @Entity({ name: 'pokemons' })
 export class Pokemon implements PokemonEntity {

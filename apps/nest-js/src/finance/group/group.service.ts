@@ -1,3 +1,5 @@
+import { Repository } from 'typeorm';
+
 import { Group as GroupConstructor } from '@repo/business';
 
 import GROUP_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/groups.json';
@@ -14,7 +16,6 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 type GroupSeederParams = FinanceSeederParams & {
     finances: Array<Finance>;

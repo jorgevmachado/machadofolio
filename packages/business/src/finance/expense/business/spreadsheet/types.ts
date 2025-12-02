@@ -1,8 +1,8 @@
+import type * as ExcelJS from 'exceljs';
+
 import { type CycleOfMonths, type EMonth, type WorkSheet } from '@repo/services';
 
 import type { Bill } from '../../../bill';
-
-import type * as ExcelJS from 'exceljs';
 
 export type DataAccumulator = Array<Record<string, string | number | boolean | object>>;
 

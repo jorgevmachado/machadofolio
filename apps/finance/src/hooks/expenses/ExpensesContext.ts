@@ -1,5 +1,6 @@
 import React from 'react';
-import { Expense } from '@repo/business';
+
+import { type Expense } from '@repo/business';
 
 export type ExpensesContextProps = {
     results: Array<Expense>;

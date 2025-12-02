@@ -3,14 +3,14 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { usePathname, useRouter } from 'next/navigation';
 
-import { type UserEntity } from '@repo/business/index';
-
 import { Page, useAlert, useLoading, UserProvider } from '@repo/ui';
 
+import { type UserEntity } from '@repo/business/index';
+
+import { FinanceProvider } from '../../../hooks';
+import { publicRoutes } from '../../../routes';
 import { authService, getAccessToken, removeAccessToken } from '../../../shared';
 
-import { publicRoutes } from '../../../routes';
-import { FinanceProvider } from '../../../hooks';
 import FinancePageLayout from '../finance-page-layout';
 
 type PageLayoutProps = {

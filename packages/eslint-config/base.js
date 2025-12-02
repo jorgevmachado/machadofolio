@@ -31,22 +31,24 @@ export const config = [
       }],
       'simple-import-sort/imports': ['error', {
         groups: [
-          // 1. React imports (inclui import type)
+          // 1. React imports
           ['^react$', '^react(\\/.*)?$', '^@?react(-dom)?'],
-          // 2. Pacotes internos específicos (ordem exata)
+          // 2. Third-party libraries (ex: next, lodash, etc)
+          ['^[a-zA-Z]'],
+          // 3. Pacotes internos específicos
           ['^@repo/services$'],
           ['^@repo/business$'],
           ['^@repo/ds$'],
           ['^@repo/ui$'],
-          // 3. Outros pacotes internos do monorepo
+          // 4. Outros pacotes internos do monorepo
           ['^@repo/'],
-          // 4. Imports relativos: ../../
+          // 5. Imports relativos: ../../
           ['^\\.\\./\\.\\./'],
-          // 5. Imports relativos: ../
+          // 6. Imports relativos: ../
           ['^\\.\\./'],
-          // 6. Imports relativos: ./
+          // 7. Imports relativos: ./
           ['^\\./'],
-          // 7. Side effects
+          // 8. Side effects
           ['^\\u0000'],
         ],
       }],

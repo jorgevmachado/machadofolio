@@ -1,17 +1,17 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
 
-import { useI18n } from '@repo/i18n';
-
-import { Bank, Paginate, QueryParameters } from '@repo/business';
+import { type Bank, type Paginate, type QueryParameters } from '@repo/business';
 
 import { ETypeTableHeader } from '@repo/ds';
+
 import { useAlert, useLoading } from '@repo/ui';
 
-import { PageCrud } from '../../components';
+import { useI18n } from '@repo/i18n';
 
-import { bankService } from '../../shared';
+import { PageCrud } from '../../components';
 import { useFinance } from '../../hooks';
+import { bankService } from '../../shared';
 
 export default function BanksPage() {
     const { t } = useI18n();

@@ -1,6 +1,6 @@
-import React from 'react';
+import type React from 'react';
 
-import { Input, type OnInputParams } from '@repo/ds';
+import { type Input, type OnInputParams } from '@repo/ds';
 
 export type InputProps = React.ComponentProps<typeof Input>;
 

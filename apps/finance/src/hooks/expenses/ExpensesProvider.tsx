@@ -1,12 +1,12 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import React, { type ReactNode, useCallback, useEffect, useState } from 'react';
 
-import { Bill, Expense, Paginate } from '@repo/business';
-
+import { type Bill, type Expense, type Paginate } from '@repo/business';
 
 import { expenseService } from '../../shared';
 
-import { ExpensesContext, ExpensesContextProps } from './ExpensesContext';
 import { useFinance } from '../finance';
+
+import { ExpensesContext, type ExpensesContextProps } from './ExpensesContext';
 
 type ExpensesProviderProps = {
     bill: Bill;

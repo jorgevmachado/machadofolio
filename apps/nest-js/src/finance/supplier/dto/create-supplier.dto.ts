@@ -1,8 +1,8 @@
+import { IsNotEmpty, MaxLength } from 'class-validator';
+
 import { type CreateSupplierParams } from '@repo/business';
 
 import { SupplierType } from '../../entities/type.entity';
-
-import { IsNotEmpty, MaxLength } from 'class-validator';
 
 export class CreateSupplierDto implements  CreateSupplierParams{
     @IsNotEmpty()

@@ -1,10 +1,3 @@
-import { EGender } from '@repo/services';
-
-import { type SignUpParams } from '@repo/business';
-
-import { CPF } from '../../../decorators/cpf/cpf.decorator';
-import { Match } from '../../../decorators/match/match.decorator';
-
 import { Transform } from 'class-transformer';
 import {
     IsDate,
@@ -15,6 +8,13 @@ import {
     MaxLength,
     MinLength,
 } from 'class-validator';
+
+import { EGender } from '@repo/services';
+
+import { type SignUpParams } from '@repo/business';
+
+import { CPF } from '../../../decorators/cpf/cpf.decorator';
+import { Match } from '../../../decorators/match/match.decorator';
 
 export class CreateUserDto implements SignUpParams{
     @IsNotEmpty()

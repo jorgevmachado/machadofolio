@@ -1,11 +1,3 @@
-import { EExpenseType, type ExpenseEntity } from '@repo/business';
-
-import { DecimalTransformer } from '../../transforms/decimal';
-
-import { Bill } from './bill.entity';
-import { Month } from './month.entity';
-import { Supplier } from './supplier.entity';
-
 import {
     Column,
     CreateDateColumn,
@@ -17,6 +9,14 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
+
+import { EExpenseType, type ExpenseEntity } from '@repo/business';
+
+import { DecimalTransformer } from '../../transforms/decimal';
+
+import { Bill } from './bill.entity';
+import { Month } from './month.entity';
+import { Supplier } from './supplier.entity';
 
 
 @Entity({ name: 'expenses' })

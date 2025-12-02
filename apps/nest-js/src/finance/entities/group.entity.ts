@@ -1,8 +1,3 @@
-import type { GroupEntity } from '@repo/business';
-
-import { Bill } from './bill.entity';
-import { Finance } from './finance.entity';
-
 import {
     Column,
     CreateDateColumn,
@@ -13,6 +8,11 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
+
+import type { GroupEntity } from '@repo/business';
+
+import { Bill } from './bill.entity';
+import { Finance } from './finance.entity';
 
 @Entity({ name: 'groups' })
 export class Group implements GroupEntity {

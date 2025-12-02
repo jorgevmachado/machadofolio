@@ -1,9 +1,9 @@
 "use client"
 import React from 'react';
 
-import { I18nProvider } from '@repo/i18n';
-
 import { AlertProvider, LoadingProvider } from '@repo/ui';
+
+import { I18nProvider } from '@repo/i18n';
 
 import PageLayout from './page-layout';
 

@@ -1,12 +1,13 @@
+import * as fs from 'fs';
+import * as multer from 'multer';
+import { join } from 'path';
+
 import {
     applyDecorators,
     BadRequestException,
     UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import * as fs from 'fs';
-import * as multer from 'multer';
-import { join } from 'path';
 
 export const UseMultipleFileUpload = (allowedTypes: Array<string>, maxFiles = 12) => {
     return applyDecorators(

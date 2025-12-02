@@ -1,6 +1,6 @@
-import { type AxisProps, type DataChartItem, type LegendProps, type TLayout, type TooltipProps } from '../../types';
-
 import { type LabelListProps, type LabelProps } from 'recharts';
+
+import { type AxisProps, type DataChartItem, type LegendProps, type TLayout, type TooltipProps } from '../../types';
 
 export type BarChartDataItem = DataChartItem & {
     fill?: string;

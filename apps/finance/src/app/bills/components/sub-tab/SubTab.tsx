@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
-import { useI18n } from '@repo/i18n';
-
 import { snakeCaseToNormal } from '@repo/services';
 
-import { Bill } from '@repo/business';
+import { type Bill } from '@repo/business';
 
 import { Tabs } from '@repo/ds';
 
+import { useI18n } from '@repo/i18n';
+
 import { billBusiness, expenseBusiness } from '../../../../shared';
+
+import CalculationSummary, { type AllCalculatedSummary } from '../calculation-summary';
 import { ListCard } from '../index';
-import CalculationSummary, { AllCalculatedSummary } from '../calculation-summary';
 
 type SubTabProps = {
     list: Array<Bill>;

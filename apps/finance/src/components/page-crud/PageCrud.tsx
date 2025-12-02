@@ -1,16 +1,15 @@
 'use client'
 import React, { useState } from 'react';
 
-import { useI18n } from '@repo/i18n';
-
 import { Pagination, Table } from '@repo/ds';
 
 import { useModal } from '@repo/ui';
 
-import PageHeader from '../page-header';
+import { useI18n } from '@repo/i18n';
 
 import ModalDelete from '../modal-delete';
 import PageFilter from '../page-filter';
+import PageHeader from '../page-header';
 
 import ModalPersist from './modal-persist';
 

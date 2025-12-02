@@ -3,13 +3,12 @@ import React, { useMemo } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useI18n } from '@repo/i18n';
-
 import { convertToNumber } from '@repo/services';
 
-import type { ExpenseEntity } from '@repo/business';
-
 import { type BarChartProps, Button, Charts, Text, type TooltipProps } from '@repo/ds';
+
+import type { ExpenseEntity } from '@repo/business';
+import { useI18n } from '@repo/i18n';
 
 type SupplierBarChartProps = {
     expenses: Array<ExpenseEntity>;

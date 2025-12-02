@@ -1,4 +1,4 @@
-import { CurrentValueParams } from './types';
+import { type CurrentValueParams } from './types';
 
 
 export function currentValue({ name, type, item }: CurrentValueParams ): string {

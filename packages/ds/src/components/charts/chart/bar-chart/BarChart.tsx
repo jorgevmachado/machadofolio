@@ -1,11 +1,5 @@
 import React, { useMemo } from 'react';
 
-import { useBreakpoint } from '../../../../hooks';
-import { mapListColors } from '../../colors';
-
-import BarContent from './bar-content';
-import type { BarChartProps } from './types';
-
 import {
     BarChart as BarChartComponent,
     CartesianGrid,
@@ -15,6 +9,12 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
+
+import { useBreakpoint } from '../../../../hooks';
+import { mapListColors } from '../../colors';
+
+import BarContent from './bar-content';
+import type { BarChartProps } from './types';
 
 
 export default function BarChart({

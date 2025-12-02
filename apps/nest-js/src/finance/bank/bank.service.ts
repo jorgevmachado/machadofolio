@@ -1,3 +1,5 @@
+import { Repository } from 'typeorm';
+
 import { Bank as BankConstructor } from '@repo/business';
 
 import BANK_LIST_DEVELOPMENT_JSON from '../../../seeds/development/finance/banks.json';
@@ -13,7 +15,6 @@ import { UpdateBankDto } from './dto/update-bank.dto';
 
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class BankService extends Service<Bank> {

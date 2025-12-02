@@ -1,10 +1,10 @@
 import React from 'react';
 
+import { Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from 'recharts';
+
 import type { MarginProps, TooltipProps, XAxisProps, YAxisProps, ZAxisProps } from '../../../types';
 
 import type { ScatterChartDataItem } from '../types';
-
-import { Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from 'recharts';
 
 type AxisProps = {
     x?: XAxisProps;

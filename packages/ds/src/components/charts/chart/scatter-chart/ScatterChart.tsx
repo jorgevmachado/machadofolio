@@ -1,11 +1,5 @@
 import React, { useMemo } from 'react';
 
-import { mapListColors } from '../../colors';
-import {type TooltipProps } from '../../types';
-
-import BubbleScatterChart from './bubble-scatter-chart';
-import type { ScatterChartProps } from './types';
-
 import {
     CartesianGrid,
 Cell, LabelList,     Legend,     Scatter,
@@ -15,6 +9,12 @@ type ScatterProps,
     XAxis,
     YAxis,
     ZAxis} from 'recharts';
+
+import { mapListColors } from '../../colors';
+import {type TooltipProps } from '../../types';
+
+import BubbleScatterChart from './bubble-scatter-chart';
+import type { ScatterChartProps } from './types';
 
 const defaultStyle = {
     width: '100%',

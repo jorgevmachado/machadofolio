@@ -1,6 +1,6 @@
-import type { PokemonAbilityEntity } from '@repo/business';
-
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+
+import type { PokemonAbilityEntity } from '@repo/business';
 
 @Entity({ name: 'pokemon_abilities' })
 export class PokemonAbility implements PokemonAbilityEntity {

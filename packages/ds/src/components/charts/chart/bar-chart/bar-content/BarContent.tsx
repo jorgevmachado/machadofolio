@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 
+import { Bar, Cell, LabelList } from 'recharts';
+
 import { currencyFormatter } from '@repo/services';
 
 import { getRandomHarmonicPalette } from '../../../colors';
@@ -8,8 +10,6 @@ import type { ActiveBar, BarChartDataItem,BarChartLabelsItem } from '../types';
 
 import ActiveRectangle from './active-ractangle';
 import LabelListContent from './label-list-content';
-
-import { Bar, Cell, LabelList } from 'recharts';
 
 type BarContentProps = {
     data?: Array<BarChartDataItem>;

@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
+
 import { useRouter } from 'next/navigation';
 
-import { EMonth, MONTHS, ValidatorParams, convertToNumber } from '@repo/services';
+import { convertToNumber,type EMonth, MONTHS, type ValidatorParams } from '@repo/services';
 
-import { type CreateExpenseParams, EExpenseType, Expense, UpdateExpenseParams } from '@repo/business';
+import { type CreateExpenseParams, type EExpenseType, type Expense, type UpdateExpenseParams } from '@repo/business';
 
-import { Button, Input, OnInputParams, Switch } from '@repo/ds';
+import { Button, Input, type OnInputParams, Switch } from '@repo/ds';
 
 import { useFinance } from '../../../../../hooks';
 
-import { InputGroup, InputGroupItem, OnSubmitParams, PersistForm } from './types';
 import { DEFAULT_PERSIST_FORM, getInputGroup } from './config';
+import { type InputGroup, type InputGroupItem, type OnSubmitParams, type PersistForm } from './types';
 
 import './Persist.scss';
 

@@ -1,18 +1,17 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
 
-import { useI18n } from '@repo/i18n';
-
-import { Group, Paginate, QueryParameters } from '@repo/business';
+import { type Group, type Paginate, type QueryParameters } from '@repo/business';
 
 import { ETypeTableHeader } from '@repo/ds';
 
 import { useAlert, useLoading } from '@repo/ui';
 
-import { groupService } from '../../shared';
+import { useI18n } from '@repo/i18n';
 
 import { PageCrud } from '../../components';
 import { useFinance } from '../../hooks';
+import { groupService } from '../../shared';
 
 export default function GroupsPage() {
     const { t } = useI18n();

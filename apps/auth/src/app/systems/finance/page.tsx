@@ -1,11 +1,11 @@
 'use client'
 import { useEffect, useState } from 'react';
 
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import { Button, Text } from '@repo/ds';
 
 import './page.scss';
-
-import { useRouter, useSearchParams } from 'next/navigation';
 
 
 const financeFeatures = [

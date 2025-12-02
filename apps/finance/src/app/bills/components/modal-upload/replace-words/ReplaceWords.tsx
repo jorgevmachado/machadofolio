@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { ReplaceWordParam } from '@repo/services';
+import { type ReplaceWordParam } from '@repo/services';
 
 import { Accordion, Button, Input, Table, Text } from '@repo/ds';
 

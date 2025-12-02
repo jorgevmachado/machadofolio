@@ -1,10 +1,10 @@
+import { Type } from 'class-transformer';
+import { IsArray, IsBoolean, IsEnum, IsOptional, MaxLength, ValidateNested } from 'class-validator';
+
 import { EExpenseType, type UpdateExpenseParams } from '@repo/business';
 
 import { Supplier } from '../../../entities/supplier.entity';
 import { PersistMonthDto } from '../../../month/dto/persist-month.dto';
-
-import { Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsEnum, IsOptional, MaxLength, ValidateNested } from 'class-validator';
 
 export class UpdateExpenseDto implements UpdateExpenseParams {
     @IsOptional()

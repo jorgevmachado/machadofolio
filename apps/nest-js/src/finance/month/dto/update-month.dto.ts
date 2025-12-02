@@ -1,7 +1,7 @@
-import { type UpdateMonthParams } from '@repo/business';
-
 import { Transform } from 'class-transformer';
 import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsOptional, IsUUID } from 'class-validator';
+
+import { type UpdateMonthParams } from '@repo/business';
 
 export class UpdateMonthDto implements UpdateMonthParams {
 

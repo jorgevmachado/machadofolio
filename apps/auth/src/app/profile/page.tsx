@@ -1,6 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 
+import { useSearchParams } from 'next/navigation';
+
 import { type EGender } from '@repo/services';
 
 import { type UserEntity } from '@repo/business';
@@ -10,8 +12,6 @@ import { Button } from '@repo/ds';
 import { Auth, type AuthForm, useAlert, useLoading, useUser } from '@repo/ui';
 
 import { authService } from '../../shared';
-
-import { useSearchParams } from 'next/navigation';
 
 type ButtonGoBackProps = {
     label: string;

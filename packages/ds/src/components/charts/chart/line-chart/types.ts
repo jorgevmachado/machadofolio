@@ -1,5 +1,7 @@
 import type React from 'react';
 
+import { type Line, type MouseHandlerDataParam } from 'recharts';
+
 import type Button from '../../../button';
 import {
     type AxisProps,
@@ -11,8 +13,6 @@ import {
     type XAxisProps,
     type YAxisProps
 } from '../../types';
-
-import { type Line, type MouseHandlerDataParam } from 'recharts';
 
 type ButtonProps = React.ComponentProps<typeof Button>;
 

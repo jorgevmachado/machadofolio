@@ -1,6 +1,6 @@
-import { allRoutes, publicRoutes } from './routes';
-
 import { type NextRequest, NextResponse } from 'next/server';
+
+import { allRoutes, publicRoutes } from './routes';
 
 function isAppRoute(path: string): boolean {
     const validRoutes = allRoutes.map((item) => item.path);

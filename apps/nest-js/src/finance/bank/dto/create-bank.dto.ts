@@ -1,6 +1,6 @@
-import { CreateBankParams } from '@repo/business/finance/bank/types';
-
 import { IsNotEmpty, MaxLength } from 'class-validator';
+
+import { CreateBankParams } from '@repo/business/finance/bank/types';
 
 export class CreateBankDto implements CreateBankParams{
     @IsNotEmpty()

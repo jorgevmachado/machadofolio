@@ -1,6 +1,6 @@
-import type { ECellType } from './enum';
-
 import type * as ExcelJS from 'exceljs';
+
+import type { ECellType } from './enum';
 
 export type CellParams = {
     cell: string | number;

@@ -1,3 +1,5 @@
+import { Repository } from 'typeorm';
+
 import { PokeApiService } from '@repo/business';
 
 import POKEMON_MOVE_LIST_DEVELOPMENT_JSON from '../../../seeds/development/pokemon/moves.json';
@@ -9,7 +11,6 @@ import { PokemonMove } from '../entities/move.entity';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class PokemonMoveService extends Service<PokemonMove> {

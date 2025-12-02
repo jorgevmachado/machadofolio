@@ -1,6 +1,6 @@
-import type { LegendProps } from '../../types';
-
 import type { DefaultLegendContentProps } from 'recharts';
+
+import type { LegendProps } from '../../types';
 
 type LegendPayloadProps = {
     [key: string]: string | number | undefined;

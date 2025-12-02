@@ -1,3 +1,5 @@
+import { type Repository } from 'typeorm';
+
 import { isUUID } from '@repo/services';
 
 import type { PaginateParameters } from '@repo/business';
@@ -8,8 +10,6 @@ import { type FindOneByParams, type ListParams, Queries } from '../queries';
 import { type GenerateEntitySeedsParams, Seeder, type SeedsGenerated } from '../seeder';
 import type { BasicEntity } from '../types';
 import { Validate } from '../validate';
-
-import { type Repository } from 'typeorm';
 
 export abstract class Service<T extends BasicEntity> extends Base {
     private readonly fileModule!: File;
