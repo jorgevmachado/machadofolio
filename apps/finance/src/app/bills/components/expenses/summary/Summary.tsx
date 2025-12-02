@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useEffect, useState } from 'react';
 
 import { type Expense } from '@repo/business';
@@ -15,37 +15,37 @@ type SummaryProps = {
 }
 
 export default function Summary({
-                                    label = 'Add Expense',
-                                    action,
-                                    expenses = []
-                                }: SummaryProps) {
+  label = 'Add Expense',
+  action,
+  expenses = []
+}: SummaryProps) {
 
-    const [allCalculated, setAllCalculated] = useState<AllCalculatedSummary | undefined>(undefined);
+  const [allCalculated, setAllCalculated] = useState<AllCalculatedSummary | undefined>(undefined);
 
-    const calculateAllExpenses = (expenses: Array<Expense>) => {
-        const calculatedAllExpenses = expenseBusiness.calculateAll(expenses);
-        setAllCalculated(calculatedAllExpenses);
-    };
+  const calculateAllExpenses = (expenses: Array<Expense>) => {
+    const calculatedAllExpenses = expenseBusiness.calculateAll(expenses);
+    setAllCalculated(calculatedAllExpenses);
+  };
 
-    useEffect(() => {
-        calculateAllExpenses(expenses);
-    }, [expenses]);
+  useEffect(() => {
+    calculateAllExpenses(expenses);
+  }, [expenses]);
 
-    const handleOnClick = () => {
-        action?.();
-    }
+  const handleOnClick = () => {
+    action?.();
+  };
 
-    return allCalculated ? (
-        <CalculationSummary
-            total={allCalculated.total}
-            action={{
-                label,
-                onClick: handleOnClick
-            }}
-            allPaid={allCalculated.allPaid}
-            allPaidLabel="Expenses Paid"
-            totalPaid={allCalculated.totalPaid}
-            totalPending={allCalculated.totalPending}
-        />
-    ) : null;
+  return allCalculated ? (
+    <CalculationSummary
+      total={allCalculated.total}
+      action={{
+        label,
+        onClick: handleOnClick
+      }}
+      allPaid={allCalculated.allPaid}
+      allPaidLabel="Expenses Paid"
+      totalPaid={allCalculated.totalPaid}
+      totalPending={allCalculated.totalPending}
+    />
+  ) : null;
 }

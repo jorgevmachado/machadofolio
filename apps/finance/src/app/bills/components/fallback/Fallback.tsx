@@ -1,66 +1,72 @@
-'use client'
-import React, { useEffect, useState } from 'react';
+'use client';
+import React ,{ useCallback ,useMemo } from 'react';
 
 import { useRouter } from 'next/navigation';
 
 import { DependencyFallback } from '@repo/ui';
 
+import { useI18n } from '@repo/i18n';
+
 import { useFinance } from '../../../../hooks';
 
 type FallbackProps = {
-    hasBills: boolean;
-    hasAllDependencies: boolean;
+  hasBills: boolean;
+  hasAllDependencies: boolean;
 }
 
-type DependencyFallbackProps = React.ComponentProps<typeof DependencyFallback>;
-
 export default function Fallback({
-    hasBills,
-    hasAllDependencies
+  hasBills ,
+  hasAllDependencies ,
 }: FallbackProps) {
-    const router = useRouter();
-    const [ fallback, setFallback ] = useState<DependencyFallbackProps | undefined>(undefined);
+  const router = useRouter();
 
-    const { banks, groups, suppliers } = useFinance();
+  const { t } = useI18n();
+  const { banks ,groups ,suppliers } = useFinance();
 
-    const generateDependencyContent = ( plural: string, singular: string ) => {
-        return {
-            button: {
-                label: `Create ${singular}`,
-                onClick: () => router.push(`/${plural}`),
-            },
-            message: { text:`No ${plural} were found. Please create a ${singular} before creating a bill.`}
-        };
-    }
+  const generateDependencyContent = useCallback(
+    (plural: string ,singular: string) => ({
+      button: {
+        label: `${ t('create') } ${ singular }` ,
+        onClick: () => router.push(`/${ plural }`) ,
+      } ,
+      message: {
+        text: `${ t(`no_found_${ plural }`) }. ${ t(
+          `please_create_${ singular }` ,
+        ) } ${ t('before_create_bill') }.` ,
+      } ,
+    }) ,[router ,t] ,
+  );
 
-    const generateContent = (hasBills: boolean, hasAllDependencies: boolean) => {
-        if(!hasBills && hasAllDependencies) {
-            return { message: { text: 'No bills were found.' }};
-        }
+  const generateContent = useCallback(
+    (hasBills: boolean ,hasAllDependencies: boolean) => {
+      if (!hasBills && hasAllDependencies) {
+        return { message: { text: t('no_found_bills') } };
+      }
 
-        if(groups.length === 0) {
-            return generateDependencyContent('groups', 'group');
-        }
+      if (groups.length === 0) {
+        return generateDependencyContent('groups' ,'group');
+      }
 
-        if(banks.length === 0) {
-            return generateDependencyContent('banks', 'bank');
-        }
+      if (banks.length === 0) {
+        return generateDependencyContent('banks' ,'bank');
+      }
 
-        if(suppliers.length === 0) {
-            return generateDependencyContent('suppliers', 'supplier');
-        }
+      if (suppliers.length === 0) {
+        return generateDependencyContent('suppliers' ,'supplier');
+      }
 
-        return;
-    };
+      return undefined;
+    } ,[
+      banks.length ,
+      generateDependencyContent ,
+      groups.length ,
+      suppliers.length ,
+      t] ,
+  );
 
-    useEffect(() => {
-        if(!fallback) {
-            const content = generateContent(hasBills, hasAllDependencies);
-            setFallback(content);
-        }
-    }, [hasBills, hasAllDependencies]);
+  const currentFallback = useMemo(() => {
+    return generateContent(hasBills ,hasAllDependencies);
+  } ,[generateContent ,hasAllDependencies ,hasBills]);
 
-    return !fallback ? null : (
-        <DependencyFallback {...fallback} />
-    )
+  return currentFallback ? <DependencyFallback { ...currentFallback } /> : null;
 }

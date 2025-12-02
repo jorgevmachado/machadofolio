@@ -1,1 +1,1 @@
-export { ModalUpload as default } from './ModalUpload'
+export { ModalUpload as default } from './ModalUpload';

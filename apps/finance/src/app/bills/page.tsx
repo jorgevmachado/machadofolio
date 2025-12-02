@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useEffect, useRef, useState } from 'react';
 
 import { type Bill, type BillList, type CreateBillParams, type UploadsExpenseParams } from '@repo/business';
@@ -17,156 +17,156 @@ import { Fallback, Persist, SubTab } from './components';
 import ModalUpload from './components/modal-upload';
 
 export default function BillsPage() {
-    const { t } = useI18n();
-    const isMounted = useRef(false);
+  const { t } = useI18n();
+  const isMounted = useRef(false);
 
-    const [hasAllDependencies, setHasAllDependencies] = useState<boolean>(false);
-    const [billListGroup, setBillListGroup] = useState<Array<BillList>>([]);
+  const [hasAllDependencies, setHasAllDependencies] = useState<boolean>(false);
+  const [billListGroup, setBillListGroup] = useState<Array<BillList>>([]);
 
-    const { show, hide, isLoading } = useLoading();
-    const { addAlert } = useAlert();
-    const { openModal, modal, closeModal } = useModal();
-    const { fetch, refresh, banks, groups, suppliers } = useFinance();
+  const { show, hide, isLoading } = useLoading();
+  const { addAlert } = useAlert();
+  const { openModal, modal, closeModal } = useModal();
+  const { fetch, refresh, banks, groups, suppliers } = useFinance();
 
-    const fetchItems = async () => {
-        show()
-        try {
-            const response = await billService.getAll({ withRelations: true }) as Array<Bill>;
-            const billListGroup = billBusiness.mapBillListByFilter(response, 'group');
-            setBillListGroup(billListGroup);
-        } catch (error) {
-            console.error('# => BillsPage => fetchItems => error => ', error)
-            addAlert({
-                type: 'error',
-                message: t(`error_fetching_bills`),
-            });
-        } finally {
-            hide();
-        }
+  const fetchItems = async () => {
+    show();
+    try {
+      const response = await billService.getAll({ withRelations: true }) as Array<Bill>;
+      const billListGroup = billBusiness.mapBillListByFilter(response, 'group');
+      setBillListGroup(billListGroup);
+    } catch (error) {
+      console.error('# => BillsPage => fetchItems => error => ', error);
+      addAlert({
+        type: 'error',
+        message: t('error_fetching_bills'),
+      });
+    } finally {
+      hide();
     }
+  };
 
-    const handleSubmit = async (params: CreateBillParams, bill?: Bill) => {
-        show();
-        try {
-            bill
-                ? await billService.update(bill.id, params)
-                : await billService.create(params)
-            addAlert({ type: 'success', message: `${t('bill')} ${bill ? t('updated') : t('saved')} ${t('successfully')}!` });
-            await fetchItems();
-            refresh();
-        } catch (error) {
-            addAlert({ type: 'error', message: (error as Error)?.message ?? `${t('error_when')} ${bill ? t('updating') : t('saving')} ${t('bill')}` });
-            console.error('Bill => handleSubmit => ', error)
-        } finally {
-            hide();
-        }
+  const handleSubmit = async (params: CreateBillParams, bill?: Bill) => {
+    show();
+    try {
+      bill
+        ? await billService.update(bill.id, params)
+        : await billService.create(params);
+      addAlert({ type: 'success', message: `${t('bill')} ${bill ? t('updated') : t('saved')} ${t('successfully')}!` });
+      await fetchItems();
+      refresh();
+    } catch (error) {
+      addAlert({ type: 'error', message: (error as Error)?.message ?? `${t('error_when')} ${bill ? t('updating') : t('saving')} ${t('bill')}` });
+      console.error('Bill => handleSubmit => ', error);
+    } finally {
+      hide();
     }
+  };
 
-    const handleOnDelete = async (item?: Bill) => {
-        if (!item) {
-            return;
-        }
-        show();
-        try {
-            await billService.remove(item.id);
-            addAlert({ type: 'success', message: `${t('bill')} ${t('deleted')} ${t('successfully')}!` });
-            await fetchItems();
-            refresh();
-        } catch (error) {
-            addAlert({ type: 'error', message: (error as Error)?.message ?? t('error_deleting_bill')});
-        } finally {
-            hide();
-        }
+  const handleOnDelete = async (item?: Bill) => {
+    if (!item) {
+      return;
     }
-
-    const handleUploadExpense = async (bill: Bill, params: UploadsExpenseParams) => {
-        show();
-        try {
-            await expenseService.upload(bill.id, params);
-            addAlert({ type: 'success', message: `${t('expenses')} ${t('uploaded')} ${t('successfully')}!` });
-            await fetchItems();
-            refresh();
-        } catch (error) {
-            addAlert({ type: 'error', message: (error as Error)?.message ?? t('error_upload_bill_expense') });
-        } finally {
-            hide();
-        }
+    show();
+    try {
+      await billService.remove(item.id);
+      addAlert({ type: 'success', message: `${t('bill')} ${t('deleted')} ${t('successfully')}!` });
+      await fetchItems();
+      refresh();
+    } catch (error) {
+      addAlert({ type: 'error', message: (error as Error)?.message ?? t('error_deleting_bill') });
+    } finally {
+      hide();
     }
+  };
 
-    const handleOpenPersistModal = (bill?: Bill) => {
-        openModal({
-            width: '799px',
-            title: `${bill ? t('edit') : t('create')} ${t('bill')}`,
-            body: (
-                <Persist banks={banks} groups={groups} bill={bill} onClose={closeModal} onSubmit={handleSubmit}/>
-            ),
-            closeOnEsc: true,
-            closeOnOutsideClick: true,
-            removeBackgroundScroll: true,
-        })
+  const handleUploadExpense = async (bill: Bill, params: UploadsExpenseParams) => {
+    show();
+    try {
+      await expenseService.upload(bill.id, params);
+      addAlert({ type: 'success', message: `${t('expenses')} ${t('uploaded')} ${t('successfully')}!` });
+      await fetchItems();
+      refresh();
+    } catch (error) {
+      addAlert({ type: 'error', message: (error as Error)?.message ?? t('error_upload_bill_expense') });
+    } finally {
+      hide();
     }
+  };
 
-    const handleOpenDeleteModal = (bill?: Bill) => {
-        openModal({
-            width: '700px',
-            title: `${t('want_to_delete')} ${t('bill')}`,
-            body: (
-                <ModalDelete item={bill} onClose={closeModal} onDelete={(item) => handleOnDelete(item as Bill)}/>
-            ),
-            closeOnEsc: true,
-            closeOnOutsideClick: true,
-            removeBackgroundScroll: true,
-        })
+  const handleOpenPersistModal = (bill?: Bill) => {
+    openModal({
+      width: '799px',
+      title: `${bill ? t('edit') : t('create')} ${t('bill')}`,
+      body: (
+        <Persist banks={banks} groups={groups} bill={bill} onClose={closeModal} onSubmit={handleSubmit}/>
+      ),
+      closeOnEsc: true,
+      closeOnOutsideClick: true,
+      removeBackgroundScroll: true,
+    });
+  };
+
+  const handleOpenDeleteModal = (bill?: Bill) => {
+    openModal({
+      width: '700px',
+      title: `${t('want_to_delete')} ${t('bill')}`,
+      body: (
+        <ModalDelete item={bill} onClose={closeModal} onDelete={(item) => handleOnDelete(item as Bill)}/>
+      ),
+      closeOnEsc: true,
+      closeOnOutsideClick: true,
+      removeBackgroundScroll: true,
+    });
+  };
+
+  const handleUploadFileModal = (bill: Bill) => {
+    openModal({
+      width: '799px',
+      title: t('register_expense_by_file'),
+      body: (
+        <ModalUpload bill={bill} onClose={closeModal} onSubmit={handleUploadExpense}/>
+      ),
+      closeOnEsc: true,
+      closeOnOutsideClick: true,
+      removeBackgroundScroll: true,
+    });
+  };
+
+  useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      fetch().then();
+      fetchItems().then();
     }
+  }, []);
 
-    const handleUploadFileModal = (bill: Bill) => {
-        openModal({
-            width: '799px',
-            title: t('register_expense_by_file'),
-            body: (
-                <ModalUpload bill={bill} onClose={closeModal} onSubmit={handleUploadExpense}/>
-            ),
-            closeOnEsc: true,
-            closeOnOutsideClick: true,
-            removeBackgroundScroll: true,
-        })
-    }
+  useEffect(() => {
+    setHasAllDependencies(banks.length > 0 && groups.length > 0 && suppliers.length > 0);
+  }, [banks, groups, suppliers]);
 
-    useEffect(() => {
-        if (!isMounted.current) {
-            isMounted.current = true;
-            fetch().then();
-            fetchItems().then();
-        }
-    }, []);
-
-    useEffect(() => {
-        setHasAllDependencies(banks.length > 0 && groups.length > 0 && suppliers.length > 0);
-    }, [banks, groups, suppliers]);
-
-    return !isLoading ? (
+  return !isLoading ? (
+    <>
+      <PageHeader resourceName={t('bill')} action={{
+        label: `${t('create_new')} ${t('bill')}`,
+        onClick: () => handleOpenPersistModal(),
+        disabled: !hasAllDependencies,
+      }}/>
+      {!hasAllDependencies || billListGroup.length === 0 ? (
+        <Fallback hasBills={billListGroup.length > 0} hasAllDependencies={hasAllDependencies}/>
+      ) : (
         <>
-            <PageHeader resourceName={t('bill')} action={{
-                label: `${t('create_new')} ${t('bill')}`,
-                onClick: () => handleOpenPersistModal(),
-                disabled: !hasAllDependencies,
-            }}/>
-            {!hasAllDependencies || billListGroup.length === 0 ? (
-                <Fallback hasBills={billListGroup.length > 0} hasAllDependencies={hasAllDependencies}/>
-            ) : (
-                <>
-                    <Tabs fluid items={billListGroup.map((item) => ({
-                        title: item.title,
-                        children: <SubTab
-                            key={item.title}
-                            list={item.list}
-                            handleOpenDeleteModal={handleOpenDeleteModal}
-                            handleUploadFileModal={handleUploadFileModal}
-                        />,
-                    }))}/>
-                </>
-            )}
-            {modal}
+          <Tabs fluid items={billListGroup.map((item) => ({
+            title: item.title,
+            children: <SubTab
+              key={item.title}
+              list={item.list}
+              handleOpenDeleteModal={handleOpenDeleteModal}
+              handleUploadFileModal={handleUploadFileModal}
+            />,
+          }))}/>
         </>
-    ) : null;
+      )}
+      {modal}
+    </>
+  ) : null;
 }

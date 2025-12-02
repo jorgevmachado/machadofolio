@@ -12,10 +12,10 @@ export type ExpensesContextProps = {
 };
 
 export const ExpensesContext = React.createContext<ExpensesContextProps>({
-    results: [],
-    isLoading: false,
-    totalPages: 1,
-    currentPage: 1,
-    setIsLoading: () => {},
-    setCurrentPage: () => {},
+  results: [],
+  isLoading: false,
+  totalPages: 1,
+  currentPage: 1,
+  setIsLoading: () => {},
+  setCurrentPage: () => {},
 });

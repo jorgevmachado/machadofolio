@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React from 'react';
 
@@ -18,20 +18,20 @@ type PageHeaderProps = {
 }
 
 export default function PageHeader({
-                                       action,
-                                       resourceName,
-                                   }: PageHeaderProps) {
-    const { t } = useI18n();
-    return (
-        <div className="page-header">
-            <Text id="page-header-title" tag="h1" variant="big">
-                {t('management_of')} {resourceName}
-            </Text>
-            {action && (
-                <Button id="page-header-action" onClick={action.onClick} context="success" disabled={action?.disabled}>
-                    {action.label}
-                </Button>
-            )}
-        </div>
-    )
+  action,
+  resourceName,
+}: PageHeaderProps) {
+  const { t } = useI18n();
+  return (
+    <div className="page-header">
+      <Text id="page-header-title" tag="h1" variant="big">
+        {t('management_of')} {resourceName}
+      </Text>
+      {action && (
+        <Button id="page-header-action" onClick={action.onClick} context="success" disabled={action?.disabled}>
+          {action.label}
+        </Button>
+      )}
+    </div>
+  );
 }

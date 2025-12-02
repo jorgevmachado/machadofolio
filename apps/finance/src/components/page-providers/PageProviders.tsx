@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import React from 'react';
 
 import { AlertProvider, LoadingProvider } from '@repo/ui';
@@ -12,15 +12,15 @@ type PageProvidersProps = {
 };
 
 export default function PageProviders({ children }: PageProvidersProps) {
-    return (
-        <I18nProvider brand="finance" defaultLang="en">
-            <AlertProvider style={{ marginTop: '3.2rem'}}>
-                <LoadingProvider>
-                    <PageLayout>
-                        {children}
-                    </PageLayout>
-                </LoadingProvider>
-            </AlertProvider>
-        </I18nProvider>
-    )
+  return (
+    <I18nProvider brand="finance" defaultLang="en">
+      <AlertProvider style={{ marginTop: '3.2rem' }}>
+        <LoadingProvider>
+          <PageLayout>
+            {children}
+          </PageLayout>
+        </LoadingProvider>
+      </AlertProvider>
+    </I18nProvider>
+  );
 }
