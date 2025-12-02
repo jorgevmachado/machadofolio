@@ -1,4 +1,4 @@
-import { validate as isUuid, v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4,validate as isUuid } from 'uuid';
 
 export function generateUUID(prefix?: string): string {
  const uuid = uuidv4();

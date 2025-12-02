@@ -1,10 +1,10 @@
-import * as ExcelJS from 'exceljs';
-import { Buffer } from 'buffer';
-
 import { chunk } from '../array';
 
-import { type Cell, ECellType, WorkSheet,  } from './worksheet';
 import { Table, type TableParams, type TablesParams } from './table';
+import { type Cell, ECellType, WorkSheet,  } from './worksheet';
+
+import { Buffer } from 'buffer';
+import * as ExcelJS from 'exceljs';
 
 type CalculateTablesParamsNextRowParams = {
     spaceTop?: number;

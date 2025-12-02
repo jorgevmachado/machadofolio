@@ -1,5 +1,7 @@
 import { INVALID_TYPE, REQUIRED_FIELD, type ValidatorMessage, type ValidatorParams } from '../shared';
 
+import { parseDay } from './day';
+import { parseMonth } from './month';
 import {
  type CreateDateFromYearMonthDayParams,
  type ParseDate,
@@ -7,9 +9,6 @@ import {
  type TDateSeparator,
  type YearMonthDay
 } from './types';
-
-import { parseDay } from './day';
-import { parseMonth } from './month';
 import { parseYear } from './year';
 
 export function isUnderMinimumAge(date: Date, min: number = 18): boolean {

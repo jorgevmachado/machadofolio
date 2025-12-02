@@ -1,2 +1,2 @@
-export * from './personal-data';
 export * from './enum';
+export * from './personal-data';

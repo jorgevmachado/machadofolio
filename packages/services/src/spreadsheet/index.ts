@@ -1,3 +1,3 @@
 export { Spreadsheet } from './spreadsheet';
-export { type TablesParams, type TableParams, DEFAULT_TABLE_PARAMS, DEFAULT_TABLES_PARAMS, DEFAULT_TITLE_STYLES } from './table';
-export { WorkSheet, ECellType } from './worksheet';
+export { DEFAULT_TABLE_PARAMS, DEFAULT_TABLES_PARAMS, DEFAULT_TITLE_STYLES,type TableParams, type TablesParams } from './table';
+export { ECellType,WorkSheet } from './worksheet';

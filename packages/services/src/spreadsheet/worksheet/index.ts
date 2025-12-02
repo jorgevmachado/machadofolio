@@ -1,3 +1,3 @@
-export { WorkSheet } from './worksheet';
-export type { CellParams, CellStyles, CellBorderStyle, Cell } from './types';
 export { ECellType } from './enum';
+export type { Cell,CellBorderStyle, CellParams, CellStyles } from './types';
+export { WorkSheet } from './worksheet';

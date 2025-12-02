@@ -33,7 +33,7 @@ export function fileBase64Validator({ value }: ValidatorParams): ValidatorMessag
         valid: true,
         value,
         message: 'Valid file.',
-    }
+    };
 }
 
 export async function urlToBlob(url: string): Promise<Blob> {

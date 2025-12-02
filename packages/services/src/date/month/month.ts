@@ -143,7 +143,7 @@ export function getCurrentMonthNumber(month?: number | string): number {
         case 'string':
             return getMonthNumber(month);
         default:
-            throw new Error(`The month is required`);
+            throw new Error('The month is required');
     }
 }
 
