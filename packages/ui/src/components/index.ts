@@ -1,4 +1,5 @@
 export { default as Content } from './content';
+export { default as Delete } from './delete';
 export { default as DependencyFallback } from './dependency-fallback';
 export { default as Filter } from './filter';
 export { type AuthForm ,Form ,type TForm } from './form';
