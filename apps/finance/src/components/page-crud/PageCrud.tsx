@@ -3,12 +3,9 @@ import React ,{ useMemo ,useState } from 'react';
 
 import { Pagination ,Table } from '@repo/ds';
 
-import { Filter ,useModal } from '@repo/ui';
+import { PageDelete, PageFilter, PageHeader, useModal } from '@repo/ui';
 
 import { useI18n } from '@repo/i18n';
-
-import ModalDelete from '../modal-delete';
-import PageHeader from '../page-header';
 
 import ModalPersist from './modal-persist';
 
@@ -17,7 +14,7 @@ import './PageCrud.scss';
 type TableProps = React.ComponentProps<typeof Table>;
 
 type ModalPersistProps = React.ComponentProps<typeof ModalPersist>;
-type FilterProps = React.ComponentProps<typeof Filter>;
+type FilterProps = React.ComponentProps<typeof PageFilter>;
 
 type Actions = {
   text: string;
@@ -96,7 +93,7 @@ export default function PageCrud({
       title: `${ t('want_to_delete') } ${ resourceName }` ,
       width: '700px' ,
       body: (
-        <ModalDelete
+        <PageDelete
           item={ item }
           onClose={ closeModal }
           onDelete={ actions?.delete }/>
@@ -130,14 +127,14 @@ export default function PageCrud({
   return (
     <div className="page-crud">
       <PageHeader
-        resourceName={ resourceName }
+        resourceName={ `${t('management_of')} ${ resourceName }` }
         action={ actions?.create && inputs?.length ? {
           label: `${ t('create_new') } ${ resourceName }` ,
           onClick: () => handlePersistModal(),
         } : undefined }
       />
       { currentFilter && (
-        <Filter { ...currentFilter } />
+        <PageFilter { ...currentFilter } />
       ) }
       <Table
         items={ items }

@@ -4,11 +4,10 @@ import type { handleOnInputParams } from 'finance/src/components/types';
 
 import { Button ,Card ,Input } from '@repo/ds';
 
-import { currentValue ,type PersistInputProps } from '../../utils';
+import { currentValue ,type PersistInputProps } from '../../../utils';
+import DependencyFallback from '../../dependency-fallback';
 
-import DependencyFallback from '../dependency-fallback';
-
-import './Filter.scss';
+import './PageFilter.scss';
 
 type ButtonProps = React.ComponentProps<typeof Button>;
 type DependencyFallbackProps = React.ComponentProps<typeof DependencyFallback>;
@@ -25,12 +24,12 @@ type FilterProps = {
   'data-testid'?: string;
 };
 
-export default function Filter({
+export default function PageFilter({
   inputs ,
   action ,
   onFilter ,
   fallback ,
-  'data-testid': dataTestId = 'ui-filter' ,
+  'data-testid': dataTestId = 'ui-page-filter' ,
 }: Readonly<FilterProps>) {
 
   const [currentItem ,setCurrentItem] = useState<unknown>(undefined);
@@ -105,18 +104,18 @@ export default function Filter({
         inputs.length === 0 ? <DependencyFallback { ...currentFallback }/> : (
           <form
             aria-label="Filter form"
-            className="ui-filter"
+            className="ui-page-filter"
             onSubmit={ handleSubmit }
             data-testid={ dataTestId }
           >
-            <div className="ui-filter__container" data-testid={ `${ dataTestId }-container` }>
-              <div className="ui-filter__container--inputs" data-testid={ `${ dataTestId }-container-inputs` }>
+            <div className="ui-page-filter__container" data-testid={ `${ dataTestId }-container` }>
+              <div className="ui-page-filter__container--inputs" data-testid={ `${ dataTestId }-container-inputs` }>
                 { rows.map((row, index) => {
                   const rowKey = row.map(input => input.name).join('-');
                   return (
                     <div
                       key={ rowKey }
-                      className="ui-filter__container--inputs-item"
+                      className="ui-page-filter__container--inputs-item"
                       data-testid={ `${ dataTestId }-input-row-${ index }` }
                     >
                       { row.map((input) => {
@@ -124,7 +123,7 @@ export default function Filter({
                         return (
                           <div
                             key={ input.name }
-                            className="ui-filter__container--inputs-item__row"
+                            className="ui-page-filter__container--inputs-item__row"
                             data-testid={ `${ dataTestId }-input-row-item-${ index }` }
                           >
                             <Input
@@ -147,7 +146,7 @@ export default function Filter({
                   );
                 }) }
               </div>
-              <div className="ui-filter__container--action">
+              <div className="ui-page-filter__container--action">
                 <Button
                   { ...action }
                   icon={ action?.icon ?? {
