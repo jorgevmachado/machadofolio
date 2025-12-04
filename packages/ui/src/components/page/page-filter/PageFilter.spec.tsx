@@ -3,16 +3,16 @@ import React from 'react';
 import '@testing-library/jest-dom'
 import { cleanup, render, screen } from '@testing-library/react';
 
-jest.mock('../dependency-fallback', () => ({
+jest.mock('../../dependency-fallback', () => ({
   __esModule: true,
   default: () => <div data-testid="mocked-ui-dependency-fallback"/>,
   DependencyFallback: () => <div data-testid="mocked-ui-dependency-fallback"/>,
 }));
 
-import Filter from './Filter';
-import { fn } from 'storybook/test';
+import PageFilter from './PageFilter';
 
-describe('<Filter/>', () => {
+
+describe('<PageFilter/>', () => {
     const mockHandleFilter = jest.fn();
     const mockInputs =  [
       {
@@ -60,7 +60,7 @@ describe('<Filter/>', () => {
         placeholder: `Enter a Select` ,
         autoComplete: true ,
         fallbackLabel: `Add Select` ,
-        fallbackAction: fn(),
+        fallbackAction: jest.fn(),
       } ,
       {
         fluid: true ,
@@ -116,7 +116,7 @@ describe('<Filter/>', () => {
     };
 
     const renderComponent = (props: any = {}) => {
-      return render(<Filter {...defaultProps} {...props}/>);
+      return render(<PageFilter {...defaultProps} {...props}/>);
     }
 
     afterEach(() => {
@@ -133,13 +133,13 @@ describe('<Filter/>', () => {
   it('should render component with inputs and default props.', () => {
     renderComponent({ inputs: mockInputs, onFilter: mockHandleFilter });
     expect(screen.queryByTestId('mocked-ui-dependency-fallback')).not.toBeInTheDocument();
-    expect(screen.getByTestId('ui-filter')).toBeInTheDocument();
+    expect(screen.getByTestId('ui-page-filter')).toBeInTheDocument();
   });
 
   it('should render all input types with correct placeholders and names', () => {
     renderComponent({ inputs: mockInputs, onFilter: mockHandleFilter });
-    const nameInput = screen.getAllByTestId('ui-filter-input-row-item-0-input').find(i => i.getAttribute('name') === 'name');
-    const ageInput = screen.getAllByTestId('ui-filter-input-row-item-0-input').find(i => i.getAttribute('name') === 'age');
+    const nameInput = screen.getAllByTestId('ui-page-filter-input-row-item-0-input').find(i => i.getAttribute('name') === 'name');
+    const ageInput = screen.getAllByTestId('ui-page-filter-input-row-item-0-input').find(i => i.getAttribute('name') === 'age');
     expect(nameInput).toBeInTheDocument();
     expect(ageInput).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Enter a name')).toBeInTheDocument();
@@ -147,9 +147,9 @@ describe('<Filter/>', () => {
     expect(screen.getByPlaceholderText('Enter a Select')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Date')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Text Area')).toBeInTheDocument();
-    const selectInput = screen.getAllByTestId('ui-filter-input-row-item-1-input').find(i => i.getAttribute('name') === 'type');
+    const selectInput = screen.getAllByTestId('ui-page-filter-input-row-item-1-input').find(i => i.getAttribute('name') === 'type');
     expect(selectInput).toBeInTheDocument();
-    const radioInput = screen.getAllByTestId('ui-filter-input-row-item-3-input').find(i => i.getAttribute('name') === 'radio-group');
+    const radioInput = screen.getAllByTestId('ui-page-filter-input-row-item-3-input').find(i => i.getAttribute('name') === 'radio-group');
     expect(radioInput).toBeInTheDocument();
   });
 
@@ -160,7 +160,7 @@ describe('<Filter/>', () => {
     // @ts-ignore
     nameInput.value = 'John';
     nameInput.dispatchEvent(new Event('input', { bubbles: true }));
-    const form = screen.getByTestId('ui-filter');
+    const form = screen.getByTestId('ui-page-filter');
     form.dispatchEvent(new Event('submit', { bubbles: true }));
     expect(mockHandleFilter).toHaveBeenCalled();
   });
@@ -171,7 +171,7 @@ describe('<Filter/>', () => {
 
   it('should render fallbackLabel as attribute in select input', () => {
     renderComponent({ inputs: mockInputs, onFilter: mockHandleFilter });
-    const selectInput = screen.getAllByTestId('ui-filter-input-row-item-1-input').find(i => i.getAttribute('name') === 'type');
+    const selectInput = screen.getAllByTestId('ui-page-filter-input-row-item-1-input').find(i => i.getAttribute('name') === 'type');
     expect(selectInput).toHaveAttribute('fallbacklabel', 'Add Select');
   });
 
@@ -184,12 +184,12 @@ describe('<Filter/>', () => {
 
   it('should update currentItem with selected object when type is select', () => {
     renderComponent({ inputs: mockInputs, onFilter: mockHandleFilter });
-    const selectInput = screen.getAllByTestId('ui-filter-input-row-item-1-input').find(i => i.getAttribute('name') === 'type');
+    const selectInput = screen.getAllByTestId('ui-page-filter-input-row-item-1-input').find(i => i.getAttribute('name') === 'type');
     if (selectInput) {
       Object.defineProperty(selectInput, 'value', { value: 'br', writable: true });
       selectInput.dispatchEvent(new Event('input', { bubbles: true }));
     }
-    const form = screen.getByTestId('ui-filter');
+    const form = screen.getByTestId('ui-page-filter');
     form.dispatchEvent(new Event('submit', { bubbles: true }));
     expect(mockHandleFilter).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -210,10 +210,10 @@ describe('<Filter/>', () => {
       }
     ];
     renderComponent({ inputs: singleInput, onFilter: mockHandleFilter });
-    const input = screen.getByTestId('ui-filter-input-row-item-0-input');
+    const input = screen.getByTestId('ui-page-filter-input-row-item-0-input');
     expect(input).toBeInTheDocument();
     expect(input).toHaveAttribute('name', 'only');
-    expect(screen.getAllByTestId('ui-filter-input-row-0').length).toBe(1);
+    expect(screen.getAllByTestId('ui-page-filter-input-row-0').length).toBe(1);
   });
 
   it('should set default fallbackProps.message when fallback is undefined', () => {
@@ -230,7 +230,7 @@ describe('<Filter/>', () => {
 
   it('should render Button with default action props when action is not provided', () => {
     renderComponent({ inputs: mockInputs });
-    const button = screen.getByTestId('ui-filter-action-button}');
+    const button = screen.getByTestId('ui-page-filter-action-button}');
     expect(button).toBeInTheDocument();
     expect(button).toHaveAttribute('type', 'submit');
     expect(button).toHaveAttribute('aria-label', 'Filter');
@@ -246,7 +246,7 @@ describe('<Filter/>', () => {
       'aria-label': 'Buscar',
     };
     renderComponent({ inputs: mockInputs, action: customAction });
-    const button = screen.getByTestId('ui-filter-action-button}');
+    const button = screen.getByTestId('ui-page-filter-action-button}');
     expect(button).toBeInTheDocument();
     expect(button).toHaveAttribute('type', 'button');
     expect(button).toHaveAttribute('aria-label', 'Buscar');

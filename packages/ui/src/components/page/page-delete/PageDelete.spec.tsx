@@ -3,9 +3,9 @@ import React from 'react';
 import '@testing-library/jest-dom'
 import { cleanup, render, screen } from '@testing-library/react';
 
-import Delete from './Delete';
+import PageDelete from './PageDelete';
 
-describe('<Delete/>', () => {
+describe('<PageDelete/>', () => {
     const mockOnClose = jest.fn();
     const defaultProps = {
       item: {
@@ -17,7 +17,7 @@ describe('<Delete/>', () => {
     };
 
     const renderComponent = (props: any = {}) => {
-        return render(<Delete {...defaultProps} {...props}/>);
+        return render(<PageDelete {...defaultProps} {...props}/>);
     }
 
     afterEach(() => {
@@ -28,17 +28,17 @@ describe('<Delete/>', () => {
 
   it('should render component with props default.', () => {
     renderComponent();
-    const component = screen.getByTestId('ui-delete');
+    const component = screen.getByTestId('ui-page-delete');
     expect(component).toBeInTheDocument();
-    expect(component).toHaveClass('ui-delete');
+    expect(component).toHaveClass('ui-page-delete');
 
-    expect(screen.getByTestId('ui-delete-btn-cancel')).toBeInTheDocument();
-    expect(screen.getByTestId('ui-delete-btn-submit')).toBeInTheDocument();
+    expect(screen.getByTestId('ui-page-delete-btn-cancel')).toBeInTheDocument();
+    expect(screen.getByTestId('ui-page-delete-btn-submit')).toBeInTheDocument();
   });
 
   it('should click in cancel button and call onClose function', () => {
     renderComponent();
-    const cancelButton = screen.getByTestId('ui-delete-btn-cancel');
+    const cancelButton = screen.getByTestId('ui-page-delete-btn-cancel');
     cancelButton.click();
     expect(mockOnClose).toHaveBeenCalled();
   });
@@ -46,7 +46,7 @@ describe('<Delete/>', () => {
   it('should click in delete button and call onDelete and onClose function', () => {
     const mockOnDelete = jest.fn();
     renderComponent({ onDelete: mockOnDelete });
-    const deleteButton = screen.getByTestId('ui-delete-btn-submit');
+    const deleteButton = screen.getByTestId('ui-page-delete-btn-submit');
     deleteButton.click();
     expect(mockOnDelete).toHaveBeenCalled();
     expect(mockOnClose).toHaveBeenCalled();

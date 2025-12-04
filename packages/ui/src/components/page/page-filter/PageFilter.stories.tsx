@@ -3,16 +3,16 @@ import type { Meta ,StoryObj } from '@storybook/react-vite';
 
 import { fn } from 'storybook/test';
 
-import Filter from './Filter';
+import PageFilter from './PageFilter';
 
-const meta: Meta<typeof Filter> = {
+const meta: Meta<typeof PageFilter> = {
   tags: ['autodocs'] ,
   args: {
     inputs: [],
   } ,
-  title: 'Components/Filter' ,
+  title: 'Components/Page/Filter' ,
   argTypes: {} ,
-  component: Filter ,
+  component: PageFilter ,
   decorators: [
     (Story) => (
       <div style={ { height: '50vh' ,width: '100%' } }>
@@ -35,7 +35,7 @@ type FilterItemProps = {
   name: string;
 }
 
-const Template = (args: React.ComponentProps<typeof Filter>) => {
+const Template = (args: React.ComponentProps<typeof PageFilter>) => {
   const [currentItem, setCurrentItem] = React.useState<Partial<FilterItemProps> | undefined>(undefined);
 
   const handleFilter = (item?: FilterItemProps) => {
@@ -47,7 +47,7 @@ const Template = (args: React.ComponentProps<typeof Filter>) => {
   }
   return (
     <>
-      <Filter {...args} onFilter={(item) => handleFilter(item as FilterItemProps)}/>
+      <PageFilter {...args} onFilter={(item) => handleFilter(item as FilterItemProps)}/>
       {currentItem && (
         <div style={{ marginTop: '1rem' }}>
           <strong>Filter:</strong>

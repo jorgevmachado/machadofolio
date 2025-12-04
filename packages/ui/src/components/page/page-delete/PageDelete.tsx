@@ -2,7 +2,7 @@ import React ,{ useMemo } from 'react';
 
 import { Button } from '@repo/ds';
 
-import './Delete.scss';
+import './PageDelete.scss';
 
 type ButtonProps = React.ComponentProps<typeof Button>;
 
@@ -21,7 +21,7 @@ export default function ModalDelete({
   onDelete,
   deleteButton,
   cancelButton,
-  'data-testid': dataTestId = 'ui-delete'
+  'data-testid': dataTestId = 'ui-page-delete'
 }: Readonly<DeleteProps>) {
 
   const handleOnDelete = async  () => {
@@ -49,7 +49,7 @@ export default function ModalDelete({
   }, [deleteButton]);
 
   return (
-    <div id="ui-delete" className="ui-delete" data-testid={dataTestId}>
+    <div id="ui-page-delete" className="ui-page-delete" data-testid={dataTestId}>
       <Button
         {...cancelProps}
         data-testid={cancelProps?.['data-testid'] ?? `${dataTestId}-btn-cancel`}
