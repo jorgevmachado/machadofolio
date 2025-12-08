@@ -8,5 +8,5 @@ export {
   type LanguageOption ,
   default as Navbar,
 } from './navbar';
-export { PageDelete, PageFilter, PageHeader } from './page'
+export { PageDelete, PageFilter, PageHeader, PagePersist } from './page'
 export { default as Sidebar } from './sidebar';

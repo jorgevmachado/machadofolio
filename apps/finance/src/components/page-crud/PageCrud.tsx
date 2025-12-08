@@ -3,17 +3,15 @@ import React ,{ useMemo ,useState } from 'react';
 
 import { Pagination ,Table } from '@repo/ds';
 
-import { PageDelete, PageFilter, PageHeader, useModal } from '@repo/ui';
+import { PageDelete, PageFilter, PageHeader, PagePersist, useModal } from '@repo/ui';
 
 import { useI18n } from '@repo/i18n';
-
-import ModalPersist from './modal-persist';
 
 import './PageCrud.scss';
 
 type TableProps = React.ComponentProps<typeof Table>;
 
-type ModalPersistProps = React.ComponentProps<typeof ModalPersist>;
+type PersistProps = React.ComponentProps<typeof PagePersist>;
 type FilterProps = React.ComponentProps<typeof PageFilter>;
 
 type Actions = {
@@ -29,7 +27,7 @@ type PageCrudProps =
   & {
   range?: number;
   filter?: FilterProps;
-  inputs?: ModalPersistProps['inputs'];
+  inputs?: PersistProps['inputs'];
   actions?: Actions;
   totalPages?: number;
   currentPage?: number;
@@ -74,7 +72,7 @@ export default function PageCrud({
     openModal({
       title: `${ hasId(item) ? t('edit') : t('create') } ${ resourceName }` ,
       body: (
-        <ModalPersist
+        <PagePersist
           item={ item }
           inputs={ inputs }
           onClose={ closeModal }

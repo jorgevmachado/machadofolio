@@ -41,7 +41,7 @@ export default function DashboardPage() {
           <div className="dashboard__empty">
             <Text tag="h1" variant="large">{t('the_user')} <strong>{user.name}</strong> {t('not_found_finance')}.</Text>
             <Button context="success" onClick={handleCreateFinance} disabled={isCreatingFinance}>
-              {isCreatingFinance ? t('creating') : t('create_finances')}
+              {isCreatingFinance ? t('creating') : t('create_finance')}
             </Button>
           </div>
         ) : (

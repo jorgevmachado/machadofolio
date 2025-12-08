@@ -57,20 +57,24 @@ export default function DashboardInfo({
         <Text tag="h1" variant="giant" color="primary-100">{title}</Text>
       </header>
       <div className="finance-info__content">
-        <section>
-          <FinanceInfo
-            total={total}
-            totalPaid={totalPaid}
-            className="finance-info__content--group-item"
-            totalPending={totalPending}
-            totalRegisteredExpenses={expenses.length}
-          />
-        </section>
+        {
+          !(total === 0 && totalPaid === 0 && totalPending === 0) && (
+            <section>
+              <FinanceInfo
+                total={total}
+                totalPaid={totalPaid}
+                className="finance-info__content--group-item"
+                totalPending={totalPending}
+                totalRegisteredExpenses={expenses.length}
+              />
+            </section>
+          )
+        }
         <section className="finance-info__content--group">
-          <SupplierInfo
-            expenses={expenses}
+          <BankInfo
+            bills={bills}
             className="finance-info__content--group-item"
-            totalRegisteredSuppliers={suppliers.length}
+            totalRegisteredBanks={banks.length}
           />
           <GroupInfo
             bills={bills}
@@ -78,20 +82,30 @@ export default function DashboardInfo({
             totalRegisteredGroups={groups.length}
           />
         </section>
+
+        {expenses.length > 0 && (
+          <section className="finance-info__content--group">
+            <DistributionOfExpenses expenses={expenses} className="finance-info__content--group-item"/>
+          </section>
+        )}
+
         <section className="finance-info__content--group">
-          <DistributionOfExpenses expenses={expenses} className="finance-info__content--group-item"/>
-        </section>
-        <section className="finance-info__content--group">
-          <BankInfo
-            bills={bills}
-            className="finance-info__content--group-item"
-            totalRegisteredBanks={banks.length}
-          />
-          <PaymentMethodsInfo
-            bills={bills}
-            className="finance-info__content--group-item"
-            totalRegisteredBills={bills.length}
-          />
+          {(banks.length > 0 && groups.length > 0) && (
+            <SupplierInfo
+              expenses={expenses}
+              className="finance-info__content--group-item"
+              totalRegisteredSuppliers={suppliers.length}
+            />
+          )}
+          {
+            bills?.length > 0 && (
+              <PaymentMethodsInfo
+                bills={bills}
+                className="finance-info__content--group-item"
+                totalRegisteredBills={bills.length}
+              />
+            )
+          }
         </section>
       </div>
     </div>

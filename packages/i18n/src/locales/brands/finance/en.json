@@ -34,6 +34,7 @@
   "installment_number": "Installment Number",
   "not_found_finance": "does not have any registered finances",
   "no_found_suppliers": "No suppliers were found",
+  "registered_suppliers": "registered suppliers",
   "please_create_supplier": "Please create a supplier",
   "before_create_supplier": "before creating a supplier",
   "financial_overview": "Financial Overview",

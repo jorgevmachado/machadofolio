@@ -10,6 +10,8 @@ import { useI18n } from '@repo/i18n';
 
 import { billBusiness, expenseBusiness } from '../../../../../shared';
 
+type ChartProps = React.ComponentProps<typeof Charts>;
+
 type BankInfoProps = {
     bills: Array<BillEntity>;
     className?: string;
@@ -48,11 +50,18 @@ export default function BankInfo({ bills, className, totalRegisteredBanks }: Ban
       }
     });
     const data = Array.from(bankMap.values());
+    const nonZeroValues = data.some(item => item.value !== 0);
+    
     const props: BarChartProps = {
       top: 5,
-      data,
+      data: [],
       labels: [{ key: 'value', fill: '#FFF', activeBar: { type: 'rectangle' } }],
     };
+
+
+    if (nonZeroValues) {
+      props.data = data;
+    }
     return props;
   }, [list]);
 
@@ -70,21 +79,40 @@ export default function BankInfo({ bills, className, totalRegisteredBanks }: Ban
     };
     return props;
   }, [t]);
+  
+  const title = useMemo(() => {
+    if (totalRegisteredBanks > 0 && bills.length > 0) {
+      return `Top 5 ${t('banks')}`; 
+    }
+    return t('banks');
+  }, [bills.length, t, totalRegisteredBanks]);
+
+  const fallback = useMemo(() => {
+    const text = totalRegisteredBanks > 0 
+      ? `${totalRegisteredBanks} ${t('registered_banks')}` 
+      :  t('no_banks_registered');
+    
+    const children = totalRegisteredBanks > 0
+      ? t('view_details')
+      :  `${t('create_new')} ${t('bank')}`;
+    const defaultFallback: ChartProps['fallback'] = {
+      text,
+      action: {
+        size: 'small',
+        onClick: () => router.push('/banks'),
+        context: 'primary',
+        children
+      }
+    };
+    return defaultFallback;
+  }, [router, t, totalRegisteredBanks]);
 
   return (
     <Charts
       type="bar"
-      title={`Top 5 ${t('banks')}`}
+      title={title}
       layout="horizontal"
-      fallback={{
-        text: t('no_banks_registered'),
-        action: {
-          size: 'small',
-          onClick: () => router.push('/banks'),
-          context: 'primary',
-          children: `${t('create_new')} ${t('bank')}`
-        }
-      }}
+      fallback={fallback}
       legend={{ show: false }}
       subtitle={`${t('banks')} ${t('with_the_highest_expenses')}`}
       className={className}

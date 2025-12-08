@@ -10,6 +10,8 @@ import { type BarChartProps, Button, Charts, Text, type TooltipProps } from '@re
 import type { ExpenseEntity } from '@repo/business';
 import { useI18n } from '@repo/i18n';
 
+type ChartProps = React.ComponentProps<typeof Charts>;
+
 type SupplierBarChartProps = {
     expenses: Array<ExpenseEntity>;
     className?: string;
@@ -89,24 +91,43 @@ export default function SupplierInfo({ expenses, className, totalRegisteredSuppl
     };
     return props;
   }, [t]);
+  
+  const title = useMemo(() => {
+    if (totalRegisteredSuppliers > 0 && expenses.length > 0) {
+      return `Top 5 ${t('suppliers')}`;
+    }
+    return t('suppliers');
+  }, [expenses.length, t, totalRegisteredSuppliers]);
+
+  const fallback = useMemo(() => {
+    const text = totalRegisteredSuppliers > 0
+      ? `${totalRegisteredSuppliers} ${t('registered_suppliers')}`
+      :  t('no_suppliers_registered');
+
+    const children = totalRegisteredSuppliers > 0
+      ? t('view_details')
+      :  `${t('create_new')} ${t('subblier')}`;
+    const defaultFallback: ChartProps['fallback'] = {
+      text,
+      action: {
+        size: 'small',
+        onClick: () => router.push('/suppliers'),
+        context: 'primary',
+        children
+      }
+    };
+    return defaultFallback;
+  }, [router, t, totalRegisteredSuppliers]);
 
 
   return (
     <Charts
       type="bar"
-      title={`Top 5 ${t('suppliers')}`}
+      title={title}
       layout="horizontal"
       legend={{ show: false }}
       subtitle={`${t('suppliers')} ${t('with_the_highest_expenses')}`}
-      fallback={{
-        text: `${t('no_suppliers_registered')}`,
-        action: {
-          size: 'small',
-          onClick: () => router.push('/suppliers'),
-          context: 'primary',
-          children: `${t('create_new')} ${t('supplier')}`
-        }
-      }}
+      fallback={fallback}
       className={className}
       barChart={barChart}
       tooltip={tooltip}

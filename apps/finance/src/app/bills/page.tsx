@@ -5,11 +5,10 @@ import { type Bill, type BillList, type CreateBillParams, type UploadsExpensePar
 
 import { Tabs } from '@repo/ds';
 
-import { useAlert, useLoading, useModal } from '@repo/ui';
+import { PageDelete, PageHeader,useAlert, useLoading, useModal } from '@repo/ui';
 
 import { useI18n } from '@repo/i18n';
 
-import { ModalDelete, PageHeader } from '../../components';
 import { useFinance } from '../../hooks';
 import { billBusiness, billService, expenseService } from '../../shared';
 
@@ -111,7 +110,7 @@ export default function BillsPage() {
       width: '700px',
       title: `${t('want_to_delete')} ${t('bill')}`,
       body: (
-        <ModalDelete item={bill} onClose={closeModal} onDelete={(item) => handleOnDelete(item as Bill)}/>
+        <PageDelete item={bill} onClose={closeModal} onDelete={(item) => handleOnDelete(item as Bill)}/>
       ),
       closeOnEsc: true,
       closeOnOutsideClick: true,

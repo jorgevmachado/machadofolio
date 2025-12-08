@@ -5549,7 +5549,7 @@ describe('Finance', () => {
             (finance.post as any).mockResolvedValue(mockEntity);
             const result = await finance.initialize();
             expect(finance.post).toHaveBeenCalledTimes(1);
-            expect(finance.post).toHaveBeenCalledWith('finance/initialize');
+            expect(finance.post).toHaveBeenCalledWith('finance');
             expect(result).toEqual(mockEntity);
         });
     });

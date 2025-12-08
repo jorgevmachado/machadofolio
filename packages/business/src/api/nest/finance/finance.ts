@@ -45,7 +45,7 @@ export class Finance extends NestModuleAbstract<IFinance, unknown, unknown> {
     }
 
     async initialize(): Promise<IFinance> {
-        return this.post('finance/initialize');
+        return this.post('finance');
     }
 
     async find(): Promise<IFinanceInfo> {

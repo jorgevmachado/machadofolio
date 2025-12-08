@@ -51,7 +51,7 @@ export default function FinanceProvider({ children }: React.PropsWithChildren) {
     show();
     try {
       await financeService.initialize();
-      await fetchFinanceInfo(); // Atualiza o estado após inicializar
+      await fetchFinanceInfo();
     } catch (error) {
       console.error('# => FinanceInfoProvider => initializeFinance => error => ', error);
     } finally {

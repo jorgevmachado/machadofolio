@@ -1,10 +1,8 @@
 import React ,{ useMemo ,useState } from 'react';
 
-import type { handleOnInputParams } from 'finance/src/components/types';
-
 import { Button ,Card ,Input } from '@repo/ds';
 
-import { currentValue ,type PersistInputProps } from '../../../utils';
+import { currentValue ,type handleOnInputParams,type PersistInputProps } from '../../../utils';
 import DependencyFallback from '../../dependency-fallback';
 
 import './PageFilter.scss';

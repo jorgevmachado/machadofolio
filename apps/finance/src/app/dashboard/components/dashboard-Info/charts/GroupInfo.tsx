@@ -12,6 +12,7 @@ import { useI18n } from '@repo/i18n';
 
 import { billBusiness, expenseBusiness } from '../../../../../shared';
 
+type ChartProps = React.ComponentProps<typeof Charts>;
 
 type GroupInfoProps = {
     bills: Array<BillEntity>;
@@ -66,9 +67,11 @@ export default function GroupInfo({ bills, className, totalRegisteredGroups }: R
         name: t(item.name)
       }));
 
+    const nonZeroValues = data.some(item => item.value !== 0);
+
     const props: BarChartProps = {
       top: 5,
-      data,
+      data: nonZeroValues ? data : [],
       labels: [{ key: 'value', fill: '#808080' }],
     };
     return props;
@@ -89,22 +92,41 @@ export default function GroupInfo({ bills, className, totalRegisteredGroups }: R
     return props;
   }, [t]);
 
+  const title = useMemo(() => {
+    if (totalRegisteredGroups > 0 && bills.length > 0) {
+      return `Top 5 ${t('groups')}`;
+    }
+    return t('groups');
+  }, [bills.length, t, totalRegisteredGroups]);
+
+  const fallback = useMemo(() => {
+    const text = totalRegisteredGroups > 0
+      ? `${totalRegisteredGroups} ${t('registered_groups')}`
+      :  t('no_groups_registered');
+
+    const children = totalRegisteredGroups > 0
+      ? t('view_details')
+      :  `${t('create_new')} ${t('group')}`;
+    const defaultFallback: ChartProps['fallback'] = {
+      text,
+      action: {
+        size: 'small',
+        onClick: () => router.push('/groups'),
+        context: 'primary',
+        children
+      }
+    };
+    return defaultFallback;
+  }, [router, t, totalRegisteredGroups]);
+
   return (
     <Charts
       type="bar"
-      title={`Top 5 ${t('groups')}`}
+      title={title}
       layout="horizontal"
       legend={{ show: false }}
       subtitle={`${t('groups')} ${t('with_the_highest_expenses')}`}
-      fallback={{
-        text: `${t('no_groups_registered')}`,
-        action: {
-          size: 'small',
-          onClick: () => router.push('/groups'),
-          context: 'primary',
-          children: `${t('create_new')} ${t('group')}`
-        }
-      }}
+      fallback={fallback}
       className={className}
       barChart={barChart}
       tooltip={tooltip}

@@ -34,6 +34,7 @@
   "installment_number": "Número da parcela",
   "not_found_finance": "não possui nenhuma situação financeira registrada",
   "no_found_suppliers": "Nenhum fornecedor foi encontrado",
+  "registered_suppliers": "fornecedores registrados",
   "please_create_supplier": "Por favor, crie um fornecedor",
   "before_create_supplier": "antes de criar um fornecedor",
   "financial_overview": "Visão Geral Financeira",
