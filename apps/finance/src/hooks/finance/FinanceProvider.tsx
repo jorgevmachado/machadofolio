@@ -23,15 +23,20 @@ export default function FinanceProvider({ children }: React.PropsWithChildren) {
   const [suppliers, setSuppliers] = useState<Array<Supplier>>([]);
   const [supplierTypes, setSupplierTypes] = useState<Array<SupplierType>>([]);
   const [expensesCache, setExpensesCache] = useState<ExpensesCache>({});
+  const [hasAllDependencies, setHasAllDependencies] = useState<boolean>(false);
 
   const initializeFinanceInfo = (financeInfo: FinanceInfo) => {
     setFinanceInfo(financeInfo);
+    const banks = financeInfo.banks;
+    const groups = financeInfo.groups;
+    const suppliers = financeInfo.suppliers;
     setBills(financeInfo.bills);
-    setBanks(financeInfo.banks);
-    setGroups(financeInfo.groups);
+    setBanks(banks);
+    setGroups(groups);
     setFinance(financeInfo.finance);
-    setSuppliers(financeInfo.suppliers);
+    setSuppliers(suppliers);
     setSupplierTypes(financeInfo.supplierTypes);
+    setHasAllDependencies(banks.length > 0 && groups.length > 0 && suppliers.length > 0);
   };
 
   const fetchFinanceInfo = useCallback(async () => {
@@ -99,6 +104,7 @@ export default function FinanceProvider({ children }: React.PropsWithChildren) {
     updateExpenses: (expenses) => setExpenses(expenses),
     updateSuppliers: (suppliers) => setSuppliers(suppliers),
     setExpensesCache,
+    hasAllDependencies,
     updateSupplierTypes: (supplierTypes) => setSupplierTypes(supplierTypes)
   };
 

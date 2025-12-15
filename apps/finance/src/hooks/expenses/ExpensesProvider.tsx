@@ -18,6 +18,7 @@ const getCacheKey = (billId: string, page: number) => `${billId}_${page}`;
 export default function ExpensesProvider({ bill, children }: ExpensesProviderProps) {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [billData, setBillData] = useState<Bill>(bill);
   const { expensesCache, setExpensesCache } = useFinance();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -66,12 +67,14 @@ export default function ExpensesProvider({ bill, children }: ExpensesProviderPro
   }, [bill.id, currentPage, expensesCache, fetchExpenses]);
 
   const context: ExpensesContextProps = {
+    bill: billData,
     results,
     isLoading,
+    updateBill: setBillData,
     totalPages,
     currentPage,
     setIsLoading,
-    setCurrentPage,
+    setCurrentPage
   };
 
   return (

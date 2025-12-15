@@ -1,1 +1,0 @@
-export { default as DashboardInfo } from './dashboard-Info';

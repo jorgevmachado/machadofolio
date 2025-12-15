@@ -35,7 +35,9 @@ export type FinanceContextProps = {
     updateExpenses: (expenses: FinanceInfo['expenses']) => void;
     updateSuppliers: (suppliers: FinanceInfo['suppliers']) => void;
     setExpensesCache: React.Dispatch<React.SetStateAction<ExpensesCache>>;
+    hasAllDependencies: boolean;
     updateSupplierTypes: (supplierTypes: FinanceInfo['supplierTypes']) => void;
+
 };
 
 export const FinanceContext = React.createContext<FinanceContextProps>({
@@ -62,5 +64,6 @@ export const FinanceContext = React.createContext<FinanceContextProps>({
   updateExpenses: () => {},
   updateSuppliers: () => {},
   setExpensesCache: () => {},
+  hasAllDependencies: false,
   updateSupplierTypes: () => {},
 });
