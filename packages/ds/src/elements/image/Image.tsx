@@ -1,27 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import {
-    FINANCE_LOGO_BASE64,
-    GEEK_LOGO_BASE64,
-    LAW_LOGO_BASE64,
-    NOTFOUND_IMAGE_BASE64
-} from '../../assets/base64';
-import { useActiveBrand } from '../../hooks';
+import { type TImage,type TImageSource, useImageSrc } from '../../hooks';
 import { joinClass } from '../../utils';
 
 import { Icon } from '../icon';
 
 import './Image.scss';
 
-type TImage = 'brand' | 'standard' | 'notfound';
-
 type TFit = 'cover' | 'contain' | 'fill' | 'scale-down' | 'none';
 
 interface ImageProps extends React.ImgHTMLAttributes<Element> {
     fit?: TFit;
     type?: TImage;
+    source?: TImageSource;
     lazyLoad?: boolean;
     fallback?: React.ReactNode;
+    nameQueryUrl?: string;
     'data-testid'?: string;
 }
 
@@ -30,56 +24,32 @@ export default function Image({
     fit,
     src,
     type = 'standard',
+    source,
     loading,
     onError: onErrorCallback,
     lazyLoad,
     fallback,
     className,
+    nameQueryUrl,
     'data-testid': dataTestId = 'ds-image',
     ...props
 }: ImageProps) {
     const [isInvalid, setIsInvalid] = useState<boolean>(false);
     const [currentSrc, setCurrentSrc] = useState<string | undefined>(src);
 
-    const handleBrandSrc = () => {
-        const brand = useActiveBrand();
-        switch (brand) {
-            case 'law':
-                return LAW_LOGO_BASE64;
-            case 'finance':
-                return FINANCE_LOGO_BASE64;
-            case 'geek':
-                return GEEK_LOGO_BASE64;
-            default:
-                return NOTFOUND_IMAGE_BASE64;
-        }
-    }
-
-    const handleCurrentSrc = (type: TImage) => {
-        switch (type) {
-            case 'brand':
-                return handleBrandSrc();
-            case 'notfound':
-                return NOTFOUND_IMAGE_BASE64;
-            case 'standard':
-            default:
-                return;
-
-        }
-    }
+    const imageSrc = useImageSrc({ type, source, nameQueryUrl });
 
     useEffect(() => {
         if(!src) {
             setIsInvalid(true);
-            const base64 = handleCurrentSrc(type);
-            if(base64) {
+            if(imageSrc) {
                 setIsInvalid(false);
             }
-            setCurrentSrc(base64);
+            setCurrentSrc(imageSrc);
             return;
         }
 
-    }, [src, type]);
+    }, [imageSrc, src, type]);
 
     const onError = useCallback<React.ReactEventHandler<HTMLImageElement>>(
         (event) => {
