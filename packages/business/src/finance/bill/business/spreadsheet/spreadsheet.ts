@@ -134,7 +134,7 @@ export default class BillSpreadsheetBusiness {
       }
 
       for(const field of fields) {
-        const row = field?.row ?? 14;
+        const row = field?.row ?? 1;
         const fieldCell = workSheet.getCell(row, field.column)?.value;
         this.validateFieldToCreation(field.label, fieldCell);
       }

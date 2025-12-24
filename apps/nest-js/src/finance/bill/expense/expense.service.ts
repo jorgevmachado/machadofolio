@@ -333,7 +333,6 @@ export class ExpenseService extends Service<Expense> {
     return expenses;
   }
 
-
   private async treatEntityParentParam(value?: string | Expense): Promise<Expense | undefined> {
     try {
       return await this.treatEntityParam<Expense>(

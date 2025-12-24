@@ -16,6 +16,8 @@ import {
 import {
   Bill as BillConstructor ,
   BillBusiness ,
+  BillExpenseToCreation ,
+  BuildForCreationParams,
   EBillType ,
 } from '@repo/business';
 
@@ -259,6 +261,106 @@ export class BillService extends Service<Bill> {
       months ,
       expenses ,
     };
+  }
+
+  async newPersistBillExpenseByUpload(
+    finance: Finance ,
+    file: Express.Multer.File ,uploadBillDto: UploadBillDto) {
+    if (!file || !file?.buffer) {
+      throw this.error(new ConflictException(
+        'one of the files was not uploaded or is invalid.'));
+    }
+
+    const spreadsheet = new Spreadsheet();
+
+    const worksheets = await spreadsheet.loadFile(file.buffer);
+
+    const worksheet = worksheets[0];
+
+    if (!worksheet) {
+      throw this.error(new ConflictException(
+        'The Excel file does not contain any worksheets.'));
+    }
+
+    spreadsheet.updateWorkSheet(worksheet);
+    const workSheet = spreadsheet.workSheet;
+
+    const buildForCreationParams: BuildForCreationParams = {
+      fields: [
+        {
+          row: 1 ,
+          column: 1 ,
+          field: 'date' ,
+          label: 'Date' ,
+        },
+        {
+          row: 1 ,
+          column: 2 ,
+          field: 'title' ,
+          label: 'Title' ,
+        },
+        {
+          row: 1 ,
+          column: 3 ,
+          field: 'amount' ,
+          label: 'Amount' ,
+        },
+        {
+          row: 1 ,
+          column: 4 ,
+          field: 'group' ,
+          label: 'Group' ,
+        },
+        {
+          row: 1 ,
+          column: 5 ,
+          field: 'type' ,
+          label: 'Type' ,
+        },
+        {
+          row: 1 ,
+          column: 6 ,
+          field: 'paid' ,
+          label: 'Paid' ,
+        },
+        {
+          row: 1 ,
+          column: 7 ,
+          field: 'bank' ,
+          label: 'Bank' ,
+        },
+      ],
+      finance,
+      workSheet,
+      uploadBillParams: uploadBillDto,
+    }
+    const billExpenseToCreation: Array<BillExpenseToCreation> = this.billBusiness.spreadsheet.buildForCreation(buildForCreationParams);
+    const createExpenseListToCreate: Array<BillExpenseToCreate> = await this.newBuildExpenseListToCreate(finance, billExpenseToCreation)
+
+
+    await this.expenseService.upload(createExpenseListToCreate);
+
+    return await this.findAll({ withRelations: true })
+  }
+
+  private async newBuildExpenseListToCreate(
+    finance:Finance,
+    billExpenseToCreation: Array<BillExpenseToCreation>
+  ) {
+
+    const billExpenseToCreate: Array<BillExpenseToCreate> = [];
+
+    for (const item of billExpenseToCreation) {
+      const group = await this.groupService.createToSheet(item.finance as Finance ,item.group) as Group;
+      const bank = await this.bankService.createToSheet(item.bank) as Bank;
+      const bill = await this.createToSheet(finance, group ,bank ,item.type as EBillType ,item.year) as Bill;
+      billExpenseToCreate.push({
+        ...item,
+        finance: finance as Finance,
+        bill
+      })
+    }
+    return billExpenseToCreate;
   }
 
   async persistBillExpenseByUpload(
