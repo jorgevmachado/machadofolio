@@ -1,32 +1,33 @@
 import React ,{ useEffect ,useState } from 'react';
 
-import { type EMonth ,type ReplaceWordParam } from '@repo/services';
-
 import { Button } from '@repo/ds';
 
 import type {
   Bill,
   UploadsExpenseParams
 } from '@repo/business';
+import type { EMonth } from '@repo/services/date/month/enum';
+import type { ReplaceWordParam } from '@repo/services/string/string';
 
-import IgnoreWords from './ignore-words';
-import ReplaceWords from './replace-words';
-import { type Form ,type UploadListItem } from './types';
-import UploadFiles from './upload-files';
+import IgnoreWords from '../ignore-words';
+import ReplaceWords from '../replace-words';
+import type { Form ,UploadListItem } from '../types';
+import UploadFiles from '../upload-files';
 
-import './Upload.scss';
+import './MultipleUploads.scss';
 
-type UploadProps = {
+type MultipleUploadsProps = {
   bill: Bill
   onClose: () => void;
   onSubmit: (bill: Bill, params: UploadsExpenseParams) => Promise<void>;
 }
 
-export default function Upload({
+export default function MultipleUploads({
   bill,
   onClose,
   onSubmit
-}: UploadProps) {
+}: MultipleUploadsProps) {
+
   const [form, setForm] = useState<Form>({
     paid: false,
     file: '',
@@ -35,6 +36,7 @@ export default function Upload({
     replaceWords: [],
     repeatedWords: []
   });
+
   const [uploads, setUploads] = useState<Array<UploadListItem>>([]);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
 
@@ -76,17 +78,18 @@ export default function Upload({
   }, [uploads]);
 
   return (
-    <form onSubmit={handleSubmit} className="upload">
-      <UploadFiles uploads={uploads} updateUploads={setUploads}/>
+    <form onSubmit={handleSubmit} className="multiple-uploads">
+      <UploadFiles type="multiple" uploads={uploads} updateUploads={setUploads}/>
 
       <IgnoreWords repeatedWords={form.repeatedWords} updateRepeatedWords={updateRepeatedWords}/>
 
       <ReplaceWords replaceWords={form.replaceWords} updateReplaceWords={updateReplaceWords}/>
 
-      <div className="upload__actions">
+      <div className="multiple-uploads__actions">
         <Button context="error" appearance="outline" onClick={onClose}>Cancel</Button>
         <Button type="submit" context="success" disabled={buttonDisabled}>Upload</Button>
       </div>
     </form>
   );
-};
+
+}

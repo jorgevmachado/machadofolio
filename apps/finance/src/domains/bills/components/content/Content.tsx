@@ -18,6 +18,7 @@ export default function Content() {
     suppliers,
     isLoading,
     hasAllDependencies,
+    handleUploadsFileModal,
     handleOpenPersistModal
   } = useBills();
 
@@ -27,7 +28,15 @@ export default function Content() {
         label: `${t('create_new')} ${t('bill')}`,
         onClick: () => handleOpenPersistModal(),
         disabled: !hasAllDependencies,
-      }}/>
+      }}
+      actionIcon={{
+        style: { cursor: 'pointer' },
+        size: '1.5em',
+        color: 'neutral-80',
+        icon: 'upload',
+        onClick: () => handleUploadsFileModal(),
+      }}
+      />
       {!hasAllDependencies || billList.length === 0 ? (
         <Fallback
           banks={banks}

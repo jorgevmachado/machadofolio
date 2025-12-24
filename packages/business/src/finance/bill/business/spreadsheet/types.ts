@@ -1,7 +1,10 @@
 import { type Spreadsheet, type TablesParams, type WorkSheet } from '@repo/services';
 
 import type { Expense } from '../../../expense';
+import type Finance from '../../../finance';
+import type { PersistMonthParams } from '../../../month';
 import type Bill from '../../bill';
+import { type UploadBillParams } from '../../types';
 
 export type SpreadsheetProcessingParams = {
     year: number;
@@ -86,3 +89,29 @@ export type ProcessingSpreadsheetDetailTableParams =
         tableWidth: number;
         detailTablesHeader: Array<string>;
     }
+
+export type BuildForCreationParamsField = {label: string, field: string; row?: number; column: number;};
+
+export type BuildForCreationParams = {
+  fields: Array<BuildForCreationParamsField>;
+  finance: Finance;
+  workSheet: WorkSheet;
+  uploadBillParams: UploadBillParams;
+}
+
+export type BillExpenseToCreationParams = {
+  year: number;
+  paid: boolean;
+  date: Date;
+  type: string;
+  bank: string;
+  month: string;
+  group: string;
+  title: string;
+  amount: string;
+  finance: Finance;
+}
+
+export type BillExpenseToCreation = Omit<BillExpenseToCreationParams ,'month'> & {
+  months: Array<PersistMonthParams>;
+}

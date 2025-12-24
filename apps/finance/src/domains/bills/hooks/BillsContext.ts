@@ -11,6 +11,7 @@ import type { I18nTFunction } from '@repo/i18n';
 export type BillsContextProps = {
   t: I18nTFunction;
   modal: React.ReactNode;
+  bills: FinanceInfo['bills'];
   banks: FinanceInfo['banks'];
   groups: FinanceInfo['groups'];
   billList: Array<BillList>;
@@ -22,13 +23,16 @@ export type BillsContextProps = {
   billListFilter: (list: Array<Bill>, type: BillList['type']) => Array<BillList>;
   hasAllDependencies: boolean;
   handleOpenDeleteModal: (item?: Bill) => void;
-  handleUploadFileModal: (item: Bill) => void;
+  handleUploadsFileModal: () => void;
+  handleUploadFilesModal: (item: Bill) => void;
   handleOpenPersistModal: (item?: Bill) => void;
+
 };
 
 export const BillsContext = React.createContext<BillsContextProps>({
   t: ((key: string) => key) as I18nTFunction,
   modal: null,
+  bills: [],
   banks: [],
   groups: [],
   billList: [],
@@ -40,6 +44,7 @@ export const BillsContext = React.createContext<BillsContextProps>({
   billListFilter: () => [],
   hasAllDependencies: false,
   handleOpenDeleteModal: () => {},
-  handleUploadFileModal: () => {},
+  handleUploadsFileModal: () => {},
+  handleUploadFilesModal: () => {},
   handleOpenPersistModal: () => {},
 });

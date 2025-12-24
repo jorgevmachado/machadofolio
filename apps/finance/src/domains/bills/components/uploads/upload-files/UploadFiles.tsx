@@ -1,13 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React ,{ useEffect ,useMemo ,useState } from 'react';
 
-import { type EMonth, getMonthByIndex, MONTHS } from '@repo/services';
+import {
+  type EMonth ,
+  getCurrentMonth ,
+  getMonthByIndex ,
+  MONTHS,
+} from '@repo/services';
 
 import { Input, type OnFileInputChangeParams, type OptionsProps, Switch, Table } from '@repo/ds';
 
 import { type UploadListItem } from '../types';
 
+
+type TableProps = React.ComponentProps<typeof Table>
+
 type UploadFilesProps = {
+  type: 'single' | 'multiple';
   uploads: Array<UploadListItem>;
+  className?: string;
   updateUploads: (uploads: Array<UploadListItem>) => void;
 }
 
@@ -39,7 +49,7 @@ type BuildComponentParams = {
   fileName: string;
 }
 
-export default function UploadFiles({ uploads, updateUploads }: UploadFilesProps) {
+export default function UploadFiles({ type, uploads, className, updateUploads }: UploadFilesProps) {
   const [formList, setFormList] = useState<Array<FormItem>>([]);
   const [list, setList] = useState<Array<ListItem>>([]);
   const [months] = useState<Array<OptionsProps>>(MONTHS.map((item) => ({
@@ -130,6 +140,11 @@ export default function UploadFiles({ uploads, updateUploads }: UploadFilesProps
   };
 
   const buildMonth = (params : { month?: string, fileName?: string }) => {
+    if (!params?.month) {
+      const currentMonth = getCurrentMonth();
+      params.month = type === 'single' ? currentMonth : params.month;
+    }
+    
     const index = getMonthIndex(params);
     if (isNaN(index)) {
       return {
@@ -222,10 +237,34 @@ export default function UploadFiles({ uploads, updateUploads }: UploadFilesProps
       })));
     }
   }, []);
+  
+  const buildHeaders = useMemo(() => {
+    const headers: TableProps['headers'] = [];
+    const file = {
+      text: 'Arquivo',
+      value: 'fileName',
+    };
+    headers.push(file);
+    const headerType = {
+      text: 'Mes',
+      value: 'month',
+    };
+    if (type !== 'single') {
+      headers.push(headerType);
+    }
+
+    const paid = {
+      text: 'Pago',
+      value: 'paid',
+    };
+    headers.push(paid);
+    return headers;
+    
+  }, [type]);
 
   return (
     <>
-      <div className="upload-files__file">
+      <div className={className}>
         <Input
           id="file"
           key="file"
@@ -233,7 +272,7 @@ export default function UploadFiles({ uploads, updateUploads }: UploadFilesProps
           fluid
           type="file"
           accept=".csv, .xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-          multiple
+          multiple={type === 'multiple'}
           disabled={formList.length > 0}
           onChangeFile={handleOnChangeFile}
         />
@@ -242,20 +281,7 @@ export default function UploadFiles({ uploads, updateUploads }: UploadFilesProps
         <div>
           <Table
             items={formList}
-            headers={[
-              {
-                text: 'Arquivo',
-                value: 'fileName',
-              },
-              {
-                text: 'Mes',
-                value: 'month',
-              },
-              {
-                text: 'Pago',
-                value: 'paid',
-              }
-            ]}
+            headers={buildHeaders}
           />
         </div>
       )}

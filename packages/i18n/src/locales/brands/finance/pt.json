@@ -52,6 +52,7 @@
   "error_fetching_suppliers": "Erro ao buscar fornecedores",
   "no_groups_registered": "Nenhum grupo cadastrado",
   "no_expenses_registered": "Nenhuma despesa registrada",
+  "register_bill_by_file": "Registrar contas de despesa por Arquivo",
   "register_expense_by_file": "Registrar Despesa por Arquivo",
   "distribution_of_expenses": "Distribuição de Despesas",
   "with_the_highest_expenses": "com as maiores despesas",

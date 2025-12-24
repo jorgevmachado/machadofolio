@@ -1,0 +1,12 @@
+.multiple-uploads {
+  gap: 1rem;
+  display: flex;
+  overflow-y: auto;
+  flex-direction: column;
+  &__actions {
+    gap: 1rem;
+    display: grid;
+    margin-top: 1rem;
+    grid-template-columns: 1fr 1fr;
+  }
+}

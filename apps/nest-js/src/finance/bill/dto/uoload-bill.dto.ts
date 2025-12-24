@@ -2,18 +2,15 @@ import { Transform ,Type } from 'class-transformer';
 import {
   IsArray ,
   IsBoolean ,
-  IsEnum ,
   IsOptional ,
   ValidateNested,
 } from 'class-validator';
 
-import { EMonth } from '@repo/services';
+import { UploadBillParams } from '@repo/business';
 
-import { UploadExpenseParams } from '@repo/business';
+import { ReplaceWordItemDTO } from './replace-word-item.dto';
 
-import { ReplaceWordItemDTO } from '../../dto/replace-word-item.dto';
-
-export class UploadExpenseDto implements UploadExpenseParams {
+export class UploadBillDto implements UploadBillParams {
   file: string = '';
 
   @IsOptional()
@@ -25,10 +22,6 @@ export class UploadExpenseDto implements UploadExpenseParams {
     return value;
   })
   paid?: boolean;
-
-  @IsOptional()
-  @IsEnum(EMonth)
-  month?: EMonth;
 
   @IsOptional()
   @IsArray()

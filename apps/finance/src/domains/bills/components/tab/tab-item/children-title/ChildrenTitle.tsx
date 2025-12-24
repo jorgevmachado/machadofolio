@@ -15,7 +15,7 @@ export default function ChildrenTitle({ bill }: ChildrenTitleProps){
   const {
     getTitle,
     handleOpenDeleteModal,
-    handleUploadFileModal
+    handleUploadFilesModal
   } = useBills();
 
   const showUpload = bill.bank.name_code === 'nubank' && bill.type === EBillType.CREDIT_CARD;
@@ -35,7 +35,7 @@ export default function ChildrenTitle({ bill }: ChildrenTitleProps){
           icon="upload"
           onClick={(e) => {
             e.stopPropagation();
-            handleUploadFileModal(bill);
+            handleUploadFilesModal(bill);
           }}
         />
       )}

@@ -1,8 +1,14 @@
-.upload {
+.single-upload {
   gap: 1rem;
   display: flex;
   overflow-y: auto;
   flex-direction: column;
+  &__file {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
   &__actions {
     gap: 1rem;
     display: grid;

@@ -5,6 +5,7 @@ import { Accordion, Button, Input, Table, Text } from '@repo/ds';
 import './IgnoreWords.scss';
 
 type IgnoreWordsProps = {
+  empty?: boolean;
   withDefault?: boolean;
   repeatedWords: Array<string>;
   updateRepeatedWords: (repeatedWords: Array<string>) => void;
@@ -20,7 +21,7 @@ const DEFAULT_REPEATED_WORDS: Array<string> = [
   'Estorno de *'
 ];
 
-export default function IgnoreWords({ withDefault = true, repeatedWords, updateRepeatedWords }: IgnoreWordsProps) {
+export default function IgnoreWords({ empty = false, withDefault = true, repeatedWords, updateRepeatedWords }: IgnoreWordsProps) {
   const [list, setList] = useState<Array<string>>(repeatedWords);
   const [repeatedWord, setRepeatedWord] = useState<string | undefined>(undefined);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
@@ -56,7 +57,7 @@ export default function IgnoreWords({ withDefault = true, repeatedWords, updateR
     return null;
   }
   useEffect(() => {
-    if (withDefault && list.length === 0) {
+    if (withDefault && list.length === 0 && !empty) {
       setList(DEFAULT_REPEATED_WORDS);
       updateRepeatedWords(DEFAULT_REPEATED_WORDS);
     }

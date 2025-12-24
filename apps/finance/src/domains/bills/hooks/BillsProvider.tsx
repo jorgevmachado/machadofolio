@@ -12,8 +12,8 @@ import { PageDelete ,useAlert ,useLoading ,useModal } from '@repo/ui';
 import type {
   Bill ,
   BillList ,
-  CreateBillParams ,
-  UploadsExpenseParams,
+  CreateBillParams ,UploadBillParams ,
+  UploadsExpenseParams ,
 } from '@repo/business';
 import { useI18n } from '@repo/i18n';
 
@@ -25,7 +25,7 @@ import {
   expenseService,
 } from '../../../shared';
 
-import { type AllCalculatedSummary,BillPersist ,ModalUpload } from '../components';
+import { type AllCalculatedSummary,BillPersist, MultipleUploads, SingleUploads } from '../components';
 
 import { BillsContext ,type BillsContextProps } from './BillsContext';
 
@@ -44,12 +44,14 @@ export default function BillsProvider({ children }: BillsProviderProps)  {
   const { fetch, refresh, banks, groups, suppliers, hasAllDependencies } = useFinance();
 
   const [billList, setBillList] = useState<Array<BillList>>([]);
+  const [bills, setBills] = useState<Array<Bill>>([]);
 
   const fetchItems = useCallback(async () => {
     show();
     try {
       const response = await billService.getAll({ withRelations: true }) as Array<Bill>;
       const billList = billBusiness.mapBillListByFilter(response, 'group');
+      setBills(response);
       setBillList(billList);
     } catch (error) {
       addAlert({
@@ -107,6 +109,22 @@ export default function BillsProvider({ children }: BillsProviderProps)  {
       hide();
     }
   }, [addAlert, fetchItems, hide, refresh, show, t]);
+  
+  const handleUploadBill = useCallback(async (params: UploadBillParams) => {
+    show();
+    try {
+      await billService.upload(params);
+      addAlert({ type: 'success', message: `${t('bill')} ${t('uploaded')} ${t('successfully')}!` });
+      await fetchItems();
+      refresh();
+      refresh();
+    } catch (error) {
+      addAlert({ type: 'error', message: (error as Error)?.message ?? t('error_upload_bill') });
+    } finally {
+      hide();
+    }
+    hide();
+  }, [addAlert, fetchItems, hide, refresh, show, t]);
 
   const handleOpenPersistModal = useCallback(
     (bill?: Bill) => {
@@ -140,13 +158,13 @@ export default function BillsProvider({ children }: BillsProviderProps)  {
     [closeModal, handleOnDelete, openModal, t]
   );
 
-  const handleUploadFileModal = useCallback(
+  const handleUploadFilesModal = useCallback(
     (bill: Bill) => {
       openModal({
         width: '799px',
         title: t('register_expense_by_file'),
         body: (
-          <ModalUpload bill={bill} onClose={closeModal} onSubmit={handleUploadExpense} />
+          <MultipleUploads bill={bill} onClose={closeModal} onSubmit={handleUploadExpense} />
         ),
         closeOnEsc: true,
         closeOnOutsideClick: true,
@@ -155,6 +173,19 @@ export default function BillsProvider({ children }: BillsProviderProps)  {
     },
     [closeModal, handleUploadExpense, openModal, t]
   );
+
+  const handleUploadsFileModal = useCallback(() => {
+    openModal({
+      width: '799px',
+      title: t('register_bill_by_file'),
+      body: (
+        <SingleUploads billList={billList} onClose={closeModal} onSubmit={handleUploadBill} />
+      ),
+      closeOnEsc: true,
+      closeOnOutsideClick: true,
+      removeBackgroundScroll: true,
+    });
+  }, [billList, closeModal, handleUploadBill, openModal, t]);
   
   const calculateAll = useCallback((bills: Array<Bill>) => {
     return bills.reduce((acc, bill) => {
@@ -202,6 +233,7 @@ export default function BillsProvider({ children }: BillsProviderProps)  {
   const context: BillsContextProps = {
     t,
     modal,
+    bills,
     banks,
     groups,
     getTitle,
@@ -213,7 +245,8 @@ export default function BillsProvider({ children }: BillsProviderProps)  {
     billListFilter,
     hasAllDependencies,
     handleOpenDeleteModal,
-    handleUploadFileModal,
+    handleUploadsFileModal,
+    handleUploadFilesModal,
     handleOpenPersistModal
   };
   

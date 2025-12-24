@@ -1,25 +1,29 @@
+
 import {
-    cleanTextByListText,
-    type CycleOfMonths,
-    ECellType,
-    MONTHS,
-    snakeCaseToNormal,
-    type TableParams,
-    totalByMonth,
+  cleanTextByListText ,
+  type CycleOfMonths ,
+  ECellType ,type EMonth ,Error ,ERROR_STATUS_CODE ,
+  getCurrentMonthNumber ,getMonthByIndex ,matchesRepeatWords ,
+  MONTHS ,
+  snakeCaseToNormal ,
+  type TableParams ,
+  totalByMonth ,type WorkSheet ,
 } from '@repo/services';
 
+import { EBillType } from '../../../../api';
 import type { Expense } from '../../../expense';
 
-import type {
-    BodyData,
-    BuildBodyDataParams,
-    GetWorkSheetTitle,
-    GetWorkSheetTitleParams,
-    ProcessingSpreadsheetDetailTableParams,
-    ProcessingSpreadsheetSecondaryTablesParams,
-    ProcessingSpreadsheetTableParams,
-    SpreadsheetProcessingParams,
-} from './types';
+import {
+  type BillExpenseToCreation,
+  type BillExpenseToCreationParams ,
+  type BodyData ,
+  type BuildBodyDataParams ,type BuildForCreationParams ,
+  type GetWorkSheetTitle ,
+  type GetWorkSheetTitleParams ,
+  type ProcessingSpreadsheetDetailTableParams ,
+  type ProcessingSpreadsheetSecondaryTablesParams ,
+  type ProcessingSpreadsheetTableParams ,
+  type SpreadsheetProcessingParams } from './types';
 
 export default class BillSpreadsheetBusiness {
     public spreadsheetProcessing({
@@ -120,6 +124,213 @@ export default class BillSpreadsheetBusiness {
             nextRow: merge + topSpace + bottomSpace + 1,
             groupName: title.name,
         };
+    }
+    public buildForCreation({ fields, finance, workSheet, uploadBillParams }: BuildForCreationParams): Array<BillExpenseToCreation> {
+      if(fields.length === 0) {
+        throw new Error({
+          message: 'The fields is required in the spreadsheet.',
+          statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION
+        });
+      }
+
+      for(const field of fields) {
+        const row = field?.row ?? 14;
+        const fieldCell = workSheet.getCell(row, field.column)?.value;
+        this.validateFieldToCreation(field.label, fieldCell);
+      }
+
+      const { totalRows, nextRow } = this.validateWorkSheetToCreation(workSheet);
+
+      const billExpenseToCreateParams: Array<BillExpenseToCreationParams> = [];
+      for (let i = 0; i < totalRows; i++) {
+        const cellDate = workSheet.cell(nextRow + i ,1)?.
+        value?.
+        toString()?.
+        trim() || '';
+        const dateFromCell = new Date(cellDate);
+        const date = isNaN(dateFromCell.getDate()) ? new Date() : dateFromCell;
+        const month = getMonthByIndex(date.getMonth());
+        const year = date.getFullYear();
+
+        const cellTitle = workSheet.cell(nextRow + i ,2)?.
+        value?.
+        toString()?.
+        trim() || 'END';
+
+        const cellAmount = workSheet.cell(nextRow + i ,3)?.
+        value?.
+        toString()?.
+        trim() || 'END';
+
+        const cellGroup = workSheet.cell(nextRow + i ,4)?.
+        value?.
+        toString()?.
+        trim() || 'END';
+
+        const cellType = workSheet.cell(nextRow + i ,5)?.
+        value?.
+        toString()?.
+        trim() || 'END';
+
+        const cellPaid = workSheet.cell(nextRow + i ,6)?.
+        value?.
+        toString()?.
+        trim() || 'END';
+        const paid = uploadBillParams?.paid ?? cellPaid === 'SIM';
+
+        const cellBank = workSheet.cell(nextRow + i ,7)?.
+        value?.
+        toString()?.
+        trim() || 'END';
+
+        const rulesRepeatedWords = uploadBillParams?.repeatedWords ?? [];
+
+        const isRepeatWord = cellTitle !== 'END' && matchesRepeatWords(cellTitle, rulesRepeatedWords);
+
+        if(!isRepeatWord) {
+          const billExpenseToCreateParam: BillExpenseToCreationParams = {
+            year ,
+            paid ,
+            date ,
+            type: cellType ,
+            bank: cellBank ,
+            month ,
+            group: cellGroup ,
+            title: cellTitle ,
+            amount: cellAmount ,
+            finance: finance,
+          };
+          billExpenseToCreateParams.push(billExpenseToCreateParam);
+        }
+      }
+      return this.buildBillExpenseToCreation(billExpenseToCreateParams);
+    }
+
+    private buildBillExpenseToCreation( billExpenseToCreateParams: Array<BillExpenseToCreationParams>): Array<BillExpenseToCreation>{
+      const filtered = billExpenseToCreateParams.filter(
+        b => b.title !== 'END' && b.group !== 'END' && b.type !== 'END' ,
+      );
+
+      const params = new Map<string ,Array<BillExpenseToCreationParams>>();
+      filtered.forEach((item) => {
+        const key = `${ item.title }__${ item.group }__${ item.type }`;
+        if (!params.has(key)) {
+          params.set(key ,[]);
+        }
+        params.get(key)?.push(item);
+      });
+
+      return Array.from(params.values()).map(param => {
+        const monthMap = new Map<string ,string>();
+        param.forEach(item => {
+          const month = item.month;
+          if (month) {
+            monthMap.set(month ,item.amount);
+          }
+        });
+        const groupListItem = param[0];
+
+        const currentDate = new Date();
+
+        const months: BillExpenseToCreation['months'] = MONTHS.map(month => {
+          const strValue = monthMap.get(month) ?? '0.00';
+          const value = Number(strValue);
+          return {
+            year: groupListItem?.year ?? currentDate.getFullYear() ,
+            paid: groupListItem?.paid ?? false ,
+            code: getCurrentMonthNumber(month) ,
+            value ,
+            label: month ,
+            month: month.toUpperCase() as EMonth ,
+            received_at: groupListItem?.date ?? currentDate,
+          };
+        });
+        const total = months.reduce((acc ,item) => acc + Number(item.value) ,0);
+
+        return {
+          ...groupListItem ,
+          paid: groupListItem?.paid ?? false ,
+          year: groupListItem?.year ?? currentDate.getFullYear() ,
+          type: groupListItem?.type ?? EBillType.BANK_SLIP,
+          bank: groupListItem?.bank ?? 'Nubank',
+          date: groupListItem?.date ?? currentDate,
+          title: groupListItem?.title ?? 'unknow',
+          group: groupListItem?.group ?? 'unknow' ,
+          amount: total.toFixed(2) ,
+          months ,
+        };
+      });
+    }
+
+    private validateFieldToCreation(field: string, value?: string) {
+      if(!value || value === '') {
+        throw new Error({
+          message: `The ${field} field is required in the spreadsheet.`,
+          statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION ,
+        });
+      }
+
+    }
+
+    private validateWorkSheetToCreation(workSheet: WorkSheet): { totalRows: number; nextRow: number } {
+      const { totalRows ,nextRow } = workSheet.getCell(1 ,1);
+
+      if (totalRows <= 0) {
+        throw new Error({
+          message: 'The Excel file does not have any rows for Date column.' ,
+          statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION ,
+        });
+      }
+
+      const { totalRows: cellDateRows } = workSheet.getCell(1 ,2);
+
+      if (totalRows !== cellDateRows) {
+        throw new Error({
+          message: 'The Excel file does not have the same number of rows for Date columns.' ,
+          statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION ,
+        });
+      }
+
+      const { totalRows: cellTitleRows } = workSheet.getCell(1 ,3);
+
+      if (totalRows !== cellTitleRows) {
+        throw new Error({
+          message: 'The Excel file does not have the same number of rows for Date and title columns.' ,
+          statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION ,
+        });
+      }
+
+      const { totalRows: cellAmountRows } = workSheet.getCell(1 ,4);
+
+      if (totalRows !== cellAmountRows) {
+        throw new Error({
+          message: 'The Excel file does not have the same number of rows for Date and amount columns.' ,
+          statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION ,
+        });
+      }
+
+      const { totalRows: cellGroupRows } = workSheet.getCell(1 ,5);
+
+      if (totalRows !== cellGroupRows) {
+        throw new Error({
+          message: 'The Excel file does not have the same number of rows for Date and groups columns.' ,
+          statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION ,
+        });
+      }
+
+      const { totalRows: cellTypeRows } = workSheet.getCell(1 ,6);
+
+      if (totalRows !== cellTypeRows) {
+        throw new Error({
+          message: 'The Excel file does not have the same number of rows for Date and type columns.' ,
+          statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION ,
+        });
+      }
+
+      return {
+        nextRow ,
+        totalRows ,
+      };
     }
 
     private processingSpreadsheetTable(params: ProcessingSpreadsheetTableParams<Expense>): number {

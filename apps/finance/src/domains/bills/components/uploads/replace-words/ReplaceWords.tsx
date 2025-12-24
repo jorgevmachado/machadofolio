@@ -7,6 +7,7 @@ import { Accordion, Button, Input, Table, Text } from '@repo/ds';
 import './ReplaceWords.scss';
 
 type ReplaceWordsProps = {
+  empty?: boolean;
   withDefault?: boolean;
   replaceWords: Array<ReplaceWordParam>;
   updateReplaceWords: (replaceWords: Array<ReplaceWordParam>) => void;
@@ -19,7 +20,7 @@ const DEFAULT_REPLACE_WORDS: Array<ReplaceWordParam> = [
   }
 ];
 
-export default function ReplaceWords({ withDefault = true, replaceWords, updateReplaceWords }: ReplaceWordsProps) {
+export default function ReplaceWords({ empty = false, withDefault = true, replaceWords, updateReplaceWords }: ReplaceWordsProps) {
   const [list, setList] = useState<Array<ReplaceWordParam>>(replaceWords);
   const [replaceWord, setReplaceWord] = useState<Partial<ReplaceWordParam>>({
     after: undefined,
@@ -50,7 +51,7 @@ export default function ReplaceWords({ withDefault = true, replaceWords, updateR
   }, [replaceWord]);
 
   useEffect(() => {
-    if (withDefault && list.length === 0) {
+    if (withDefault && list.length === 0 && !empty) {
       setList(DEFAULT_REPLACE_WORDS);
       updateReplaceWords(DEFAULT_REPLACE_WORDS);
     }
