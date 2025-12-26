@@ -6,7 +6,11 @@ import { useLoading } from '@repo/ui';
 
 import { financeService } from '../../shared';
 
-import { type ExpensesCache, FinanceContext, type FinanceContextProps } from './FinanceContext';
+import {
+  type ExpensesCache ,
+  FinanceContext ,
+  type FinanceContextProps,
+} from './FinanceContext';
 
 export default function FinanceProvider({ children }: React.PropsWithChildren) {
   const isMounted = useRef(false);

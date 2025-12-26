@@ -20,6 +20,7 @@ import ChartFinanceInfo from './ChartFinanceInfo';
 import ChartGroupInfo from './ChartGroupInfo';
 import ChartPaymentMethodsInfo from './ChartPaymentMethodsInfo';
 import ChartSupplierInfo from './ChartSupplierInfo';
+import OverviewBills from './OverviewBills';
 
 import './DashboardInfo.scss';
 
@@ -59,7 +60,7 @@ export default function DashboardInfo({
     const text = t('title');
     const newTitle = treatTitle(finance.user, text, lang);
     setTitle(newTitle);
-  }, [t, lang]);
+  }, [t, lang, finance.user]);
 
   return (
     <div className="finance-info" data-testid="finance-info">
@@ -80,6 +81,11 @@ export default function DashboardInfo({
             </section>
           )
         }
+        {bills?.length > 0 && (
+          <section className="finance-info__content--group">
+            <OverviewBills bills={bills}/>
+          </section>
+        )}
         <section className="finance-info__content--group">
           <ChartBankInfo
             bills={bills}

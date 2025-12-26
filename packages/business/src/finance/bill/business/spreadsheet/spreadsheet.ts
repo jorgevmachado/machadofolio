@@ -176,7 +176,8 @@ export default class BillSpreadsheetBusiness {
         value?.
         toString()?.
         trim() || 'END';
-        const paid = uploadBillParams?.paid ?? cellPaid === 'SIM';
+        const currentPaid = Boolean(uploadBillParams?.paid);
+        const paid = currentPaid === false ? cellPaid === 'SIM' : currentPaid;
 
         const cellBank = workSheet.cell(nextRow + i ,7)?.
         value?.

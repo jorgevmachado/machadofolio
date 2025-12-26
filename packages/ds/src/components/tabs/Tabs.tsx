@@ -5,7 +5,7 @@ import { joinClass, type TContext } from '../../utils';
 import './Tabs.scss';
 
 type TabItem = {
-    title: string;
+    title: React.ReactNode | string;
     children: React.ReactNode;
 }
 

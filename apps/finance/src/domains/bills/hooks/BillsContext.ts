@@ -1,11 +1,13 @@
 import React from 'react';
 
-import type {
-  Bill ,
-  BillList ,
-  FinanceInfo ,
-  MonthsCalculated,
+import {
+  type Bank ,
+  type Bill ,
+  type BillList ,
+  type FinanceInfo ,type Group ,
+  type MonthsCalculated ,
 } from '@repo/business';
+
 import type { I18nTFunction } from '@repo/i18n';
 
 export type BillsContextProps = {
@@ -26,6 +28,7 @@ export type BillsContextProps = {
   handleUploadsFileModal: () => void;
   handleUploadFilesModal: (item: Bill) => void;
   handleOpenPersistModal: (item?: Bill) => void;
+  handleUploadCreditCardNubankModal: (group: Group, bank: Bank) => void;
 
 };
 
@@ -47,4 +50,5 @@ export const BillsContext = React.createContext<BillsContextProps>({
   handleUploadsFileModal: () => {},
   handleUploadFilesModal: () => {},
   handleOpenPersistModal: () => {},
+  handleUploadCreditCardNubankModal: () => {},
 });
