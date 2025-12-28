@@ -37,4 +37,13 @@ export const WithActionButton: Story = {
   }
 }
 
+export const WithActionIcon: Story = {
+  args: {
+    actionIcon: {
+     icon: 'upload',
+      onClick: fn()
+    }
+  }
+}
+
 

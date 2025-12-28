@@ -1,3 +1,5 @@
+import type { TFunction } from 'i18next';
+
 import {
     AUTH_SUPPORTED_LANGUAGE_EN,
     FINANCE_SUPPORTED_LANGUAGE_EN,
@@ -23,3 +25,5 @@ export type TResources = {
     global: Record<SupportedLang, typeof GLOBAL_SUPPORTED_LANGUAGE_EN>;
     finance: Record<SupportedLang, typeof FINANCE_SUPPORTED_LANGUAGE_EN>;
 }
+
+export type I18nTFunction = TFunction;

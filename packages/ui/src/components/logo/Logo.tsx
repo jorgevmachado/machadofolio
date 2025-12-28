@@ -17,7 +17,9 @@ export default function Logo({
     title,
     width = '150',
     height = '150',
+    source,
     className,
+    nameQueryUrl = 'source',
     ...props
 }: LogoProps) {
     return (
@@ -35,7 +37,10 @@ export default function Logo({
                 title={title}
                 width={width}
                 height={height}
+                source={source}
+                nameQueryUrl={nameQueryUrl}
             />
         </div>
     );
 };
+

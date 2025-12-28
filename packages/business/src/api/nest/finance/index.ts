@@ -9,6 +9,7 @@ export {
     type IExpenseBase,
     type IUpdateBillParams,
     type IUpdateExpenseParams,
+    type IUploadBillParams,
     type IUploadExpenseParams,
 } from './bill';
 export { Finance } from './finance';

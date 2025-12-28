@@ -15,9 +15,9 @@ jest.mock('../../utils', () => ({
     joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
 }));
 
-const mockUseActiveBrand = jest.fn();
+const mockUseImageSrc = jest.fn();
 jest.mock('../../hooks', () => ({
-    useActiveBrand: () => mockUseActiveBrand(),
+    useImageSrc: () => mockUseImageSrc(),
 }));
 
 jest.mock('../icon', () => ({
@@ -140,6 +140,7 @@ describe('<Image/>', () => {
 
     describe('type="notfound"', () => {
         it('should render component type notfound with props default.',  async () => {
+            mockUseImageSrc.mockReturnValue('base64-image-notfound');
             renderComponent({ src: undefined, type: 'notfound'});
             const component = screen.getByTestId('ds-image');
             expect(component).toBeInTheDocument();
@@ -164,7 +165,7 @@ describe('<Image/>', () => {
 
     describe('type="brand"', () => {
         it('should render component type brand when dont found brand.',  async () => {
-            mockUseActiveBrand.mockReturnValue(undefined);
+            mockUseImageSrc.mockReturnValue('base64-image-notfound');
             renderComponent({ src: undefined, type: 'brand'});
             const component = screen.getByTestId('ds-image');
             expect(component).toBeInTheDocument();
@@ -187,7 +188,7 @@ describe('<Image/>', () => {
         });
 
         it('should render component type brand equal law.',  async () => {
-            mockUseActiveBrand.mockReturnValue('law');
+            mockUseImageSrc.mockReturnValue('base64-image-law');
             renderComponent({ src: undefined, type: 'brand'});
             const component = screen.getByTestId('ds-image');
             expect(component).toBeInTheDocument();
@@ -199,7 +200,7 @@ describe('<Image/>', () => {
         });
 
         it('should render component type brand equal geek.',  async () => {
-            mockUseActiveBrand.mockReturnValue('geek');
+            mockUseImageSrc.mockReturnValue('base64-image-geek');
             renderComponent({ src: undefined, type: 'brand'});
             const component = screen.getByTestId('ds-image');
             expect(component).toBeInTheDocument();
@@ -211,7 +212,7 @@ describe('<Image/>', () => {
         });
 
         it('should render component type brand equal finance.',  async () => {
-            mockUseActiveBrand.mockReturnValue('finance');
+            mockUseImageSrc.mockReturnValue('base64-image-finance');
             renderComponent({ src: undefined, type: 'brand'});
             const component = screen.getByTestId('ds-image');
             expect(component).toBeInTheDocument();

@@ -1,4 +1,7 @@
-import type { IBill, ICreateBillParams, IPartialNestBaseEntity, IUpdateBillParams } from '../../api';
+import type {
+  IBill ,ICreateBillParams ,IPartialNestBaseEntity ,IUpdateBillParams ,
+  IUploadBillParams,
+} from '../../api';
 
 export type BillEntity = IBill
 
@@ -15,3 +18,5 @@ export type BillConstructorParams =
 export type CreateBillParams = ICreateBillParams;
 
 export type UpdateBillParams = IUpdateBillParams;
+
+export type UploadBillParams = IUploadBillParams;

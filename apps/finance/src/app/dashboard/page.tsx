@@ -7,9 +7,8 @@ import { useLoading, useUser } from '@repo/ui';
 
 import { useI18n } from '@repo/i18n';
 
+import { DashboardInfo } from '../../domains/dashboard';
 import { useFinance } from '../../hooks';
-
-import { DashboardInfo } from './components';
 
 import './page.scss';
 

@@ -2,6 +2,9 @@ import { type QueryParameters } from '@repo/business';
 
 import { User } from '../../auth/entities/user.entity';
 import { GetUserAuth } from '../../decorators/auth-user/auth-user.decorator';
+import {
+  UseFileUpload
+} from '../../decorators/use-file-upload/use-file-upload.decorator';
 import { UseMultipleFileUpload } from '../../decorators/use-multiple-file-upload/use-multiple-file-upload.decorator';
 import { AuthRoleGuard } from '../../guards/auth-role/auth-role.guard';
 import { AuthStatusGuard } from '../../guards/auth-status/auth-status.guard';
@@ -12,11 +15,15 @@ import { Finance } from '../entities/finance.entity';
 
 import { BillService } from './bill.service';
 import { CreateBillDto } from './dto/create-bill.dto';
+import { UploadBillDto } from './dto/uoload-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { UploadsExpenseDto } from './expense/dto/uploads-expense.dto';
 
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFiles, UseGuards } from '@nestjs/common';
+import {
+  Body ,Controller ,Delete ,Get ,Param ,Post ,Put ,Query ,
+  UploadedFile ,UploadedFiles ,UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('finance/bill')
@@ -83,5 +90,16 @@ export class BillController {
         @Body() uploadsExpenseDto: UploadsExpenseDto,
     ) {
         return this.service.persistExpensesByUpload(files, param, uploadsExpenseDto);
+    }
+
+    @Post('/upload')
+    @UseFileUpload(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+    persistBillExpenseByUpload (
+      @GetUserAuth() user: User,
+      @UploadedFile() file: Express.Multer.File,
+      @Body() uploadBillDto: UploadBillDto,
+    ) {
+      const finance = user.finance as Finance;
+      return this.service.newPersistBillExpenseByUpload(finance, file, uploadBillDto);
     }
 }

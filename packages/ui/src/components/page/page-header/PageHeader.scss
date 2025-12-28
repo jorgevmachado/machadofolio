@@ -4,4 +4,13 @@
   align-items: center;
   margin-bottom: 20px;
   justify-content: space-between;
+  &__container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    &--action-icon {
+    margin-top: 0.7rem;
+    }
+  }
 }

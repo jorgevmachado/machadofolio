@@ -10,5 +10,6 @@ export {
 export type {
     IBill,
     ICreateBillParams,
-    IUpdateBillParams
+    IUpdateBillParams,
+    IUploadBillParams
 } from './types';

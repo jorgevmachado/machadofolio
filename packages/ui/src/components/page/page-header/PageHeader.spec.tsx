@@ -13,6 +13,13 @@ describe('<PageHeader/>', () => {
     onClick: mockActionClick
   }
 
+  const mockActionIconClick = jest.fn();
+
+  const mockActionIcon = {
+    icon: 'upload',
+    onClick: mockActionIconClick
+  }
+
   const defaultProps = {
     resourceName: 'Page Header',
   };
@@ -58,6 +65,34 @@ describe('<PageHeader/>', () => {
     actionButton.click();
 
     expect(mockActionClick).toHaveBeenCalled();
+  });
+
+  it('should render component with action icon props.', () => {
+    renderComponent({ actionIcon: mockActionIcon });
+    expect(screen.getByTestId('ui-page-header')).toBeInTheDocument();
+    expect(screen.getByTestId('ui-page-header-title')).toBeInTheDocument();
+    expect(screen.getByTestId('ui-page-header-action-icon')).toBeInTheDocument();
+  });
+
+  it('should render component with custom action icon props.', () => {
+    renderComponent({ actionIcon: {...mockActionIcon, icon: 'react', className: 'custom-class'} });
+    expect(screen.getByTestId('ui-page-header')).toBeInTheDocument();
+    expect(screen.getByTestId('ui-page-header-title')).toBeInTheDocument();
+    const actionIcon = screen.getByTestId('ui-page-header-action-icon');
+    expect(actionIcon).toBeInTheDocument();
+    expect(actionIcon).toHaveClass('custom-class');
+  });
+
+  it('should render click in button when received action icon props.', () => {
+    renderComponent({ actionIcon: mockActionIcon });
+    expect(screen.getByTestId('ui-page-header')).toBeInTheDocument();
+    expect(screen.getByTestId('ui-page-header-title')).toBeInTheDocument();
+    const actionIcon = screen.getByTestId('ui-page-header-action-icon')
+    expect(actionIcon).toBeInTheDocument();
+
+    actionIcon.click();
+
+    expect(mockActionIconClick).toHaveBeenCalled();
   });
 
 })
