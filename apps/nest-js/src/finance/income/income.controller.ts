@@ -13,10 +13,13 @@ import { CreateIncomeDto } from './dto/create-income.dto';
 import { UpdateIncomeDto } from './dto/update-income.dto';
 import { IncomeService } from './income.service';
 
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body ,Controller ,Delete ,Get ,Param ,Post ,
+  Put ,Query ,UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-@Controller('finance/income')
+@Controller('finance/incomes')
 @UseGuards(AuthGuard(), AuthRoleGuard, AuthStatusGuard, FinanceInitializeGuard)
 export class IncomeController {
   constructor(private readonly service: IncomeService) {}
@@ -48,8 +51,9 @@ export class IncomeController {
         return this.service.findOne({ value: param, filters, withRelations: true });
     }
 
-  @Patch(':param')
+  @Put(':param')
   update(@GetUserAuth() user: User, @Param('param') param: string, @Body() body: UpdateIncomeDto) {
+    console.log('# => body => ', body)
     return this.service.update(user.finance as Finance, param, body);
   }
 

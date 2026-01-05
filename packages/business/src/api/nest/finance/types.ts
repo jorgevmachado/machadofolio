@@ -4,7 +4,7 @@ import { type INestBaseEntity } from '../types';
 import type { IBank } from './bank';
 import type { IBill, IExpense } from './bill';
 import type { IGroup } from './group';
-import type { IIncome } from './income';
+import { type IIncome ,type IIncomeSource } from './income';
 import type { ISupplier, ISupplierType } from './supplier';
 
 export type IFinanceBase = INestBaseEntity & {
@@ -39,5 +39,6 @@ export type IFinanceInfo = {
     totalPaid: number;
     expenses: Array<IExpense>;
     totalPending: number;
+    incomeSources: Array<IIncomeSource>;
     supplierTypes: Array<ISupplierType>;
 };

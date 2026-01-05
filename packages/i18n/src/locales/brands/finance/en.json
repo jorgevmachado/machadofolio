@@ -16,6 +16,8 @@
   "bank_slip": "Bank Slip",
   "add_expense": "Add Expense",
   "credit_card": "Credit Card",
+  "income_source": "Income Source",
+  "income": "Income",
   "account_debit": "Account Debit",
   "supplier_type": "Supplier Type",
   "create_finance": "Create Finance",

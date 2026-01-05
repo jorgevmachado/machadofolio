@@ -10,7 +10,7 @@ import { useAlert, useLoading } from '@repo/ui';
 import { useI18n } from '@repo/i18n';
 
 import { PageCrud } from '../../components';
-import { useFinance } from '../../hooks';
+import { useFinance } from '../../domains';
 import { groupService } from '../../shared';
 
 export default function GroupsPage() {

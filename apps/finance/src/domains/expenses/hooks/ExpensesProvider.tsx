@@ -10,8 +10,8 @@ import { useAlert, useModal } from '@repo/ui';
 
 import { useI18n } from '@repo/i18n';
 
-import { useFinance } from '../../../hooks';
 import { billService ,expenseBusiness ,expenseService } from '../../../shared';
+import { useFinance } from '../../finances';
 
 import Persist from '../components/persist';
 
@@ -96,7 +96,7 @@ export default function ExpensesProvider({ bill, children }: ExpensesProviderPro
     } finally {
       setIsLoading(false);
     }
-  }, [addAlert, bill?.id, fetchBill, t]);
+  }, [addAlert, bill?.id, currentPage, fetchBill, fetchExpenses, t]);
 
   const handleOpenPersistModal = useCallback(({ expense }: OnFormPersistParams) => {
     openModal({
@@ -109,7 +109,7 @@ export default function ExpensesProvider({ bill, children }: ExpensesProviderPro
       closeOnOutsideClick: true,
       removeBackgroundScroll: true,
     });
-  }, []);
+  }, [closeModal, handleSubmit, openModal, t]);
 
   const calculateExpenses = useCallback((expenses: Array<Expense>) => {
     return expenses?.map((expense) => expenseBusiness.calculate(expense));
@@ -159,12 +159,12 @@ export default function ExpensesProvider({ bill, children }: ExpensesProviderPro
   useEffect(() => {
     const externalCalculatedExpenses = calculateExpenses(bill?.expenses ?? []);
     setExternalCalculatedExpenses((externalCalculatedExpenses as Expense[]) || []);
-  } ,[bill?.expenses]);
+  } ,[bill?.expenses, calculateExpenses]);
 
   useEffect(() => {
     const calculatedExpenses = calculateExpenses(externalCalculatedExpenses);
     setCalculatedExpenses(calculatedExpenses);
-  } ,[externalCalculatedExpenses]);
+  } ,[calculateExpenses, externalCalculatedExpenses]);
 
   const context: ExpensesContextProps = {
     bill: billData,

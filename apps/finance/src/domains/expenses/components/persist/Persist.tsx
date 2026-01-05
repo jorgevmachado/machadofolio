@@ -17,7 +17,7 @@ import type {
   Expense ,UpdateExpenseParams ,
 } from '@repo/business';
 
-import { useFinance } from '../../../../hooks';
+import { useFinance } from '../../../finances';
 import type {
   OnSubmitParams
 } from '../../hooks';

@@ -51,7 +51,7 @@ export default function ChartFinanceInfo({ total, totalPaid, className, totalPen
     props.labels = [{ key: 'value', fill: '#8b5cf6', labelList: { dataKey: 'value', position: 'top', withCurrencyFormatter: true } }];
 
     return props;
-  }, [t]);
+  }, [t, total, totalPaid, totalPending]);
 
   return (
     <Charts

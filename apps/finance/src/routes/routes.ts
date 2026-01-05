@@ -93,6 +93,32 @@ export const privateRoutes: Array<TRoute> = [
     ],
   },
   {
+    key: 'income-parent',
+    icon: 'dollar-sign',
+    path: '/incomes',
+    type: 'private',
+    name: 'income',
+    title: 'Income',
+    children: [
+      {
+        key: 'income',
+        icon: 'dollar-sign',
+        path: '',
+        type: 'private',
+        name: 'income',
+        title: 'Income',
+      },
+      {
+        key: 'source',
+        path: '/sources',
+        type: 'private',
+        icon: 'source-tree',
+        name: 'source',
+        title: 'Source',
+      },
+    ]
+  },
+  {
     key: 'bill',
     icon: 'wallet',
     path: '/bills',

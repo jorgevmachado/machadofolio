@@ -7,7 +7,7 @@ import { Page, useAlert, useLoading, UserProvider } from '@repo/ui';
 
 import { type UserEntity } from '@repo/business/index';
 
-import { FinanceProvider } from '../../../hooks';
+import { FinanceProvider } from '../../../domains';
 import { publicRoutes } from '../../../routes';
 import { authService, getAccessToken, removeAccessToken } from '../../../shared';
 
@@ -40,6 +40,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
       addAlert({ type: 'error', message: 'Your token has expired!' });
       removeAccessToken();
       router.push('/');
+      throw error;
     } finally {
       hide();
     }

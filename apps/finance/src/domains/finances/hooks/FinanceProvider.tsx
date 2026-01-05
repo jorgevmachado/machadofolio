@@ -1,10 +1,20 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { type Bank, type Bill, type Expense, type Finance, type FinanceInfo, type Group, type Supplier, type SupplierType } from '@repo/business';
+import {
+  type Bank ,
+  type Bill ,
+  type Expense ,
+  type Finance ,
+  type FinanceInfo ,
+  type Group ,type Income ,
+  type IncomeSource ,
+  type Supplier ,
+  type SupplierType ,
+} from '@repo/business';
 
 import { useLoading } from '@repo/ui';
 
-import { financeService } from '../../shared';
+import { financeService } from '../../../shared';
 
 import {
   type ExpensesCache ,
@@ -27,6 +37,8 @@ export default function FinanceProvider({ children }: React.PropsWithChildren) {
   const [suppliers, setSuppliers] = useState<Array<Supplier>>([]);
   const [supplierTypes, setSupplierTypes] = useState<Array<SupplierType>>([]);
   const [expensesCache, setExpensesCache] = useState<ExpensesCache>({});
+  const [incomes, setIncomes] = useState<Array<Income>>([]);
+  const [incomeSources, setIncomeSources] = useState<Array<IncomeSource>>([]);
   const [hasAllDependencies, setHasAllDependencies] = useState<boolean>(false);
 
   const initializeFinanceInfo = (financeInfo: FinanceInfo) => {
@@ -38,8 +50,10 @@ export default function FinanceProvider({ children }: React.PropsWithChildren) {
     setBanks(banks);
     setGroups(groups);
     setFinance(financeInfo.finance);
+    setIncomes(financeInfo.incomes);
     setSuppliers(suppliers);
     setSupplierTypes(financeInfo.supplierTypes);
+    setIncomeSources(financeInfo.incomeSources);
     setHasAllDependencies(banks.length > 0 && groups.length > 0 && suppliers.length > 0);
   };
 
@@ -92,6 +106,7 @@ export default function FinanceProvider({ children }: React.PropsWithChildren) {
     refresh: () => setFetchRefresh(true),
     allPaid: Boolean(financeInfo?.allPaid),
     finance,
+    incomes,
     saveInfo: (financeInfo) => initializeFinanceInfo(financeInfo),
     expenses,
     totalPaid: financeInfo?.totalPaid ?? 0,
@@ -104,11 +119,14 @@ export default function FinanceProvider({ children }: React.PropsWithChildren) {
     expensesCache,
     updateGroups: (groups) => setGroups(groups),
     updateFinance: (finance) => setFinance(finance),
+    updateIncomes: (incomes) => setIncomes(incomes),
     supplierTypes,
+    incomeSources,
     updateExpenses: (expenses) => setExpenses(expenses),
     updateSuppliers: (suppliers) => setSuppliers(suppliers),
     setExpensesCache,
     hasAllDependencies,
+    updateIncomeSources: (incomeSources) => setIncomeSources(incomeSources),
     updateSupplierTypes: (supplierTypes) => setSupplierTypes(supplierTypes)
   };
 

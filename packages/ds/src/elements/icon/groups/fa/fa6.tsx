@@ -26,6 +26,7 @@ import {
     FaCompress,
     FaCookie,
     FaCreditCard,
+    FaDollarSign,
     FaDownload,
     FaEgg,
     FaEject,
@@ -83,6 +84,7 @@ import {
     FaShareFromSquare,
     FaShower,
     FaSort,
+    FaSourcetree,
     FaSquareGithub,
     FaStar,
     FaStop,
@@ -98,8 +100,7 @@ import {
     FaUserTie,
     FaVolumeOff,
     FaWallet,
-    FaWarehouse,
-} from 'react-icons/fa6';
+    FaWarehouse} from 'react-icons/fa6';
 
 import type { TIconGroupIcons } from '../types';
 
@@ -218,6 +219,8 @@ export const fa6Group: TIconGroupIcons = {
     'battery-full': <FaBatteryFull/>,
     'star-filled': <FaStar/>,
     'chevron-up': undefined,
+    'source-tree': <FaSourcetree/>,
+    'dollar-sign': <FaDollarSign/>,
     'chevron-left': <FaChevronLeft/>,
     'chevron-down': undefined,
     'chevron-right': <FaChevronRight/>,

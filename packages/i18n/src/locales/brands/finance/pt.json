@@ -16,6 +16,8 @@
   "bank_slip": "Boleto Bancário",
   "add_expense": "Adicionar despesa",
   "credit_card": "Cartão de crédito",
+  "income_source": "Fonte de renda",
+  "income": "Renda",
   "account_debit": "Débito em conta",
   "supplier_type": "Tipo de fornecedor",
   "create_finance": "Criar finanças",

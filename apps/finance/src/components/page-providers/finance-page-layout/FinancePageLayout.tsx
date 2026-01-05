@@ -8,7 +8,7 @@ import { type LanguageOption, Page, useLoading,useUser } from '@repo/ui';
 
 import { useI18n } from '@repo/i18n';
 
-import { useFinance } from '../../../hooks';
+import { useFinance } from '../../../domains';
 import { privateRoutes } from '../../../routes';
 
 type FinancePageLayoutProps = {

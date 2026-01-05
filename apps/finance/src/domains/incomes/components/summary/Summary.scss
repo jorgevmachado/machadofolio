@@ -1,0 +1,9 @@
+.income-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  &__text {
+    gap: 1rem;
+    display: flex;
+  }
+}

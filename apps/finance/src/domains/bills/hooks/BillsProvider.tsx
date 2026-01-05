@@ -17,13 +17,13 @@ import { PageDelete ,useAlert ,useLoading ,useModal } from '@repo/ui';
 
 import { useI18n } from '@repo/i18n';
 
-import { useFinance } from '../../../hooks';
 import {
   billBusiness ,
   billService ,
   expenseBusiness ,
   expenseService ,
 } from '../../../shared';
+import { useFinance } from '../../finances';
 
 import {
   type AllCalculatedSummary ,

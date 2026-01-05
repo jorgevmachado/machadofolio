@@ -1,0 +1,34 @@
+.income-persist {
+  gap: 1rem;
+  padding: 2rem;
+  display: flex;
+  overflow-y: auto;
+  flex-direction: column;
+  &__row {
+    gap: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    &--month {
+      gap: 1rem;
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    &--switch {
+      margin-top: 1.5rem;
+    }
+    &--item {
+      width: 100%;
+      margin-top: 1rem;
+    }
+  }
+  &__actions {
+    gap: 1rem;
+    display: grid;
+    margin-top: 2rem;
+    grid-template-columns: 1fr 1fr;
+  }
+}

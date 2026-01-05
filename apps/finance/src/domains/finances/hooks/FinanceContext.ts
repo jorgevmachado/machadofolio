@@ -18,6 +18,7 @@ export type FinanceContextProps = {
   groups: FinanceInfo['groups'];
   refresh: () => void;
   allPaid: boolean;
+  incomes: FinanceInfo['incomes'];
   finance?: FinanceInfo['finance'];
   saveInfo: (info: FinanceInfo) => void;
   expenses: FinanceInfo['expenses'];
@@ -32,11 +33,14 @@ export type FinanceContextProps = {
   expensesCache: ExpensesCache;
   updateFinance: (finance: FinanceInfo['finance']) => void;
   supplierTypes: FinanceInfo['supplierTypes'];
+  incomeSources: FinanceInfo['incomeSources'];
   updateExpenses: (expenses: FinanceInfo['expenses']) => void;
   updateSuppliers: (suppliers: FinanceInfo['suppliers']) => void;
+  updateIncomes: (incomes: FinanceInfo['incomes']) => void;
   setExpensesCache: React.Dispatch<React.SetStateAction<ExpensesCache>>;
   hasAllDependencies: boolean;
   updateSupplierTypes: (supplierTypes: FinanceInfo['supplierTypes']) => void;
+  updateIncomeSources: (incomeSources: FinanceInfo['incomeSources']) => void;
 
 };
 
@@ -52,6 +56,7 @@ export const FinanceContext = React.createContext<FinanceContextProps>({
   finance: undefined ,
   saveInfo: () => {
   } ,
+  incomes: [],
   expenses: [] ,
   totalPaid: 0 ,
   suppliers: [] ,
@@ -67,8 +72,10 @@ export const FinanceContext = React.createContext<FinanceContextProps>({
   updateFinance: () => {
   } ,
   supplierTypes: [] ,
+  updateIncomes: () => {},
   updateExpenses: () => {
   } ,
+  incomeSources: [] ,
   updateSuppliers: () => {
   } ,
   setExpensesCache: () => {
@@ -76,4 +83,5 @@ export const FinanceContext = React.createContext<FinanceContextProps>({
   hasAllDependencies: false ,
   updateSupplierTypes: () => {
   } ,
+  updateIncomeSources: () => {},
 });

@@ -6,7 +6,7 @@ import { IncomeSourceService } from './source.service';
 
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 
-@Controller('finance/income')
+@Controller('finance/incomes')
 export class SourceController {
   constructor(private readonly service: IncomeSourceService) {}
 

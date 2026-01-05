@@ -2,12 +2,13 @@ import React from 'react';
 import {
     CiCalendar,
     CiCamera,
+    CiDollar,
     CiEdit,
     CiHeart,
     CiPhone,
     CiStar,
     CiUser,
-    CiWarning,
+    CiWarning
 } from 'react-icons/ci';
 
 import type { TIconGroupIcons } from '../types';
@@ -127,6 +128,8 @@ export const ciGroup: TIconGroupIcons = {
     'battery-full': undefined,
     'star-filled': undefined,
     'chevron-up': undefined,
+    'source-tree': undefined,
+    'dollar-sign': <CiDollar/>,
     'chevron-left': undefined,
     'chevron-down': undefined,
     'chevron-right': undefined,

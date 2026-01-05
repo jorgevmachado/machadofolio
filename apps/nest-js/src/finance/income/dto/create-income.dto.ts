@@ -47,7 +47,6 @@ export class CreateIncomeDto implements CreateIncomeParams {
     months?: Array<PersistMonthDto>
 
     @IsNotEmpty()
-    @MaxLength(200)
     source!: string | IncomeSource;
 
     @IsOptional()

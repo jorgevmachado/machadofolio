@@ -1,4 +1,4 @@
-import { VscEdit, VscError, VscGithub, VscSearch, VscTrash } from 'react-icons/vsc';
+import { VscEdit, VscError, VscGithub, VscSearch, VscSourceControl,VscTrash } from 'react-icons/vsc';
 
 import type { TIconGroupIcons } from '../types';
 
@@ -117,6 +117,8 @@ export const vscGroup: TIconGroupIcons = {
     'battery-full': undefined,
     'star-filled': undefined,
     'chevron-up': undefined,
+    'source-tree': <VscSourceControl/>,
+    'dollar-sign': undefined,
     'chevron-left': undefined,
     'chevron-down': undefined,
     'chevron-right': undefined,

@@ -16,7 +16,6 @@ export class UpdateIncomeDto implements UpdateIncomeParams {
     name?: string;
 
     @IsOptional()
-    @MaxLength(200)
     source?: string | IncomeSource;
 
     @IsOptional()

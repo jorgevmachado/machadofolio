@@ -117,6 +117,8 @@ export type TIcon =
     | 'battery-full'
     | 'star-filled'
     | 'chevron-up'
+    | 'source-tree'
+    | 'dollar-sign'
     | 'chevron-left'
     | 'chevron-down'
     | 'chevron-right'
