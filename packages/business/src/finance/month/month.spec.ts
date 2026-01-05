@@ -26,10 +26,11 @@ describe('Month', () => {
 
     describe('Constructor', () => {
         it('should create an instance with default values when no parameters are provided', () => {
+            const year = new Date().getFullYear();
             const result = new Month();
             expect(result).toBeInstanceOf(Month);
             expect(result.id).toBeUndefined();
-            expect(result.year).toEqual(2025);
+            expect(result.year).toEqual(year);
             expect(result.code).toEqual(1);
             expect(result.paid).toBeFalsy();
             expect(result.value).toEqual(0);
@@ -43,11 +44,12 @@ describe('Month', () => {
         });
 
         it('should create an instance when receiving only mandatory parameters', () => {
+            const year = new Date().getFullYear();
             mockGetMonthByIndex.mockReturnValue('january');
             const result = new Month({ value: 100 });
             expect(result).toBeInstanceOf(Month);
             expect(result.id).toBeUndefined();
-            expect(result.year).toEqual(2025);
+            expect(result.year).toEqual(year);
             expect(result.code).toEqual(1);
             expect(result.paid).toBeFalsy();
             expect(result.value).toEqual(100);

@@ -232,6 +232,7 @@ describe('Month Business', () => {
                     month: EMonth.JANUARY,
                     received_at: new Date('2027-01-01')
                 }],
+              received_at: new Date('2025-12-01')
             });
 
             expect(result).toHaveLength(MONTHS.length);

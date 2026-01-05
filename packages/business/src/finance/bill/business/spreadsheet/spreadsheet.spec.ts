@@ -250,9 +250,10 @@ describe('Bill Spreadsheet Business', () => {
         it('should return the cell text directly when there is no match in the regex (null match).', () => {
             const CELL_VALUE = 'Purchasing Group';
 
+            const year = new Date().getFullYear();
             spreadsheetMock.workSheet.cell.mockImplementation(() => ({ value: CELL_VALUE }) as any);
 
-            jest.spyOn(String.prototype, 'match').mockImplementation(() => ['Purchasing Group', undefined, '2025']);
+            jest.spyOn(String.prototype, 'match').mockImplementation(() => ['Purchasing Group', undefined, `${year}`]);
 
             const result = business.getWorkSheetTitle({
                     row: 1,
@@ -260,8 +261,6 @@ describe('Bill Spreadsheet Business', () => {
                     workSheet: spreadsheetMock.workSheet,
                 }
             );
-
-            const year = new Date().getFullYear();
 
             expect(result).toEqual({
                 year: year,
