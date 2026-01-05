@@ -100,6 +100,6 @@ export class BillController {
       @Body() uploadBillDto: UploadBillDto,
     ) {
       const finance = user.finance as Finance;
-      return this.service.newPersistBillExpenseByUpload(finance, file, uploadBillDto);
+      return this.service.persistBillExpenseByUpload(finance, file, uploadBillDto);
     }
 }

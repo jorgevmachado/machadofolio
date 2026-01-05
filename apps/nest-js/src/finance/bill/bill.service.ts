@@ -1,23 +1,12 @@
 import { Repository } from 'typeorm';
 
-import {
-  EMonth ,
-  Error ,
-  ERROR_STATUS_CODE ,
-  getCurrentMonthNumber ,
-  getMonthByIndex ,
-  matchesRepeatWords ,
-  MONTHS ,
-  snakeCaseToNormal ,
-  Spreadsheet ,
-  type WorkSheet ,
-} from '@repo/services';
+import { snakeCaseToNormal ,Spreadsheet  } from '@repo/services';
 
 import {
   Bill as BillConstructor ,
   BillBusiness ,
   BillExpenseToCreation ,
-  BuildForCreationParams,
+  BuildForCreationParams ,
   EBillType ,
 } from '@repo/business';
 
@@ -43,7 +32,7 @@ import { UpdateBillDto } from './dto/update-bill.dto';
 import { CreateExpenseDto } from './expense/dto/create-expense.dto';
 import { UploadsExpenseDto } from './expense/dto/uploads-expense.dto';
 import { ExpenseService } from './expense/expense.service';
-import { BillExpenseToCreate ,BillExpenseToCreateParams } from './types';
+import { BillExpenseToCreate } from './types';
 
 import { ConflictException ,Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -263,7 +252,7 @@ export class BillService extends Service<Bill> {
     };
   }
 
-  async newPersistBillExpenseByUpload(
+  async persistBillExpenseByUpload(
     finance: Finance ,
     file: Express.Multer.File ,uploadBillDto: UploadBillDto) {
     if (!file || !file?.buffer) {
@@ -292,340 +281,82 @@ export class BillService extends Service<Bill> {
           column: 1 ,
           field: 'date' ,
           label: 'Date' ,
-        },
+        } ,
         {
           row: 1 ,
           column: 2 ,
           field: 'title' ,
           label: 'Title' ,
-        },
+        } ,
         {
           row: 1 ,
           column: 3 ,
           field: 'amount' ,
           label: 'Amount' ,
-        },
+        } ,
         {
           row: 1 ,
           column: 4 ,
           field: 'group' ,
           label: 'Group' ,
-        },
+        } ,
         {
           row: 1 ,
           column: 5 ,
           field: 'type' ,
           label: 'Type' ,
-        },
+        } ,
         {
           row: 1 ,
           column: 6 ,
           field: 'paid' ,
           label: 'Paid' ,
-        },
+        } ,
         {
           row: 1 ,
           column: 7 ,
           field: 'bank' ,
           label: 'Bank' ,
-        },
-      ],
-      finance,
-      workSheet,
-      uploadBillParams: uploadBillDto,
-    }
-    const billExpenseToCreation: Array<BillExpenseToCreation> = this.billBusiness.spreadsheet.buildForCreation(buildForCreationParams);
-    const createExpenseListToCreate: Array<BillExpenseToCreate> = await this.newBuildExpenseListToCreate(finance, billExpenseToCreation)
-
+        } ,
+      ] ,
+      finance ,
+      workSheet ,
+      uploadBillParams: uploadBillDto ,
+    };
+    const billExpenseToCreation: Array<BillExpenseToCreation> = this.billBusiness.spreadsheet.buildForCreation(
+      buildForCreationParams);
+    const createExpenseListToCreate: Array<BillExpenseToCreate> = await this.buildExpenseListToCreate(
+      finance ,billExpenseToCreation);
 
     await this.expenseService.upload(createExpenseListToCreate);
 
-    return await this.findAll({ withRelations: true })
+    return await this.findAll({ withRelations: true });
   }
 
-  private async newBuildExpenseListToCreate(
-    finance:Finance,
-    billExpenseToCreation: Array<BillExpenseToCreation>
+  private async buildExpenseListToCreate(
+    finance: Finance ,
+    billExpenseToCreation: Array<BillExpenseToCreation>,
   ) {
 
     const billExpenseToCreate: Array<BillExpenseToCreate> = [];
 
     for (const item of billExpenseToCreation) {
-      const group = await this.groupService.createToSheet(item.finance as Finance ,item.group) as Group;
+      const group = await this.groupService.createToSheet(
+        item.finance as Finance ,item.group) as Group;
       const bank = await this.bankService.createToSheet(item.bank) as Bank;
-      const bill = await this.createToSheet(finance, group ,bank ,item.type as EBillType ,item.year) as Bill;
+      const bill = await this.createToSheet(finance ,group ,bank ,
+        item.type as EBillType ,item.year) as Bill;
       billExpenseToCreate.push({
-        ...item,
-        finance: finance as Finance,
-        bill
-      })
+        ...item ,
+        finance: finance as Finance ,
+        bill,
+      });
     }
     return billExpenseToCreate;
   }
 
-  async persistBillExpenseByUpload(
-    finance: Finance ,
-    file: Express.Multer.File ,uploadBillDto: UploadBillDto) {
-    if (!file || !file?.buffer) {
-      throw this.error(new ConflictException(
-        'one of the files was not uploaded or is invalid.'));
-    }
-
-    const spreadsheet = new Spreadsheet();
-
-    const worksheets = await spreadsheet.loadFile(file.buffer);
-
-    const worksheet = worksheets[0];
-
-    if (!worksheet) {
-      throw this.error(new ConflictException(
-        'The Excel file does not contain any worksheets.'));
-    }
-
-    spreadsheet.updateWorkSheet(worksheet);
-    const workSheet = spreadsheet.workSheet;
-
-    const uploadBill: UploadBillDto = {
-      file: '' ,
-      replaceWords: uploadBillDto?.replaceWords ,
-      repeatedWords: uploadBillDto?.repeatedWords ,
-    };
-
-    const createExpenseListToCreate = await this.buildExpenseListToCreate(
-      finance ,workSheet ,uploadBill);
-
-    await this.expenseService.upload(createExpenseListToCreate);
-
-    return await this.findAll({ withRelations: true })
-  }
-
-  private async buildExpenseListToCreate(
-    finance: Finance ,
-    workSheet: WorkSheet ,
-    uploadBill: UploadBillDto,
-  ) {
-    const fieldDate = workSheet.getCell(1 ,1)?.value;
-    this.validateFieldSheet('Date' ,fieldDate);
-    const fieldTitle = workSheet.getCell(1 ,2)?.value;
-    this.validateFieldSheet('Title' ,fieldTitle);
-    const fieldAmount = workSheet.getCell(1 ,3)?.value;
-    this.validateFieldSheet('Amount' ,fieldAmount);
-    const fieldGroup = workSheet.getCell(1,4)?.value;
-    this.validateFieldSheet('Group' ,fieldGroup);
-    const fieldType = workSheet.getCell(1,5)?.value;
-    this.validateFieldSheet('Type' ,fieldType);
-    const fieldPaid = workSheet.getCell(1,6)?.value;
-    this.validateFieldSheet('Paid' ,fieldPaid);
-    const fieldBank = workSheet.getCell(1,7)?.value;
-    this.validateFieldSheet('Bank' ,fieldBank);
-
-    const { totalRows ,nextRow } = this.validateWorkSheetToBuild(workSheet);
-
-    const billExpenseToCreateParams: Array<BillExpenseToCreateParams> = [];
-
-    for (let i = 0; i < totalRows; i++) {
-      const cellDate = workSheet.cell(nextRow + i ,1)?.
-      value?.
-      toString()?.
-      trim() || '';
-      const dateFromCell = new Date(cellDate);
-      const date = isNaN(dateFromCell.getDate()) ? new Date() : dateFromCell;
-      const month = getMonthByIndex(date.getMonth());
-      const year = date.getFullYear();
-
-      const cellTitle = workSheet.cell(nextRow + i ,2)?.
-      value?.
-      toString()?.
-      trim() || 'END';
-
-      const cellAmount = workSheet.cell(nextRow + i ,3)?.
-      value?.
-      toString()?.
-      trim() || 'END';
-
-      const cellGroup = workSheet.cell(nextRow + i ,4)?.
-      value?.
-      toString()?.
-      trim() || 'END';
-
-      const cellType = workSheet.cell(nextRow + i ,5)?.
-      value?.
-      toString()?.
-      trim() || 'END';
-
-      const cellPaid = workSheet.cell(nextRow + i ,6)?.
-      value?.
-      toString()?.
-      trim() || 'END';
-      const paid = uploadBill?.paid ?? cellPaid === 'SIM';
-
-      const cellBank = workSheet.cell(nextRow + i ,7)?.
-      value?.
-      toString()?.
-      trim() || 'END';
-
-      const rulesRepeatedWords = uploadBill?.repeatedWords ?? [];
-
-      const isRepeatWord = cellTitle !== 'END' && matchesRepeatWords(cellTitle, rulesRepeatedWords);
-
-      if(!isRepeatWord) {
-        const billExpenseToCreateParam: BillExpenseToCreateParams = {
-          year ,
-          paid ,
-          date ,
-          type: cellType ,
-          bank: cellBank ,
-          month ,
-          group: cellGroup ,
-          title: cellTitle ,
-          amount: cellAmount ,
-          finance: finance,
-        };
-        billExpenseToCreateParams.push(billExpenseToCreateParam);
-      }
-    }
-    return await this.buildBillExpenseToCreate(finance,billExpenseToCreateParams);
-  }
-
-  private validateFieldSheet(field: string, value?: string) {
-    if(!value || value === '') {
-      throw this.error(new ConflictException(
-        `The ${field} field is required in the spreadsheet.`));
-    }
-  }
-
-  private async buildBillExpenseToCreate(finance: Finance, billExpenseToCreateParams: Array<BillExpenseToCreateParams>): Promise<Array<BillExpenseToCreate>> {
-    const filtered = billExpenseToCreateParams.filter(
-      b => b.title !== 'END' && b.group !== 'END' && b.type !== 'END' ,
-    );
-
-    const params = new Map<string ,Array<BillExpenseToCreateParams>>();
-    filtered.forEach((item) => {
-      const key = `${ item.title }__${ item.group }__${ item.type }`;
-      if (!params.has(key)) {
-        params.set(key ,[]);
-      }
-      params.get(key)?.push(item);
-    });
-
-    const list = Array.from(params.values()).map(param => {
-      const monthMap = new Map<string ,string>();
-      param.forEach(item => {
-        const month = item.month;
-        if (month) {
-          monthMap.set(month ,item.amount);
-        }
-      });
-      const groupListItem = param[0];
-
-      const currentDate = new Date();
-
-      const months: BillExpenseToCreate['months'] = MONTHS.map(month => {
-        const strValue = monthMap.get(month) ?? '0.00';
-        const value = Number(strValue);
-        return {
-          year: groupListItem?.year ?? currentDate.getFullYear() ,
-          paid: groupListItem?.paid ?? false ,
-          code: getCurrentMonthNumber(month) ,
-          value ,
-          label: month ,
-          month: month.toUpperCase() as EMonth ,
-          received_at: groupListItem?.date ?? currentDate,
-        };
-      });
-      const total = months.reduce((acc ,item) => acc + Number(item.value) ,0);
-
-      return {
-        ...groupListItem ,
-        paid: groupListItem?.paid ?? false ,
-        year: groupListItem?.year ?? currentDate.getFullYear() ,
-        type: groupListItem?.type ?? EBillType.BANK_SLIP,
-        bank: groupListItem?.bank ?? 'Nubank',
-        date: groupListItem?.date ?? currentDate,
-        title: groupListItem?.title ?? 'unknow',
-        group: groupListItem?.group ?? 'unknow' ,
-        amount: total.toFixed(2) ,
-        months ,
-      };
-    });
-
-    const billExpenseToCreate: Array<BillExpenseToCreate> = [];
-
-    for (const item of list) {
-      const group = await this.groupService.createToSheet(item.finance as Finance ,item.group) as Group;
-      const bank = await this.bankService.createToSheet(item.bank) as Bank;
-      const bill = await this.createToSheet(finance, group ,bank ,item.type as EBillType ,item.year) as Bill;
-      billExpenseToCreate.push({
-        ...item,
-        finance: finance as Finance,
-        bill
-      })
-    }
-    return billExpenseToCreate;
-  }
-
-  private validateWorkSheetToBuild(workSheet: WorkSheet) {
-    const { totalRows ,nextRow } = workSheet.getCell(1 ,1);
-
-    if (totalRows <= 0) {
-      throw new Error({
-        message: 'The Excel file does not have any rows for Date column.' ,
-        statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION ,
-      });
-    }
-
-    const { totalRows: cellDateRows } = workSheet.getCell(1 ,2);
-
-    if (totalRows !== cellDateRows) {
-      throw new Error({
-        message: 'The Excel file does not have the same number of rows for Date columns.' ,
-        statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION ,
-      });
-    }
-
-    const { totalRows: cellTitleRows } = workSheet.getCell(1 ,3);
-
-    if (totalRows !== cellTitleRows) {
-      throw new Error({
-        message: 'The Excel file does not have the same number of rows for Date and title columns.' ,
-        statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION ,
-      });
-    }
-
-    const { totalRows: cellAmountRows } = workSheet.getCell(1 ,4);
-
-    if (totalRows !== cellAmountRows) {
-      throw new Error({
-        message: 'The Excel file does not have the same number of rows for Date and amount columns.' ,
-        statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION ,
-      });
-    }
-
-    const { totalRows: cellGroupRows } = workSheet.getCell(1 ,5);
-
-    if (totalRows !== cellGroupRows) {
-      throw new Error({
-        message: 'The Excel file does not have the same number of rows for Date and groups columns.' ,
-        statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION ,
-      });
-    }
-
-    const { totalRows: cellTypeRows } = workSheet.getCell(1 ,6);
-
-    if (totalRows !== cellTypeRows) {
-      throw new Error({
-        message: 'The Excel file does not have the same number of rows for Date and type columns.' ,
-        statusCode: ERROR_STATUS_CODE.CONFLICT_EXCEPTION ,
-      });
-    }
-
-    return {
-      nextRow ,
-      totalRows ,
-    };
-  }
-
-  private async createToSheet(finance: Finance  ,group: Group ,bank: Bank ,type: EBillType ,year: number) {
+  private async createToSheet(finance: Finance ,group: Group ,bank: Bank ,
+    type: EBillType ,year: number) {
 
     const billList = await this.findAll({
       withRelations: true ,
@@ -646,16 +377,19 @@ export class BillService extends Service<Bill> {
           param: 'bank.name_code' ,
           relation: true ,
           condition: '=' ,
-        },
-      ],
+        } ,
+      ] ,
     }) as Array<Bill>;
 
     if (!billList || billList.length === 0) {
-      const name = `${ group.name } ${ snakeCaseToNormal(type) } ${ bank.name }`;
+      const name = `${ group.name } ${ snakeCaseToNormal(
+        type) } ${ bank.name }`;
       const bill = new BillConstructor({
-        name: type === EBillType.CREDIT_CARD ? `${ name } ${ bank.name }` : name ,
-        year,
-        type,
+        name: type === EBillType.CREDIT_CARD ?
+          `${ name } ${ bank.name }` :
+          name ,
+        year ,
+        type ,
         finance ,
         bank ,
         group ,
