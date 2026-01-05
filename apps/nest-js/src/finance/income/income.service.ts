@@ -106,6 +106,7 @@ export class IncomeService extends Service<Income> {
             if (months.length > 0) {
                 savedIncome.months = await this.monthService.persistList(months, { income: savedIncome })
                 savedIncome.total = savedIncome.months.reduce((acc, item) => acc + item.value, 0);
+                savedIncome.all_paid = savedIncome.months.every((item) => item.paid);
                 return await this.save(savedIncome);
             }
             return savedIncome;
@@ -145,6 +146,7 @@ export class IncomeService extends Service<Income> {
             if (monthsToPersist && monthsToPersist.length > 0) {
                 income.months = await this.monthService.persistList(monthsToPersist, { income });
                 income.total = income.months.reduce((acc, item) => acc + item.value, 0);
+                income.all_paid = income.months.every((item) => item.paid);
             }
             return await this.save(income);
 
@@ -209,6 +211,7 @@ export class IncomeService extends Service<Income> {
             if(currentIncome && currentIncome?.months && currentIncome?.months?.length > 0) {
                 income.months = await this.monthService.persistList(currentIncome.months, { income });
                 income.total = income.months.reduce((acc, item) => acc + item.value, 0);
+                income.all_paid = income.months.every((item) => item.paid);
                 const savedIncome = await this.save(income) as Income;
                 incomeList.push(savedIncome);
                 continue;

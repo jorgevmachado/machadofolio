@@ -53,6 +53,7 @@ const INCOME_MOCK = {
     months: [],
     source: INCOME_SOURCE_MOCK,
     finance: FINANCE_MOCK,
+    all_paid: false,
     name_code: 'salary',
     created_at: new Date('2025-04-02T19:11:59.405Z'),
     updated_at: new Date('2025-04-02T19:11:59.405Z'),

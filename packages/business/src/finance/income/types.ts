@@ -1,4 +1,7 @@
-import type { ICreateIncomeParams, IIncome, IPartialNestBaseEntity, IUpdateIncomeParams } from '../../api';
+import type {
+  ICreateIncomeParams ,IIncome ,
+  IMonthsObject ,IPartialNestBaseEntity ,IUpdateIncomeParams,
+} from '../../api';
 
 export type IncomeEntity = IIncome;
 
@@ -17,3 +20,7 @@ export type IncomeConstructorParams = Omit<
 export type CreateIncomeParams = ICreateIncomeParams;
 
 export type UpdateIncomeParams = IUpdateIncomeParams;
+
+export type IncomeWithMonthsAndPaid = IMonthsObject & IncomeEntity & {
+  total: number;
+};

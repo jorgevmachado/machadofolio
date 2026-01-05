@@ -35,7 +35,7 @@ export default function Content() {
         <DependencyFallback { ...currentFallback }/>
       ) :
         (<>
-          <IncomeSummary incomes={incomes} />
+          <IncomeSummary />
           <Tabs
             items={ incomes.map((item) => ({
               title: item.name ,

@@ -37,6 +37,9 @@ export class Income implements IncomeEntity {
     })
     total!: number;
 
+    @Column({ nullable: false, default: false })
+    all_paid?: boolean;
+
     @OneToMany(() => Month, (expenseMonth) => expenseMonth.income)
     months?: Array<Month>;
 

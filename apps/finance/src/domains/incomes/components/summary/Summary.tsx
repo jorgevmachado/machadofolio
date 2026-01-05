@@ -1,33 +1,18 @@
-import { useMemo } from 'react';
-
-import { currencyFormatter } from '@repo/services';
-
-import { type Income } from '@repo/business';
-
 import { Text } from '@repo/ds';
 
 import { useI18n } from '@repo/i18n';
 
+import { useIncomes } from '../../hooks';
+
 import './Summary.scss';
 
-type IncomeSummaryProps = {
-  incomes: Array<Income>
-}
-export default function IncomeSummary({ incomes }: IncomeSummaryProps) {
+export default function IncomeSummary() {
   const { t } = useI18n();
-  
-  const total = useMemo(() => {
-    const value = incomes.reduce((acc, curr) => acc + curr.total, 0);
-    return `${t('total')}: ${currencyFormatter(value)}`;
-  }, [incomes, t]);
 
-  const paid = useMemo(() => {
-    const allPaid = incomes.every(income =>
-      income.months?.length
-        ? income.months.every(month => month.paid)
-        : false);
-    return `${t('all_paid')}: ${allPaid ? t('yes') : t('no')}`;
-  }, [incomes, t]);
+  const {
+    allPaid,
+    allTotal
+  } = useIncomes();
 
   return (
     <div className="income-summary" data-testid="summary">
@@ -38,7 +23,7 @@ export default function IncomeSummary({ incomes }: IncomeSummaryProps) {
           weight="bold"
           variant="medium"
         >
-          {total}
+          {`${t('total')}: ${allTotal}`}
         </Text>
         <Text
           tag="p"
@@ -46,7 +31,7 @@ export default function IncomeSummary({ incomes }: IncomeSummaryProps) {
           weight="bold"
           variant="medium"
         >
-          {paid}
+          {`${t('all_paid')}: ${allPaid ? t('yes') : t('no')}`}
         </Text>
       </div>
     </div>

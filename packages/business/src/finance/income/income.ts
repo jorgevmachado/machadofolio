@@ -10,6 +10,7 @@ export default class Income implements IncomeEntity {
     months?: IncomeEntity['months'] = [];
     source: IncomeEntity['source'];
     finance!: IncomeEntity['finance'];
+    all_paid?: IncomeEntity['all_paid'] = false;
     name_code!: IncomeEntity['name_code'];
     created_at!: IncomeEntity['created_at'];
     updated_at!: IncomeEntity['updated_at'];
@@ -25,6 +26,7 @@ export default class Income implements IncomeEntity {
             this.months = params?.months ?? this.months;
             this.source = params?.source;
             this.finance = params?.finance;
+            this.all_paid = params?.all_paid ?? this.all_paid;
             this.name_code = toSnakeCase(normalize(this.name));
             this.created_at = params?.created_at ?? this.created_at;
             this.updated_at = params?.updated_at ?? this.updated_at;

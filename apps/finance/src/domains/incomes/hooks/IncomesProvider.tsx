@@ -14,10 +14,13 @@ import { ETypeTableHeader ,type Table ,type TColors } from '@repo/ds';
 
 import { useAlert ,useLoading ,useModal } from '@repo/ui';
 
-import type { CreateIncomeParams ,Income } from '@repo/business';
+import type {
+  CreateIncomeParams ,
+  Income
+} from '@repo/business';
 import { useI18n } from '@repo/i18n';
 
-import { incomeService } from '../../../shared';
+import { incomeBusiness ,incomeService } from '../../../shared';
 import { useFinance } from '../../finances';
 
 import { IncomePersist } from '../components';
@@ -49,7 +52,8 @@ export default function IncomesProvider({ children }: IncomesProviderProps) {
       const response = (await incomeService.getAll(
         { withRelations: true },
       )) as Array<Income>;
-      setIncomes(response);
+      const calculatedResponse = incomeBusiness.calculateAll(response);
+      setIncomes(calculatedResponse);
       return response;
     } catch (error) {
       addAlert({ type: 'error' ,message: t('error_fetching_incomes') });
@@ -90,7 +94,6 @@ export default function IncomesProvider({ children }: IncomesProviderProps) {
 
   const handleOpenPersistModal = useCallback(
     (income?: Income) => {
-      console.log('# => income => ' ,income);
       openModal({
         width: '799px' ,
         title: `${ income ? t('edit') : t('create') } ${ t('income') }` ,
@@ -147,6 +150,18 @@ export default function IncomesProvider({ children }: IncomesProviderProps) {
     ];
   } ,[t]);
 
+  const allPaid = useMemo(() => {
+    return incomeBusiness.calculateAllPaid(incomes);
+  }, [incomes]);
+
+  const allTotal = useMemo(() => {
+    return incomeBusiness.calculateAllTotal(incomes);
+  }, [incomes]);
+
+  const tableItem = useCallback((income: Income) => {
+    return incomeBusiness.convertMonthsToArray(income) ;
+  }, []);
+
   useEffect(() => {
     if (!isMounted.current) {
       isMounted.current = true;
@@ -159,6 +174,9 @@ export default function IncomesProvider({ children }: IncomesProviderProps) {
     modal ,
     headers ,
     incomes ,
+    allPaid,
+    allTotal,
+    tableItem,
     isLoading ,
     incomeSources ,
     currentFallback ,

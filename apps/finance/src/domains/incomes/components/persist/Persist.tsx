@@ -151,6 +151,7 @@ export default function Persist({
       valid: field.valid
     };
   };
+
   const switchChecked = ({ name, item }: CurrentValueParams) => {
     if (!name){
       return false;
