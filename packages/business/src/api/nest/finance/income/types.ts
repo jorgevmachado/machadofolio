@@ -11,6 +11,7 @@ export type IIncome = IFinanceBase & {
     months?: Array<IMonth>;
     source: IIncomeSource;
     finance: IFinance;
+    all_paid?: boolean;
     description?: string;
 }
 
