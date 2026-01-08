@@ -22,11 +22,34 @@ function treatAuthPort(port?: string) {
   }
 }
 
+function treatRedirectToUrl(url: string, host: string) {
+  try {
+    const parsedUrl = new URL(url);
+    parsedUrl.host = host;
+    return parsedUrl.toString();
+  } catch {
+    return url;
+  }
+}
+
+function treatEnv(port?: string) {
+  switch (port) {
+    case '4001':
+      return 'dev';
+    case '4101':
+      return 'stg';
+    case '4201':
+      return 'prod';
+    default:
+      return 'dev';
+  }
+}
+
 function treatRedirectUrl(request: NextRequest, destination: string) {
   const url = request.nextUrl.clone();
   const keyDestination = convertUrlToKey(destination);
-  const authRoute = publicRoutes.find(route => route.key === keyDestination);
 
+  const authRoute = publicRoutes.find(route => route.key === keyDestination);
   if (!authRoute) {
     url.pathname =  destination;
     return url;
@@ -35,16 +58,17 @@ function treatRedirectUrl(request: NextRequest, destination: string) {
   const port = treatAuthPort(url.port);
   if (keyPathname !== keyDestination) {
     const host = request.headers.get('host') ?? undefined;
-    const redirectToUrl = new URL('/dashboard', url);
+    const redirectToUrl = new URL(destination, url);
     url.host = !host ? redirectToUrl.host : host;
-    url.searchParams.set('redirectTo', redirectToUrl.href);
+    url.searchParams.set('redirectTo', treatRedirectToUrl(redirectToUrl.href, url.host));
   }
   url.searchParams.set('source', 'finance');
-  url.searchParams.set('env', 'dev');
+  url.searchParams.set('env', treatEnv(port));
   url.pathname = authRoute.path;
   if (port) {
     url.port = port;
   }
+
   return url;
 }
 
