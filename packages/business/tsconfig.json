@@ -12,6 +12,8 @@
       "@repo/services/*": ["../services/*"]
     },
     "incremental": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "target": "ES2022"
   }
 }
