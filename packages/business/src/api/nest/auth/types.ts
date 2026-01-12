@@ -20,6 +20,10 @@ export type IUser = INestBaseEntity & {
     date_of_birth: Date;
     recover_token?: string;
     confirmation_token?: string;
+    total_authentications: number;
+    last_authentication_at?: Date;
+    authentication_success: number;
+    authentication_failures: number;
 }
 
 export type ISignUpParams
@@ -32,6 +36,10 @@ export type ISignUpParams
     | 'created_at'
     | 'updated_at'
     | 'deleted_at'
+    | 'total_authentications'
+    | 'last_authentication_at'
+    | 'authentication_success'
+    | 'authentication_failures'
 > & {
     password: string;
     password_confirmation: string;

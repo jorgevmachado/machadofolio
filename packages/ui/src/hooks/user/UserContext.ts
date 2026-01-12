@@ -22,6 +22,9 @@ export const initialUserData: UserEntity = {
     created_at: new Date(),
     updated_at: new Date(),
     date_of_birth: new Date(),
+    total_authentications: 0 ,
+    authentication_success: 0 ,
+    authentication_failures: 0 ,
 }
 
 export default React.createContext<UserContextProps>({

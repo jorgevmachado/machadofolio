@@ -20,7 +20,11 @@ export const FINANCE_MOCK: Finance = {
         created_at: new Date('2025-02-01T17:37:47.783Z'),
         updated_at: new Date('2025-02-01T17:37:47.783Z'),
         date_of_birth: new Date('1990-01-01T00:00:00.000Z'),
-        confirmation_token: '9bd0aceff9012467fce99a8c2efdfacd3a27255d87f0b516adfd5e889ad3668e'
+        confirmation_token: '9bd0aceff9012467fce99a8c2efdfacd3a27255d87f0b516adfd5e889ad3668e',
+        total_authentications: 2,
+        last_authentication_at: new Date('2024-09-09T00:00:00.000Z'),
+        authentication_success: 1,
+        authentication_failures: 1,
     },
     created_at: new Date('2025-02-01T17:37:47.783Z'),
     updated_at: new Date('2025-02-01T14:40:31.207Z'),

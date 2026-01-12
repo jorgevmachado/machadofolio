@@ -45,6 +45,10 @@ describe('User Class', () => {
         whatsapp: mockUser.whatsapp,
         date_of_birth: mockUser.date_of_birth,
         cleanAllFormatter: true,
+        total_authentications: mockUser.total_authentications,
+        last_authentication_at: mockUser.last_authentication_at,
+        authentication_success: mockUser.authentication_success,
+        authentication_failures: mockUser.authentication_failures,
     };
 
     const mockPhoneFormatted: string = mockUser.whatsapp;
@@ -61,6 +65,10 @@ describe('User Class', () => {
                 status: mockUserConstructorParams.status,
                 whatsapp: mockUserConstructorParams.whatsapp,
                 date_of_birth: mockUserConstructorParams.date_of_birth,
+                total_authentications: mockUserConstructorParams.total_authentications,
+                last_authentication_at: mockUserConstructorParams.last_authentication_at,
+                authentication_success: mockUserConstructorParams.authentication_success,
+                authentication_failures: mockUserConstructorParams.authentication_failures,
             });
 
             expect(user.id).toBeUndefined();
@@ -72,6 +80,10 @@ describe('User Class', () => {
             expect(user.status).toBe(mockUserConstructorParams.status);
             expect(user.whatsapp).toBe(mockUserConstructorParams.whatsapp);
             expect(user.date_of_birth).toBe(mockUserConstructorParams.date_of_birth);
+            expect(user.total_authentications).toBe(mockUserConstructorParams.total_authentications);
+            expect(user.last_authentication_at).toBe(mockUserConstructorParams.last_authentication_at);
+            expect(user.authentication_success).toBe(mockUserConstructorParams.authentication_success);
+            expect(user.authentication_failures).toBe(mockUserConstructorParams.authentication_failures);
         });
 
         it('should create a User with default values if parameters are not provided', () => {

@@ -35,7 +35,7 @@ export default function SignInPage() {
                   : 'Unable to authenticate at this time, please try again later';
 
       addAlert({ type: 'error', message });
-      console.error(error);
+      throw error;
     } finally {
       hide();
     }

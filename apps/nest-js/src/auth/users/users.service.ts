@@ -110,8 +110,21 @@ export class UsersService extends Service<User>{
         const hash = await bcrypt.hash(password, user.salt as string);
 
         if (hash === user.password) {
+            await this.save({
+              ...user,
+              total_authentications: user.total_authentications + 1,
+              last_authentication_at: new Date(),
+              authentication_success: user.authentication_success + 1
+            });
             return user;
         }
+
+      await this.save({
+        ...user,
+        total_authentications: user.total_authentications + 1,
+        last_authentication_at: new Date(),
+        authentication_failures: user.authentication_failures + 1
+      });
 
         throw new UnprocessableEntityException('Invalid credentials');
     }

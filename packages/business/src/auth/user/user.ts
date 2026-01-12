@@ -23,6 +23,10 @@ export default class User implements UserEntity {
     date_of_birth!: UserEntity['date_of_birth'];
     recover_token?: UserEntity['recover_token'];
     confirmation_token?: UserEntity['confirmation_token'];
+    total_authentications: UserEntity['total_authentications'] = 0;
+    last_authentication_at?: UserEntity['last_authentication_at'];
+    authentication_success: UserEntity['authentication_success'] = 0;
+    authentication_failures: UserEntity['authentication_failures'] = 0;
 
     constructor(params?: UserConstructorParams) {
         if(params) {
@@ -47,6 +51,11 @@ export default class User implements UserEntity {
                 throw new Error(validator.message);
             }
             this.whatsapp = cleanAllFormatter ? cleanFormatter(params.whatsapp) : params.whatsapp;
+
+            this.total_authentications = params.total_authentications ?? this.total_authentications;
+            this.last_authentication_at = params.last_authentication_at ?? this.last_authentication_at;
+            this.authentication_success = params.authentication_success ?? this.authentication_success;
+            this.authentication_failures = params.authentication_failures ?? this.authentication_failures;
 
             if (!clean) {
                 this.salt = params.salt ?? this.salt;

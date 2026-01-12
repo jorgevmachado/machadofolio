@@ -141,6 +141,10 @@ export const Update: Story = {
             created_at: new Date('2024-09-09T00:00:00.000Z'),
             updated_at: new Date('2024-09-09T00:00:00.000Z'),
             date_of_birth: new Date('1990-01-01T00:00:00.000Z'),
+            total_authentications: 2,
+            last_authentication_at: new Date('2024-09-09T00:00:00.000Z'),
+            authentication_success: 1,
+            authentication_failures: 1,
         }
     },
     render: (args) => <Template {...args} />,

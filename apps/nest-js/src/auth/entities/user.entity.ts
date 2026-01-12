@@ -76,4 +76,16 @@ export class User implements UserEntity {
 
     @Column({ nullable: true, length: 64 })
     confirmation_token?: string;
+
+    @Column({ nullable: false, default: 0 })
+    total_authentications!: number;
+
+    @Column({ nullable: true })
+    last_authentication_at?: Date;
+
+    @Column({ nullable: false, default: 0 })
+    authentication_success!: number;
+
+    @Column({ nullable: false, default: 0 })
+    authentication_failures!: number;
 }

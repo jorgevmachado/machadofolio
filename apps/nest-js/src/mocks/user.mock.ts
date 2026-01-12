@@ -23,6 +23,10 @@ export const USER_MOCK: User = {
     date_of_birth: new Date('1990-01-01T00:00:00.000Z'),
     recover_token: undefined,
     confirmation_token: '9bd0aceff9012467fce99a8c2efdfacd3a27255d87f0b516adfd5e889ad3668e',
+    total_authentications: 2,
+    last_authentication_at: new Date('2024-09-09T00:00:00.000Z'),
+    authentication_success: 1,
+    authentication_failures: 1,
 };
 
 export const USER_PASSWORD: string = '@Password1';

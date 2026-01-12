@@ -10,9 +10,13 @@ export type SignInParams = ISignInParams;
 
 export type UpdateParams = IUpdateUserParams;
 
-export type UserConstructorParams = Omit<UserEntity, 'id' | 'created_at' | 'updated_at' | 'deleted_at'> & IPartialNestBaseEntity & {
+export type UserConstructorParams = Omit<UserEntity, 'id' | 'created_at' | 'updated_at' | 'deleted_at' | 'total_authentications' | 'last_authentication_at' | 'authentication_success' | 'authentication_failures'> & IPartialNestBaseEntity & {
     clean?: boolean;
     cleanAllFormatter?: boolean;
+    total_authentications?: number;
+    last_authentication_at?: Date;
+    authentication_success?: number;
+    authentication_failures?: number;
 };
 
 export type ValidateCurrentUserParams =  {
