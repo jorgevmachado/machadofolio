@@ -7,6 +7,11 @@ import '@repo/ds/dist/index.css';
 import '@repo/ui/dist/index.css';
 import './page.scss';
 
+export const metadata = {
+  title: 'Machadofolio Auth',
+  icons: [{ rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' }]
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -14,10 +19,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <title>{typeof window !== 'undefined' ? (window.document.title || 'Machadofolio Auth') : 'Machadofolio Auth'}</title>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-      </head>
       <body>
         <PageProviders>
           {children}

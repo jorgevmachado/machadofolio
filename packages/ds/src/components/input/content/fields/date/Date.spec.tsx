@@ -103,20 +103,27 @@ describe('<DateInput>', () => {
 
         fireEvent.click(input);
 
-        const day = await screen.findByText('25');
+        const currentDate = new Date();
+        const currentDateYear = currentDate.getFullYear();
+        const currentLastTwoDigits = Math.abs(currentDateYear).toString().slice(-2).padStart(2, '0');
 
-        act(() => {
+        const day = await screen.findByText(currentLastTwoDigits);
+
+      const datePattern = new RegExp(`^${currentDateYear}-\\d{2}-\\d{2}T`);
+
+
+      act(() => {
             fireEvent.click(day);
         });
 
         await waitFor(() => {
             expect(onChange).toHaveBeenCalledWith(
                 expect.any(Object),
-                expect.stringMatching(/^202[2,5]-\d{2}-\d{2}T/)
+                expect.stringMatching(datePattern)
             );
             expect(onInput).toHaveBeenCalledWith(
                 expect.any(Object),
-                expect.stringMatching(/^202[2,5]-\d{2}-\d{2}T/)
+                expect.stringMatching(datePattern)
             );
         });
     });

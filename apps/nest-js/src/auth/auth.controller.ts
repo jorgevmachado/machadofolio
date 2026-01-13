@@ -55,7 +55,7 @@ export class AuthController {
 
   @Put('upload')
   @UseGuards(AuthGuard(), AuthRoleGuard)
-  @UseFileUpload(['image/jpeg', 'image/png', 'image/jpg'])
+  @UseFileUpload(['image/jpeg', 'image/png', 'image/jpg'], false)
   async upload(
       @UploadedFile() file: Express.Multer.File,
       @GetUserAuth() user: User,

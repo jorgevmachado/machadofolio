@@ -1,6 +1,6 @@
-import React from 'react';
+import React ,{ useId } from 'react';
 
-import { generateComponentId, joinClass } from '../../utils';
+import { joinClass } from '../../utils';
 
 import './Card.scss';
 
@@ -19,7 +19,9 @@ export default function Card({
                                  'data-testid': dataTestId = 'ds-card',
                                  ...props
                              }: Readonly<CardProps>) {
-    const componentId = id || generateComponentId('ds-card');
+
+    const reactId = useId();
+    const componentId = id ?? `ds-card-${reactId}`;
     return (
         <div
             {...props}

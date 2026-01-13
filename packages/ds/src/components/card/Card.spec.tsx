@@ -8,8 +8,7 @@ jest.mock('../../utils', () => {
     const originalModule = jest.requireActual('../../utils') as Record<string, any>;
     return {
         ...originalModule,
-        joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
-        generateComponentId: jest.fn(() => 'mock-id'),
+        joinClass: (classes: string[]) => classes.filter(Boolean).join(' ')
     }
 });
 

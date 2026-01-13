@@ -41,7 +41,7 @@ export default function Dashboard() {
       <header id="avatar" className="dashboard-header">
         <Text id="avatar-text" tag="h1" variant="giant" color="primary-80"
           weight="bold">Dashboard de Autenticação</Text>
-        <Avatar src={ user.avatar } name={ user.name } title={ user.name }
+        <Avatar id="avatar-image" src={ user.avatar } name={ user.name } title={ user.name }
           size="large"/>
       </header>
       <section className="dashboard-cards">
@@ -67,7 +67,7 @@ export default function Dashboard() {
       </section>
       <section>
         <Card>
-          <Accordion title="Widget Personalizado">
+          <Accordion id="dashboard-widget-accordion" title="Widget Personalizado">
             <div  className="dashboard-widget">
               <Button context="info" appearance="borderless"
                 onClick={ (e) => handleOnClick(e ,'geek') }>Geeks</Button>

@@ -18,6 +18,7 @@ jest.mock('../../utils', () => {
     return {
         ...originalModule,
         joinClass: (classes: string[]) => classes.filter(Boolean).join(' '),
+      generateComponentId: jest.fn(() => 'mock-id'),
     }
 });
 

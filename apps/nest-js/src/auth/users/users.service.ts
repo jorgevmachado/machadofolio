@@ -149,7 +149,7 @@ export class UsersService extends Service<User>{
 
     async upload(id: string, file: Express.Multer.File) {
         const currentUser = await this.findOne({ value: id }) as User;
-        const path = await this.file.upload(file, currentUser.email);
+        const path = await this.file.upload(file, currentUser.email, false);
         currentUser.avatar = `http://localhost:3001/uploads/${path.split('/').pop()}`;
         return await this.save(currentUser);
     }

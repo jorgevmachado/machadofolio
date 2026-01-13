@@ -2,7 +2,7 @@ import { AuthService, Nest } from '@repo/business';
 
 import { getAccessToken } from '../cookies';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+export const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 const token = getAccessToken() || '';
 

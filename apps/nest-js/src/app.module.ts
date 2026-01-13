@@ -1,3 +1,5 @@
+import { join } from 'path';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -8,7 +10,9 @@ import { PokemonModule } from './pokemon/pokemon.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 
 @Module({
     imports: [
@@ -30,6 +34,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             entities: [__dirname + '/../**/*.entity{.ts,.js}'],
             synchronize: process.env.SYNCHRONIZE === 'true',
             ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+        }),
+        ServeStaticModule.forRoot({
+          rootPath: join(process.cwd(), 'uploads'),
+          serveRoot: '/uploads'
         }),
         AuthModule,
         FinanceModule,

@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-export const UseFileUpload = (allowedTypes: Array<string>) => {
+export const UseFileUpload = (allowedTypes: Array<string>, checkExistFile: boolean = true) => {
     return applyDecorators(
         UseInterceptors(
             FileInterceptor('file', {
@@ -24,7 +24,7 @@ export const UseFileUpload = (allowedTypes: Array<string>) => {
                     const uploadsFolderPath = join(process.cwd(), 'uploads');
                     const filePath = join(uploadsFolderPath, file.originalname);
 
-                    if (fs.existsSync(filePath)) {
+                    if (checkExistFile && fs.existsSync(filePath)) {
                         return callback(
                             new BadRequestException('File already exists or is invalid.'),
                             false,

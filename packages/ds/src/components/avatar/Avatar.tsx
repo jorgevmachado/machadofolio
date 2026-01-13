@@ -3,11 +3,17 @@ import React, { useMemo, useState } from 'react';
 import { initials } from '@repo/services';
 
 import { Image, Text } from '../../elements';
-import { joinClass, type TContext, type TSimplySIze } from '../../utils';
+import {
+  generateComponentId ,
+  joinClass ,
+  type TContext ,
+  type TSimplySIze,
+} from '../../utils';
 
 import './Avatar.scss';
 
 export interface AvatarProps {
+  id?: string;
   src?: string;
   size?: TSimplySIze;
   name: string;
@@ -19,6 +25,7 @@ export interface AvatarProps {
 }
 
 export default function Avatar({
+    id,
     src,
     size = 'medium',
     name,
@@ -39,6 +46,8 @@ export default function Avatar({
         setImageLoaded(false);
     }
 
+  const componentId = id ?? generateComponentId('ds-avatar');
+
     const classNameList = joinClass([
         size && `ds-avatar__size--${size}`,
     ]);
@@ -55,7 +64,7 @@ export default function Avatar({
     ]);
 
   return (
-      <div className="ds-avatar" data-testid="ds-avatar">
+      <div id={componentId} className="ds-avatar" data-testid="ds-avatar">
           <div className={classNameList} data-testid="ds-avatar-content">
               <div className={wrapperClassNameList} data-testid="ds-avatar-wrapper">
                   <Image

@@ -6,8 +6,9 @@ import { BadRequestException } from '@nestjs/common';
 
 export class File {
     constructor(protected env: string) {}
-    async upload(file: Express.Multer.File, filename?: string) {
-        const filePath = this.getPath(file, filename);
+    async upload(file: Express.Multer.File, filename?: string, checkExistFile: boolean = true) {
+
+        const filePath = this.getPath(file, filename, checkExistFile);
 
         try {
             await writeFile(filePath, file.buffer);
@@ -19,7 +20,7 @@ export class File {
         return filePath;
     }
 
-    getPath(file: Express.Multer.File, filename?: string) {
+    getPath(file: Express.Multer.File, filename?: string, checkExistFile: boolean = true) {
         if (!file) {
             throw new BadRequestException('File not received or invalid.');
         }
@@ -30,7 +31,7 @@ export class File {
             : file.originalname;
         const filePath = join(uploadsFolderPath, currentPath);
 
-        if (fs.existsSync(filePath)) {
+        if (checkExistFile && fs.existsSync(filePath)) {
             throw new BadRequestException('File already exists or is invalid.');
         }
 
