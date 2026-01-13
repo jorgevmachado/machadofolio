@@ -1,0 +1,137 @@
+import { type NextRequest, NextResponse } from 'next/server';
+
+import { allRoutes, publicRoutes } from './routes';
+
+function convertUrlToKey(url: string) {
+  return url.startsWith('/') ? url.slice(1) : url;
+}
+
+function treatAuthPort(port?: string) {
+  if (!port) {
+    return port;
+  }
+  switch (port) {
+    case '4002':
+      return '4001';
+    case '4102':
+      return '4101';
+    case '4202':
+      return '4201';
+    default:
+      return;
+  }
+}
+
+function treatRedirectToUrl(url: string, host: string) {
+  try {
+    const parsedUrl = new URL(url);
+    parsedUrl.host = host;
+    return parsedUrl.toString();
+  } catch {
+    return url;
+  }
+}
+
+function treatEnv(port?: string) {
+  switch (port) {
+    case '4001':
+      return 'dev';
+    case '4101':
+      return 'stg';
+    case '4201':
+      return 'prod';
+    default:
+      return 'dev';
+  }
+}
+
+function treatRedirectUrl(request: NextRequest, destination: string) {
+  const url = request.nextUrl.clone();
+  const keyDestination = convertUrlToKey(destination);
+
+  const authRoute = publicRoutes.find(route => route.key === keyDestination);
+  if (!authRoute) {
+    url.pathname =  destination;
+    return url;
+  }
+  const keyPathname = convertUrlToKey(url.pathname);
+  const port = treatAuthPort(url.port);
+  if (keyPathname !== keyDestination) {
+    const host = request.headers.get('host') ?? undefined;
+    const redirectToUrl = new URL(destination, url);
+    url.host = !host ? redirectToUrl.host : host;
+    url.searchParams.set('redirectTo', treatRedirectToUrl(redirectToUrl.href, url.host));
+  }
+  url.searchParams.set('source', 'geek');
+  url.searchParams.set('env', treatEnv(port));
+  url.pathname = authRoute.path;
+  if (port) {
+    url.port = port;
+  }
+
+  return url;
+}
+
+function redirectTo(
+  request: NextRequest,
+  redirectTo: string = '/dashboard',
+): NextResponse {
+  const destination = treatRedirectUrl(request, redirectTo);
+  return NextResponse.redirect(destination);
+}
+
+function isAppRoute(path: string): boolean {
+  const validRoutes = allRoutes.map((item) => item.path);
+  if (
+    path === '/favicon.ico' ||
+        path.startsWith('/.well-known') ||
+        path.match(/\.(png|jpg|jpeg|gif|svg|ico)$/)
+  ) {
+    return false;
+  }
+  return validRoutes.includes(path);
+}
+
+
+function isAuthRoute(path: string): boolean {
+  const authPaths = publicRoutes.map((item) => item.path);
+  return authPaths.includes(path);
+}
+
+
+async function isTokenValid(token: string): Promise<boolean> {
+  return true;
+}
+
+
+export default async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  if (pathname === '/' ) {
+    return redirectTo(request);
+  }
+
+  if (!isAppRoute(pathname)) {
+    return NextResponse.next();
+  }
+
+  const token = request.cookies.get('accessToken')?.value;
+
+  const isAuth = isAuthRoute(pathname);
+
+  const isAuthenticated = token ? await isTokenValid(token) : false;
+
+  if (!isAuth && !isAuthenticated) {
+    return redirectTo(request, '/sign-in');
+  }
+
+  if (isAuth && isAuthenticated) {
+    return redirectTo(request);
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|\\.well-known/.*).*)'],
+};

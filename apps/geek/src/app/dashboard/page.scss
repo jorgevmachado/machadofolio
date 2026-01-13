@@ -1,0 +1,31 @@
+.dashboard {
+  &__empty {
+    gap: 1rem;
+    display: flex;
+    margin-top: 25vh;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+  &__header {
+    gap: 1rem;
+    display: flex;
+    align-items: center;
+  }
+  &__content {
+    gap: 2rem;
+    display: flex;
+    flex-direction: column;
+  }
+  &__cards {
+    gap: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    &--item {
+      gap: 0.5rem;
+      display: flex;
+      flex-direction: column;
+
+    }
+  }
+}

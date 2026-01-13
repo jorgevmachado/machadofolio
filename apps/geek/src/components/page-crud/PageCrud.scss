@@ -1,0 +1,17 @@
+.page-crud {
+  &__modal {
+    &--persist {
+      &-inputs {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      &-actions {
+        gap: 1rem;
+        display: grid;
+        margin-top: 1rem;
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  }
+}
