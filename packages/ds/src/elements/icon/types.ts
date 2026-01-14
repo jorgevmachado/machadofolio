@@ -79,6 +79,7 @@ export type TIcon =
     | 'confirm'
     | 'warning'
     | 'expense'
+    | 'pokemon'
     | 'user-tie'
     | 'category'
     | 'arrow-up'

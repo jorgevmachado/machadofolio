@@ -181,6 +181,7 @@ export const fa6Group: TIconGroupIcons = {
     confirm: undefined,
     warning: undefined,
     expense: <FaMoneyBillTrendUp/>,
+  pokemon: undefined,
     category: undefined,
     'user-tie': <FaUserTie/>,
     'arrow-up': undefined,

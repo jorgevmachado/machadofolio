@@ -1,6 +1,6 @@
 import { extractLastNumberFromUrl } from '@repo/services';
 
-import { PokeApi } from '../../../api';
+import { type IPokemonByNameResponse ,type ISpecieResponse ,PokeApi } from '../../../api';
 import Pokemon from '../../pokemon';
 
 import { PokeApiBusiness } from '../business';
@@ -34,12 +34,29 @@ export class PokeApiService {
 
     public async getByName(entity: Pokemon): Promise<Pokemon> {
         const business = new PokeApiBusiness();
-        return await Promise.all([
-            await this.pokeApi.getByName(entity.name),
-            await this.pokeApi.specie.getByPokemonName(entity.name)
-        ]).then(([pokemonByName, specieByPokemonName]) => {
-            return business.convertResponseToPokemon(entity, pokemonByName, specieByPokemonName);
-        });
+        const result: {
+          entity: Pokemon;
+          byNameResponse?: IPokemonByNameResponse;
+          specieByPokemonNameResponse?: ISpecieResponse;
+        } = {
+          entity,
+          byNameResponse: undefined,
+          specieByPokemonNameResponse: undefined
+        };
+
+        try {
+          result.byNameResponse =  await this.pokeApi.getByName(entity.name);
+        } catch (error) {
+          result.byNameResponse = undefined;
+        }
+
+        try {
+          result.specieByPokemonNameResponse = await this.pokeApi.specie.getByPokemonName(entity.name);
+        } catch (error) {
+          result.specieByPokemonNameResponse = undefined;
+        }
+
+        return business.convertResponseToPokemon(entity, result.byNameResponse, result.specieByPokemonNameResponse);
     }
 
     public async getEvolutions(url: string): Promise<Array<string>> {

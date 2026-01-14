@@ -79,6 +79,7 @@ export const vscGroup: TIconGroupIcons = {
     confirm: undefined,
     warning: undefined,
     expense: undefined,
+    pokemon: undefined,
     category: undefined,
     'user-tie': undefined,
     'arrow-up': undefined,

@@ -43,6 +43,14 @@ export const privateRoutes: Array<TRoute> = [
     title: 'Dashboard',
   },
   {
+    key: 'pokemons',
+    icon: 'pokemon',
+    path: '/pokemons',
+    type: 'private',
+    name: 'pokemons',
+    title: 'Pokemons',
+  },
+  {
     key: 'profile',
     icon: 'user',
     path: 'http://localhost:4001/profile?source=geek&redirectTo=http://localhost:4002/dashboard',

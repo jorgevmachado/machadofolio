@@ -74,11 +74,12 @@ export class Queries<T extends BasicEntity> {
 
     async findOne(params: FindOneByParams) {
         const valueIsUUID = isUUID(params?.value);
+        const condition = valueIsUUID ? '=' : 'LIKE';
         return await this.findBy({
             searchParams: {
                 by: valueIsUUID ? 'id' : 'name',
                 value: params?.value?.toLowerCase(),
-                condition: valueIsUUID ? '=' : 'LIKE',
+                condition: params.condition ?? condition,
             },
             filters: params?.filters,
             relations: params?.relations,

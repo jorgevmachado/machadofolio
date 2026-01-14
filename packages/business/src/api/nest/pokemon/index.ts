@@ -1,4 +1,5 @@
 export type { IAbility } from './ability';
+export type { ICaptured } from './captured';
 export type { IMove } from './move';
 export { Pokemon } from './pokemon';
 export type { IType } from './type';

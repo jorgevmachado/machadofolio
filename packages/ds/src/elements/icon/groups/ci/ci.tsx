@@ -90,6 +90,7 @@ export const ciGroup: TIconGroupIcons = {
     confirm: undefined,
     warning: <CiWarning />,
     expense: undefined,
+    pokemon: undefined,
     category: undefined,
     'user-tie': undefined,
     'arrow-up': undefined,

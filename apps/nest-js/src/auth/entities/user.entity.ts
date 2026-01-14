@@ -4,6 +4,7 @@ import {
     DeleteDateColumn,
     Entity,
     JoinColumn,
+  OneToMany,
     OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn
@@ -14,6 +15,9 @@ import { EGender } from "@repo/services";
 import { ERole, EStatus, UserEntity } from '@repo/business';
 
 import { Finance } from '../../finance/entities/finance.entity';
+import {
+  CapturedPokemons
+} from '../../pokemon/entities/captured-pokemons.entity';
 
 @Entity({ name: 'users' })
 export class User implements UserEntity {
@@ -58,6 +62,9 @@ export class User implements UserEntity {
     @OneToOne(() => Finance, (finance) => finance.user, { nullable: true })
     @JoinColumn()
     finance?: Finance;
+
+    @OneToMany(() => CapturedPokemons, (captured) => captured.user)
+    capturedPokemons?: Array<CapturedPokemons>;
 
     @CreateDateColumn()
     created_at!: Date;

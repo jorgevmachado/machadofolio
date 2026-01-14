@@ -1,9 +1,10 @@
 import type { QueryParameters } from '@repo/business/types';
 
-import type { FilterParams, SearchParams } from '../query';
+import { type FilterParams ,type SearchParams ,type TQueryCondition } from '../query';
 
 export type FindOneByParams = Omit<FindByParams, 'searchParams'> & {
     value: string;
+    condition?: TQueryCondition;
 }
 
 export type ListParams = {

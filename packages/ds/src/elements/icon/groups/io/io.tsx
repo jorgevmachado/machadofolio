@@ -159,6 +159,7 @@ export const ioGroup: TIconGroupIcons = {
     confirm: <IoIosCheckmarkCircleOutline/>,
     warning: <IoIosWarning/>,
     expense: undefined,
+    pokemon: undefined,
     category: undefined,
     'user-tie': undefined,
     'arrow-up': undefined,

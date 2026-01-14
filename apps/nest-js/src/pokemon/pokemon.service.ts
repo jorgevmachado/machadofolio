@@ -100,7 +100,7 @@ export class PokemonService extends Service<Pokemon> {
     }
 
     private async validateEntity(value: string, complete: boolean = true){
-        const result = await this.queries.findOne({ value, withRelations: true });
+        const result = await this.queries.findOne({ value, condition: '=', withRelations: true });
 
         if(result?.status === EStatus.COMPLETE) {
             return result;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { CgPokemon } from 'react-icons/cg';
 import {
   GiAnchor ,
   GiBattery100 ,
@@ -151,6 +152,7 @@ export const giGroup: TIconGroupIcons = {
     confirm: <GiConfirmed />,
     warning: <GiLaserWarning />,
     expense: undefined,
+    pokemon: <CgPokemon />,
     category: undefined,
     'user-tie': undefined,
     'arrow-up': undefined,

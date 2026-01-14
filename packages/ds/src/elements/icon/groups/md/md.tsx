@@ -9,7 +9,7 @@ import {
   MdBookmark ,
   MdBrush ,
   MdCalendarMonth ,
-  MdCameraAlt ,
+  MdCameraAlt ,MdCatchingPokemon ,
   MdCategory ,
   MdChairAlt ,
   MdChargingStation ,
@@ -90,11 +90,12 @@ import {
   MdSchool ,
   MdSearch ,
   MdSingleBed ,
-  MdSource,
+  MdSource ,
   MdTerminal ,
   MdTv ,
   MdVideogameAsset ,
-  MdWallet} from 'react-icons/md';
+  MdWallet,
+} from 'react-icons/md';
 
 import type { TIconGroupIcons } from '../types';
 
@@ -175,6 +176,7 @@ export const mdGroup: TIconGroupIcons = {
   confirm: <MdCheckCircle/> ,
   warning: <MdOutlineWarningAmber/> ,
   expense: undefined ,
+  pokemon: <MdCatchingPokemon/>,
   'user-tie': undefined ,
   category: <MdCategory/> ,
   'arrow-up': <MdOutlineArrowDropUp/> ,

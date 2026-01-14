@@ -16,15 +16,28 @@ export default class PokeApiBusiness {
 
     convertResponseToPokemon(
         entity: Pokemon,
-        pokemonByName: PokemonByNameResponse,
-        specieByPokemonName: PokemonSpecieResponse
+        pokemonByName?: PokemonByNameResponse,
+        specieByPokemonName?: PokemonSpecieResponse
     ): Pokemon {
+      if(!pokemonByName) {
+        return new Pokemon({ ...entity, status: 'INCOMPLETE' });
+      }
+      if(!specieByPokemonName) {
+        return new Pokemon({
+          ...entity,
+          image: this.ensureImage({ sprites: pokemonByName.sprites }),
+          ...this.ensureAttributes(pokemonByName.stats),
+          ...this.ensureRelations(pokemonByName),
+          status: 'INCOMPLETE'
+        });
+      }
         return new Pokemon({
             ...entity,
             image: this.ensureImage({ sprites: pokemonByName.sprites }),
             ...this.ensureAttributes(pokemonByName.stats),
             ...this.ensureRelations(pokemonByName),
-            ...this.ensureSpecieAttributes(specieByPokemonName)
+            ...this.ensureSpecieAttributes(specieByPokemonName),
+          status: 'COMPLETE'
         });
     }
 

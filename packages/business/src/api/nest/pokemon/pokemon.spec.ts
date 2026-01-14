@@ -16,6 +16,7 @@ jest.mock('../abstract', () => {
 jest.mock('./ability', () => ({ Ability: jest.fn() }));
 jest.mock('./move', () => ({ Move: jest.fn() }));
 jest.mock('./type', () => ({ Type: jest.fn() }));
+jest.mock('./captured', () => ({ Captured: jest.fn() }));
 
 import {
     afterEach,
@@ -30,6 +31,7 @@ import { Ability } from './ability';
 import { Move } from './move';
 import { Pokemon } from './pokemon';
 import { Type } from './type';
+import { Captured } from './captured';
 
 describe('Pokemon', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
@@ -85,6 +87,20 @@ describe('Pokemon', () => {
 
             expect(typeModule).toBeInstanceOf(Type);
             expect(Type).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('pokemonCapturedModule', () => {
+        it('should initialize Pokemon Captured module', () => {
+            expect(Captured).toHaveBeenCalledTimes(1);
+            expect(Captured).toHaveBeenCalledWith(mockConfig);
+        });
+
+        it('should return the instance of PokemonCaptured via type getter', () => {
+            const capturedModule = pokemon.captured;
+
+            expect(capturedModule).toBeInstanceOf(Captured);
+            expect(Captured).toHaveBeenCalledTimes(1);
         });
     });
 });
