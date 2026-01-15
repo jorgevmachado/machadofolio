@@ -1,3 +1,5 @@
+import { Trainer } from './trainer';
+
 jest.mock('../abstract', () => {
     class NestModuleAbstract {
         public pathUrl: string;
@@ -17,6 +19,7 @@ jest.mock('./ability', () => ({ Ability: jest.fn() }));
 jest.mock('./move', () => ({ Move: jest.fn() }));
 jest.mock('./type', () => ({ Type: jest.fn() }));
 jest.mock('./captured', () => ({ Captured: jest.fn() }));
+jest.mock('./trainer', () => ({ Trainer: jest.fn() }));
 
 import {
     afterEach,
@@ -103,4 +106,18 @@ describe('Pokemon', () => {
             expect(Captured).toHaveBeenCalledTimes(1);
         });
     });
+
+    describe('pokemonTrainerModule', () => {
+    it('should initialize Pokemon Trainer module', () => {
+      expect(Trainer).toHaveBeenCalledTimes(1);
+      expect(Trainer).toHaveBeenCalledWith(mockConfig);
+    });
+
+    it('should return the instance of Pokemon trainer via type getter', () => {
+      const trainerModule = pokemon.trainer;
+
+      expect(trainerModule).toBeInstanceOf(Trainer);
+      expect(Trainer).toHaveBeenCalledTimes(1);
+    });
+  });
 });

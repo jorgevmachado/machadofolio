@@ -1,0 +1,1 @@
+export { PokemonTrainerService } from './service';

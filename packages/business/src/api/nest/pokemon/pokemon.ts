@@ -4,6 +4,7 @@ import type { INestModuleConfig } from '../types';
 import { Ability } from './ability';
 import { Captured } from './captured';
 import { Move } from './move';
+import { Trainer } from './trainer';
 import { Type } from './type';
 import type { IPokemon } from './types';
 
@@ -12,6 +13,7 @@ export class Pokemon extends NestModuleAbstract<IPokemon, unknown, unknown> {
     private readonly moveModule: Move;
     private readonly typeModule: Type;
     private readonly capturedModule: Captured;
+    private readonly trainerModule: Trainer;
 
     constructor(nestModuleConfig: INestModuleConfig) {
         super({ pathUrl: 'pokemon', nestModuleConfig });
@@ -19,6 +21,7 @@ export class Pokemon extends NestModuleAbstract<IPokemon, unknown, unknown> {
         this.moveModule = new Move(nestModuleConfig);
         this.typeModule = new Type(nestModuleConfig);
         this.capturedModule = new Captured(nestModuleConfig);
+        this.trainerModule = new Trainer(nestModuleConfig);
     }
 
     get ability(): Ability {
@@ -35,5 +38,9 @@ export class Pokemon extends NestModuleAbstract<IPokemon, unknown, unknown> {
 
     get captured(): Captured {
       return this.capturedModule;
+    }
+
+    get trainer(): Trainer {
+      return this.trainerModule;
     }
 }

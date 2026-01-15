@@ -22,7 +22,7 @@ export const POKEMON_ENTITY_INITIAL_MOCK: PokemonEntity = {
     moves: undefined,
     types: undefined,
     order: 1,
-    status: EStatus.INCOMPLETE,
+    status: EStatus.COMPLETE,
     attack: 0,
     defense: 0,
     habitat: undefined,

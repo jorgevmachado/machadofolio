@@ -3,6 +3,7 @@ import { type EGender } from '@repo/services';
 import { type ERole, type EStatus } from '../../../enum';
 
 import { type IFinance } from '../finance';
+import type { ITrainer } from '../pokemon';
 import { type INestBaseEntity } from '../types';
 
 export type IUser = INestBaseEntity & {
@@ -15,6 +16,7 @@ export type IUser = INestBaseEntity & {
     status?: EStatus;
     avatar?: string;
     finance?: IFinance;
+    trainer?: ITrainer
     whatsapp: string;
     password?: string;
     date_of_birth: Date;

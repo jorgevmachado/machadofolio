@@ -1,0 +1,52 @@
+import { afterEach ,beforeEach ,expect ,it ,jest } from '@jest/globals';
+
+import type { PokemonTrainerEntity } from './types';
+import { POKEMON_TRAINER } from '../mock';
+import PokemonTrainer from './trainer';
+
+describe('Pokemon Trainer', () => {
+  const entityMock: PokemonTrainerEntity = POKEMON_TRAINER as unknown as PokemonTrainerEntity;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.restoreAllMocks();
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+  });
+
+  describe('Constructor' ,() => {
+    it('should create an instance Pokemon with all provided parameters', () => {
+      const entity = new PokemonTrainer(entityMock);
+      expect(entity).toBeInstanceOf(PokemonTrainer);
+      expect(entity.id).toEqual(entityMock.id);
+      expect(entity.user).toEqual(entityMock.user);
+      expect(entity.created_at).toEqual(entityMock.created_at);
+      expect(entity.updated_at).toEqual(entityMock.updated_at);
+      expect(entity.deleted_at).toEqual(entityMock.deleted_at);
+      expect(entity.capture_rate).toEqual(entityMock.capture_rate);
+      expect(entity.captured_pokemons).toEqual(entityMock.captured_pokemons);
+    });
+
+    it('should create an instance Pokemon with only required parameters', () => {
+      const entity = new PokemonTrainer({
+        id: entityMock.id,
+        user: entityMock.user,
+      });
+      expect(entity).toBeInstanceOf(PokemonTrainer);
+      expect(entity.id).toEqual(entityMock.id);
+      expect(entity.user).toEqual(entityMock.user);
+      expect(entity.created_at).toBeUndefined();
+      expect(entity.updated_at).toBeUndefined();
+      expect(entity.deleted_at).toBeUndefined();
+      expect(entity.capture_rate).toEqual(45);
+      expect(entity.captured_pokemons).toEqual([]);
+    });
+
+    it('should create an instance Pokemon without params', () => {
+      const entity = new PokemonTrainer();
+      expect(entity).toBeInstanceOf(PokemonTrainer);
+    });
+  });
+});

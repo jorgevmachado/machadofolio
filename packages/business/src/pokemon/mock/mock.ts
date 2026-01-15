@@ -33,8 +33,7 @@ export const POKEMON_MOCK = {
     has_gender_differences: false
 };
 
-
-export const CAPTURED_POKEMON_MOCK = {
+export const POKEMON_TRAINER = {
   id: '01ade48b-573f-41fe-9d33-34a3cb4c0b9c',
   user: {
     id: 'eaca4c08-e62d-495a-ae1c-918199da8d52',
@@ -47,6 +46,16 @@ export const CAPTURED_POKEMON_MOCK = {
     updated_at: new Date('2024-09-09T00:00:00.000Z'),
     date_of_birth: new Date('1990-01-01T00:00:00.000Z'),
   },
+  created_at: new Date('2025-02-06T18:26:04.618Z'),
+  updated_at: new Date('2025-02-06T18:26:04.618Z'),
+  deleted_at: undefined,
+  capture_rate: 45,
+  captured_pokemons: [POKEMON_MOCK],
+};
+
+export const CAPTURED_POKEMON_MOCK = {
+  id: '01ade48b-573f-41fe-9d33-34a3cb4c0b9c',
+  trainer: POKEMON_TRAINER,
   pokemon: POKEMON_MOCK,
   nickname: 'nickname',
   created_at: new Date('2025-02-06T18:26:04.618Z'),

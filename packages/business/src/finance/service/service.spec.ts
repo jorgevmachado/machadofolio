@@ -96,7 +96,8 @@ describe('Finance Service', () => {
                 incomes: [],
                 expenses: [],
                 totalPending: 0,
-                supplierTypes: []
+                supplierTypes: [],
+                incomeSources: [],
             }
             mockNest.finance.find.mockResolvedValue(mockResponse);
             const result = await service.find();

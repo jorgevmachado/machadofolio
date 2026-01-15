@@ -5,7 +5,7 @@ import {
 
 export default class CapturedPokemon implements CapturedPokemonEntity {
   id!: CapturedPokemonEntity['id'];
-  user!: CapturedPokemonEntity['user'];
+  trainer!: CapturedPokemonEntity['trainer'];
   pokemon!: CapturedPokemonEntity['pokemon'];
   nickname?: CapturedPokemonEntity['nickname'];
   created_at!: CapturedPokemonEntity['created_at'];
@@ -16,8 +16,8 @@ export default class CapturedPokemon implements CapturedPokemonEntity {
   constructor(params?: CapturedPokemonConstructorParams) {
     if (params) {
       this.id = params?.id ?? this.id;
-      this.user = params?.user;
       this.pokemon = params?.pokemon;
+      this.trainer = params?.trainer;
       this.nickname = params?.nickname ?? this.nickname;
       this.created_at = params?.created_at ?? this.created_at;
       this.updated_at = params?.updated_at ?? this.updated_at;

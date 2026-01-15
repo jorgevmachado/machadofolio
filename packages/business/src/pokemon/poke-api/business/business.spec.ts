@@ -21,6 +21,7 @@ import Pokemon from '../../pokemon';
 import type { PokemonEntity } from '../../types';
 
 import PokeApiBusiness from './business';
+import { EStatus } from '../../../enum';
 
 jest.mock('../../type', () => ({
     __esModule: true,
@@ -238,6 +239,83 @@ describe('Poke-api Business', () => {
             expect(entity.evolves_from_species).toEqual(pokemonEntityInitialByNameMock.evolves_from_species);
             expect(entity.has_gender_differences).toEqual(pokemonEntityInitialByNameMock.has_gender_differences);
         });
+
+        it('Should Convert Responses to Pokemon without pokemonByName', () => {
+        const entity = business.convertResponseToPokemon(pokemonEntityInitial);
+        expect(entity).toBeInstanceOf(Pokemon);
+        expect(entity.id).toEqual(pokemonEntityInitial.id);
+        expect(entity.hp).toEqual(pokemonEntityInitial.hp);
+        expect(entity.url).toEqual(pokemonEntityInitial.url);
+        expect(entity.name).toEqual(pokemonEntityInitial.name);
+        expect(entity.order).toEqual(pokemonEntityInitial.order);
+        expect(entity.image).toEqual(pokemonEntityInitial.image);
+        expect(entity.speed).toEqual(pokemonEntityInitial.speed);
+        expect(entity.moves).toBeUndefined();
+        expect(entity.types).toEqual(pokemonEntityInitial.types);
+        expect(entity.status).toEqual(EStatus.INCOMPLETE);
+        expect(entity.attack).toEqual(pokemonEntityInitial.attack);
+        expect(entity.defense).toEqual(pokemonEntityInitial.defense);
+        expect(entity.habitat).toEqual(pokemonEntityInitial.habitat);
+        expect(entity.is_baby).toEqual(pokemonEntityInitial.is_baby);
+        expect(entity.shape_url).toEqual(pokemonEntityInitial.shape_url);
+        expect(entity.abilities).toBeUndefined();
+        expect(entity.created_at).toEqual(pokemonEntityInitial.created_at);
+        expect(entity.updated_at).toEqual(pokemonEntityInitial.updated_at);
+        expect(entity.deleted_at).toEqual(pokemonEntityInitial.deleted_at);
+        expect(entity.evolutions).toEqual(pokemonEntityInitial.evolutions);
+        expect(entity.shape_name).toEqual(pokemonEntityInitial.shape_name);
+        expect(entity.is_mythical).toEqual(pokemonEntityInitial.is_mythical);
+        expect(entity.gender_rate).toEqual(pokemonEntityInitial.gender_rate);
+        expect(entity.is_legendary).toEqual(pokemonEntityInitial.is_legendary);
+        expect(entity.capture_rate).toEqual(pokemonEntityInitial.capture_rate);
+        expect(entity.hatch_counter).toEqual(pokemonEntityInitial.hatch_counter);
+        expect(entity.base_happiness).toEqual(pokemonEntityInitial.base_happiness);
+        expect(entity.special_attack).toEqual(pokemonEntityInitial.special_attack);
+        expect(entity.special_defense).toEqual(pokemonEntityInitial.special_defense);
+        expect(entity.evolution_chain_url).toEqual(pokemonEntityInitial.evolution_chain_url);
+        expect(entity.evolves_from_species).toEqual(pokemonEntityInitial.evolves_from_species);
+        expect(entity.has_gender_differences).toEqual(pokemonEntityInitial.has_gender_differences);
+      });
+
+      it('Should Convert Responses to Pokemon without specieByPokemonName', () => {
+        const entity = business.convertResponseToPokemon(
+          pokemonEntityInitial,
+          pokemonByNameResponseMock
+        );
+        expect(entity).toBeInstanceOf(Pokemon);
+        expect(entity.id).toEqual(pokemonEntityInitialByNameMock.id);
+        expect(entity.hp).toEqual(pokemonEntityInitialByNameMock.hp);
+        expect(entity.url).toEqual(pokemonEntityInitialByNameMock.url);
+        expect(entity.name).toEqual(pokemonEntityInitialByNameMock.name);
+        expect(entity.order).toEqual(pokemonEntityInitialByNameMock.order);
+        expect(entity.image).toEqual(pokemonEntityInitialByNameMock.image);
+        expect(entity.speed).toEqual(pokemonEntityInitialByNameMock.speed);
+        expect(entity.moves).toHaveLength(2);
+        expect(entity.types).toEqual(pokemonEntityInitialByNameMock.types);
+        expect(entity.status).toEqual(EStatus.INCOMPLETE);
+        expect(entity.attack).toEqual(pokemonEntityInitialByNameMock.attack);
+        expect(entity.defense).toEqual(pokemonEntityInitialByNameMock.defense);
+        expect(entity.habitat).toBeUndefined();
+        expect(entity.is_baby).toEqual(pokemonEntityInitialByNameMock.is_baby);
+        expect(entity.shape_url).toBeUndefined();
+        expect(entity.abilities).toHaveLength(2);
+        expect(entity.created_at).toEqual(pokemonEntityInitialByNameMock.created_at);
+        expect(entity.updated_at).toEqual(pokemonEntityInitialByNameMock.updated_at);
+        expect(entity.deleted_at).toEqual(pokemonEntityInitialByNameMock.deleted_at);
+        expect(entity.evolutions).toEqual(pokemonEntityInitialByNameMock.evolutions);
+        expect(entity.shape_name).toBeUndefined();
+        expect(entity.is_mythical).toEqual(pokemonEntityInitialByNameMock.is_mythical);
+        expect(entity.gender_rate).toEqual(0);
+        expect(entity.is_legendary).toEqual(pokemonEntityInitialByNameMock.is_legendary);
+        expect(entity.capture_rate).toEqual(0);
+        expect(entity.hatch_counter).toEqual(0);
+        expect(entity.base_happiness).toEqual(0);
+        expect(entity.special_attack).toEqual(pokemonEntityInitialByNameMock.special_attack);
+        expect(entity.special_defense).toEqual(pokemonEntityInitialByNameMock.special_defense);
+        expect(entity.evolution_chain_url).toBeUndefined();
+        expect(entity.evolves_from_species).toBeUndefined();
+        expect(entity.has_gender_differences).toEqual(pokemonEntityInitialByNameMock.has_gender_differences);
+      });
     });
 
     describe('ensureEvolutions', () => {

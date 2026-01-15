@@ -23,7 +23,7 @@ describe('Captured pokemon' ,() => {
       const entity = new CapturedPokemon(entityMock);
       expect(entity).toBeInstanceOf(CapturedPokemon);
       expect(entity.id).toEqual(entityMock.id);
-      expect(entity.user).toBe(entityMock.user);
+      expect(entity.trainer).toBe(entityMock.trainer);
       expect(entity.pokemon).toBe(entityMock.pokemon);
       expect(entity.captured_at).toEqual(
         entityMock.captured_at,
@@ -37,15 +37,16 @@ describe('Captured pokemon' ,() => {
       );
       expect(entity.deleted_at).toBe(entityMock.deleted_at);
     });
+
     it('should create an instance with some provided parameters', () => {
       const entity = new CapturedPokemon({
-        user: entityMock.user,
+        trainer: entityMock.trainer,
         pokemon: entityMock.pokemon,
         captured_at: entityMock.captured_at ,
       });
       expect(entity).toBeInstanceOf(CapturedPokemon);
       expect(entity.id).toBeUndefined();
-      expect(entity.user).toBe(entityMock.user);
+      expect(entity.trainer).toBe(entityMock.trainer);
       expect(entity.pokemon).toBe(entityMock.pokemon);
       expect(entity.captured_at).toEqual(
         entityMock.captured_at,
