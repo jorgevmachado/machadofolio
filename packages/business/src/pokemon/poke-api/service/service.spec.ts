@@ -41,6 +41,15 @@ jest.mock('../../pokemon', () => {
 
 class MockPokeApiBusiness {
     convertResponseToPokemon(entity: any, pokemonByName: any, specieByPokemonName: any) {
+      if(!pokemonByName) {
+        return {...entity};
+      }
+      if(!specieByPokemonName) {
+        return {
+            ...entity,
+            ...pokemonByName,
+        };
+      }
         return {
             ...entity,
             ...pokemonByName,
@@ -201,6 +210,45 @@ describe('Poke Api Service', () => {
             expect(response.evolves_from_species).toEqual(pokemonEntityInitialByNameMock.evolves_from_species);
             expect(response.has_gender_differences).toEqual(pokemonEntityInitialByNameMock.has_gender_differences);
         });
+
+        it('should return pokemon by name using poke-api when getByName response error', async () => {
+        mockPokeApi.getByName.mockRejectedValueOnce(new Error('Not found'));
+        mockPokeApi.specie.getByPokemonName.mockRejectedValueOnce(new Error('Not found'));
+        const response = await service.getByName(pokemonInitialMock);
+        expect(response).toBeDefined();
+        expect(response.id).toEqual(pokemonInitialMock.id);
+        expect(response.hp).toEqual(pokemonInitialMock.hp);
+        expect(response.url).toEqual(pokemonInitialMock.url);
+        expect(response.name).toEqual(pokemonInitialMock.name);
+        expect(response.order).toEqual(pokemonInitialMock.order);
+        expect(response.image).toEqual(pokemonInitialMock.image);
+        expect(response.speed).toEqual(pokemonInitialMock.speed);
+        expect(response.moves).toEqual(pokemonInitialMock.moves);
+        expect(response.types).toEqual(pokemonInitialMock.types);
+        expect(response.status).toEqual(pokemonInitialMock.status);
+        expect(response.attack).toEqual(pokemonInitialMock.attack);
+        expect(response.defense).toEqual(pokemonInitialMock.defense);
+        expect(response.habitat).toEqual(pokemonInitialMock.habitat);
+        expect(response.is_baby).toEqual(pokemonInitialMock.is_baby);
+        expect(response.shape_url).toEqual(pokemonInitialMock.shape_url);
+        expect(response.abilities).toEqual(pokemonInitialMock.abilities);
+        expect(response.created_at).toEqual(pokemonInitialMock.created_at);
+        expect(response.updated_at).toEqual(pokemonInitialMock.updated_at);
+        expect(response.deleted_at).toEqual(pokemonInitialMock.deleted_at);
+        expect(response.evolutions).toEqual(pokemonInitialMock.evolutions);
+        expect(response.shape_name).toEqual(pokemonInitialMock.shape_name);
+        expect(response.is_mythical).toEqual(pokemonInitialMock.is_mythical);
+        expect(response.gender_rate).toEqual(pokemonInitialMock.gender_rate);
+        expect(response.is_legendary).toEqual(pokemonInitialMock.is_legendary);
+        expect(response.capture_rate).toEqual(pokemonInitialMock.capture_rate);
+        expect(response.hatch_counter).toEqual(pokemonInitialMock.hatch_counter);
+        expect(response.base_happiness).toEqual(pokemonInitialMock.base_happiness);
+        expect(response.special_attack).toEqual(pokemonInitialMock.special_attack);
+        expect(response.special_defense).toEqual(pokemonInitialMock.special_defense);
+        expect(response.evolution_chain_url).toEqual(pokemonInitialMock.evolution_chain_url);
+        expect(response.evolves_from_species).toEqual(pokemonInitialMock.evolves_from_species);
+        expect(response.has_gender_differences).toEqual(pokemonInitialMock.has_gender_differences);
+      });
     });
 
     describe('getEvolutions', () => {
