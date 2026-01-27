@@ -1,3 +1,5 @@
+import { PokemonTrainerEntity } from '../trainer';
+
 jest.mock('../../shared', () => ({
     BaseService: class {
         private repo: any;
@@ -36,7 +38,11 @@ import {
 
 import { type Nest } from '../../api';
 
-import { POKEMON_MOCK } from '../mock';
+import {
+  POKEDEX_MOCK ,
+  POKEMON_MOCK ,
+  POKEMON_TRAINER_MOCK,
+} from '../mock';
 
 jest.mock('../pokemon', () => ({
     __esModule: true,
@@ -51,6 +57,7 @@ jest.mock('../pokemon', () => ({
 import type { PokemonEntity } from '../types';
 
 import { PokemonService } from './service';
+import { PokedexEntity } from '../pokedex';
 
 jest.mock('../../api');
 
@@ -60,6 +67,7 @@ describe('Pokemon Service', () => {
     const mockEntity = POKEMON_MOCK as unknown as PokemonEntity;
     const mockPaginateParams = { page: 1, limit: 10 };
     const mockEntityList = [mockEntity, mockEntity];
+    const pokedexEntityMock = POKEDEX_MOCK as unknown as PokedexEntity;
     const mockEntityPaginate = {
         skip: 0,
         next: 0,
@@ -70,6 +78,11 @@ describe('Pokemon Service', () => {
         per_page: 0,
         current_page: 0,
     };
+    const mockTrainer = {
+      ...POKEMON_TRAINER_MOCK,
+      pokedex: [pokedexEntityMock]
+    }
+    const pokemonTrainerEntity = mockTrainer as unknown as PokemonTrainerEntity;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -78,6 +91,7 @@ describe('Pokemon Service', () => {
             pokemon: {
                 getAll: jest.fn(),
                 getOne: jest.fn(),
+                initialize: jest.fn(),
             }
         } as unknown as jest.Mocked<Nest>;
 
@@ -87,6 +101,7 @@ describe('Pokemon Service', () => {
     afterEach(() => {
         jest.resetModules();
     });
+
     describe('get', () => {
         it('should successfully get an pokemon', async () => {
             mockNest.pokemon.getOne.mockResolvedValue(mockEntity);
@@ -115,5 +130,18 @@ describe('Pokemon Service', () => {
             );
             expect(result).toEqual(mockEntityPaginate);
         });
+    });
+
+    describe('initialize', () => {
+      it('should successfully initialize trainer pokemon', async () => {
+        mockNest.pokemon.initialize.mockResolvedValue(pokemonTrainerEntity);
+        const result = await service.initialize(mockEntity.name);
+        expect(mockNest.pokemon.initialize).toHaveBeenCalled();
+        expect(result.id).toEqual(pokemonTrainerEntity.id);
+        expect(result.user.id).toEqual(pokemonTrainerEntity.user.id);
+        expect(result.pokedex).toHaveLength(1);
+        expect(result.capture_rate).toEqual(pokemonTrainerEntity.capture_rate);
+        expect(result.captured_pokemons).toEqual(pokemonTrainerEntity.captured_pokemons);
+      });
     });
 });

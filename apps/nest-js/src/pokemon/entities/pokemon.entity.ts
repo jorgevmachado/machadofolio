@@ -5,7 +5,6 @@ import {
   Entity ,
   JoinTable ,
   ManyToMany ,
-  OneToMany ,
   PrimaryGeneratedColumn ,
   UpdateDateColumn ,
 } from 'typeorm';
@@ -13,7 +12,6 @@ import {
 import { EStatus ,type PokemonEntity } from '@repo/business';
 
 import { PokemonAbility } from './ability.entity';
-import { CapturedPokemons } from './captured-pokemons.entity';
 import { PokemonMove } from './move.entity';
 import { PokemonType } from './type.entity';
 
@@ -108,6 +106,9 @@ export class Pokemon implements PokemonEntity {
   special_attack?: number;
 
   @Column({ nullable: true })
+  external_image?: string;
+
+  @Column({ nullable: true })
   special_defense?: number;
 
   @Column({ nullable: true })
@@ -118,7 +119,4 @@ export class Pokemon implements PokemonEntity {
 
   @Column({ nullable: true })
   has_gender_differences?: boolean;
-
-  @OneToMany(() => CapturedPokemons ,(captured) => captured.pokemon)
-  capturedPokemons?: Array<CapturedPokemons>;
 }

@@ -33,6 +33,7 @@ export default class Pokemon implements PokemonEntity {
     hatch_counter?: PokemonEntity['hatch_counter'] = 0;
     base_happiness?: PokemonEntity['base_happiness'] = 0;
     special_attack?: PokemonEntity['special_attack'] = 0;
+    external_image?: PokemonEntity['external_image'];
     special_defense?: PokemonEntity['special_defense'] = 0;
     evolution_chain_url?: PokemonEntity['evolution_chain_url'];
     evolves_from_species?: PokemonEntity['evolves_from_species'];
@@ -48,7 +49,7 @@ export default class Pokemon implements PokemonEntity {
         this.speed = params?.speed ?? this.speed;
         this.moves = params?.moves ?? this.moves;
         this.types = params?.types ?? this.types;
-        this.status =params?.status ?? this.status;
+        this.status = params?.status ?? this.status;
         this.attack = params?.attack ?? this.attack;
         this.defense = params?.defense ?? this.defense;
         this.habitat = params?.habitat ?? this.habitat;
@@ -59,16 +60,17 @@ export default class Pokemon implements PokemonEntity {
         this.updated_at = params?.updated_at ?? this.updated_at;
         this.deleted_at = params?.deleted_at ?? this.deleted_at;
         this.evolutions = params?.evolutions ?? this.evolutions;
-        this.shape_name =params?.shape_name ?? this.shape_name;
-        this.is_mythical =params?.is_mythical ?? this.is_mythical;
-        this.gender_rate =params?.gender_rate ?? this.gender_rate;
-        this.is_legendary =params?.is_legendary ?? this.is_legendary;
-        this.capture_rate =params?.capture_rate ?? this.capture_rate;
-        this.hatch_counter =params?.hatch_counter ?? this.hatch_counter;
-        this.base_happiness =params?.base_happiness ?? this.base_happiness;
-        this.special_attack =params?.special_attack ?? this.special_attack;
-        this.special_defense =params?.special_defense ?? this.special_defense;
-        this.evolution_chain_url =params?.evolution_chain_url ?? this.evolution_chain_url;
+        this.shape_name = params?.shape_name ?? this.shape_name;
+        this.is_mythical = params?.is_mythical ?? this.is_mythical;
+        this.gender_rate = params?.gender_rate ?? this.gender_rate;
+        this.is_legendary = params?.is_legendary ?? this.is_legendary;
+        this.capture_rate = params?.capture_rate ?? this.capture_rate;
+        this.hatch_counter = params?.hatch_counter ?? this.hatch_counter;
+        this.base_happiness = params?.base_happiness ?? this.base_happiness;
+        this.special_attack = params?.special_attack ?? this.special_attack;
+        this.external_image = this.order === 0 ? undefined :`https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/detail/${this.order.toString().padStart(3, '0')}.png`;
+        this.special_defense = params?.special_defense ?? this.special_defense;
+        this.evolution_chain_url = params?.evolution_chain_url ?? this.evolution_chain_url;
         this.evolves_from_species = params?.evolves_from_species ?? this.evolves_from_species;
         this.has_gender_differences = params?.has_gender_differences ?? this.has_gender_differences;
     }

@@ -22,6 +22,9 @@ export class AuthJwtStrategy extends PassportStrategy(Strategy){
             .createQueryBuilder(alias)
             .leftJoinAndSelect(`${alias}.finance`, 'finance')
             .leftJoinAndSelect('finance.bills', 'bills')
+            .leftJoinAndSelect(`${alias}.pokemon_trainer`, 'pokemon_trainer')
+            .leftJoinAndSelect('pokemon_trainer.captured_pokemons', 'captured_pokemons')
+            .leftJoinAndSelect('pokemon_trainer.pokedex', 'pokedex')
             .where(`${alias}.id = :id` , { id: payload.id })
             .getOne();
 

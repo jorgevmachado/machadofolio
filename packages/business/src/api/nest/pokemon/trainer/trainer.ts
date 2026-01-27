@@ -8,7 +8,7 @@ export class Trainer extends NestModuleAbstract<ITrainer ,unknown ,unknown>{
     super({ pathUrl: 'pokemon/trainer' , nestModuleConfig });
   }
 
-  async initialize(): Promise<ITrainer> {
-    return this.post(this.pathUrl);
+  async initialize(pokemonName: string): Promise<ITrainer> {
+    return this.post(this.pathUrl, { body: { pokemonName } });
   }
 }

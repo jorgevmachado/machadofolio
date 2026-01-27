@@ -16,11 +16,11 @@ export type IUser = INestBaseEntity & {
     status?: EStatus;
     avatar?: string;
     finance?: IFinance;
-    trainer?: ITrainer
     whatsapp: string;
     password?: string;
     date_of_birth: Date;
     recover_token?: string;
+    pokemon_trainer?: ITrainer
     confirmation_token?: string;
     total_authentications: number;
     last_authentication_at?: Date;

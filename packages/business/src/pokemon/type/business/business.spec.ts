@@ -59,7 +59,7 @@ describe('PokemonTypeBusiness', () => {
     describe('ensureColor', () => {
         it('deve retornar as cores corretas para tipo conhecido', () => {
             const result = business.ensureColor({ name: 'fire' });
-            expect(result).toEqual({ text_color: '#fff', background_color: '#ff2400' });
+            expect(result).toEqual({ text_color: '#fff', background_color: '#fd7d24' });
         });
 
         it('deve retornar cores padrão para tipo desconhecido', () => {

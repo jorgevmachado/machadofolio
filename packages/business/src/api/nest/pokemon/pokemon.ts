@@ -4,7 +4,7 @@ import type { INestModuleConfig } from '../types';
 import { Ability } from './ability';
 import { Captured } from './captured';
 import { Move } from './move';
-import { Trainer } from './trainer';
+import { type ITrainer ,Trainer } from './trainer';
 import { Type } from './type';
 import type { IPokemon } from './types';
 
@@ -42,5 +42,9 @@ export class Pokemon extends NestModuleAbstract<IPokemon, unknown, unknown> {
 
     get trainer(): Trainer {
       return this.trainerModule;
+    }
+
+    async initialize(pokemon_name?: string): Promise<ITrainer> {
+      return this.post(`${this.pathUrl}/initialize`, { body: { pokemon_name } });
     }
 }

@@ -30,9 +30,14 @@ export class AuthService {
             .checkCredentials(signInAuthDto)
             .then((response) => {
                 const jwtPayload = {
-                    id: response.id,
-                    // finance: { id: response?.finance?.id },
+                    id: response.id
                 };
+                if(response.finance) {
+                  jwtPayload['finance'] = { id: response?.finance?.id };
+                }
+                if(response.pokemon_trainer) {
+                  jwtPayload['pokemon_trainer'] = { id: response?.pokemon_trainer?.id };
+                }
                 const token = this.jwtService.sign(jwtPayload);
 
                 return { message: 'Authentication Successfully!', token };

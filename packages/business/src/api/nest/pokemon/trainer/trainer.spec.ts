@@ -113,9 +113,9 @@ describe('Pokemon Trainer', () => {
     describe('initialize', () => {
       it('should request service initialize', async () => {
         (trainer.post as any).mockResolvedValue(mockEntity);
-        const result = await trainer.initialize();
+        const result = await trainer.initialize('bulbasaur');
         expect(trainer.post).toHaveBeenCalledTimes(1);
-        expect(trainer.post).toHaveBeenCalledWith('pokemon/trainer');
+        expect(trainer.post).toHaveBeenCalledWith('pokemon/trainer', { body: { pokemonName: 'bulbasaur'}});
         expect(result).toEqual(mockEntity);
       });
     });

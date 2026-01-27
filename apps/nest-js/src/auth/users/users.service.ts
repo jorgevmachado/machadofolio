@@ -26,7 +26,7 @@ export class UsersService extends Service<User>{
         @InjectRepository(User)
         protected repository: Repository<User>,
     ) {
-        super('users', ['finance'], repository);
+        super('users', ['finance', 'pokemon_trainer'], repository);
     }
     async create({
                      cpf,

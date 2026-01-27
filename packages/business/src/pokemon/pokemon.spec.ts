@@ -56,6 +56,7 @@ describe('Pokemon', () => {
             expect(entity.hatch_counter).toEqual(entityMock.hatch_counter);
             expect(entity.base_happiness).toEqual(entityMock.base_happiness);
             expect(entity.special_attack).toEqual(entityMock.special_attack);
+            expect(entity.external_image).toEqual(entityMock.external_image);
             expect(entity.special_defense).toEqual(entityMock.special_defense);
             expect(entity.evolution_chain_url).toEqual(entityMock.evolution_chain_url);
             expect(entity.evolves_from_species).toEqual(entityMock.evolves_from_species);
@@ -94,6 +95,7 @@ describe('Pokemon', () => {
             expect(entity.base_happiness).toEqual(0);
             expect(entity.special_attack).toEqual(0);
             expect(entity.special_defense).toEqual(0);
+            expect(entity.external_image).toBeUndefined();
             expect(entity.evolution_chain_url).toBeUndefined();
             expect(entity.evolves_from_species).toBeUndefined();
             expect(entity.has_gender_differences).toBeFalsy();

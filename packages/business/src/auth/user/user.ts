@@ -14,7 +14,6 @@ export default class User implements UserEntity {
     gender!: UserEntity['gender'];
     status?: UserEntity['status'] = EStatus.ACTIVE;
     avatar?: UserEntity['avatar'];
-    trainer?: UserEntity['trainer'];
     finance?: UserEntity['finance'];
     whatsapp!: UserEntity['whatsapp'];
     password?: UserEntity['password'];
@@ -23,6 +22,7 @@ export default class User implements UserEntity {
     deleted_at?: UserEntity['deleted_at'];
     date_of_birth!: UserEntity['date_of_birth'];
     recover_token?: UserEntity['recover_token'];
+    pokemon_trainer?: UserEntity['pokemon_trainer'];
     confirmation_token?: UserEntity['confirmation_token'];
     total_authentications: UserEntity['total_authentications'] = 0;
     last_authentication_at?: UserEntity['last_authentication_at'];
@@ -40,7 +40,6 @@ export default class User implements UserEntity {
             this.gender = params.gender;
             this.status = params.status;
             this.avatar = params.avatar;
-            this.trainer = params?.trainer ?? this.trainer;
             this.finance = params?.finance ?? this.finance;
             this.date_of_birth = params.date_of_birth;
             this.created_at = params.created_at ?? this.created_at;
@@ -58,6 +57,7 @@ export default class User implements UserEntity {
             this.last_authentication_at = params.last_authentication_at ?? this.last_authentication_at;
             this.authentication_success = params.authentication_success ?? this.authentication_success;
             this.authentication_failures = params.authentication_failures ?? this.authentication_failures;
+            this.pokemon_trainer = params?.pokemon_trainer ?? this.pokemon_trainer;
 
             if (!clean) {
                 this.salt = params.salt ?? this.salt;

@@ -1,14 +1,28 @@
-import { POKEMON_TRAINER } from '../../mock';
+import { POKEDEX_MOCK ,POKEMON_TRAINER_MOCK } from '../../mock';
+import {
+  afterEach ,
+  beforeEach ,
+  describe ,
+  expect ,
+  it ,
+  jest ,
+} from '@jest/globals';
+
+import { type Nest } from '../../../api';
+
+import { PokemonTrainerService } from './service';
+import { PokemonTrainerEntity } from '../types';
+import { PokedexEntity } from '../../pokedex';
 
 jest.mock('../../../api');
 
 jest.mock('../trainer', () => ({
   __esModule: true,
   default: function Bank(response) {
-    Object.assign(this, POKEMON_TRAINER, response);
+    Object.assign(this, POKEMON_TRAINER_MOCK, response);
   },
   Bank: function Bank(response) {
-    Object.assign(this, POKEMON_TRAINER, response);
+    Object.assign(this, POKEMON_TRAINER_MOCK, response);
   },
 }));
 
@@ -39,25 +53,13 @@ jest.mock('../../../shared', () => ({
   },
 }));
 
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  jest,
-} from '@jest/globals';
-
-import { type Nest } from '../../../api';
-
-import { PokemonTrainerService } from './service';
-import { PokemonTrainerEntity } from '../types';
-
 describe('Pokemon Trainer Service', () => {
   let service: PokemonTrainerService;
   let mockNest: jest.Mocked<Nest>;
 
-  const mockEntity = POKEMON_TRAINER as unknown as PokemonTrainerEntity;
+  const mockEntity = POKEMON_TRAINER_MOCK as unknown as PokemonTrainerEntity;
+  const pokedexEntityMock = POKEDEX_MOCK as unknown as PokedexEntity;
+  mockEntity.pokedex = [pokedexEntityMock];
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -95,9 +97,10 @@ describe('Pokemon Trainer Service', () => {
   describe('initialize', () => {
     it('should initialize the finance', async () => {
       mockNest.pokemon.trainer.initialize.mockResolvedValue(mockEntity);
-      const result = await service.initialize();
+      const result = await service.initialize('bulbasaur');
       expect(mockNest.pokemon.trainer.initialize).toHaveBeenCalled();
       expect(result.id).toEqual(mockEntity.id);
+      expect(result.pokedex).toEqual(result.pokedex);
       expect(result.user.id).toEqual(mockEntity.user.id);
       expect(result.capture_rate).toEqual(45);
       expect(result.captured_pokemons).toEqual(mockEntity.captured_pokemons);

@@ -1,19 +1,36 @@
 import { Repository } from 'typeorm';
 
-import { EStatus } from '@repo/business';
-import { type PaginateParameters, PokeApiService } from '@repo/business';
+import {
+  EStatus ,
+  type PaginateParameters ,
+  PokeApiService ,
+  PokemonBusiness,
+} from '@repo/business';
 
-import { type FindOneByParams, ListParams, SeedsGenerated, Service } from '../shared';
+import { User } from '../auth/entities/user.entity';
+import {
+  type FindOneByParams ,
+  ListParams ,
+  SeedsGenerated ,
+  Service,
+} from '../shared';
 
 import { PokemonAbilityService } from './ability/ability.service';
+import { CapturedPokemonService } from './captured/captured.service';
 import { CreatePokemonSeedsDto } from './dto/create-pokemon-seeds.dto';
+import { InitializeTrainerDto } from './dto/initialize-trainer.dto';
 import { PokemonAbility } from './entities/ability.entity';
+import { CapturedPokemon } from './entities/captured-pokemons.entity';
 import { PokemonMove } from './entities/move.entity';
+import { Pokedex } from './entities/pokedex.entity';
 import { Pokemon } from './entities/pokemon.entity';
+import { PokemonTrainer } from './entities/trainer.entity';
 import { PokemonType } from './entities/type.entity';
 import { PokemonMoveService } from './move/move.service';
+import { PokedexService } from './pokedex/pokedex.service';
+import { PokemonTrainerService } from './trainer/trainer.service';
 import { PokemonTypeService } from './type/type.service';
-import type { PokemonSeederParams, PokemonSeedsResult } from './types';
+import type { PokemonSeederParams ,PokemonSeedsResult } from './types';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -31,9 +48,13 @@ export class PokemonService extends Service<Pokemon> {
         @InjectRepository(Pokemon)
         protected repository: Repository<Pokemon>,
         protected pokeApiService: PokeApiService,
+        protected pokedexService: PokedexService,
+        protected pokemonBusiness: PokemonBusiness,
         protected pokemonMoveService: PokemonMoveService,
         protected pokemonTypeService: PokemonTypeService,
         protected pokemonAbilityService: PokemonAbilityService,
+        protected pokemonTrainerService: PokemonTrainerService,
+        protected capturedPokemonService: CapturedPokemonService,
     ) {
         super('pokemons', ['moves', 'types', 'abilities', 'evolutions'], repository);
     }
@@ -57,10 +78,28 @@ export class PokemonService extends Service<Pokemon> {
         },
     }
 
+    async initialize(user: User, { pokemon_name }: InitializeTrainerDto) {
+      if(user.pokemon_trainer) {
+        return { trainer: user.pokemon_trainer };
+      }
+      const pokemons = await this.findAll({}) as Array<Pokemon>;
+      const firstPokemon =  this.pokemonBusiness.firstTrainerPokemon(pokemons, pokemon_name);
+
+      const trainer = await this.pokemonTrainerService.create(user) as PokemonTrainer;
+
+      if(firstPokemon) {
+        const pokemon = await this.findOne({value: firstPokemon.name}) as Pokemon;
+        const pokedex = await this.pokedexService.initialize( { pokemons, pokemonTrainer: trainer, pokemon }) as Array<Pokedex>;
+        const capturedPokemon = await this.capturedPokemonService.create({ trainer, pokemon }) as CapturedPokemon;
+        const currentTrainer = await this.pokemonTrainerService.update(user, { pokedex, captured_pokemons: [capturedPokemon] }) as PokemonTrainer;
+        return { trainer: currentTrainer };
+      }
+      return { trainer }
+    }
+
     async findAll(listParams: ListParams): Promise<Array<Pokemon> | PaginateParameters<Pokemon>> {
         await this.validateDatabase();
-
-        return await this.queries.list(listParams);
+        return super.findAll({...listParams, withRelations: true});
     }
 
     private async createList(list: Array<Pokemon>) {

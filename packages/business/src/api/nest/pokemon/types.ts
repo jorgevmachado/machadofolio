@@ -33,6 +33,7 @@ export type IPokemon = IPokemonBase & {
     hatch_counter?: number;
     base_happiness?: number;
     special_attack?: number;
+    external_image?: string;
     special_defense?: number;
     evolution_chain_url?: string;
     evolves_from_species?: string;

@@ -45,6 +45,7 @@ describe('User Class', () => {
         whatsapp: mockUser.whatsapp,
         date_of_birth: mockUser.date_of_birth,
         cleanAllFormatter: true,
+        pokemon_trainer: mockUser.pokemon_trainer,
         total_authentications: mockUser.total_authentications,
         last_authentication_at: mockUser.last_authentication_at,
         authentication_success: mockUser.authentication_success,

@@ -20,8 +20,14 @@ export class Queries<T extends BasicEntity> {
     ) {
     }
 
+    private buildRelations(paramsRelations?: boolean | string, withRelations?: boolean | string): boolean {
+      const parseBool = (v?: boolean | string) =>
+        typeof v === 'string' ? v.trim().toLowerCase() === 'true' : Boolean(v);
+      return parseBool(withRelations) || (!parseBool(withRelations) && parseBool(paramsRelations));
+    }
+
     async list(params: ListParams): Promise<Array<T> | PaginateParameters<T>> {
-        const { page, limit } = params?.parameters ?? {};
+        const { page, limit, withRelations } = params?.parameters ?? {};
         const query = new Query<T>({
             alias: this.alias,
             filters: params?.filters ?? [],
@@ -30,7 +36,7 @@ export class Queries<T extends BasicEntity> {
             parameters: params?.parameters,
             repository: this.repository,
             withDeleted: params?.withDeleted,
-            withRelations: params?.withRelations,
+            withRelations: this.buildRelations(withRelations, params?.withRelations),
         }).initialize();
 
         if (!limit || !page) {

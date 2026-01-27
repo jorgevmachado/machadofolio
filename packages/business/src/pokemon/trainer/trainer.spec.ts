@@ -1,11 +1,14 @@
 import { afterEach ,beforeEach ,expect ,it ,jest } from '@jest/globals';
 
 import type { PokemonTrainerEntity } from './types';
-import { POKEMON_TRAINER } from '../mock';
+import { POKEDEX_MOCK ,POKEMON_TRAINER_MOCK } from '../mock';
 import PokemonTrainer from './trainer';
+import { PokedexEntity } from '../pokedex';
 
 describe('Pokemon Trainer', () => {
-  const entityMock: PokemonTrainerEntity = POKEMON_TRAINER as unknown as PokemonTrainerEntity;
+  const entityMock: PokemonTrainerEntity = POKEMON_TRAINER_MOCK as unknown as PokemonTrainerEntity;
+  const pokedexEntityMock = POKEDEX_MOCK as unknown as PokedexEntity;
+  entityMock.pokedex = [pokedexEntityMock];
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -26,6 +29,7 @@ describe('Pokemon Trainer', () => {
       expect(entity.updated_at).toEqual(entityMock.updated_at);
       expect(entity.deleted_at).toEqual(entityMock.deleted_at);
       expect(entity.capture_rate).toEqual(entityMock.capture_rate);
+      expect(entity.pokedex).toEqual(entityMock.pokedex);
       expect(entity.captured_pokemons).toEqual(entityMock.captured_pokemons);
     });
 
@@ -37,6 +41,7 @@ describe('Pokemon Trainer', () => {
       expect(entity).toBeInstanceOf(PokemonTrainer);
       expect(entity.id).toEqual(entityMock.id);
       expect(entity.user).toEqual(entityMock.user);
+      expect(entity.pokedex).toEqual([]);
       expect(entity.created_at).toBeUndefined();
       expect(entity.updated_at).toBeUndefined();
       expect(entity.deleted_at).toBeUndefined();

@@ -6,23 +6,22 @@ import {
 
 import { CapturedPokemonEntity } from '@repo/business';
 
-import { User } from '../../auth/entities/user.entity';
-
 import { Pokemon } from './pokemon.entity';
+import { PokemonTrainer } from './trainer.entity';
 
 @Entity({ name: 'captured_pokemons'})
-export class CapturedPokemons implements CapturedPokemonEntity{
+export class CapturedPokemon implements CapturedPokemonEntity{
   @PrimaryGeneratedColumn('uuid')
   id!: string;
-
-  @ManyToOne(() => User, { nullable: false })
-  user!: User;
 
   @ManyToOne(() => Pokemon, { nullable: false })
   pokemon!: Pokemon;
 
+  @ManyToOne(() => PokemonTrainer, { nullable: false })
+  trainer!: PokemonTrainer;
+
   @CreateDateColumn()
-  captured_at!: Date;
+  captured_at?: Date;
 
   @Column({ nullable: true, length: 100 })
   nickname?: string;

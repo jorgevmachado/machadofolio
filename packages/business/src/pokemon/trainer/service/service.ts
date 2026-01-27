@@ -8,7 +8,7 @@ export class PokemonTrainerService extends BaseService<PokemonTrainer ,unknown ,
     super(nest.pokemon.trainer, (response) => new PokemonTrainer(response));
   }
 
-  public async initialize(): Promise<PokemonTrainer> {
-    return this.nest.pokemon.trainer.initialize().then((response) => new PokemonTrainer(response));
+  public async initialize(pokemonName: string): Promise<PokemonTrainer> {
+    return this.nest.pokemon.trainer.initialize(pokemonName).then((response) => new PokemonTrainer(response));
   }
 }

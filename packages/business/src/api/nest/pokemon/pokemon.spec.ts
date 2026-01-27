@@ -40,6 +40,26 @@ describe('Pokemon', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
     const mockHeaders = { Authorization: 'Bearer test-token' };
     const mockConfig = { baseUrl: mockBaseUrl, headers: mockHeaders };
+    const trainerEntityMock = {
+      id: '01ade48b-573f-41fe-9d33-34a3cb4c0b9c',
+      user: {
+        id: 'eaca4c08-e62d-495a-ae1c-918199da8d52',
+        cpf: '49892120450',
+        name: 'John Doe',
+        email: 'john.doe@mail.com',
+        gender: 'MALE',
+        whatsapp: '11998765432',
+        created_at: new Date('2024-09-09T00:00:00.000Z'),
+        updated_at: new Date('2024-09-09T00:00:00.000Z'),
+        date_of_birth: new Date('1990-01-01T00:00:00.000Z'),
+      },
+      pokedex: [],
+      created_at: new Date('2025-02-06T18:26:04.618Z'),
+      updated_at: new Date('2025-02-06T18:26:04.618Z'),
+      deleted_at: undefined,
+      capture_rate: 45,
+      captured_pokemons: [],
+    };
 
     let pokemon: Pokemon;
 
@@ -120,4 +140,14 @@ describe('Pokemon', () => {
       expect(Trainer).toHaveBeenCalledTimes(1);
     });
   });
+
+    describe('initialize', () => {
+      it('should request service initialize', async () => {
+        (pokemon.post as any).mockResolvedValue(trainerEntityMock);
+        const result = await pokemon.initialize('bulbasaur');
+        expect(pokemon.post).toHaveBeenCalledTimes(1);
+        expect(pokemon.post).toHaveBeenCalledWith('pokemon/initialize', { body: { pokemon_name: 'bulbasaur'}});
+        expect(result).toEqual(trainerEntityMock);
+      });
+    });
 });

@@ -1,2 +1,2 @@
 export { default as CapturedPokemon } from './captured';
-export type { CapturedPokemonEntity } from './types';
+export type { CapturedPokemonConstructorParams,CapturedPokemonEntity } from './types';

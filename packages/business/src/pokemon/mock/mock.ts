@@ -27,13 +27,14 @@ export const POKEMON_MOCK = {
     hatch_counter: 20,
     base_happiness: 50,
     special_attack: 65,
+    external_image: 'https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/detail/001.png',
     special_defense: 65,
     evolution_chain_url: 'http://pokemon-mock/evolution-chain/1/',
     evolves_from_species: undefined,
     has_gender_differences: false
 };
 
-export const POKEMON_TRAINER = {
+export const POKEMON_TRAINER_MOCK = {
   id: '01ade48b-573f-41fe-9d33-34a3cb4c0b9c',
   user: {
     id: 'eaca4c08-e62d-495a-ae1c-918199da8d52',
@@ -46,20 +47,31 @@ export const POKEMON_TRAINER = {
     updated_at: new Date('2024-09-09T00:00:00.000Z'),
     date_of_birth: new Date('1990-01-01T00:00:00.000Z'),
   },
+  pokedex: [],
   created_at: new Date('2025-02-06T18:26:04.618Z'),
   updated_at: new Date('2025-02-06T18:26:04.618Z'),
   deleted_at: undefined,
   capture_rate: 45,
-  captured_pokemons: [POKEMON_MOCK],
+  captured_pokemons: [],
 };
 
 export const CAPTURED_POKEMON_MOCK = {
   id: '01ade48b-573f-41fe-9d33-34a3cb4c0b9c',
-  trainer: POKEMON_TRAINER,
+  trainer: POKEMON_TRAINER_MOCK,
   pokemon: POKEMON_MOCK,
   nickname: 'nickname',
   created_at: new Date('2025-02-06T18:26:04.618Z'),
   updated_at: new Date('2025-02-06T18:26:04.618Z'),
   deleted_at: undefined,
   captured_at: new Date('2025-02-06T18:26:04.618Z'),
+};
+
+export const POKEDEX_MOCK = {
+  id: '01ade48b-573f-41fe-9d33-34a3cb4c0b9c',
+  pokemon: POKEMON_MOCK,
+  discovered: false,
+  created_at: new Date('2025-02-06T18:26:04.618Z'),
+  updated_at: new Date('2025-02-06T18:26:04.618Z'),
+  deleted_at: undefined,
+  pokemon_trainer: POKEMON_TRAINER_MOCK,
 };
