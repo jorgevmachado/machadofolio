@@ -4,6 +4,7 @@ import { type IPokemonByNameResponse ,type ISpecieResponse ,PokeApi } from '../.
 import Pokemon from '../../pokemon';
 
 import { PokeApiBusiness } from '../business';
+import { PokeApiGrowthRateService } from '../growth-rate';
 import { PokeApiMoveService } from '../move';
 
 import type { getAllParams } from './types';
@@ -14,14 +15,20 @@ export class PokeApiService {
     private readonly pokeApi: PokeApi;
 
     private readonly moveService: PokeApiMoveService;
+    private readonly growthRateService: PokeApiGrowthRateService;
 
     constructor() {
         this.pokeApi = new PokeApi();
         this.moveService = new PokeApiMoveService(this.pokeApi);
+        this.growthRateService = new PokeApiGrowthRateService(this.pokeApi);
     }
 
     get move(): PokeApiMoveService {
         return this.moveService;
+    }
+
+    get growthRate(): PokeApiGrowthRateService {
+        return this.growthRateService;
     }
 
     public async getAll({ offset = 0, limit = this.limit }: getAllParams): Promise<Array<Pokemon>> {

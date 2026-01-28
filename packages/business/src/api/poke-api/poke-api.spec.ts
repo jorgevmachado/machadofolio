@@ -1,3 +1,5 @@
+import { Growth } from './growth';
+
 jest.mock('@repo/services', () => ({
     Http: jest.fn().mockImplementation(() => ({
         get: jest.fn(),
@@ -10,6 +12,7 @@ jest.mock('@repo/services', () => ({
 jest.mock('./specie', () => ({ Specie: jest.fn() }));
 jest.mock('./move', () => ({ Move: jest.fn() }));
 jest.mock('./evolution', () => ({ Evolution: jest.fn() }));
+jest.mock('./growth', () => ({ Growth: jest.fn() }));
 
 import {
     afterEach,
@@ -26,8 +29,6 @@ import { Evolution } from './evolution';
 import { Move } from './move';
 import { PokeApi } from './poke-api';
 import { Specie } from './specie';
-
-
 
 describe('PokeApi', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
@@ -83,6 +84,19 @@ describe('PokeApi', () => {
             const evolutionModule = pokeApi.evolution;
             expect(evolutionModule).toBeInstanceOf(Evolution);
             expect(Evolution).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('growthModule', () => {
+        it('should initialize Growth module', () => {
+            expect(Growth).toHaveBeenCalledTimes(1);
+            expect(Growth).toHaveBeenCalledWith(mockConfig);
+        });
+
+        it('should return the instance of Growth via specie getter', () => {
+            const growthModule = pokeApi.growth;
+            expect(growthModule).toBeInstanceOf(Growth);
+            expect(Growth).toHaveBeenCalledTimes(1);
         });
     });
 

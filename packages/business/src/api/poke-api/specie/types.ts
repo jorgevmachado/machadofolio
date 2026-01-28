@@ -4,6 +4,7 @@ export type ISpecieResponse = {
     shape: IPokemonResponse;
     habitat: IPokemonResponse;
     is_baby: boolean;
+    growth_rate: IPokemonResponse;
     gender_rate: number;
     is_mythical: boolean;
     capture_rate: number;

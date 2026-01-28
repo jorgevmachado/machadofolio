@@ -1,4 +1,5 @@
 import { EStatus } from '../../../enum';
+import { type PokemonGrowthRateEntity } from '../../growth-rate';
 import { type PokemonEntity } from '../../types';
 
 import type { PokemonResponse } from '../types';
@@ -64,6 +65,7 @@ export const POKEMON_ENTITY_INITIAL_BY_NAME_MOCK: PokemonEntity = {
         name: type.type.name,
         order: type.slot,
         text_color: '#FFF',
+        weaknesses: [],
         created_at: undefined,
         deleted_at: undefined,
         updated_at: undefined,
@@ -109,9 +111,21 @@ export const POKEMON_ENTITY_INITIAL_BY_NAME_MOCK: PokemonEntity = {
     capture_rate: SPECIE_POKEMON_BY_NAME_RESPONSE_MOCK.capture_rate,
     hatch_counter: SPECIE_POKEMON_BY_NAME_RESPONSE_MOCK.hatch_counter,
     base_happiness: SPECIE_POKEMON_BY_NAME_RESPONSE_MOCK.base_happiness,
+    growth_rate_url: SPECIE_POKEMON_BY_NAME_RESPONSE_MOCK.growth_rate.url,
     evolution_chain_url: SPECIE_POKEMON_BY_NAME_RESPONSE_MOCK.evolution_chain.url,
     evolves_from_species: SPECIE_POKEMON_BY_NAME_RESPONSE_MOCK.evolves_from_species.name,
     has_gender_differences: SPECIE_POKEMON_BY_NAME_RESPONSE_MOCK.has_gender_differences,
+};
+
+export const POKEMON_GROWTH_RATE_MOCK: PokemonGrowthRateEntity = {
+  id: '69bb5ba0-e31e-46a7-80e5-4df13b9422c1' ,
+  url: 'https://pokemon-mock/growth-rate/2/',
+  name: 'medium' ,
+  order: 2 ,
+  formula: 'x^3' ,
+  created_at: undefined ,
+  updated_at: undefined ,
+  deleted_at: undefined
 };
 
 

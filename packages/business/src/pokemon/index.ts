@@ -1,6 +1,7 @@
 export type { PokemonAbilityEntity } from './ability';
 export { PokemonBusiness } from './business';
 export { CapturedPokemon, type CapturedPokemonConstructorParams,type CapturedPokemonEntity } from './captured';
+export type { PokemonGrowthRateConstructorParams,PokemonGrowthRateEntity } from './growth-rate';
 export type { PokemonMoveEntity } from './move';
 export * from './poke-api';
 export { Pokedex, type PokedexConstructorParams, type PokedexEntity } from './pokedex';

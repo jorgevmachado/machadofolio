@@ -61,6 +61,7 @@ export default class PokemonTypeBusiness {
             order,
             name,
             url,
+            weaknesses: [],
             ...this.ensureColor({ name })
         });
     }

@@ -1,0 +1,1 @@
+export { PokeApiGrowthRateService } from './service';

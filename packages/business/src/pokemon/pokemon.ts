@@ -9,6 +9,7 @@ export default class Pokemon implements PokemonEntity {
     hp?: PokemonEntity['hp'] = 0;
     url!: PokemonEntity['url'];
     name!: PokemonEntity['name'];
+    level?: PokemonEntity['level'] = 1;
     order!: PokemonEntity['order'];
     image?: PokemonEntity['image'];
     speed?: PokemonEntity['speed'] = 0;
@@ -25,8 +26,10 @@ export default class Pokemon implements PokemonEntity {
     updated_at!: PokemonEntity['updated_at'];
     deleted_at?: PokemonEntity['deleted_at'];
     evolutions?: PokemonEntity['evolutions'];
+    experience?: PokemonEntity['experience'] = 0;
     shape_name?: PokemonEntity['shape_name'];
     is_mythical?: PokemonEntity['is_mythical'] = false;
+    growth_rate?: PokemonEntity['growth_rate'];
     gender_rate?: PokemonEntity['gender_rate'] = 0;
     is_legendary?: PokemonEntity['is_legendary'] = false;
     capture_rate?: PokemonEntity['capture_rate'] = 0;
@@ -34,7 +37,9 @@ export default class Pokemon implements PokemonEntity {
     base_happiness?: PokemonEntity['base_happiness'] = 0;
     special_attack?: PokemonEntity['special_attack'] = 0;
     external_image?: PokemonEntity['external_image'];
+    base_experience?: PokemonEntity['base_experience'] = 0;
     special_defense?: PokemonEntity['special_defense'] = 0;
+    growth_rate_url?: PokemonEntity['growth_rate_url'];
     evolution_chain_url?: PokemonEntity['evolution_chain_url'];
     evolves_from_species?: PokemonEntity['evolves_from_species'];
     has_gender_differences?: PokemonEntity['has_gender_differences'] = false;
@@ -44,6 +49,7 @@ export default class Pokemon implements PokemonEntity {
         this.hp = params?.hp ?? this.hp;
         this.url = params?.url ?? this.url;
         this.name = params?.name ?? this.name;
+        this.level = params?.level ?? this.level;
         this.order = ensureOrderNumber(params?.order ?? this.order, this.url);
         this.image = params?.image ?? this.image;
         this.speed = params?.speed ?? this.speed;
@@ -60,7 +66,9 @@ export default class Pokemon implements PokemonEntity {
         this.updated_at = params?.updated_at ?? this.updated_at;
         this.deleted_at = params?.deleted_at ?? this.deleted_at;
         this.evolutions = params?.evolutions ?? this.evolutions;
+        this.experience = params?.experience ?? this.experience;
         this.shape_name = params?.shape_name ?? this.shape_name;
+        this.growth_rate = params?.growth_rate ?? this.growth_rate;
         this.is_mythical = params?.is_mythical ?? this.is_mythical;
         this.gender_rate = params?.gender_rate ?? this.gender_rate;
         this.is_legendary = params?.is_legendary ?? this.is_legendary;
@@ -69,7 +77,9 @@ export default class Pokemon implements PokemonEntity {
         this.base_happiness = params?.base_happiness ?? this.base_happiness;
         this.special_attack = params?.special_attack ?? this.special_attack;
         this.external_image = this.order === 0 ? undefined :`https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/detail/${this.order.toString().padStart(3, '0')}.png`;
+        this.base_experience = params?.base_experience ?? this.base_experience;
         this.special_defense = params?.special_defense ?? this.special_defense;
+        this.growth_rate_url = params?.growth_rate_url ?? this.growth_rate_url;
         this.evolution_chain_url = params?.evolution_chain_url ?? this.evolution_chain_url;
         this.evolves_from_species = params?.evolves_from_species ?? this.evolves_from_species;
         this.has_gender_differences = params?.has_gender_differences ?? this.has_gender_differences;

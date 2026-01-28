@@ -124,6 +124,7 @@ export default class PokeApiBusiness {
             capture_rate: params?.capture_rate,
             hatch_counter: params?.hatch_counter,
             base_happiness: params?.base_happiness,
+            growth_rate_url: params?.growth_rate?.url,
             evolution_chain_url: params?.evolution_chain?.url,
             evolves_from_species: params?.evolves_from_species?.name,
             has_gender_differences: params?.has_gender_differences,

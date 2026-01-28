@@ -77,10 +77,18 @@ jest.mock('../business', () => ({
 const mockPokeApiMoveService = jest.fn().mockImplementation((_) => {
     return {};
 });
+const mockPokeApiGrowthRateService = jest.fn().mockImplementation((_) => {
+    return {};
+});
 
 jest.mock('../move', () => ({
     __esModule: true,
     PokeApiMoveService: mockPokeApiMoveService
+}));
+
+jest.mock('../growth-rate', () => ({
+    __esModule: true,
+  PokeApiGrowthRateService: mockPokeApiGrowthRateService
 }));
 
 import {
@@ -94,6 +102,7 @@ import {
 import { PokeApiMoveService } from '../move';
 
 import { PokeApiService } from './service';
+import { PokeApiGrowthRateService } from '../growth-rate';
 
 
 describe('Poke Api Service', () => {
@@ -144,6 +153,18 @@ describe('Poke Api Service', () => {
             const moveService = service.move;
             expect(moveService).toBeInstanceOf(PokeApiMoveService);
             expect(mockPokeApiMoveService).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('PokeApiGrowthRateService', () => {
+        it('should initialize Growth Rate Service', () => {
+            expect(mockPokeApiGrowthRateService).toHaveBeenCalledTimes(1);
+        });
+
+        it('should return the instance of MoveService via move getter', () => {
+            const growthRateService = service.growthRate;
+            expect(growthRateService).toBeInstanceOf(PokeApiGrowthRateService);
+            expect(mockPokeApiGrowthRateService).toHaveBeenCalledTimes(1);
         });
     });
 

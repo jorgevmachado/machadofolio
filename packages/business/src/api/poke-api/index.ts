@@ -1,4 +1,5 @@
 export type { IEvolutionResponse } from './evolution';
+export type { IGrowthRateResponse } from './growth-rate';
 export type { IMoveResponse } from './move';
 export { PokeApi } from './poke-api';
 export type { ISpecieResponse } from './specie';

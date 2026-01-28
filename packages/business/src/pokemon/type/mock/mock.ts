@@ -6,6 +6,18 @@ export const POKEMON_TYPE_MOCK: PokemonTypeEntity = {
     name: 'type',
     order: 1,
     text_color: '#FFF',
+    weaknesses: [{
+      id: 'd6db6f9e-a62c-4ddc-b447-52e6a620046a',
+      url: 'https://pokemon-mock/type/2/',
+      name: 'type',
+      order: 2,
+      text_color: '#FFF',
+      weaknesses: [],
+      created_at: new Date('2025-02-06T18:26:04.618Z'),
+      updated_at: new Date('2025-02-06T18:26:04.618Z'),
+      deleted_at: undefined,
+      background_color: '#000'
+    }],
     created_at: new Date('2025-02-06T18:26:04.618Z'),
     updated_at: new Date('2025-02-06T18:26:04.618Z'),
     deleted_at: undefined,

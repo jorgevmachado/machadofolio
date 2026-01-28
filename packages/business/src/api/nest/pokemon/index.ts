@@ -1,5 +1,6 @@
 export type { IAbility } from './ability';
 export type { ICaptured } from './captured';
+export type { IGrowth } from './growth';
 export type { IMove } from './move';
 export type { IPokedex } from './pokedex';
 export { Pokemon } from './pokemon';
