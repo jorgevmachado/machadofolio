@@ -25,8 +25,11 @@ export type IPokemonByNameResponse = {
     types: Array<IPokemonTypeResponse>;
     moves: Array<IPokemonMoveResponse>;
     stats: Array<IPokemonStatResponse>;
+    height: number;
+    weight: number;
     sprites: IPokemonSpritesResponse;
     abilities: Array<IPokemonAbilityResponse>;
+    base_experience: number;
 }
 
 type IPokemonTypeResponse = {

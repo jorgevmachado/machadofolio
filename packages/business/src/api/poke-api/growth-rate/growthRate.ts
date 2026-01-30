@@ -1,4 +1,4 @@
-import { extractLastNumberFromUrl ,Http } from '@repo/services';
+import { Http } from '@repo/services';
 
 import type { IPokeApiModuleConfig } from '../types';
 
@@ -9,8 +9,7 @@ export class GrowthRate extends Http {
     super(baseUrl ,{ headers });
   }
 
-  async getByUrl(url: string): Promise<IGrowthRateResponse> {
-    const order = extractLastNumberFromUrl(url);
+  async getByOrder(order: number): Promise<IGrowthRateResponse> {
     return this.get(`growth-rate/${ order }`);
   }
 }

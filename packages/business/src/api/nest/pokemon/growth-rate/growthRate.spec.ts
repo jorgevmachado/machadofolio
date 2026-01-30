@@ -27,19 +27,19 @@ import {
 
 import type { QueryParameters } from '../../../../types';
 
-import { Growth } from './growth';
+import { GrowthRate } from './growthRate';
 
-describe('Pokemon Growth' ,() => {
+describe('Pokemon Growth Rate' ,() => {
   const mockBaseUrl = 'http://mock-base-url.com';
   const mockHeaders = { Authorization: 'Bearer test-token' };
   const mockConfig = { baseUrl: mockBaseUrl ,headers: mockHeaders };
 
-  let growth: Growth;
+  let growthRate: GrowthRate;
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
-    growth = new Growth(mockConfig);
+    growthRate = new GrowthRate(mockConfig);
   });
 
   afterEach(() => {
@@ -50,13 +50,13 @@ describe('Pokemon Growth' ,() => {
     it(
       'should call inherited methods from NestModuleAbstract about pokemon growth' ,
       async () => {
-        (growth.getAll as any).mockResolvedValue([]);
+        (growthRate.getAll as any).mockResolvedValue([]);
 
         const queryParams: QueryParameters = { name: 'test' };
-        const result = await growth.getAll(queryParams);
+        const result = await growthRate.getAll(queryParams);
 
-        expect(growth.getAll).toHaveBeenCalledTimes(1);
-        expect(growth.getAll).toHaveBeenCalledWith(queryParams);
+        expect(growthRate.getAll).toHaveBeenCalledTimes(1);
+        expect(growthRate.getAll).toHaveBeenCalledWith(queryParams);
         expect(result).toEqual([]);
       });
   });

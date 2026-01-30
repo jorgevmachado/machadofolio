@@ -2,7 +2,7 @@ import { type EStatus } from '../../../enum';
 import type { IBaseEntity } from '../../types';
 
 import type { IAbility } from './ability';
-import type { IGrowth } from './growth';
+import type { IGrowthRate } from './growth-rate';
 import type { IMove } from './move';
 import type { IType } from './type';
 
@@ -20,6 +20,8 @@ export type IPokemon = IPokemonBase & {
   moves?: Array<IMove>;
   types?: Array<IType>;
   status: EStatus;
+  height?: number;
+  weight?: number;
   attack?: number;
   defense?: number;
   habitat?: string;
@@ -29,7 +31,7 @@ export type IPokemon = IPokemonBase & {
   evolutions?: Array<IPokemon>;
   experience?: number;
   shape_name?: string;
-  growth_rate?: IGrowth;
+  growth_rate?: IGrowthRate;
   is_mythical?: boolean
   gender_rate?: number;
   is_legendary?: boolean;
@@ -40,7 +42,6 @@ export type IPokemon = IPokemonBase & {
   external_image?: string;
   base_experience?: number;
   special_defense?: number;
-  growth_rate_url?: string;
   evolution_chain_url?: string;
   evolves_from_species?: string;
   has_gender_differences?: boolean;

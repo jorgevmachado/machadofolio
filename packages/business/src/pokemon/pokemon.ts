@@ -16,6 +16,8 @@ export default class Pokemon implements PokemonEntity {
     moves?: PokemonEntity['moves'];
     types?: PokemonEntity['types'];
     status: PokemonEntity['status'] = EStatus.INCOMPLETE;
+    height?: PokemonEntity['height'] = 0;
+    weight?: PokemonEntity['weight'] = 0;
     attack?: PokemonEntity['attack'] = 0;
     defense?: PokemonEntity['defense'] = 0;
     habitat?: PokemonEntity['habitat'];
@@ -39,7 +41,6 @@ export default class Pokemon implements PokemonEntity {
     external_image?: PokemonEntity['external_image'];
     base_experience?: PokemonEntity['base_experience'] = 0;
     special_defense?: PokemonEntity['special_defense'] = 0;
-    growth_rate_url?: PokemonEntity['growth_rate_url'];
     evolution_chain_url?: PokemonEntity['evolution_chain_url'];
     evolves_from_species?: PokemonEntity['evolves_from_species'];
     has_gender_differences?: PokemonEntity['has_gender_differences'] = false;
@@ -56,6 +57,8 @@ export default class Pokemon implements PokemonEntity {
         this.moves = params?.moves ?? this.moves;
         this.types = params?.types ?? this.types;
         this.status = params?.status ?? this.status;
+        this.height = params?.height ?? this.height;
+        this.weight = params?.weight ?? this.weight;
         this.attack = params?.attack ?? this.attack;
         this.defense = params?.defense ?? this.defense;
         this.habitat = params?.habitat ?? this.habitat;
@@ -79,9 +82,11 @@ export default class Pokemon implements PokemonEntity {
         this.external_image = this.order === 0 ? undefined :`https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/detail/${this.order.toString().padStart(3, '0')}.png`;
         this.base_experience = params?.base_experience ?? this.base_experience;
         this.special_defense = params?.special_defense ?? this.special_defense;
-        this.growth_rate_url = params?.growth_rate_url ?? this.growth_rate_url;
         this.evolution_chain_url = params?.evolution_chain_url ?? this.evolution_chain_url;
         this.evolves_from_species = params?.evolves_from_species ?? this.evolves_from_species;
         this.has_gender_differences = params?.has_gender_differences ?? this.has_gender_differences;
+        if(!this.experience || this.experience === 0) {
+          this.experience = this.base_experience;
+        }
     }
 }

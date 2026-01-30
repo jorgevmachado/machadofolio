@@ -5,13 +5,11 @@ export class PokeApiGrowthRateService {
 
     constructor(private pokeApi: PokeApi) {}
 
-    async getByUrl(url: string): Promise<PokemonGrowthRate> {
-        return this.pokeApi.growthRate.getByUrl(url).then((response) => {
+    async getOne(growthRate: PokemonGrowthRate): Promise<PokemonGrowthRate> {
+        return this.pokeApi.growthRate.getByOrder(growthRate.order).then((response) => {
             return new PokemonGrowthRate({
-                url,
-                name: response?.name,
-                order: response?.id,
-                formula: response?.formula
+                ...growthRate,
+                formula: response?.formula ?? ''
             });
         });
     }

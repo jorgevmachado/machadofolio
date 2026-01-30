@@ -39,6 +39,8 @@ describe('Pokemon', () => {
             expect(entity.moves).toEqual(entityMock.moves);
             expect(entity.types).toEqual(entityMock.types);
             expect(entity.status).toEqual(entityMock.status);
+            expect(entity.height).toEqual(entityMock.height);
+            expect(entity.weight).toEqual(entityMock.weight);
             expect(entity.attack).toEqual(entityMock.attack);
             expect(entity.defense).toEqual(entityMock.defense);
             expect(entity.habitat).toEqual(entityMock.habitat);
@@ -62,7 +64,6 @@ describe('Pokemon', () => {
             expect(entity.external_image).toEqual(entityMock.external_image);
             expect(entity.base_experience).toEqual(entityMock.base_experience);
             expect(entity.special_defense).toEqual(entityMock.special_defense);
-            expect(entity.growth_rate_url).toEqual(entityMock.growth_rate_url);
             expect(entity.evolution_chain_url).toEqual(entityMock.evolution_chain_url);
             expect(entity.evolves_from_species).toEqual(entityMock.evolves_from_species);
             expect(entity.has_gender_differences).toEqual(entityMock.has_gender_differences);
@@ -82,6 +83,8 @@ describe('Pokemon', () => {
             expect(entity.moves).toBeUndefined();
             expect(entity.types).toBeUndefined();
             expect(entity.status).toEqual(EStatus.INCOMPLETE);
+            expect(entity.height).toEqual(0);
+            expect(entity.weight).toEqual(0);
             expect(entity.attack).toEqual(0);
             expect(entity.defense).toEqual(0);
             expect(entity.habitat).toBeUndefined();
@@ -105,7 +108,6 @@ describe('Pokemon', () => {
             expect(entity.special_defense).toEqual(0);
             expect(entity.external_image).toBeUndefined();
             expect(entity.base_experience).toEqual(0);
-            expect(entity.growth_rate_url).toBeUndefined();
             expect(entity.evolution_chain_url).toBeUndefined();
             expect(entity.evolves_from_species).toBeUndefined();
             expect(entity.has_gender_differences).toBeFalsy();

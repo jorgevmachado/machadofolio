@@ -43,8 +43,8 @@ describe('PokeApi Growth Rate', () => {
     });
 
 
-    describe('getByUrl', () => {
-        it('should call get with correct URL for getByOrder', async () => {
+    describe('getByOrder', () => {
+        it('should call get with correct order for getByOrder', async () => {
             mockGet.mockResolvedValue({
                 chain: {},
                 id: 1,
@@ -52,7 +52,7 @@ describe('PokeApi Growth Rate', () => {
 
             const order = 1;
 
-            await growthRate.getByUrl('http://mock-base-url.com/1');
+            await growthRate.getByOrder(order);
 
             expect(mockGet).toHaveBeenCalledTimes(1);
             expect(mockGet).toHaveBeenCalledWith(`growth-rate/${order}`);

@@ -26,7 +26,7 @@ import type { PokemonEntity } from '../../types';
 
 import PokeApiBusiness from './business';
 import { EStatus } from '../../../enum';
-
+import { POKEMON_GROWTH_RATE_MOCK } from '../../growth-rate';
 jest.mock('../../type' ,() => ({
   __esModule: true ,
   PokemonTypeBusiness: class {
@@ -58,6 +58,18 @@ jest.mock('../../ability' ,() => ({
   PokemonAbility: function PokemonAbility(response) {
     return Object.assign(Object.create(PokemonAbility.prototype) ,
       { ...POKEMON_ABILITY_MOCK ,...response });
+  } ,
+}));
+
+jest.mock('../../growth-rate' ,() => ({
+  __esModule: true ,
+  default: function PokemonGrowthRate(response) {
+    return Object.assign(Object.create(PokemonGrowthRate.prototype) ,
+      { ...POKEMON_GROWTH_RATE_MOCK ,...response, order: 2 });
+  } ,
+  PokemonGrowthRate: function PokemonGrowthRate(response) {
+    return Object.assign(Object.create(PokemonGrowthRate.prototype) ,
+      { ...POKEMON_GROWTH_RATE_MOCK ,...response, order: 2 });
   } ,
 }));
 
@@ -145,9 +157,9 @@ describe('Poke-api Business' ,() => {
     });
   });
 
-  describe('ensureAttributes' ,() => {
+  describe('ensureStatisticsAttributes' ,() => {
     it('Should return default values when array is empty' ,() => {
-      const result = business.ensureAttributes([]);
+      const result = business.ensureStatisticsAttributes([]);
       expect(result.hp).toEqual(0);
       expect(result.speed).toEqual(0);
       expect(result.attack).toEqual(0);
@@ -157,7 +169,7 @@ describe('Poke-api Business' ,() => {
     });
 
     it('Should return successfully all values' ,() => {
-      const result = business.ensureAttributes(
+      const result = business.ensureStatisticsAttributes(
         POKEMON_BY_NAME_RESPONSE_MOCK.stats);
       expect(result.hp).toEqual(pokemonEntityInitialByNameMock.hp);
       expect(result.speed).toEqual(pokemonEntityInitialByNameMock.speed);
@@ -167,6 +179,40 @@ describe('Poke-api Business' ,() => {
       toEqual(pokemonEntityInitialByNameMock.special_attack);
       expect(result.special_defense).
       toEqual(pokemonEntityInitialByNameMock.special_defense);
+    });
+  });
+
+  describe('ensureAttributes' ,() => {
+    it('Should return default values when array is empty' ,() => {
+      const result = business.ensureAttributes({
+        ...pokemonByNameResponseMock ,
+        stats: [] ,
+        height: undefined,
+        weight: undefined,
+        base_experience: undefined,
+      });
+      expect(result.hp).toEqual(0);
+      expect(result.speed).toEqual(0);
+      expect(result.height).toEqual(0);
+      expect(result.weight).toEqual(0);
+      expect(result.attack).toEqual(0);
+      expect(result.defense).toEqual(0);
+      expect(result.special_attack).toEqual(0);
+      expect(result.special_defense).toEqual(0);
+      expect(result.base_experience).toEqual(0);
+    });
+
+    it('Should return successfully all values' ,() => {
+      const result = business.ensureAttributes(POKEMON_BY_NAME_RESPONSE_MOCK);
+      expect(result.hp).toEqual(pokemonEntityInitialByNameMock.hp);
+      expect(result.speed).toEqual(pokemonEntityInitialByNameMock.speed);
+      expect(result.height).toEqual(pokemonByNameResponseMock.height);
+      expect(result.weight).toEqual(pokemonByNameResponseMock.weight);
+      expect(result.attack).toEqual(pokemonEntityInitialByNameMock.attack);
+      expect(result.defense).toEqual(pokemonEntityInitialByNameMock.defense);
+      expect(result.special_attack).toEqual(pokemonEntityInitialByNameMock.special_attack);
+      expect(result.special_defense).toEqual(pokemonEntityInitialByNameMock.special_defense);
+      expect(result.base_experience).toEqual(pokemonByNameResponseMock.base_experience);
     });
   });
 
@@ -192,8 +238,6 @@ describe('Poke-api Business' ,() => {
       toEqual(pokemonEntityInitialByNameMock.hatch_counter);
       expect(result.base_happiness).
       toEqual(pokemonEntityInitialByNameMock.base_happiness);
-      expect(result.growth_rate_url).
-      toEqual(pokemonEntityInitialByNameMock.growth_rate_url);
       expect(result.evolution_chain_url).
       toEqual(pokemonEntityInitialByNameMock.evolution_chain_url);
       expect(result.evolves_from_species).
@@ -204,7 +248,7 @@ describe('Poke-api Business' ,() => {
   });
 
   describe('ensureRelations' ,() => {
-    it('Should return a empty values when received empty values' ,() => {
+    it('Should return a empty values when received empty values pokemonByName' ,() => {
       const result = business.ensureRelations({
         ...pokemonByNameResponseMock ,
         types: [] ,
@@ -214,13 +258,31 @@ describe('Poke-api Business' ,() => {
       expect(result.types).toEqual([]);
       expect(result.moves).toEqual([]);
       expect(result.abilities).toEqual([]);
+      expect(result.growth_rate).toBeUndefined();
     });
 
-    it('Should return successfully all values' ,() => {
+    it('Should return all values pokemonByName and without pokemonSpecieByName' ,() => {
       const result = business.ensureRelations(pokemonByNameResponseMock);
       expect(result.types).toEqual(pokemonEntityInitialByNameMock.types);
       expect(result.moves).toHaveLength(2);
       expect(result.abilities).toHaveLength(2);
+      expect(result.growth_rate).toBeUndefined();
+    });
+
+    it('Should return successfully all values' ,() => {
+      const result = business.ensureRelations(pokemonByNameResponseMock, speciePokemonByNameResponseMock);
+      expect(result.types).toEqual(pokemonEntityInitialByNameMock.types);
+      expect(result.moves).toHaveLength(2);
+      expect(result.abilities).toHaveLength(2);
+      expect(result.growth_rate.id).toBeUndefined();
+      expect(result.growth_rate.order).toEqual(2);
+      expect(result.growth_rate.url).toEqual(pokemonEntityInitialByNameMock.growth_rate.url);
+      expect(result.growth_rate.name).toEqual(pokemonEntityInitialByNameMock.growth_rate.name);
+      expect(result.growth_rate.formula).toEqual('');
+      expect(result.growth_rate.created_at).toBeUndefined();
+      expect(result.growth_rate.created_at).toBeUndefined();
+      expect(result.growth_rate.deleted_at).toBeUndefined();
+      expect(result.growth_rate.updated_at).toBeUndefined();
     });
   });
 
@@ -246,6 +308,13 @@ describe('Poke-api Business' ,() => {
       expect(entity.defense).toEqual(pokemonEntityInitialByNameMock.defense);
       expect(entity.habitat).toEqual(pokemonEntityInitialByNameMock.habitat);
       expect(entity.is_baby).toEqual(pokemonEntityInitialByNameMock.is_baby);
+      expect(entity.height).toEqual(pokemonByNameResponseMock.height);
+      expect(entity.weight).toEqual(pokemonByNameResponseMock.weight);
+      expect(entity.growth_rate.id).toBeUndefined();
+      expect(entity.growth_rate.created_at).toBeUndefined();
+      expect(entity.growth_rate.created_at).toBeUndefined();
+      expect(entity.growth_rate.deleted_at).toBeUndefined();
+      expect(entity.growth_rate.updated_at).toBeUndefined();
       expect(entity.shape_url).
       toEqual(pokemonEntityInitialByNameMock.shape_url);
       expect(entity.abilities).toHaveLength(2);
@@ -271,6 +340,8 @@ describe('Poke-api Business' ,() => {
       toEqual(pokemonEntityInitialByNameMock.hatch_counter);
       expect(entity.base_happiness).
       toEqual(pokemonEntityInitialByNameMock.base_happiness);
+      expect(entity.base_experience).
+      toEqual(pokemonByNameResponseMock.base_experience);
       expect(entity.special_attack).
       toEqual(pokemonEntityInitialByNameMock.special_attack);
       expect(entity.special_defense).
@@ -295,6 +366,8 @@ describe('Poke-api Business' ,() => {
       expect(entity.speed).toEqual(pokemonEntityInitial.speed);
       expect(entity.moves).toBeUndefined();
       expect(entity.types).toEqual(pokemonEntityInitial.types);
+      expect(entity.height).toEqual(pokemonEntityInitial.height);
+      expect(entity.weight).toEqual(pokemonEntityInitial.weight);
       expect(entity.status).toEqual(EStatus.INCOMPLETE);
       expect(entity.attack).toEqual(pokemonEntityInitial.attack);
       expect(entity.defense).toEqual(pokemonEntityInitial.defense);
@@ -302,18 +375,20 @@ describe('Poke-api Business' ,() => {
       expect(entity.is_baby).toEqual(pokemonEntityInitial.is_baby);
       expect(entity.shape_url).toEqual(pokemonEntityInitial.shape_url);
       expect(entity.abilities).toBeUndefined();
+      expect(entity.growth_rate).toBeUndefined();
       expect(entity.created_at).toEqual(pokemonEntityInitial.created_at);
       expect(entity.updated_at).toEqual(pokemonEntityInitial.updated_at);
       expect(entity.deleted_at).toEqual(pokemonEntityInitial.deleted_at);
       expect(entity.evolutions).toEqual(pokemonEntityInitial.evolutions);
       expect(entity.shape_name).toEqual(pokemonEntityInitial.shape_name);
       expect(entity.is_mythical).toEqual(pokemonEntityInitial.is_mythical);
-      expect(entity.gender_rate).toEqual(pokemonEntityInitial.gender_rate);
       expect(entity.is_legendary).toEqual(pokemonEntityInitial.is_legendary);
       expect(entity.capture_rate).toEqual(pokemonEntityInitial.capture_rate);
       expect(entity.hatch_counter).toEqual(pokemonEntityInitial.hatch_counter);
       expect(entity.base_happiness).
       toEqual(pokemonEntityInitial.base_happiness);
+      expect(entity.base_experience).
+      toEqual(pokemonEntityInitial.base_experience);
       expect(entity.special_attack).
       toEqual(pokemonEntityInitial.special_attack);
       expect(entity.special_defense).
@@ -342,6 +417,8 @@ describe('Poke-api Business' ,() => {
         expect(entity.speed).toEqual(pokemonEntityInitialByNameMock.speed);
         expect(entity.moves).toHaveLength(2);
         expect(entity.types).toEqual(pokemonEntityInitialByNameMock.types);
+        expect(entity.height).toEqual(pokemonByNameResponseMock.height);
+        expect(entity.weight).toEqual(pokemonByNameResponseMock.weight);
         expect(entity.status).toEqual(EStatus.INCOMPLETE);
         expect(entity.attack).toEqual(pokemonEntityInitialByNameMock.attack);
         expect(entity.defense).toEqual(pokemonEntityInitialByNameMock.defense);
@@ -349,6 +426,7 @@ describe('Poke-api Business' ,() => {
         expect(entity.is_baby).toEqual(pokemonEntityInitialByNameMock.is_baby);
         expect(entity.shape_url).toBeUndefined();
         expect(entity.abilities).toHaveLength(2);
+        expect(entity.growth_rate).toBeUndefined();
         expect(entity.created_at).
         toEqual(pokemonEntityInitialByNameMock.created_at);
         expect(entity.updated_at).
@@ -366,6 +444,7 @@ describe('Poke-api Business' ,() => {
         expect(entity.capture_rate).toEqual(0);
         expect(entity.hatch_counter).toEqual(0);
         expect(entity.base_happiness).toEqual(0);
+        expect(entity.base_experience).toEqual(pokemonByNameResponseMock.base_experience);
         expect(entity.special_attack).
         toEqual(pokemonEntityInitialByNameMock.special_attack);
         expect(entity.special_defense).

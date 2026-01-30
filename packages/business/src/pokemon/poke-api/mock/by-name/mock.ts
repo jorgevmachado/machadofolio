@@ -10,9 +10,12 @@ import { TYPES_MOCK } from './types';
 export const POKEMON_BY_NAME_RESPONSE_MOCK: PokemonByNameResponse = {
     name: 'pokemon-1',
     order: 1,
+    height: 7,
+    weight: 69,
     stats: STATS_MOCK,
     types: TYPES_MOCK,
     moves: MOVES_MOCK,
     sprites: SPRITES_MOCK,
     abilities: ABILITIES_MOCK,
+    base_experience: 64,
 };

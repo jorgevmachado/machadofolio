@@ -18,7 +18,6 @@ export type EnsureSpecieAttributesResult = Pick<Pokemon,
     'capture_rate' |
     'hatch_counter' |
     'base_happiness' |
-    'growth_rate_url' |
     'evolution_chain_url' |
     'evolves_from_species' |
     'has_gender_differences'

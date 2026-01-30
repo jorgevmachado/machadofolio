@@ -1,4 +1,5 @@
 import { PokemonAbility } from '../../ability';
+import { PokemonGrowthRate } from '../../growth-rate';
 import { PokemonMove } from '../../move';
 import Pokemon from '../../pokemon';
 import { PokemonTypeBusiness } from '../../type';
@@ -22,11 +23,12 @@ export default class PokeApiBusiness {
       if(!pokemonByName) {
         return new Pokemon({ ...entity, status: 'INCOMPLETE' });
       }
+
       if(!specieByPokemonName) {
         return new Pokemon({
           ...entity,
           image: this.ensureImage({ sprites: pokemonByName.sprites }),
-          ...this.ensureAttributes(pokemonByName.stats),
+          ...this.ensureAttributes(pokemonByName),
           ...this.ensureRelations(pokemonByName),
           status: 'INCOMPLETE'
         });
@@ -34,8 +36,8 @@ export default class PokeApiBusiness {
         return new Pokemon({
             ...entity,
             image: this.ensureImage({ sprites: pokemonByName.sprites }),
-            ...this.ensureAttributes(pokemonByName.stats),
-            ...this.ensureRelations(pokemonByName),
+            ...this.ensureAttributes(pokemonByName),
+            ...this.ensureRelations(pokemonByName, specieByPokemonName),
             ...this.ensureSpecieAttributes(specieByPokemonName),
           status: 'COMPLETE'
         });
@@ -52,45 +54,54 @@ export default class PokeApiBusiness {
         return currentImage;
     }
 
-    ensureAttributes(params: PokemonByNameResponse['stats']): Pick<Pokemon, 'hp' | 'speed' | 'attack' | 'defense' | 'special_attack' | 'special_defense'> {
-        return params.reduce(
-            (acc, stat) => {
-                switch (stat.stat.name) {
-                    case 'hp':
-                        acc.hp = stat.base_stat;
-                        break;
-                    case 'speed':
-                        acc.speed = stat.base_stat;
-                        break;
-                    case 'attack':
-                        acc.attack = stat.base_stat;
-                        break;
-                    case 'defense':
-                        acc.defense = stat.base_stat;
-                        break;
-                    case 'special-attack':
-                        acc.special_attack = stat.base_stat;
-                        break;
-                    case 'special-defense':
-                        acc.special_defense = stat.base_stat;
-                        break;
-                }
-                return acc;
-            },
-            {
-                hp: 0,
-                speed: 0,
-                attack: 0,
-                defense: 0,
-                special_attack: 0,
-                special_defense: 0,
-            },
-        );
+    ensureAttributes(params: PokemonByNameResponse): Pick<Pokemon, 'hp' | 'height' | 'weight'| 'speed' | 'attack' | 'defense' | 'special_attack' | 'special_defense' | 'base_experience'> {
+        return {
+          ...this.ensureStatisticsAttributes(params.stats),
+          height: params?.height ?? 0,
+          weight: params?.weight ?? 0,
+          base_experience: params?.base_experience ?? 0,
+        };
     }
 
-    ensureRelations(response: PokemonByNameResponse): Pick<Pokemon, 'types' | 'moves' | 'abilities'> {
-        const types = this.pokemonTypeBusiness.convertPokemonTypes(response.types);
-        const moves = response?.moves?.map((move) => new PokemonMove({
+    ensureStatisticsAttributes(params: PokemonByNameResponse['stats']): Pick<Pokemon, 'hp' | 'speed' | 'attack' | 'defense' | 'special_attack' | 'special_defense'> {
+      return params.reduce(
+        (acc, stat) => {
+          switch (stat.stat.name) {
+            case 'hp':
+              acc.hp = stat.base_stat;
+              break;
+            case 'speed':
+              acc.speed = stat.base_stat;
+              break;
+            case 'attack':
+              acc.attack = stat.base_stat;
+              break;
+            case 'defense':
+              acc.defense = stat.base_stat;
+              break;
+            case 'special-attack':
+              acc.special_attack = stat.base_stat;
+              break;
+            case 'special-defense':
+              acc.special_defense = stat.base_stat;
+              break;
+          }
+          return acc;
+        },
+        {
+          hp: 0,
+          speed: 0,
+          attack: 0,
+          defense: 0,
+          special_attack: 0,
+          special_defense: 0,
+        },
+      );
+    }
+    
+    ensureRelations(pokemonByName: PokemonByNameResponse, pokemonSpecieByName?: PokemonSpecieResponse): Pick<Pokemon, 'types' | 'moves' | 'abilities' | 'growth_rate'> {
+        const types = this.pokemonTypeBusiness.convertPokemonTypes(pokemonByName.types);
+        const moves = pokemonByName?.moves?.map((move) => new PokemonMove({
             url: move.move.url,
             type: '',
             name: move.move.name,
@@ -99,16 +110,22 @@ export default class PokeApiBusiness {
             damage_class: '',
             short_effect: '',
         }));
-        const abilities = response?.abilities?.map((ability) => new PokemonAbility({
+        const abilities = pokemonByName?.abilities?.map((ability) => new PokemonAbility({
             url: ability.ability.url,
             name: ability.ability.name,
             slot: ability.slot,
             is_hidden: ability.is_hidden,
         }));
+        const growth_rate = !pokemonSpecieByName ? undefined : new PokemonGrowthRate({
+          url: pokemonSpecieByName.growth_rate.url,
+          name: pokemonSpecieByName.growth_rate.name,
+          formula: ''
+        });
         return {
             types,
             moves,
-            abilities
+            abilities,
+            growth_rate
         };
     }
 
@@ -123,8 +140,7 @@ export default class PokeApiBusiness {
             is_legendary: params?.is_legendary,
             capture_rate: params?.capture_rate,
             hatch_counter: params?.hatch_counter,
-            base_happiness: params?.base_happiness,
-            growth_rate_url: params?.growth_rate?.url,
+            base_happiness: params?.base_happiness,           
             evolution_chain_url: params?.evolution_chain?.url,
             evolves_from_species: params?.evolves_from_species?.name,
             has_gender_differences: params?.has_gender_differences,

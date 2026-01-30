@@ -49,7 +49,7 @@ describe('Pokemon Growth Rate Service' ,() => {
     jest.restoreAllMocks();
     mockPokeApi = {
       growthRate: {
-        getByUrl: jest.fn() ,
+        getByOrder: jest.fn() ,
       } ,
     } as unknown as jest.Mocked<PokeApi>;
 
@@ -61,12 +61,12 @@ describe('Pokemon Growth Rate Service' ,() => {
     jest.resetModules();
   });
 
-  describe('getByUrl' ,() => {
+  describe('getOne' ,() => {
     it('Should return a growth rate of Pokemon' ,async () => {
 
-      mockPokeApi.growthRate.getByUrl.mockResolvedValue(growthRateResponseMock);
+      mockPokeApi.growthRate.getByOrder.mockResolvedValue(growthRateResponseMock);
 
-      const result = await service.getByUrl(growthEntityMock.url);
+      const result = await service.getOne(growthEntityMock);
       expect(result.id).toEqual(growthEntityMock.id);
       expect(result.url).toEqual(growthEntityMock.url);
       expect(result.name).toEqual(growthEntityMock.name);

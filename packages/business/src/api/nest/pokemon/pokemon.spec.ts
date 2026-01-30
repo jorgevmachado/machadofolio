@@ -20,7 +20,7 @@ jest.mock('./move', () => ({ Move: jest.fn() }));
 jest.mock('./type', () => ({ Type: jest.fn() }));
 jest.mock('./captured', () => ({ Captured: jest.fn() }));
 jest.mock('./trainer', () => ({ Trainer: jest.fn() }));
-jest.mock('./growth', () => ({ Growth: jest.fn() }));
+jest.mock('./growth-rate', () => ({ GrowthRate: jest.fn() }));
 
 import {
     afterEach,
@@ -36,7 +36,7 @@ import { Move } from './move';
 import { Pokemon } from './pokemon';
 import { Type } from './type';
 import { Captured } from './captured';
-import { Growth } from './growth';
+import { GrowthRate } from './growth-rate';
 
 describe('Pokemon', () => {
     const mockBaseUrl = 'http://mock-base-url.com';
@@ -145,15 +145,15 @@ describe('Pokemon', () => {
 
     describe('pokemonGrowthModule', () => {
     it('should initialize Pokemon Growth module', () => {
-      expect(Growth).toHaveBeenCalledTimes(1);
-      expect(Growth).toHaveBeenCalledWith(mockConfig);
+      expect(GrowthRate).toHaveBeenCalledTimes(1);
+      expect(GrowthRate).toHaveBeenCalledWith(mockConfig);
     });
 
     it('should return the instance of Pokemon Growth via type getter', () => {
-      const growthModule = pokemon.growth;
+      const growthModule = pokemon.growthRate;
 
-      expect(growthModule).toBeInstanceOf(Growth);
-      expect(Growth).toHaveBeenCalledTimes(1);
+      expect(growthModule).toBeInstanceOf(GrowthRate);
+      expect(GrowthRate).toHaveBeenCalledTimes(1);
     });
   });
 
