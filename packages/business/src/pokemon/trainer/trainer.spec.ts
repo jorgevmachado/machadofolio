@@ -25,11 +25,12 @@ describe('Pokemon Trainer', () => {
       expect(entity).toBeInstanceOf(PokemonTrainer);
       expect(entity.id).toEqual(entityMock.id);
       expect(entity.user).toEqual(entityMock.user);
+      expect(entity.pokedex).toEqual(entityMock.pokedex);
+      expect(entity.pokeballs).toEqual(entityMock.pokeballs);
       expect(entity.created_at).toEqual(entityMock.created_at);
       expect(entity.updated_at).toEqual(entityMock.updated_at);
       expect(entity.deleted_at).toEqual(entityMock.deleted_at);
       expect(entity.capture_rate).toEqual(entityMock.capture_rate);
-      expect(entity.pokedex).toEqual(entityMock.pokedex);
       expect(entity.captured_pokemons).toEqual(entityMock.captured_pokemons);
     });
 
@@ -42,6 +43,7 @@ describe('Pokemon Trainer', () => {
       expect(entity.id).toEqual(entityMock.id);
       expect(entity.user).toEqual(entityMock.user);
       expect(entity.pokedex).toEqual([]);
+      expect(entity.pokeballs).toEqual(5);
       expect(entity.created_at).toBeUndefined();
       expect(entity.updated_at).toBeUndefined();
       expect(entity.deleted_at).toBeUndefined();

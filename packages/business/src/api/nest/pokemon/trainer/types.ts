@@ -7,6 +7,7 @@ import { type IPokedex } from '../pokedex';
 export type ITrainer = IBaseEntity & {
   user: IUser;
   pokedex?: Array<IPokedex>;
+  pokeballs: number;
   capture_rate?: number;
   captured_pokemons?: Array<ICaptured>;
 };

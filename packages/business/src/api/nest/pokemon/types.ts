@@ -14,7 +14,6 @@ export type IPokemonBase = IBaseEntity & {
 
 export type IPokemon = IPokemonBase & {
   hp?: number;
-  level?: number;
   image?: string;
   speed?: number;
   moves?: Array<IMove>;
@@ -29,7 +28,6 @@ export type IPokemon = IPokemonBase & {
   shape_url?: string;
   abilities?: Array<IAbility>;
   evolutions?: Array<IPokemon>;
-  experience?: number;
   shape_name?: string;
   growth_rate?: IGrowthRate;
   is_mythical?: boolean

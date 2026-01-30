@@ -100,7 +100,8 @@ describe('Pokemon Trainer Service', () => {
       const result = await service.initialize('bulbasaur');
       expect(mockNest.pokemon.trainer.initialize).toHaveBeenCalled();
       expect(result.id).toEqual(mockEntity.id);
-      expect(result.pokedex).toEqual(result.pokedex);
+      expect(result.pokedex).toEqual(mockEntity.pokedex);
+      expect(result.pokeballs).toEqual(mockEntity.pokeballs);
       expect(result.user.id).toEqual(mockEntity.user.id);
       expect(result.capture_rate).toEqual(45);
       expect(result.captured_pokemons).toEqual(mockEntity.captured_pokemons);

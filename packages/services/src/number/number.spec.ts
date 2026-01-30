@@ -7,11 +7,12 @@ import {
     jest,
 } from '@jest/globals';
 import {
-    convertToNumber,
-    ensureOrderNumber,
-    extractLastNumberFromUrl,
-    isNumberEven,
-    numberValidator,
+  calculateWithFormula ,
+  convertToNumber ,
+  ensureOrderNumber ,
+  extractLastNumberFromUrl ,
+  isNumberEven ,
+  numberValidator ,
 } from './number';
 import { INVALID_TYPE } from '../shared';
 
@@ -149,4 +150,60 @@ describe('Number function', () => {
             expect(result).toBe(1);
         })
     })
+
+  describe('calculateWithFormula', () => {
+    it('should return the value when formula is not provided', () => {
+      const result = calculateWithFormula(10);
+      expect(result).toEqual({
+        value: 10,
+        valid: true,
+        message: 'Formula not received.'
+      });
+    });
+
+    it('should calculate the value using the formula', () => {
+      const result = calculateWithFormula(2, 'x * 3');
+      expect(result).toEqual({
+        value: 6,
+        valid: true,
+        message: 'Calculation completed successfully.'
+      });
+    });
+
+    it('should return invalid when formula is not valid', () => {
+      const result = calculateWithFormula(2, 'x **');
+      expect(result).toEqual({
+        value: 2,
+        valid: false,
+        message: 'Invalid formula.'
+      });
+    });
+
+    it('should handle formulas with multiple operations', () => {
+      const result = calculateWithFormula(4, '(x + 2) * 5');
+      expect(result).toEqual({
+        value: 30,
+        valid: true,
+        message: 'Calculation completed successfully.'
+      });
+    });
+
+    it('should handle negative numbers in formula', () => {
+      const result = calculateWithFormula(-2, 'x * 4');
+      expect(result).toEqual({
+        value: -8,
+        valid: true,
+        message: 'Calculation completed successfully.'
+      });
+    });
+
+    it('should return invalid when formula contains invalid characters', () => {
+      const result = calculateWithFormula(5, 'x + y');
+      expect(result).toEqual({
+        value: 5,
+        valid: false,
+        message: 'Invalid formula.'
+      });
+    });
+  });
 });

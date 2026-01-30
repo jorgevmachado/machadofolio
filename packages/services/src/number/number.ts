@@ -64,3 +64,39 @@ export function convertToNumber(value?: unknown, fallback: number = 0): number {
 
     return rawValue;
 }
+
+export function calculateWithFormula(value: number, formula?: string): ValidatorMessage {
+  if(!formula) {
+    return {
+      value,
+      valid: true,
+      message: 'Formula not received.'
+    };
+  }
+  const expression = formula.replace(/x/g, value.toString());
+  if (!/^[\d+\-*/ ().]+$/.test(expression)) {
+    return {
+      value,
+      valid: false,
+      message: 'Invalid formula.'
+    };
+  }
+
+  try {
+    const result = Math.floor(Function(`"use strict"; return (${expression})`)());
+
+    return {
+      value: result,
+      valid: true,
+      message: 'Calculation completed successfully.'
+    };
+  } catch {
+    return {
+      value,
+      valid: false,
+      message: 'Invalid formula.'
+    };
+  }
+
+
+}

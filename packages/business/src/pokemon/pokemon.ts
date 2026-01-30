@@ -9,7 +9,6 @@ export default class Pokemon implements PokemonEntity {
     hp?: PokemonEntity['hp'] = 0;
     url!: PokemonEntity['url'];
     name!: PokemonEntity['name'];
-    level?: PokemonEntity['level'] = 1;
     order!: PokemonEntity['order'];
     image?: PokemonEntity['image'];
     speed?: PokemonEntity['speed'] = 0;
@@ -28,7 +27,6 @@ export default class Pokemon implements PokemonEntity {
     updated_at!: PokemonEntity['updated_at'];
     deleted_at?: PokemonEntity['deleted_at'];
     evolutions?: PokemonEntity['evolutions'];
-    experience?: PokemonEntity['experience'] = 0;
     shape_name?: PokemonEntity['shape_name'];
     is_mythical?: PokemonEntity['is_mythical'] = false;
     growth_rate?: PokemonEntity['growth_rate'];
@@ -50,7 +48,6 @@ export default class Pokemon implements PokemonEntity {
         this.hp = params?.hp ?? this.hp;
         this.url = params?.url ?? this.url;
         this.name = params?.name ?? this.name;
-        this.level = params?.level ?? this.level;
         this.order = ensureOrderNumber(params?.order ?? this.order, this.url);
         this.image = params?.image ?? this.image;
         this.speed = params?.speed ?? this.speed;
@@ -69,7 +66,6 @@ export default class Pokemon implements PokemonEntity {
         this.updated_at = params?.updated_at ?? this.updated_at;
         this.deleted_at = params?.deleted_at ?? this.deleted_at;
         this.evolutions = params?.evolutions ?? this.evolutions;
-        this.experience = params?.experience ?? this.experience;
         this.shape_name = params?.shape_name ?? this.shape_name;
         this.growth_rate = params?.growth_rate ?? this.growth_rate;
         this.is_mythical = params?.is_mythical ?? this.is_mythical;
@@ -85,8 +81,5 @@ export default class Pokemon implements PokemonEntity {
         this.evolution_chain_url = params?.evolution_chain_url ?? this.evolution_chain_url;
         this.evolves_from_species = params?.evolves_from_species ?? this.evolves_from_species;
         this.has_gender_differences = params?.has_gender_differences ?? this.has_gender_differences;
-        if(!this.experience || this.experience === 0) {
-          this.experience = this.base_experience;
-        }
     }
 }

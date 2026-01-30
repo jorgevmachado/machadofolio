@@ -32,7 +32,6 @@ describe('Pokemon', () => {
             expect(entity.hp).toEqual(entityMock.hp);
             expect(entity.url).toEqual(entityMock.url);
             expect(entity.name).toEqual(entityMock.name);
-            expect(entity.level).toEqual(entityMock.level);
             expect(entity.order).toEqual(entityMock.order);
             expect(entity.image).toEqual(entityMock.image);
             expect(entity.speed).toEqual(entityMock.speed);
@@ -51,7 +50,6 @@ describe('Pokemon', () => {
             expect(entity.updated_at).toEqual(entityMock.updated_at);
             expect(entity.deleted_at).toEqual(entityMock.deleted_at);
             expect(entity.evolutions).toEqual(entityMock.evolutions);
-            expect(entity.experience).toEqual(entityMock.experience);
             expect(entity.shape_name).toEqual(entityMock.shape_name);
             expect(entity.is_mythical).toEqual(entityMock.is_mythical);
             expect(entity.growth_rate).toEqual(entityMock.growth_rate);
@@ -76,7 +74,6 @@ describe('Pokemon', () => {
             expect(entity.hp).toEqual(0);
             expect(entity.url).toBeUndefined();
             expect(entity.name).toBeUndefined();
-            expect(entity.level).toEqual(1);
             expect(entity.order).toEqual(0);
             expect(entity.image).toBeUndefined();
             expect(entity.speed).toEqual(0);
@@ -95,7 +92,6 @@ describe('Pokemon', () => {
             expect(entity.updated_at).toBeUndefined();
             expect(entity.deleted_at).toBeUndefined();
             expect(entity.evolutions).toBeUndefined();
-            expect(entity.experience).toEqual(0);
             expect(entity.shape_name).toBeUndefined();
             expect(entity.is_mythical).toBeFalsy();
             expect(entity.growth_rate).toBeUndefined();

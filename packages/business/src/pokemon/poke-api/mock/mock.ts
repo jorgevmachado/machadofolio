@@ -37,7 +37,6 @@ export const POKEMON_ENTITY_INITIAL_MOCK: PokemonEntity = {
     updated_at: undefined,
     deleted_at: undefined,
     shape_name: undefined,
-    experience: 0,
     is_mythical: false,
     gender_rate: 0,
     is_legendary: false,
