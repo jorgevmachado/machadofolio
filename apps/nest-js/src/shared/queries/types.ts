@@ -15,6 +15,9 @@ export type ListParams = {
     withDeleted?: boolean;
     withRelations?: boolean;
 }
+export type FindParams = Omit<ListParams, 'parameters' | 'defaultAsc'> & {
+  withThrow?: boolean;
+}
 
 export type FindByParams = Pick<ListParams, 'filters' | 'withDeleted' | 'withRelations'> & {
     withThrow?: boolean;

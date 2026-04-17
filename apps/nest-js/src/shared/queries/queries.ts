@@ -7,7 +7,13 @@ import { Paginate, type PaginateParameters } from '@repo/business';
 import { Query } from '../query';
 import type { BasicEntity } from '../types';
 
-import type { FindByParams, FindOneByOrder, FindOneByParams, ListParams } from './types';
+import {
+  type FindByParams ,
+  type FindOneByOrder ,
+  type FindOneByParams ,
+  type FindParams ,
+  type ListParams,
+} from './types';
 
 import { NotFoundException } from '@nestjs/common';
 
@@ -49,6 +55,25 @@ export class Queries<T extends BasicEntity> {
             .getManyAndCount();
 
         return new Paginate(Number(page), Number(limit), Number(total), results);
+    }
+
+    async find(params: FindParams) {
+      const query = new Query<T>({
+        alias: this.alias,
+        filters: params?.filters ?? [],
+        relations: params?.relations ?? this.relations,
+        repository: this.repository,
+        withDeleted: params?.withDeleted,
+        withRelations: params?.withRelations,
+      }).initialize();
+
+      const result = await query.getOne();
+
+      if (!result && params?.withThrow) {
+        throw new NotFoundException(`${this.alias} not found`);
+      }
+
+      return result;
     }
 
     async findBy({

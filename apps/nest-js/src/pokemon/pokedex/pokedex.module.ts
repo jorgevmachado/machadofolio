@@ -1,5 +1,8 @@
+import { PokemonBusiness } from '@repo/business';
+
 import { Pokedex } from '../entities/pokedex.entity';
 
+import { PokedexController } from './pokedex.controller';
 import { PokedexService } from './pokedex.service';
 
 import { Module } from '@nestjs/common';
@@ -11,7 +14,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([Pokedex])
   ],
-  providers: [PokedexService],
+  controllers: [PokedexController],
+  providers: [PokedexService, PokemonBusiness],
   exports: [PokedexService]
 })
 export class PokedexModule {}

@@ -1,8 +1,13 @@
 import React ,{ useEffect ,useRef ,useState } from 'react';
 
-import { useAlert ,useLoading } from '@repo/ui';
+import {
+  type Paginate ,
+  type Pokemon ,
+  type PokemonTrainer ,
+  type QueryParameters,
+} from '@repo/business';
 
-import type { Paginate ,Pokemon ,QueryParameters } from '@repo/business';
+import { useAlert ,useLoading ,useUser } from '@repo/ui';
 
 import { pokemonService } from '../../shared';
 
@@ -10,12 +15,14 @@ import { PokemonContext ,type PokemonContextProps } from './PokemonContext';
 
 export default function PokemonProvider( { children } : React.PropsWithChildren) {
   const isMounted = useRef(false);
+  const { user } = useUser();
   const { addAlert } = useAlert();
   const { show, hide, isLoading } = useLoading();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [results, setResults] = useState<Array<Pokemon>>([]);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [trainer, setTrainer] = useState<PokemonTrainer | null>(null);
 
   const fetchPokemons = async ({ page = currentPage, limit = 10, ...props }: QueryParameters) => {
     show();
@@ -27,6 +34,26 @@ export default function PokemonProvider( { children } : React.PropsWithChildren)
       return response;
     } catch (error) {
       addAlert({ type: 'error', message: 'Error Fetching Pokemons' });
+      throw error;
+    } finally {
+      hide();
+    }
+  };
+
+  const initialize = async (name?: string) => {
+    show();
+    try {
+      const currentTrainer = await pokemonService.initialize(name);
+      setTrainer(currentTrainer);
+      if (currentTrainer.captured_pokemons && currentTrainer.captured_pokemons.length > 0) {
+        const pokemon = currentTrainer.captured_pokemons?.[0]?.pokemon;
+        if (pokemon) {
+          await fetchOne(pokemon.name, false);
+        }
+      }
+      return currentTrainer;
+    } catch (error) {
+      addAlert({ type: 'error', message: 'Error initialize' });
       throw error;
     } finally {
       hide();
@@ -53,6 +80,7 @@ export default function PokemonProvider( { children } : React.PropsWithChildren)
   };
 
   useEffect(() => {
+    console.log('# => user => ', user);
     if (!isMounted.current) {
       isMounted.current = true;
       fetchPokemons({ page: currentPage }).then();
@@ -63,6 +91,7 @@ export default function PokemonProvider( { children } : React.PropsWithChildren)
     pokemons: results,
     fetchOne,
     isLoading,
+    initialize,
     totalPages,
     fetchPokemons
   };

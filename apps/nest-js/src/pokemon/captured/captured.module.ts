@@ -1,3 +1,5 @@
+import { PokemonBusiness } from '@repo/business';
+
 import { CapturedPokemon } from '../entities/captured-pokemons.entity';
 
 import { CapturedPokemonService } from './captured.service';
@@ -11,7 +13,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     PassportModule.register({ defaultStrategy: 'jwt' }) ,
     TypeOrmModule.forFeature([CapturedPokemon]) ,
   ] ,
-  providers: [CapturedPokemonService] ,
+  providers: [CapturedPokemonService, PokemonBusiness] ,
   exports: [CapturedPokemonService],
 })
 export class CapturedModule {

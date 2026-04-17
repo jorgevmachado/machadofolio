@@ -1,5 +1,5 @@
 export type { PokemonAbilityEntity } from './ability';
-export { PokemonBusiness } from './business';
+export { type BattleResult,type BattleWinner, type CalculateTrainerDamageParams,PokemonBusiness } from './business';
 export { CapturedPokemon, type CapturedPokemonConstructorParams,type CapturedPokemonEntity } from './captured';
 export type { PokemonGrowthRateConstructorParams,PokemonGrowthRateEntity } from './growth-rate';
 export type { PokemonMoveEntity } from './move';

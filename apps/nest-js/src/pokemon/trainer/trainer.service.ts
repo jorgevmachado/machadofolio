@@ -10,7 +10,7 @@ import { Service } from '../../shared';
 
 import { PokemonTrainer } from '../entities/trainer.entity';
 
-import { Injectable ,NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -33,19 +33,12 @@ export class PokemonTrainerService extends Service<PokemonTrainer>{
      return await this.save(trainer);
    }
 
-   async update(user: User, params: Omit<PokemonTrainerConstructorParams, 'user'>) {
-    const trainer = await this.findOne({ value: user.id, withDeleted: true });
+   async update(param: string, params: Omit<PokemonTrainerConstructorParams, 'user'>) {
+    const trainer = await this.findOne({ value: param, withDeleted: true });
     if(!trainer) {
-      return new PokemonTrainerConstructor({user: user as User});
+      return new PokemonTrainerConstructor();
     }
-    const newTrainer = new PokemonTrainerConstructor({...params, user: user as User});
-    return await this.save({...trainer, ...newTrainer});
-   }
-
-   async findTrainer(user: User) {
-    if(!user.pokemon_trainer) {
-      throw new NotFoundException('Trainer not found');
-    }
-    return await this.findOne({ value: user.pokemon_trainer.id, withRelations: true })
+    const newTrainer = new PokemonTrainerConstructor({ ...trainer, ...params, user: trainer.user });
+    return await this.save(newTrainer);
    }
 }

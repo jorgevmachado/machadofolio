@@ -30,6 +30,9 @@ export class PokemonTrainer implements PokemonTrainerEntity {
     (pokedex) => pokedex.pokemon_trainer)
   pokedex?: Array<Pokedex>;
 
+  @Column({ nullable: false, default: 5 })
+  pokeballs!: number;
+
   @CreateDateColumn()
   created_at!: Date;
 

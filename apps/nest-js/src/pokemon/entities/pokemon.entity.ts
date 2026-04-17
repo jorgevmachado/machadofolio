@@ -5,6 +5,7 @@ import {
   Entity ,
   JoinTable ,
   ManyToMany ,
+  ManyToOne ,
   PrimaryGeneratedColumn ,
   UpdateDateColumn ,
 } from 'typeorm';
@@ -12,11 +13,13 @@ import {
 import { EStatus ,type PokemonEntity } from '@repo/business';
 
 import { PokemonAbility } from './ability.entity';
+import { PokemonGrowthRate } from './growth-rate.entity';
 import { PokemonMove } from './move.entity';
 import { PokemonType } from './type.entity';
 
 @Entity({ name: 'pokemons' })
 export class Pokemon implements PokemonEntity {
+
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
@@ -50,6 +53,12 @@ export class Pokemon implements PokemonEntity {
   status!: EStatus;
 
   @Column({ nullable: true })
+  height?: number;
+
+  @Column({ nullable: true })
+  weight?: number;
+
+  @Column({ nullable: true })
   attack?: number;
 
   @Column({ nullable: true })
@@ -68,10 +77,6 @@ export class Pokemon implements PokemonEntity {
   @JoinTable()
   abilities?: Array<PokemonAbility>;
 
-  @ManyToMany(() => Pokemon ,{ nullable: true })
-  @JoinTable()
-  evolutions?: Array<Pokemon>;
-
   @CreateDateColumn()
   created_at!: Date;
 
@@ -81,8 +86,16 @@ export class Pokemon implements PokemonEntity {
   @DeleteDateColumn()
   deleted_at?: Date;
 
+  @ManyToMany(() => Pokemon ,{ nullable: true })
+  @JoinTable()
+  evolutions?: Array<Pokemon>;
+
   @Column({ nullable: true ,length: 200 })
   shape_name?: string;
+
+  @ManyToOne(() => PokemonGrowthRate ,{ nullable: true })
+  @JoinTable()
+  growth_rate?: PokemonGrowthRate;
 
   @Column({ nullable: true })
   is_mythical?: boolean;
@@ -107,6 +120,9 @@ export class Pokemon implements PokemonEntity {
 
   @Column({ nullable: true })
   external_image?: string;
+
+  @Column({ nullable: true })
+  base_experience?: number;
 
   @Column({ nullable: true })
   special_defense?: number;

@@ -7,12 +7,24 @@ export type ICaptured = IBaseEntity & {
   hp: number;
   wins: number;
   level: number;
+  iv_hp: number;
+  ev_hp: number;
   losses: number;
   max_hp: number;
   battles: number;
   trainer: ITrainer;
   pokemon: IPokemon;
   nickname?: string;
+  iv_speed: number;
+  ev_speed: number;
+  iv_attack: number;
+  ev_attack: number;
+  iv_defense: number;
+  ev_defense: number;
   experience: number;
   captured_at?: Date;
+  iv_special_attack: number;
+  ev_special_attack: number;
+  iv_special_defense: number;
+  ev_special_defense: number;
 }

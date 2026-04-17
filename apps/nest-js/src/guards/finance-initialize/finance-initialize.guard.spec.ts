@@ -16,7 +16,7 @@ describe('FinanceInitializeGuard', () => {
     expect(guard).toBeDefined();
   });
 
-  it('deve retornar true quando o usuário possui "finance" inicializado', () => {
+  it('should return true when user has "finance" initialize', () => {
     const mockExecutionContext = {
       switchToHttp: jest.fn().mockReturnValue({
         getRequest: jest.fn().mockReturnValue({
@@ -33,7 +33,7 @@ describe('FinanceInitializeGuard', () => {
     expect(result).toBe(true);
   });
 
-  it('deve lançar ConflictException quando o usuário NÃO possui "finance" inicializado', () => {
+  it('should throw a ConflictException when the user does NOT have "finance" initialized.', () => {
     const mockExecutionContext = {
       switchToHttp: jest.fn().mockReturnValue({
         getRequest: jest.fn().mockReturnValue({
@@ -47,7 +47,7 @@ describe('FinanceInitializeGuard', () => {
         .toThrow(ConflictException);
   });
 
-  it('deve lançar ConflictException se o usuário não possuir a propriedade "finance"', () => {
+  it('should throw a ConflictException if the user does not own the "finance" property.', () => {
     const mockExecutionContext = {
       switchToHttp: jest.fn().mockReturnValue({
         getRequest: jest.fn().mockReturnValue({
@@ -61,7 +61,7 @@ describe('FinanceInitializeGuard', () => {
         .toThrow(ConflictException);
   });
 
-  it('deve lançar ConflictException se não houver usuário na requisição', () => {
+  it('A ConflictException should be thrown if there is no user in the request.', () => {
     const mockExecutionContext = {
       switchToHttp: jest.fn().mockReturnValue({
         getRequest: jest.fn().mockReturnValue({

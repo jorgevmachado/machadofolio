@@ -100,3 +100,15 @@ export function calculateWithFormula(value: number, formula?: string): Validator
 
 
 }
+
+export function getStat(base: number, iv: number, ev: number, level: number): number {
+  return Math.floor(((2 * base + iv + Math.floor(ev / 4)) * level) / 100) + 5;
+}
+
+export function getExperience(level: number): number {
+  return Math.floor((6 * Math.pow(level, 3)) / 5 - 15 * Math.pow(level, 2) + 100 * level - 140);
+}
+
+export function generateInitialIvs(value: number = 32): number {
+  return Math.floor(Math.random() * value);
+}

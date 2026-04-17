@@ -12,6 +12,7 @@ export type IMoveResponse = {
     effect_chance?: number;
     effect_entries: Array<{
         effect: string;
+        language: IPokemonResponse;
         short_effect: string;
     }>;
     learned_by_pokemon: Array<IPokemonResponse>;

@@ -3,7 +3,6 @@ import { CreateSeedDto } from './dto/create-seed.dto';
 import { FinanceService } from './finance/finance.service';
 import { FinanceSeedsResult } from './finance/types';
 import { PokemonService } from './pokemon/pokemon.service';
-import type { PokemonSeedsResult } from './pokemon/types';
 import { SeedsResultItem } from './shared';
 
 import { Injectable } from '@nestjs/common';
@@ -12,7 +11,6 @@ import { Injectable } from '@nestjs/common';
 type SeedsResult = {
     auth: SeedsResultItem;
     finance: FinanceSeedsResult;
-    pokemon: PokemonSeedsResult;
 }
 
 @Injectable()
@@ -63,24 +61,6 @@ export class AppService {
                 list: 0,
                 added: 0
             },
-        },
-        pokemon: {
-            move: {
-                list: 0,
-                added: 0
-            },
-            type: {
-                list: 0,
-                added: 0
-            },
-            ability: {
-                list: 0,
-                added: 0
-            },
-            pokemon: {
-                list: 0,
-                added: 0
-            },
         }
     };
 
@@ -110,10 +90,6 @@ export class AppService {
             result.finance = await this.financeService.generateSeeds(body.finance);
         }
 
-        if (body.pokemon) {
-            result.pokemon = await this.pokemonService.generateSeeds(body.pokemon);
-        }
-
         return { ...result, message: 'Seed Generate Successfully' };
     }
 
@@ -128,10 +104,6 @@ export class AppService {
 
         if (body.finance) {
             result.finance = await this.financeService.persistSeeds(body.finance);
-        }
-
-        if (body.pokemon) {
-            result.pokemon = await this.pokemonService.persistSeeds(body.pokemon);
         }
 
         const auth = await this.authService.persistSeed(Boolean(body.auth));

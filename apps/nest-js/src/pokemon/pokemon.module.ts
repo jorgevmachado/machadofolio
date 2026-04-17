@@ -1,8 +1,9 @@
-import { PokeApiService, PokemonBusiness } from '@repo/business';
+import { PokeApiService ,PokemonBusiness } from '@repo/business';
 
 import { AbilityModule } from './ability/ability.module';
 import { CapturedModule } from './captured/captured.module';
 import { Pokemon } from './entities/pokemon.entity';
+import { PokemonGrowthRateModule } from './growth-rate/growth-rate.module';
 import { MoveModule } from './move/move.module';
 import { PokedexModule } from './pokedex/pokedex.module';
 import { PokemonController } from './pokemon.controller';
@@ -16,17 +17,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Pokemon]),
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-    MoveModule,
-    TypeModule,
-    AbilityModule,
-    CapturedModule,
-    TrainerModule,
-    PokedexModule
-  ],
-  controllers: [PokemonController],
-  providers: [PokemonService, PokeApiService, PokemonBusiness],
-  exports: [PokemonService]
+    TypeOrmModule.forFeature([Pokemon]) ,
+    PassportModule.register({ defaultStrategy: 'jwt' }) ,
+    MoveModule ,
+    TypeModule ,
+    AbilityModule ,
+    CapturedModule ,
+    TrainerModule ,
+    PokedexModule ,
+    PokemonGrowthRateModule ,
+  ] ,
+  controllers: [PokemonController] ,
+  providers: [PokemonService ,PokeApiService ,PokemonBusiness] ,
+  exports: [PokemonService] ,
 })
-export class PokemonModule {}
+export class PokemonModule {
+}
