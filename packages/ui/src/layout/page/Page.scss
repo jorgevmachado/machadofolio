@@ -1,0 +1,13 @@
+.ui-page {
+  &__content {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    padding: var(--size-large) var(--size-medium);
+    box-sizing: unset;
+    min-height: 0;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+}

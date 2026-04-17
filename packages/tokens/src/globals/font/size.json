@@ -1,0 +1,27 @@
+{
+  "font": {
+    "size": {
+      "$type": "dimension",
+      "xs": {
+        "$value": "0.75rem",
+        "comment": "0.75rem => 12px if 16px = 1rem"
+      },
+      "sm": {
+        "$value": "0.875rem",
+        "comment": "0.875rem => 14px if 16px = 1rem"
+      },
+      "md": {
+        "$value": "1rem",
+        "comment": "1rem => 16px if 16px = 1rem"
+      },
+      "lg": {
+        "$value": "1.25rem",
+        "comment": "1.25rem => 20px if 16px = 1rem"
+      },
+      "xl": {
+        "$value": "1.5rem",
+        "comment": "1.5rem => 24px if 16px = 1rem"
+      }
+    }
+  }
+}

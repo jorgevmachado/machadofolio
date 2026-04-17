@@ -1,0 +1,60 @@
+{
+  "brand": {
+    "name":{
+      "$value": "finance"
+    }
+  },
+  "color": {
+    "$type": "color",
+    "menu": {
+      "$value": "#f1faee"
+    },
+    "strong": {
+      "$value": "#a8dadc"
+    },
+    "navbar": {
+      "background": {
+        "$value": "#1d3557"
+      }
+    },
+    "sidebar": {
+      "hover": {
+        "$value": "rgba(255, 255, 255, 0.1)"
+      },
+      "button": {
+        "$value": "white"
+      },
+      "background": {
+        "$value": "linear-gradient(to bottom, #1d3557, #457b9d)"
+      }
+    },
+    "primary": {
+      "40": {
+        "$value": "#92E3F5"
+      },
+      "60": {
+        "$value": "#4793C7"
+      },
+      "80": {
+        "$value": "#245B89"
+      },
+      "100": {
+        "$value": "#183D5D"
+      }
+    },
+    "secondary": {
+      "40": {
+        "$value": "#FFE9AB"
+      },
+      "60": {
+        "$value": "#FFCF4D"
+      },
+      "80": {
+        "$value": "#FFD700"
+      },
+      "100": {
+        "$value": "#A67C00"
+      }
+    }
+  }
+}

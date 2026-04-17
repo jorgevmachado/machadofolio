@@ -1,0 +1,11 @@
+.tab-item {
+  gap: 16px;
+  display: flex;
+  padding: 16px;
+  flex-direction: column;
+  &__container {
+    gap: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,1 @@
+export { IncomeService } from './service';

@@ -1,0 +1,41 @@
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    jest,
+} from '@jest/globals';
+
+import { NestModuleAbstract } from '../abstract';
+
+import { {{ pascalCase name }} } from './{{ kebabCase name }}';
+
+jest.mock('../abstract');
+
+describe('{{ pascalCase name }}', () => {
+    const mockBaseUrl = 'http://mock-base-url.com';
+    const mockHeaders = { Authorization: 'Bearer test-token' };
+    const mockConfig = { baseUrl: mockBaseUrl, headers: mockHeaders };
+
+    let {{ kebabCase name }}: {{ pascalCase name }};
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
+        {{ kebabCase name }} = new {{ pascalCase name }}(mockConfig);
+    });
+
+    afterEach(() => {
+        jest.resetModules();
+    });
+    describe('constructor', () => {
+        it('should initialize with the correct path and config', () => {
+            expect(NestModuleAbstract).toHaveBeenCalledTimes(1);
+            expect(NestModuleAbstract).toHaveBeenCalledWith({
+                pathUrl: '{{ kebabCase name }}',
+                nestModuleConfig: mockConfig,
+            });
+        });
+    });
+});

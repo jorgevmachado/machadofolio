@@ -1,0 +1,109 @@
+@use "../../styles/colors" as *;
+
+.ds-text {
+  margin: 0;
+
+  &__variant {
+    &--tiny{
+      font-size: var(--dimensions-relative-12);
+      line-height: var(--dimensions-relative-18);
+      font-weight: var(--font-weight-regular);
+    }
+    &--xsmall{
+      font-size: var(--dimensions-relative-12);
+      line-height: var(--dimensions-relative-18);
+      font-weight: var(--font-weight-regular);
+    }
+    &--small{
+      font-size: var(--dimensions-relative-12);
+      line-height: var(--dimensions-relative-24);
+      font-weight: var(--font-weight-regular);
+    }
+    &--regular{
+      font-size: var(--dimensions-relative-14);
+      line-height: var(--dimensions-relative-28);
+      font-weight: var(--font-weight-regular);
+    }
+    &--medium{
+      font-size: var(--dimensions-relative-18);
+      line-height: var(--dimensions-relative-32);
+      font-weight: var(--font-weight-regular);
+    }
+    &--large{
+      font-size: var(--dimensions-relative-20);
+      line-height: var(--dimensions-relative-40);
+      font-weight: var(--font-weight-regular);
+    }
+    &--xlarge{
+      font-size: var(--dimensions-relative-24);
+      line-height: var(--dimensions-relative-56);
+      font-weight: var(--font-weight-regular);
+    }
+    &--big{
+      font-size: var(--dimensions-relative-48);
+      line-height: var(--dimensions-relative-56);
+      font-weight: var(--font-weight-regular);
+    }
+    &--huge{
+      font-size: var(--dimensions-relative-40);
+      line-height: var(--dimensions-relative-72);
+      font-weight: var(--font-weight-regular);
+    }
+    &--giant{
+      font-size: var(--dimensions-relative-48);
+      line-height: var(--dimensions-relative-80);
+      font-weight: var(--font-weight-regular);
+    }
+  }
+  &__weight {
+    &--regular{
+      font-weight: var(--font-weight-regular);
+    }
+    &--medium{
+      font-weight: var(--font-weight-medium);
+    }
+    &--semi-bold{
+      font-weight: var(--font-weight-semi-bold);
+    }
+    &--bold{
+      font-weight: var(--font-weight-bold);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .ds-text__variant--giant {
+    font-size: 28px;
+    line-height: 36px;
+  }
+  .ds-text__variant--huge {
+    font-size: 24px;
+    line-height: 32px;
+  }
+  .ds-text__variant--big {
+    font-size: 20px;
+    line-height: 28px;
+  }
+  .ds-text__variant--xlarge {
+    font-size: 18px;
+    line-height: 24px;
+  }
+  .ds-text__variant--large {
+    font-size: 16px;
+    line-height: 20px;
+  }
+  .ds-text__variant--medium {
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .ds-text__variant--regular {
+    font-size: 13px;
+    line-height: 16px;
+  }
+  .ds-text__variant--small,
+  .ds-text__variant--xsmall,
+  .ds-text__variant--tiny {
+    font-size: 12px;
+    line-height: 14px;
+  }
+}

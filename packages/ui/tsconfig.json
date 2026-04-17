@@ -1,8 +1,18 @@
 {
-  "extends": "@repo/typescript-config/react-library.json",
+  "extends": "@repo/typescript/react-library.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "target": "ES2022",
+    "module": "ESNext",
+    "baseUrl": ".",
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@repo/services": ["../../packages/services/dist"],
+      "@repo/services/*": ["../../packages/services/dist/*"],
+      "@repo/business": ["../../packages/business/dist"],
+      "@repo/business/*": ["../../packages/business/dist/*"]
+    }
   },
-  "include": ["src"],
+  "include": ["src/"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,0 +1,16 @@
+name: Block non-develop merges to main
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  block-non-develop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check source branch
+        if: github.head_ref != 'develop'
+        run: |
+          echo "Only 'develop' can be merged into 'main'."
+          exit 1

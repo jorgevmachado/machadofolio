@@ -1,0 +1,20 @@
+.ui-social {
+  &__google {
+    &.ds-button {
+      border-color: var(--color-social-google-90);
+      background-color: var(--color-social-google-90);
+    }
+  }
+  &__facebook {
+    &.ds-button {
+      border-color: var(--color-social-facebook-90);
+      background-color: var(--color-social-facebook-90);
+    }
+  }
+  &__github {
+    &.ds-button {
+      border-color: var(--color-social-github-90);
+      background-color: var(--color-social-github-90);
+    }
+  }
+}

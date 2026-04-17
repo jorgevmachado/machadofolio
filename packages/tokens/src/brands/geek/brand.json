@@ -1,0 +1,60 @@
+{
+  "brand": {
+    "name":{
+      "$value": "geek"
+    }
+  },
+  "color": {
+    "$type": "color",
+    "menu": {
+      "$value": "#f0eff4"
+    },
+    "strong": {
+      "$value": "#009688"
+    },
+    "navbar": {
+      "background": {
+        "$value": "#232946"
+      }
+    },
+    "sidebar": {
+      "hover": {
+        "$value": "rgba(255, 255, 255, 0.1)"
+      },
+      "button": {
+        "$value": "#f0eff4"
+      },
+      "background": {
+        "$value": "linear-gradient(to bottom, #232946, #009688)"
+      }
+    },
+    "primary": {
+      "40": {
+        "$value": "#AB8CFF"
+      },
+      "60": {
+        "$value": "#7E4CFF"
+      },
+      "80": {
+        "$value": "#6C30E2"
+      },
+      "100": {
+        "$value": "#51289E"
+      }
+    },
+    "secondary": {
+      "40": {
+        "$value": "#D4FF8C"
+      },
+      "60": {
+        "$value": "#B0FF45"
+      },
+      "80": {
+        "$value": "#78CB19"
+      },
+      "100": {
+        "$value": "#539116"
+      }
+    }
+  }
+}

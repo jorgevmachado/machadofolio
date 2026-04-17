@@ -1,0 +1,76 @@
+@mixin context($color) {
+  .ds-tabs__item:hover {
+    color: $color;
+  }
+  .ds-tabs__item--active {
+    color: $color;
+    border-bottom: 2px solid $color;
+  }
+}
+
+.ds-tabs {
+  width: 100%;
+  display: flex;
+  font-family: Arial, sans-serif;
+  flex-direction: column;
+  &__list {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--color-neutral-60);
+    justify-content: flex-start;
+  }
+  &__item {
+    color: var(--color-neutral-80);
+    cursor: pointer;
+    margin: 0;
+    padding: 10px 20px;
+    font-size: var(--size-regular);
+    transition: color 0.3s, border-bottom 0.3s;
+    font-weight: var(--font-weight-regular);
+    line-height: var(--size-regular);
+    white-space: nowrap;
+    &--active {
+      font-weight: bold;
+    }
+  }
+  &__content {
+    color: var(--color-neutral-100);
+    padding: 20px;
+    font-size: var(--size-regular);
+    line-height: var(--size-regular);
+  }
+  &__context {
+    &--info {
+      @include context(var(--color-info-60));
+    }
+    &--error {
+      @include context(var(--color-error-60));
+    }
+    &--neutral {
+      @include context(var(--color-neutral-60));
+    }
+    &--success {
+      @include context(var(--color-success-60));
+    }
+    &--primary {
+      @include context(var(--color-primary-60));
+    }
+    &--secondary {
+      @include context(var(--color-secondary-60));
+    }
+    &--attention {
+      @include context(var(--color-attention-60));
+    }
+  }
+}
+
+.ds-tabs__fluid .ds-tabs__list {
+  justify-content: space-between;
+}
+
+.ds-tabs__fluid .ds-tabs__item {
+  flex: 1;
+  text-align: center;
+}

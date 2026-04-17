@@ -1,0 +1,150 @@
+{
+  "brand": {
+    "name":{
+      "$value": "auth"
+    }
+  },
+  "color": {
+    "$type": "color",
+    "menu": {
+      "$value": "#f6fafd"
+    },
+    "strong": {
+      "$value": "#2563eb"
+    },
+    "navbar": {
+      "background": {
+        "$value": "#1e293b"
+      }
+    },
+    "sidebar": {
+      "hover": {
+        "$value": "rgba(37, 99, 235, 0.08)"
+      },
+      "button": {
+        "$value": "#2563eb"
+      },
+      "background": {
+        "$value": "linear-gradient(to bottom, #1e293b, #2563eb)"
+      }
+    },
+    "primary": {
+      "40": {
+        "$value": "#93c5fd"
+      },
+      "60": {
+        "$value": "#2563eb"
+      },
+      "80": {
+        "$value": "#1e40af"
+      },
+      "100": {
+        "$value": "#0a192f"
+      }
+    },
+    "secondary": {
+      "40": {
+        "$value": "#fca5a5"
+      },
+      "60": {
+        "$value": "#f87171"
+      },
+      "80": {
+        "$value": "#22c55e"
+      },
+      "100": {
+        "$value": "#16a34a"
+      }
+    },
+    "law": {
+      "primary": {
+        "40": {
+          "$value": "#BC8FCE"
+        },
+        "60": {
+          "$value": "#9551A0"
+        },
+        "80": {
+          "$value": "#6D3D73"
+        },
+        "100": {
+          "$value": "#45254C"
+        }
+      },
+      "secondary": {
+        "40": {
+          "$value": "#B6BED9"
+        },
+        "60": {
+          "$value": "#8B9BB4"
+        },
+        "80": {
+          "$value": "#44516A"
+        },
+        "100": {
+          "$value": "#232B39"
+        }
+      }
+    },
+    "geek": {
+      "primary": {
+        "40": {
+          "$value": "#AB8CFF"
+        },
+        "60": {
+          "$value": "#7E4CFF"
+        },
+        "80": {
+          "$value": "#6C30E2"
+        },
+        "100": {
+          "$value": "#51289E"
+        }
+      },
+      "secondary": {
+        "40": {
+          "$value": "#D4FF8C"
+        },
+        "60": {
+          "$value": "#B0FF45"
+        },
+        "80": {
+          "$value": "#78CB19"
+        },
+        "100": {
+          "$value": "#539116"
+        }
+      }
+    },
+    "finance": {
+      "primary": {
+        "40": {
+          "$value": "#92E3F5"
+        },
+        "60": {
+          "$value": "#4793C7"
+        },
+        "80": {
+          "$value": "#245B89"
+        },
+        "100": {
+          "$value": "#183D5D"
+        }
+      },
+      "secondary": {
+        "40": {
+          "$value": "#FFE9AB"
+        },
+        "60": {
+          "$value": "#FFCF4D"
+        },
+        "80": {
+          "$value": "#FFD700"
+        },
+        "100": {
+          "$value": "#A67C00"
+        }
+      }
+    }
+  }
+}

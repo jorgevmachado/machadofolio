@@ -1,11 +1,23 @@
 {
   "$schema": "https://turborepo.com/schema.json",
+  "globalEnv": ["ENV", "API", "PORT", "BRAND", "VITE_BRAND"],
+  "globalDependencies": [
+    "**/.env.*local",
+    "**/.env.*mock",
+    "ENV",
+    "API",
+    "PORT",
+    "AUTH_URL",
+    "FINANCE_URL",
+    "GEEK_URL",
+    "LAW_URL"
+  ],
   "ui": "tui",
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]
@@ -15,7 +27,8 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": ["^build"]
     }
   }
 }

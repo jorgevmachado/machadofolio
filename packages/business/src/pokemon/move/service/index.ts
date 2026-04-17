@@ -1,0 +1,1 @@
+export { PokemonMoveService }  from './service';

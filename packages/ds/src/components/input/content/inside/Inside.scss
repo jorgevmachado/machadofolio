@@ -1,0 +1,28 @@
+.ds-inside {
+  &__icon {
+    display: flex;
+    position: absolute;
+    font-size: 1.25rem;
+    margin-top: .2rem;
+    align-items: center;
+    justify-content: center;
+    &--left {
+      left: 0.75rem;
+    }
+    &--right {
+      left: auto;
+      right: 0.75rem;
+    }
+    &--password {
+      cursor: pointer;
+    }
+  }
+  &__counter {
+    left: auto;
+    right: 0.75rem;
+    display: flex;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+  }
+}

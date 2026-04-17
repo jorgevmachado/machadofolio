@@ -1,0 +1,1 @@
+export { PokeApiMoveService } from './service';

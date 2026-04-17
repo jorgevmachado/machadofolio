@@ -1,0 +1,13 @@
+.replace-words {
+  &__text {
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  &__input {
+    gap: 1rem;
+    display: flex;
+    flex-direction: row;
+    margin-top: 1rem;
+  }
+}

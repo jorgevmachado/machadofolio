@@ -1,0 +1,106 @@
+@use "sass:list";
+@use "../../styles/colors" as *;
+@use "../../styles/focus" as *;
+
+.ds-link {
+  cursor: pointer;
+  border: none;
+  display: inline-block;
+  background: none;
+  outline-offset: var(--size-xx-tiny);
+
+  &:focus:not(:focus-visible) {
+    outline-style: none;
+  }
+
+  &__size {
+    &--small {
+      font-size: var(--font-size-sm);
+    }
+    &--medium {
+      font-size: var(--font-size-md);
+    }
+    &--large {
+      font-size: var(--font-size-lg);
+    }
+    &--big {
+      font-size: var(--font-size-xl);
+    }
+  }
+
+  &__weight{
+    &--regular {
+      font-weight: var(--font-weight-regular);
+    }
+    &--medium {
+      font-weight: var(--font-weight-medium);
+    }
+    &--semibold {
+      font-weight: var(--font-weight-semi-bold);
+    }
+    &--bold {
+      font-weight: var(--font-weight-bold);
+    }
+  }
+
+  &__icon--position {
+    &-left {
+      margin-right: var(--dimensions-relative-2);
+    }
+    &-right {
+      margin-left: var(--dimensions-relative-2);
+    }
+  }
+
+  &__content {
+    display: flex;
+  }
+
+  &__notification {
+    gap: 11rem;
+    width: auto;
+    display: flex;
+    justify-content: space-between;
+    margin-left: var(--dimensions-relative-2);
+    &--counter {
+      display: flex;
+      width: var(--dimensions-relative-24);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      align-items: center;
+      border-radius: 50%;
+      justify-content: center;
+    }
+  }
+}
+
+@mixin context($Color, $Hover, $Active, $Counter) {
+  color: $Color;
+
+  &:hover {
+    color: $Hover;
+  }
+
+  &:active {
+    color: $Active;
+  }
+  .ds-link__notification--counter {
+    color: $Counter;
+  }
+}
+
+$contexts: (
+        info: (var(--color-info-60), var(--color-info-80), var(--color-info-100), var(--color-white)),
+        error: (var(--color-error-60), var(--color-error-80), var(--color-error-100), var(--color-white)),
+        neutral: (var(--color-neutral-80), var(--color-neutral-60), var(--color-neutral-100), var(--color-white)),
+        success: (var(--color-success-60), var(--color-success-80), var(--color-success-100), var(--color-white)),
+        primary: (var(--color-primary-60), var(--color-primary-80), var(--color-primary-100), var(--color-white)),
+        secondary: (var(--color-secondary-60), var(--color-secondary-100), var(--color-secondary-100), var(--color-white)),
+        attention: (var(--color-attention-60), var(--color-attention-80), var(--color-attention-100), var(--color-white))
+);
+
+@each $key, $colors in $contexts {
+  .ds-link__context--#{$key} {
+    @include context(list.nth($colors, 1), list.nth($colors, 2), list.nth($colors, 3), list.nth($colors, 4));
+  }
+}

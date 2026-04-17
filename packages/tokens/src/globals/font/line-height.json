@@ -1,0 +1,16 @@
+{
+  "font": {
+    "lineHeight": {
+      "$type": "lineHeight",
+      "tight": {
+        "$value": "1.2"
+      },
+      "normal": {
+        "$value": "1.5"
+      },
+      "relaxed": {
+        "$value": "1.75"
+      }
+    }
+  }
+}

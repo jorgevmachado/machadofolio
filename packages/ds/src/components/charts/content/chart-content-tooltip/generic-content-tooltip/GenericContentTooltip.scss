@@ -1,0 +1,14 @@
+.ds-generic-content-tooltip {
+  gap: 0;
+  margin: 0;
+  width: fit-content;
+  display: flex;
+  list-style: none;
+  padding-left: 0;
+  flex-direction: column;
+  justify-content: flex-start;
+  &__custom {
+    margin: 0;
+    padding: 0;
+  }
+}

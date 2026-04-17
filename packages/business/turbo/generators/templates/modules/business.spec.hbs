@@ -1,0 +1,24 @@
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    jest,
+} from '@jest/globals';
+
+describe('{{ pascalCase name }} function', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
+    });
+
+    afterEach(() => {
+        jest.resetModules();
+    });
+    describe('{{ pascalCase name }}Business', () => {
+        it('should return a string', () => {
+            // should return a string
+        });
+    });
+});

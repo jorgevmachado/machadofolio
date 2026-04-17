@@ -1,0 +1,10 @@
+import type { INestModuleConfig } from '../types';
+import { NestModuleAbstract } from '../abstract';
+
+import type { I{{ pascalCase name }} } from './types';
+
+export class {{ pascalCase name }} extends NestModuleAbstract<I{{ pascalCase name }}, unknown, unknown> {
+    constructor(nestModuleConfig: INestModuleConfig) {
+        super({ pathUrl: '{{ kebabCase name }}', nestModuleConfig });
+    }
+}

@@ -1,0 +1,59 @@
+{
+  "name": "@repo/business",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "./dist/**"
+  ],
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "tsc --project tsconfig.json",
+    "gen": "turbo gen business",
+    "gen:module:nest": "turbo gen business-module-nest",
+    "dev": "echo 'Add dev script here'",
+    "build": "rimraf dist && yarn prebuild && rollup -c",
+    "test": "jest",
+    "test:ci": "jest  --clearCache --coverage",
+    "test:watch": "jest --watch",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --max-warnings 0 --fix"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    },
+    "./*": {
+      "import": "./dist/*.js",
+      "require": "./dist/*.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@repo/services": "*"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@repo/jest": "*",
+    "@repo/typescript": "*",
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@types/node": "^22.15.3",
+    "glob": "^11.0.2",
+    "jest": "^29.7.0",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.45.0",
+    "ts-jest": "^29.3.2",
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.8.3"
+  }
+}
